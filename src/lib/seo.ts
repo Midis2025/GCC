@@ -4,7 +4,30 @@ import { siteConfig } from "@/data/site";
 import type { SeoOverrides } from "@/types";
 import { trimTrailingSlash } from "@/lib/utils";
 
-export const siteUrl = trimTrailingSlash(siteConfig.url);
+/**
+ * Canonical origin for this deployment.
+ *
+ * Resolution order:
+ *  1. NEXT_PUBLIC_SITE_URL - set this once the real domain is confirmed.
+ *  2. VERCEL_PROJECT_PRODUCTION_URL - injected by Vercel at build time.
+ *  3. localhost, for local development.
+ *
+ * Step 2 matters: without it, a Vercel deployment with no environment variable
+ * configured would bake `http://localhost:3000` into every canonical link,
+ * Open Graph tag and sitemap.xml entry on the live site.
+ *
+ * This module is server-only (metadata generation), so reading a non-public
+ * env var here keeps it out of the client bundle.
+ */
+function resolveSiteUrl(): string {
+  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  }
+  return siteConfig.url;
+}
+
+export const siteUrl = trimTrailingSlash(resolveSiteUrl());
 
 /** Turns a route-relative path into an absolute URL. */
 export function absoluteUrl(path = "/"): string {
