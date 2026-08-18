@@ -1,26 +1,229 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   GCC DESIGN TOKENS
+   Single source of truth. Every component references semantic tokens only -
+   never raw hex - so the palette can be re-pointed globally from this block.
+   Ratio target: ~70% neutral canvas, ~20% dark contrast, ~10% accent.
+   ========================================================================== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+
+  /* --- Raw palette ------------------------------------------------------ */
+  --midnight: #0c141d; /* deep midnight navy, near-black */
+  --midnight-soft: #16202c;
+  --midnight-line: #22303f;
+  --ivory: #faf8f4; /* warm off-white */
+  --stone: #efeae1; /* light sand */
+  --stone-deep: #e2dbcf;
+  --graphite: #171c22;
+  --grey: #5f666e; /* soft neutral grey */
+  --grey-light: #626871; /* 4.6:1 on stone, 5.3:1 on ivory */
+  --bronze: #7a5f36; /* deep bronze - accent on light surfaces (WCAG AA as text) */
+  --bronze-bright: #b8945f;
+
+  /* --- Semantic surfaces ------------------------------------------------ */
+  --color-canvas: var(--ivory);
+  --color-surface: #ffffff;
+  --color-surface-muted: var(--stone);
+  --color-border: var(--stone-deep);
+  --color-border-subtle: #e9e4da;
+
+  /* --- Semantic foreground --------------------------------------------- */
+  --color-foreground: var(--graphite);
+  --color-foreground-muted: var(--grey);
+  --color-foreground-subtle: var(--grey-light);
+
+  /* --- Accent ----------------------------------------------------------- */
+  --color-accent: var(--bronze);
+  --color-accent-hover: #67502e;
+  --color-accent-foreground: #ffffff;
+
+  /* --- Feedback + focus ------------------------------------------------- */
+  --color-danger: #9b2c2c;
+  --color-success: #2f6b47;
+  --color-ring: var(--bronze);
+
+  /* --- Layout ----------------------------------------------------------- */
+  --header-h: 4.5rem;
+
+  /* Section rhythm. Sections use these instead of ad-hoc margins. */
+  --space-section-sm: clamp(3.5rem, 6vw, 5rem);
+  --space-section-md: clamp(4.5rem, 8vw, 7.5rem);
+  --space-section-lg: clamp(5.5rem, 11vw, 10rem);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@media (min-width: 1024px) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --header-h: 5.5rem;
   }
 }
 
+/* --------------------------------------------------------------------------
+   Inverted surface. Applied to dark sections (hero, outreach, final CTA):
+   re-points the same semantic tokens so every child component inverts without
+   needing dark-specific variants.
+   -------------------------------------------------------------------------- */
+.surface-dark {
+  --color-canvas: var(--midnight);
+  --color-surface: var(--midnight);
+  --color-surface-muted: var(--midnight-soft);
+  --color-border: var(--midnight-line);
+  --color-border-subtle: rgba(250, 248, 244, 0.1);
+  --color-foreground: #f4f1eb;
+  --color-foreground-muted: rgba(244, 241, 235, 0.66);
+  --color-foreground-subtle: rgba(244, 241, 235, 0.58);
+  --color-accent: var(--bronze-bright);
+  --color-accent-hover: #cba871;
+  --color-accent-foreground: var(--midnight);
+  --color-ring: var(--bronze-bright);
+
+  background-color: var(--color-surface);
+  color: var(--color-foreground);
+}
+
+.surface-muted {
+  --color-surface: var(--stone);
+  background-color: var(--color-surface);
+}
+
+/* ==========================================================================
+   TAILWIND THEME
+   ========================================================================== */
+@theme inline {
+  /*
+   * Only non-cyclic aliases belong here.
+   *
+   * Colours are consumed directly as var(--color-*) through Tailwind's
+   * arbitrary-property syntax, so they must NOT be re-registered as theme keys
+   * of the same name: that emits `--color-x: var(--color-x)` into :root, a
+   * self-reference whose resolution depends on cascade-layer ordering.
+   */
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-display);
+}
+
+@theme {
+  /* Breakpoints. Mirrored in src/lib/breakpoints.ts - keep in sync. */
+  --breakpoint-xs: 30rem;
+
+  /*
+   * Fluid type scale.
+   * Minimums are deliberately restrained so mobile headlines never overwhelm
+   * a 375px viewport; maximums carry the editorial weight on large screens.
+   */
+  --text-display: clamp(2.375rem, 1.35rem + 4.4vw, 5rem);
+  --text-display--line-height: 1.06;
+  --text-display--letter-spacing: -0.02em;
+
+  --text-h1: clamp(2.125rem, 1.35rem + 3.3vw, 4rem);
+  --text-h1--line-height: 1.1;
+  --text-h1--letter-spacing: -0.018em;
+
+  --text-h2: clamp(1.75rem, 1.2rem + 2.2vw, 3rem);
+  --text-h2--line-height: 1.14;
+  --text-h2--letter-spacing: -0.015em;
+
+  --text-h3: clamp(1.375rem, 1.15rem + 0.95vw, 2rem);
+  --text-h3--line-height: 1.24;
+  --text-h3--letter-spacing: -0.01em;
+
+  --text-h4: clamp(1.125rem, 1.05rem + 0.35vw, 1.375rem);
+  --text-h4--line-height: 1.35;
+
+  --text-lead: clamp(1.0625rem, 1rem + 0.42vw, 1.3125rem);
+  --text-lead--line-height: 1.62;
+
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.2;
+  --text-label--letter-spacing: 0.14em;
+}
+
+/* ==========================================================================
+   BASE
+   ========================================================================== */
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  background-color: var(--color-canvas);
+  color: var(--color-foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-feature-settings: "kern", "liga", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* Guards against any single element forcing a horizontal scrollbar. */
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: var(--bronze);
+  color: #fff;
+}
+
+/* Anchor targets clear the fixed header. */
+:target {
+  scroll-margin-top: calc(var(--header-h) + 2rem);
+}
+
+/* ==========================================================================
+   MOTION
+   Subtle, CSS-only. No animation library.
+   ========================================================================== */
+@keyframes gcc-reveal {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.25rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.reveal {
+  opacity: 0;
+}
+
+.reveal[data-visible="true"] {
+  animation: gcc-reveal 700ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+
+/* Animated underline used by nav links and text CTAs. */
+.link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  transition: background-size 400ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.link-underline:hover,
+.link-underline:focus-visible {
+  background-size: 100% 1px;
+}
+
+.link-underline[data-active="true"] {
+  background-size: 100% 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    opacity: 1;
+  }
 }
