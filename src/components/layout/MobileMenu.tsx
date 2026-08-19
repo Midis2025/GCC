@@ -104,7 +104,8 @@ export function MobileMenu({ items, cta, className }: MobileMenuProps) {
   if (items.length === 0) return null;
 
   return (
-    <div className={cn("lg:hidden", className)}>
+    // Mirrors the Header's `xl` breakpoint - see the note on its <nav>.
+    <div className={cn("xl:hidden", className)}>
       <button
         type="button"
         onClick={() => setOpen(true)}

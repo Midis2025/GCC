@@ -4,6 +4,11 @@ import businessBayReflection from "../../public/images/business-bay-reflection.j
 import districtMonochrome from "../../public/images/district-monochrome.jpg";
 import dohaSkylineDay from "../../public/images/doha-skyline-day.jpg";
 import dohaWaterfrontMuted from "../../public/images/doha-waterfront-muted.jpg";
+import sectorDevelopmentCranes from "../../public/images/sector-development-cranes.jpg";
+import sectorEnergyDusk from "../../public/images/sector-energy-dusk.jpg";
+import sectorIndustrialMono from "../../public/images/sector-industrial-mono.jpg";
+import sectorLogisticsPort from "../../public/images/sector-logistics-port.jpg";
+import sectorTechnologyRacks from "../../public/images/sector-technology-racks.jpg";
 import downtownSkylineBlueHour from "../../public/images/downtown-skyline-blue-hour.jpg";
 import etihadTowersGoldenHour from "../../public/images/etihad-towers-golden-hour.jpg";
 import facadeDarkCurve from "../../public/images/facade-dark-curve.jpg";
@@ -101,6 +106,18 @@ export const backdrops = {
     alt: "",
     position: "50% 62%",
   },
+  /** Industries index hero. */
+  industries: {
+    src: sectorLogisticsPort,
+    alt: "",
+    position: "50% 50%",
+  },
+  /** Projects index hero. */
+  projects: {
+    src: sectorDevelopmentCranes,
+    alt: "",
+    position: "50% 55%",
+  },
 } as const satisfies Record<string, Photo>;
 
 /** Photographs that carry content and are described for assistive tech. */
@@ -150,6 +167,70 @@ export const capabilityPhotos: Record<string, Photo> = {
     alt: "White structural fins fanning across a building's exterior.",
     position: "50% 50%",
   },
+};
+
+/**
+ * One photograph per sector, keyed by the slug in `data/industries.ts`.
+ *
+ * Unlike the capability set, these are literal: an energy sector panel shows
+ * energy infrastructure. The subject is the industry itself, so an
+ * architectural abstract would be doing less work than a direct frame.
+ *
+ * Financial services reuses a Gulf business-district frame rather than
+ * introducing a seventh photograph - the district IS the sector, and a stock
+ * trading-floor shot would be exactly the cheap imagery the art direction
+ * rules out.
+ */
+export const industryPhotos: Record<string, Photo> = {
+  "financial-services": {
+    src: businessBayReflection,
+    alt: "A Gulf business district reflected in still water at night.",
+    position: "50% 45%",
+  },
+  "energy-and-utilities": {
+    src: sectorEnergyDusk,
+    alt: "Storage tanks silhouetted against a low sun.",
+    position: "50% 50%",
+  },
+  "real-estate-and-development": {
+    src: sectorDevelopmentCranes,
+    alt: "Tower cranes over a development site against a clear sky.",
+    position: "50% 55%",
+  },
+  "industrials-and-manufacturing": {
+    src: sectorIndustrialMono,
+    alt: "Industrial storage tanks and an external stairway, in black and white.",
+    position: "50% 50%",
+  },
+  "transport-and-logistics": {
+    src: sectorLogisticsPort,
+    alt: "A container terminal at dusk, seen from above.",
+    position: "50% 50%",
+  },
+  "technology-and-digital": {
+    src: sectorTechnologyRacks,
+    alt: "Server racks in a darkened equipment room.",
+    position: "50% 50%",
+  },
+};
+
+/**
+ * Engagement cards, keyed by project slug.
+ *
+ * Each one reuses the photograph of the sector the engagement sits in, so a
+ * card reads as belonging to its industry without needing a caption to say so.
+ */
+export const projectPhotos: Record<string, Photo> = {
+  "pre-ipo-narrative-programme": { src: sectorIndustrialMono, alt: "", position: "50% 50%" },
+  "cross-border-outreach-programme": {
+    src: sectorDevelopmentCranes,
+    alt: "",
+    position: "50% 55%",
+  },
+  "results-communication-reset": { src: businessBayReflection, alt: "", position: "50% 45%" },
+  "digital-ir-presence": { src: sectorLogisticsPort, alt: "", position: "50% 50%" },
+  "media-positioning-programme": { src: sectorEnergyDusk, alt: "", position: "50% 50%" },
+  "ir-programme-establishment": { src: sectorTechnologyRacks, alt: "", position: "50% 50%" },
 };
 
 /**

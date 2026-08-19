@@ -52,6 +52,18 @@ stock, no dunes, no tourist framing.
 | `district-monochrome.jpg` | Regional street frame, segment panel | Yash Jain | https://unsplash.com/photos/wanP9sgaxsc |
 | `doha-waterfront-muted.jpg` | Insights index and article heroes | Riza Mohammed | https://unsplash.com/photos/lH5qhXh3Exo |
 | `doha-skyline-day.jpg` | Utility routes (404, privacy, terms) | Em Kwan | https://unsplash.com/photos/qReCgLOaNew |
+| `sector-energy-dusk.jpg` | Energy & Utilities sector | Andrey Sharpilo | https://unsplash.com/photos/-kKIqAizsgs |
+| `sector-logistics-port.jpg` | Transport & Logistics sector, Industries hero | Venti Views | https://unsplash.com/photos/sWOvgOOFk1g |
+| `sector-development-cranes.jpg` | Real Estate & Development sector, Selected Work hero | Ivan Bandura | https://unsplash.com/photos/t4Ot1iDE0hQ |
+| `sector-industrial-mono.jpg` | Industrials & Manufacturing sector | Marc Kleen | https://unsplash.com/photos/GgVEflVPBgA |
+| `sector-technology-racks.jpg` | Technology & Digital Infrastructure sector | Kaur Kristjan | https://unsplash.com/photos/2JJ3wBHu4_0 |
+
+### A note on the sector photographs
+
+These illustrate the **sector**, not a client, a project or a facility GCC has
+worked on. None of them depicts a real engagement. Keep alt text describing the
+photograph, and never caption one in a way that implies it shows GCC's work —
+`src/data/projects.ts` explains the same constraint for the engagement pages.
 
 Photographer names are recorded as published on Unsplash at the time of download and
 are provided for verification only; the Unsplash Licence does not require crediting

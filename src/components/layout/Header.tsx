@@ -60,8 +60,15 @@ export function Header() {
       <Container className="flex h-full items-center justify-between gap-8">
         <Logo />
 
-        <nav aria-label="Primary" className="hidden lg:block">
-          <ul className="flex items-center gap-9">
+        {/*
+          The inline bar appears at `xl`, not `lg`. Seven items plus the
+          wordmark and the CTA need about 1150px of gutter-to-gutter room; at
+          1024 the longer labels and the button were wrapping onto second
+          lines. Between 1024 and 1280 the off-canvas menu handles it, which is
+          the correct trade for a nav this size.
+        */}
+        <nav aria-label="Primary" className="hidden xl:block">
+          <ul className="flex items-center gap-7">
             {mainNav.map((item) => (
               <li key={item.href}>
                 {/*
@@ -71,7 +78,7 @@ export function Header() {
                 */}
                 <NavLink
                   item={item}
-                  className="relative text-[0.9375rem] after:absolute after:inset-x-0 after:-inset-y-2 after:content-['']"
+                  className="relative whitespace-nowrap text-[0.9375rem] after:absolute after:inset-x-0 after:-inset-y-2 after:content-['']"
                 />
               </li>
             ))}
@@ -85,8 +92,13 @@ export function Header() {
             resolve Tailwind conflicts, so the Button base `inline-flex` would
             win over `hidden` depending on stylesheet order.
           */}
-          <div className="hidden lg:block">
-            <Button href={headerCta.href} size="sm" variant="primary">
+          <div className="hidden xl:block">
+            <Button
+              href={headerCta.href}
+              size="sm"
+              variant="primary"
+              className="whitespace-nowrap"
+            >
               {headerCta.label}
             </Button>
           </div>

@@ -1,12 +1,20 @@
 import type { NavGroup, NavItem, SocialLink } from "@/types";
 import { contactConfig } from "@/data/site";
 
-/** Primary header navigation. */
+/**
+ * Primary header navigation.
+ *
+ * Home is deliberately absent. The wordmark is the home link and carries the
+ * accessible name "GCC - home", so a Home item would be a second control for
+ * the same destination - and with seven entries the desktop bar has no room to
+ * spare. `getStaticRoutes()` seeds "/" explicitly, so the sitemap is unaffected.
+ */
 export const mainNav: NavItem[] = [
-  { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Services", href: "/services" },
+  { label: "Industries", href: "/industries" },
   { label: "Investor Outreach", href: "/investor-outreach" },
+  { label: "Selected Work", href: "/projects" },
   { label: "Insights", href: "/insights" },
   { label: "Contact", href: "/contact" },
 ];
@@ -20,8 +28,18 @@ export const footerNav: NavGroup[] = [
     label: "Company",
     items: [
       { label: "About", href: "/about" },
+      { label: "Selected Work", href: "/projects" },
       { label: "Insights", href: "/insights" },
       { label: "Contact", href: "/contact" },
+    ],
+  },
+  {
+    label: "Industries",
+    items: [
+      { label: "Financial Services", href: "/industries#financial-services" },
+      { label: "Energy & Utilities", href: "/industries#energy-and-utilities" },
+      { label: "Real Estate & Development", href: "/industries#real-estate-and-development" },
+      { label: "All Sectors", href: "/industries" },
     ],
   },
   {
