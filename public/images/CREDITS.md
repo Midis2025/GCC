@@ -37,8 +37,8 @@ stock, no dunes, no tourist framing.
 
 | File | Used for | Photographer | Source |
 | --- | --- | --- | --- |
-| `gulf-financial-district-night.jpg` | Homepage hero | Kevin Lee | https://unsplash.com/photos/sx0cAH8TEYk |
-| `downtown-skyline-blue-hour.jpg` | Sitewide final CTA | ZQ Lee | https://unsplash.com/photos/DcyL0IoCY0A |
+| `downtown-dubai-blue-hour.jpg` | Homepage hero | Timo Volz | https://unsplash.com/photos/yP8oPC3_v38 |
+| `gulf-financial-district-night.jpg` | Sitewide final CTA | Kevin Lee | https://unsplash.com/photos/sx0cAH8TEYk |
 | `business-bay-reflection.jpg` | Investor outreach feature, segment panel | Darcey Beau | https://unsplash.com/photos/cV4qkkorDFY |
 | `skyline-twilight.jpg` | Contact page | Ahmed Aldaie | https://unsplash.com/photos/WyfXOHgI49s |
 | `etihad-towers-golden-hour.jpg` | Homepage introduction | Saeed Alsoomehi | https://unsplash.com/photos/ytrAZCINPM4 |

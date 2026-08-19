@@ -2,6 +2,7 @@ import type { StaticImageData } from "next/image";
 
 import businessBayReflection from "../../public/images/business-bay-reflection.jpg";
 import districtMonochrome from "../../public/images/district-monochrome.jpg";
+import downtownDubaiBlueHour from "../../public/images/downtown-dubai-blue-hour.jpg";
 import dohaSkylineDay from "../../public/images/doha-skyline-day.jpg";
 import dohaWaterfrontMuted from "../../public/images/doha-waterfront-muted.jpg";
 import sectorDevelopmentCranes from "../../public/images/sector-development-cranes.jpg";
@@ -9,7 +10,6 @@ import sectorEnergyDusk from "../../public/images/sector-energy-dusk.jpg";
 import sectorIndustrialMono from "../../public/images/sector-industrial-mono.jpg";
 import sectorLogisticsPort from "../../public/images/sector-logistics-port.jpg";
 import sectorTechnologyRacks from "../../public/images/sector-technology-racks.jpg";
-import downtownSkylineBlueHour from "../../public/images/downtown-skyline-blue-hour.jpg";
 import etihadTowersGoldenHour from "../../public/images/etihad-towers-golden-hour.jpg";
 import facadeDarkCurve from "../../public/images/facade-dark-curve.jpg";
 import facadeOculus from "../../public/images/facade-oculus.jpg";
@@ -60,17 +60,36 @@ export interface Photo {
 
 /** Full-bleed frames that sit behind type. Decorative by design. */
 export const backdrops = {
-  /** Homepage hero. Sheikh Zayed Road corridor after dark. */
+  /**
+   * Homepage hero. Downtown Dubai at blue hour.
+   *
+   * Blue hour rather than full night: the towers still read as architecture
+   * instead of dissolving into points of light, which is what lets the frame
+   * carry a headline without becoming a black rectangle behind it. The crop
+   * favours the upper band, where the skyline sits - centring it would fill
+   * the lower third of the hero with foreground rooftops that the scrim then
+   * has to hide anyway.
+   *
+   * Replaces the Sheikh Zayed Road night shot, which moves to the sitewide
+   * CTA below rather than being retired.
+   */
   hero: {
+    src: downtownDubaiBlueHour,
+    alt: "",
+    position: "50% 38%",
+  },
+  /**
+   * Final call to action, sitewide. The former homepage hero.
+   *
+   * Deliberately the darker, harder frame of the two: it closes a page that
+   * opened on the calmer blue-hour skyline, so the pair bookend rather than
+   * repeat. The previous CTA photograph was itself a blue-hour Downtown Dubai
+   * shot, which sat too close to the new hero to keep both on one page.
+   */
+  cta: {
     src: gulfFinancialDistrictNight,
     alt: "",
     position: "50% 62%",
-  },
-  /** Final call to action, sitewide. */
-  cta: {
-    src: downtownSkylineBlueHour,
-    alt: "",
-    position: "50% 55%",
   },
   /** Investor outreach feature. */
   outreach: {
