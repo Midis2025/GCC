@@ -50,6 +50,8 @@ stock, no dunes, no tourist framing.
 | `facade-oculus.jpg` | Digital Communications capability | Jason Dent | https://unsplash.com/photos/LIWeSq3b17U |
 | `facade-white-curve.jpg` | Segment panel | Sonnie Hiles | https://unsplash.com/photos/mQiZnKwGXW0 |
 | `district-monochrome.jpg` | Regional street frame, segment panel | Yash Jain | https://unsplash.com/photos/wanP9sgaxsc |
+| `doha-waterfront-muted.jpg` | Insights index and article heroes | Riza Mohammed | https://unsplash.com/photos/lH5qhXh3Exo |
+| `doha-skyline-day.jpg` | Utility routes (404, privacy, terms) | Em Kwan | https://unsplash.com/photos/qReCgLOaNew |
 
 Photographer names are recorded as published on Unsplash at the time of download and
 are provided for verification only; the Unsplash Licence does not require crediting

@@ -1,4 +1,5 @@
 import { PageHero } from "@/components/sections/PageHero";
+import { backdrops } from "@/data/imagery";
 import { Section } from "@/components/sections/Section";
 
 export interface PendingPolicyProps {
@@ -19,11 +20,17 @@ export interface PendingPolicyProps {
 export function PendingPolicy({ eyebrow, title, scope }: PendingPolicyProps) {
   return (
     <>
-      <PageHero variant="minimal" eyebrow={eyebrow} title={title} />
+      <PageHero
+        variant="feature"
+        photo={backdrops.utility}
+        compact
+        eyebrow={eyebrow}
+        title={title}
+      />
 
       <Section spacing="lg" width="narrow">
         <div className="border-l-2 border-(--color-accent) pl-6">
-          <h2 className="text-label font-medium uppercase text-(--color-foreground-subtle)">
+          <h2 className="text-label uppercase text-(--color-foreground-subtle)">
             Document pending
           </h2>
           <p className="mt-4 max-w-[62ch] text-[1.0625rem] leading-relaxed text-(--color-foreground-muted)">

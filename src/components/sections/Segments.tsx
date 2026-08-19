@@ -30,7 +30,7 @@ export function Segments() {
         <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <SectionLabel>{audienceContent.label}</SectionLabel>
-            <Heading id="segments-heading" level={2} size="display" className="mt-7 max-w-[14ch]">
+            <Heading id="segments-heading" level={2} size="display" className="mt-5 max-w-[14ch]">
               {audienceContent.heading}
             </Heading>
           </div>
@@ -41,7 +41,7 @@ export function Segments() {
         </div>
       </Reveal>
 
-      <ul className="mt-14 grid gap-3 sm:grid-cols-2 lg:grid-cols-12 lg:grid-rows-[repeat(2,13rem)] lg:gap-4">
+      <ul className="mt-[var(--space-heading)] grid gap-3 sm:grid-cols-2 lg:grid-cols-12 lg:grid-rows-[repeat(2,13rem)] lg:gap-4">
         {audienceContent.segments.map((segment, index) => {
           const photo = segmentPhotos[index % segmentPhotos.length];
           const layout = PANEL_LAYOUT[index] ?? "lg:col-span-4";
@@ -67,7 +67,7 @@ export function Segments() {
                     aria-hidden="true"
                     className="block h-px w-9 bg-(--color-accent) transition-[width] duration-500 ease-out group-hover/panel:w-16"
                   />
-                  <h3 className="mt-4 max-w-[16ch] font-serif text-[1.25rem] leading-snug text-[#f4f1eb] text-balance sm:text-[1.375rem]">
+                  <h3 className="mt-4 max-w-[16ch] font-display text-[1.25rem] leading-snug text-[#f4f1eb] text-balance sm:text-[1.375rem]">
                     {segment}
                   </h3>
                 </div>

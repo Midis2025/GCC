@@ -1,26 +1,27 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import NextImage from "next/image";
 
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
-import { HeroBackdrop } from "@/components/visuals/HeroBackdrop";
 import { cn } from "@/lib/utils";
 import type { Photo } from "@/data/imagery";
 
 /**
  * Hero treatments.
  *
- * - `minimal` typographic only, on a drawn rule field. The quietest opening.
- * - `split`   oversized type beside a tall photograph. Editorial.
- * - `feature` full-bleed photography behind the type. The loudest opening.
+ * - `feature` full-bleed photography behind the type. The default.
+ * - `split`   type beside a photograph holding the right half. Editorial.
  *
- * All three keep a dark top band. That is a hard constraint, not a stylistic
- * one: the header renders transparent over the top of the page and carries
+ * Both are image-led: every route on the site now opens on a photograph, and
+ * each one uses a different frame. There is no typographic-only variant any
+ * more - a page title on a flat gradient was the weakest opening on the site.
+ *
+ * Both keep a dark top band. That is a hard constraint, not a stylistic one:
+ * the header renders transparent over the top of the page and carries
  * `.surface-dark` while it does, so a light hero would leave the wordmark and
- * navigation unreadable until the first scroll. Variety comes from
- * composition, imagery and rhythm rather than from inverting the surface.
+ * navigation unreadable until the first scroll.
  */
-export type PageHeroVariant = "minimal" | "split" | "feature";
+export type PageHeroVariant = "feature" | "split";
 
 export interface PageHeroProps {
   /** Small uppercase label above the title. */
@@ -33,15 +34,29 @@ export interface PageHeroProps {
   /** Editorial index, e.g. "02", shown on service detail pages. */
   index?: string;
   variant?: PageHeroVariant;
-  /** Required by `split` and `feature`; ignored by `minimal`. */
-  photo?: Photo;
+  photo: Photo;
   /** Rendered under the main column, e.g. a contents list or key figures. */
   children?: ReactNode;
+  /**
+   * Trims the hero for pages whose content should start almost immediately -
+   * the utility routes, where a full-height opening would be posturing.
+   */
+  compact?: boolean;
   className?: string;
 }
 
+const at = (ms: number) => ({ "--reveal-delay": `${ms}ms` }) as CSSProperties;
+
 /**
  * Shared interior-page hero.
+ *
+ * Height is viewport-driven but bounded: ~58svh on phones, ~68svh on desktop,
+ * with a rem floor so a short title still produces a proper band and a cap so
+ * it never fills the screen the way the homepage hero does. An interior page
+ * has to show there is something below the fold.
+ *
+ * Motion runs on mount rather than on scroll, for the same reason as the
+ * homepage hero: above-the-fold content must not wait on an observer.
  *
  * Pads for the fixed header itself, which is why interior pages need no top
  * spacing of their own. Renders the page's single H1.
@@ -52,113 +67,136 @@ export function PageHero({
   lead,
   actions,
   index,
-  variant = "minimal",
+  variant = "feature",
   photo,
   children,
+  compact = false,
   className,
 }: PageHeroProps) {
-  const isFeature = variant === "feature" && Boolean(photo);
-  const isSplit = variant === "split" && Boolean(photo);
+  const isSplit = variant === "split";
 
   return (
     <section
       className={cn(
-        "tokens-dark relative isolate overflow-hidden bg-(--midnight)",
-        "pb-[clamp(3.5rem,7vw,6rem)] pt-[calc(var(--header-h)+clamp(4rem,10vw,8rem))]",
+        "tokens-dark relative isolate flex flex-col justify-end overflow-hidden bg-(--midnight)",
+        "pb-[clamp(2.5rem,4.5vw,3.75rem)] pt-[calc(var(--header-h)+clamp(3rem,7vw,5rem))]",
+        compact
+          ? "min-h-[max(19rem,40svh)]"
+          : "min-h-[max(24rem,56svh)] lg:min-h-[max(27rem,66svh)]",
         className,
       )}
     >
-      {isFeature ? (
-        <>
-          <div aria-hidden="true" className="absolute inset-0 -z-20">
-            <NextImage
-              src={photo!.src}
-              alt=""
-              fill
-              preload
-              sizes="100vw"
-              placeholder="blur"
-              style={{ objectPosition: photo!.position }}
-              className="photo-grade object-cover"
-            />
-          </div>
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 -z-10 bg-[linear-gradient(102deg,rgba(12,20,29,0.96)_8%,rgba(12,20,29,0.86)_45%,rgba(12,20,29,0.6)_100%)]"
+      {/*
+        Photography. `split` shows the frame in the right half on large screens
+        and full-bleed below that, where there is no half to fill. Both are
+        rendered rather than swapped, so the correct one is available without
+        a client-side breakpoint check.
+      */}
+      {isSplit && (
+        <div aria-hidden="true" className="absolute inset-y-0 right-0 -z-20 hidden w-[54%] lg:block">
+          <NextImage
+            src={photo.src}
+            alt=""
+            fill
+            preload
+            sizes="54vw"
+            placeholder="blur"
+            style={{ objectPosition: photo.position }}
+            className="hero-settle photo-grade object-cover"
           />
-          <div aria-hidden="true" className="grain absolute inset-0 -z-10" />
-        </>
-      ) : (
-        <>
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 -z-20 bg-[radial-gradient(110%_130%_at_78%_0%,#1b2937_0%,#111c27_48%,#0c141d_100%)]"
-          />
-          {/* The drawn geometry stands in for photography on minimal openings. */}
-          <HeroBackdrop variant="overlay" className="opacity-40" />
-        </>
+        </div>
       )}
 
       <div
         aria-hidden="true"
-        className="absolute inset-x-0 bottom-0 z-10 h-px bg-[linear-gradient(90deg,transparent,rgba(184,148,95,0.35),transparent)]"
+        className={cn("absolute inset-0 -z-20", isSplit && "lg:hidden")}
+      >
+        <NextImage
+          src={photo.src}
+          alt=""
+          fill
+          preload={!isSplit}
+          sizes="100vw"
+          placeholder="blur"
+          style={{ objectPosition: photo.position }}
+          className="hero-settle photo-grade object-cover"
+        />
+      </div>
+
+      {/*
+        Scrim. The diagonal anchors the type column, the vertical protects the
+        lead and actions along the bottom edge. The split variant carries a
+        harder left edge so the type sits on flat midnight and the photograph
+        feathers in beside it.
+      */}
+      <div
+        aria-hidden="true"
+        className={cn(
+          "absolute inset-0 -z-10",
+          isSplit
+            ? "bg-[linear-gradient(100deg,#0c141d_18%,rgba(12,20,29,0.88)_48%,rgba(12,20,29,0.6)_100%)] lg:bg-[linear-gradient(96deg,#0c141d_40%,rgba(12,20,29,0.82)_56%,rgba(12,20,29,0.3)_100%)]"
+            : "bg-[linear-gradient(100deg,#0c141d_8%,rgba(12,20,29,0.9)_40%,rgba(12,20,29,0.62)_76%,rgba(12,20,29,0.5)_100%)]",
+        )}
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 bg-[linear-gradient(to_top,rgba(12,20,29,0.85)_0%,rgba(12,20,29,0.24)_46%,transparent_82%)]"
+      />
+      <div aria-hidden="true" className="grain absolute inset-0 -z-10" />
+
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 bottom-0 z-10 h-px bg-[linear-gradient(90deg,transparent,rgba(184,148,95,0.4),transparent)]"
       />
 
       <Container className="relative z-10">
-        <div
-          className={cn(
-            isSplit && "grid gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-center",
-          )}
-        >
-          <div className={cn(!isSplit && "max-w-[52rem]")}>
-            <p className="flex flex-wrap items-center gap-x-3.5 gap-y-2 text-label font-medium uppercase text-(--color-accent)">
-              {index && <span className="font-serif normal-case">{index}</span>}
-              <span aria-hidden="true" className="h-px w-10 bg-(--color-accent)" />
-              <span>{eyebrow}</span>
-            </p>
+        <div className="max-w-[46rem]">
+          <p
+            className="reveal flex flex-wrap items-center gap-x-3.5 gap-y-2 text-label uppercase text-(--color-accent)"
+            data-visible="true"
+          >
+            {index && <span className="num font-display-sm normal-case">{index}</span>}
+            <span aria-hidden="true" className="h-px w-10 bg-(--color-accent)" />
+            <span>{eyebrow}</span>
+          </p>
 
-            <Heading
-              level={1}
-              size={isSplit || isFeature ? "display" : "h1"}
-              className={cn("mt-8", isSplit ? "max-w-[14ch]" : "max-w-[18ch]")}
+          <Heading
+            level={1}
+            size="display"
+            className="reveal mt-6 max-w-[17ch]"
+            data-visible="true"
+            data-variant="mask"
+            style={at(120)}
+          >
+            {title}
+          </Heading>
+
+          {lead && (
+            <p
+              className="reveal mt-6 max-w-[54ch] text-lead text-(--color-foreground-muted)"
+              data-visible="true"
+              style={at(260)}
             >
-              {title}
-            </Heading>
+              {lead}
+            </p>
+          )}
 
-            {lead && (
-              <p className="mt-8 max-w-[56ch] text-lead text-(--color-foreground-muted)">{lead}</p>
-            )}
-
-            {actions && (
-              <div className="mt-10 flex flex-col gap-3 xs:flex-row xs:flex-wrap xs:items-center xs:gap-4">
-                {actions}
-              </div>
-            )}
-          </div>
-
-          {isSplit && (
-            <div className="relative lg:-mr-12 xl:-mr-16">
-              <div className="media-frame relative aspect-[4/5] overflow-hidden">
-                <NextImage
-                  src={photo!.src}
-                  alt={photo!.alt}
-                  fill
-                  preload
-                  sizes="(min-width: 1024px) 42vw, 100vw"
-                  placeholder="blur"
-                  style={{ objectPosition: photo!.position }}
-                  className="photo-grade object-cover"
-                />
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 bg-[linear-gradient(to_top,rgba(12,20,29,0.5),transparent_55%)]"
-                />
-              </div>
+          {actions && (
+            <div
+              className="reveal mt-8 flex flex-col gap-3 xs:flex-row xs:flex-wrap xs:items-center xs:gap-4"
+              data-visible="true"
+              style={at(380)}
+            >
+              {actions}
             </div>
           )}
         </div>
 
-        {children && <div className="mt-14">{children}</div>}
+        {children && (
+          <div className="reveal mt-10" data-visible="true" style={at(460)}>
+            {children}
+          </div>
+        )}
       </Container>
     </section>
   );

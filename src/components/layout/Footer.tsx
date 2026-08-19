@@ -41,7 +41,7 @@ export function Footer() {
           </div>
 
           <div className="lg:text-right">
-            <p className="text-label font-medium uppercase text-(--color-foreground-subtle)">
+            <p className="text-label uppercase text-(--color-foreground-subtle)">
               Markets
             </p>
             <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2 lg:justify-end">
@@ -65,7 +65,7 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-x-8 gap-y-10 pt-12 sm:grid-cols-3 lg:grid-cols-4">
           {footerNav.map((group) => (
             <nav key={group.label} aria-label={group.label}>
-              <h2 className="text-label font-medium uppercase text-(--color-foreground-subtle)">
+              <h2 className="text-label uppercase text-(--color-foreground-subtle)">
                 {group.label}
               </h2>
               <ul className="mt-5 flex flex-col gap-3">
@@ -80,7 +80,7 @@ export function Footer() {
 
           {hasContactDetails && (
             <div>
-              <h2 className="text-label font-medium uppercase text-(--color-foreground-subtle)">
+              <h2 className="text-label uppercase text-(--color-foreground-subtle)">
                 Contact
               </h2>
               <ul className="mt-5 flex flex-col gap-3 text-[0.9375rem] text-(--color-foreground-muted)">

@@ -64,7 +64,7 @@ export function FormField({
         <label
           htmlFor={id}
           className={cn(
-            "text-label font-medium uppercase text-(--color-foreground-subtle)",
+            "text-label uppercase text-(--color-foreground-subtle)",
             hideLabel && "sr-only",
           )}
         >

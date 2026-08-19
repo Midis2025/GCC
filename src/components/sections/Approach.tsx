@@ -22,7 +22,7 @@ export function Approach() {
       <div className="grid gap-y-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end lg:gap-x-20">
         <Reveal>
           <SectionLabel>{approachContent.label}</SectionLabel>
-          <Heading id="approach-heading" level={2} size="display" className="mt-7 max-w-[16ch]">
+          <Heading id="approach-heading" level={2} size="display" className="mt-5 max-w-[16ch]">
             {approachContent.heading}
           </Heading>
         </Reveal>
@@ -35,7 +35,7 @@ export function Approach() {
         </Reveal>
       </div>
 
-      <ol className="relative mt-[calc(var(--space-section-sm)+1rem)] grid gap-y-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-x-7">
+      <ol className="relative mt-[var(--space-heading)] grid gap-y-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-x-7">
         {/*
           The connecting rule. Vertical spine below `lg`, horizontal above it,
           sitting behind the stations at the numeral's own centreline.
@@ -80,7 +80,7 @@ export function Approach() {
                 <span className="h-1.5 w-1.5 rounded-full bg-(--color-accent)" />
               </span>
 
-              <p className="font-serif text-numeral leading-none text-(--color-accent)/25 sm:mt-7">
+              <p className="num text-numeral leading-none text-(--color-accent)/25 sm:mt-5">
                 {step.number}
               </p>
 

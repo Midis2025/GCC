@@ -81,7 +81,7 @@ export default function InvestorOutreachPage() {
 
       {/* Philosophy - sticky statement, prose right, closing on a pull-quote. */}
       <Section spacing="lg" aria-labelledby="outreach-philosophy">
-        <div className="grid gap-x-20 gap-y-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+        <div className="grid gap-x-20 gap-y-9 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
           <Reveal>
             <div className="lg:sticky lg:top-[calc(var(--header-h)+4rem)]">
               <SectionLabel>{outreachPhilosophy.label}</SectionLabel>
@@ -89,7 +89,7 @@ export default function InvestorOutreachPage() {
                 id="outreach-philosophy"
                 level={2}
                 size="display"
-                className="mt-7 max-w-[11ch]"
+                className="mt-5 max-w-[11ch]"
               >
                 {outreachPhilosophy.heading}
               </Heading>
@@ -110,7 +110,7 @@ export default function InvestorOutreachPage() {
 
             <Reveal delay={200}>
               <blockquote className="mt-12 border-l-2 border-(--color-accent) pl-7">
-                <p className="max-w-[30ch] font-serif text-h3 leading-snug text-balance">
+                <p className="max-w-[30ch] font-display text-h3 leading-snug text-balance">
                   A shorter list than companies expect, and a materially higher proportion of
                   conversations worth the management time.
                 </p>
@@ -136,7 +136,7 @@ export default function InvestorOutreachPage() {
           <div>
             <Reveal>
               <SectionLabel>{outreachCoverage.label}</SectionLabel>
-              <Heading id="outreach-coverage" level={2} size="display" className="mt-7 max-w-[14ch]">
+              <Heading id="outreach-coverage" level={2} size="display" className="mt-5 max-w-[14ch]">
                 {outreachCoverage.heading}
               </Heading>
             </Reveal>
@@ -171,7 +171,7 @@ export default function InvestorOutreachPage() {
         <div className="grid gap-x-20 gap-y-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end">
           <Reveal>
             <SectionLabel>Investor Categories</SectionLabel>
-            <Heading id="outreach-categories" level={2} size="display" className="mt-7 max-w-[14ch]">
+            <Heading id="outreach-categories" level={2} size="display" className="mt-5 max-w-[14ch]">
               Audiences We Map and Engage
             </Heading>
           </Reveal>
@@ -184,14 +184,14 @@ export default function InvestorOutreachPage() {
           </Reveal>
         </div>
 
-        <dl className="mt-14 border-t border-(--color-border)">
+        <dl className="mt-[var(--space-heading)] border-t border-(--color-border)">
           {investorCategories.map((category, index) => (
             <Reveal key={category.term} delay={index * 60}>
               <div className="grid gap-x-12 gap-y-3 border-b border-(--color-border) py-8 lg:grid-cols-[4rem_minmax(0,1fr)_minmax(0,1.25fr)] lg:items-baseline">
-                <span aria-hidden="true" className="font-serif text-sm text-(--color-accent)">
+                <span aria-hidden="true" className="num font-display-sm text-sm text-(--color-accent)">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <dt className="font-serif text-h3">{category.term}</dt>
+                <dt className="font-display text-h3">{category.term}</dt>
                 <dd className="max-w-[58ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
                   {category.description}
                 </dd>
@@ -206,16 +206,14 @@ export default function InvestorOutreachPage() {
         with steps alternating either side; a single left spine below that.
       */}
       <Section spacing="lg" tone="muted" aria-labelledby="outreach-methodology">
-        <Reveal className="mx-auto max-w-2xl text-center">
-          <SectionLabel withRule={false} className="justify-center">
-            {outreachMethodology.label}
-          </SectionLabel>
-          <Heading id="outreach-methodology" level={2} size="display" className="mt-7">
+        <Reveal className="max-w-2xl">
+          <SectionLabel>{outreachMethodology.label}</SectionLabel>
+          <Heading id="outreach-methodology" level={2} size="display" className="mt-5">
             {outreachMethodology.heading}
           </Heading>
         </Reveal>
 
-        <ol className="relative mx-auto mt-16 max-w-5xl">
+        <ol className="relative mt-[var(--space-heading)] max-w-5xl">
           <span
             aria-hidden="true"
             className="absolute left-[0.4375rem] top-3 bottom-3 w-px bg-(--color-foreground)/15 lg:left-1/2 lg:-translate-x-1/2"
@@ -261,10 +259,10 @@ export default function InvestorOutreachPage() {
                     <span className="h-1.5 w-1.5 rounded-full bg-(--color-accent)" />
                   </span>
 
-                  <span className="font-serif text-sm text-(--color-accent)">
+                  <span className="num font-display-sm text-sm text-(--color-accent)">
                     {String(index + 1).padStart(2, "0")}
                   </span>
-                  <h3 className="mt-2.5 font-serif text-h3">{step.term}</h3>
+                  <h3 className="mt-2.5 font-display text-h3">{step.term}</h3>
                   <p
                     className={cn(
                       "mt-3 max-w-[46ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)",
@@ -282,7 +280,7 @@ export default function InvestorOutreachPage() {
 
       {/* Roadshows - image left, checklist right. */}
       <Section spacing="lg" aria-labelledby="outreach-roadshows">
-        <div className="grid gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
+        <div className="grid gap-x-16 gap-y-9 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
           <Reveal variant="media" className="lg:sticky lg:top-[calc(var(--header-h)+4rem)]">
             <Figure
               photo={capabilityPhotos["investor-outreach"]}
@@ -295,7 +293,7 @@ export default function InvestorOutreachPage() {
           <div>
             <Reveal>
               <SectionLabel>{outreachRoadshows.label}</SectionLabel>
-              <Heading id="outreach-roadshows" level={2} size="display" className="mt-7 max-w-[15ch]">
+              <Heading id="outreach-roadshows" level={2} size="display" className="mt-5 max-w-[15ch]">
                 {outreachRoadshows.heading}
               </Heading>
 
@@ -327,7 +325,7 @@ export default function InvestorOutreachPage() {
 
       {/* Preparation and follow-up. */}
       <Section spacing="lg" aria-labelledby="outreach-preparation">
-        <div className="grid gap-x-20 gap-y-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+        <div className="grid gap-x-20 gap-y-9 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
           <div>
             <Reveal>
               <SectionLabel>{outreachPreparation.label}</SectionLabel>
@@ -335,7 +333,7 @@ export default function InvestorOutreachPage() {
                 id="outreach-preparation"
                 level={2}
                 size="display"
-                className="mt-7 max-w-[13ch]"
+                className="mt-5 max-w-[13ch]"
               >
                 {outreachPreparation.heading}
               </Heading>

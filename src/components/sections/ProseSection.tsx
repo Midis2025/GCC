@@ -49,7 +49,7 @@ export function ProseSection({
       >
         <Reveal>
           {label && <SectionLabel>{label}</SectionLabel>}
-          <Heading id={id} level={2} className={cn(label && "mt-7", "max-w-[18ch]")}>
+          <Heading id={id} level={2} className={cn(label && "mt-5", "max-w-[18ch]")}>
             {heading}
           </Heading>
         </Reveal>

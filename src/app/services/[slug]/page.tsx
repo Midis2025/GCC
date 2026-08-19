@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { CTASection } from "@/components/sections/CTASection";
-import { MediaBand } from "@/components/sections/MediaBand";
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
 import { StatementBand } from "@/components/sections/StatementBand";
@@ -54,25 +53,25 @@ export default async function ServiceDetailPage({ params }: PageProps<"/services
   return (
     <>
       {/*
-        A typographic opening led by the capability's index, followed by its
-        photograph as a full-width band. Deliberately the inverse of the
-        services index, which opens on the photograph - so moving from the list
-        to a detail page reads as a change of altitude, not a repeat.
+        Split rather than full-bleed, which is what separates a detail page
+        from the services index it was reached from: the index opens on a
+        photograph filling the frame, a capability opens on its own photograph
+        held to one side of the title. The capability's frame appears once,
+        here - it used to repeat immediately below as a full-width band.
       */}
       <PageHero
-        variant="minimal"
+        variant="split"
+        photo={photo}
         eyebrow="Capability"
         index={capability.number}
         title={capability.title}
         lead={capability.summary}
       />
 
-      <MediaBand photo={photo} />
-
       {/*
         `capability.description` is a forty-word sentence. Setting it at display
         size - as this page previously did - turns the opening into a wall of
-        serif text with no entry point. It works as a lead statement instead:
+        text with no entry point. It works as a lead statement instead:
         large enough to carry the section, small enough to read as prose, with
         the section's landmark heading kept short above it.
       */}
@@ -80,13 +79,13 @@ export default async function ServiceDetailPage({ params }: PageProps<"/services
         <Reveal>
           <h2
             id="service-intro"
-            className="flex items-center gap-3 text-label font-medium uppercase text-(--color-foreground-muted)"
+            className="flex items-center gap-3 text-label uppercase text-(--color-foreground-muted)"
           >
             <span aria-hidden="true" className="h-px w-8 bg-(--color-accent)" />
             Overview
           </h2>
 
-          <p className="mt-8 max-w-[36ch] font-serif text-h2 leading-[1.14] text-balance">
+          <p className="mt-8 max-w-[36ch] font-display text-h2 leading-[1.14] text-balance">
             {capability.summary}
           </p>
         </Reveal>
@@ -120,11 +119,11 @@ export default async function ServiceDetailPage({ params }: PageProps<"/services
 
       {/* Scope - numbered deliverables against a sticky heading. */}
       <Section spacing="lg" aria-labelledby="service-deliverables">
-        <div className="grid gap-x-20 gap-y-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+        <div className="grid gap-x-20 gap-y-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
           <Reveal>
             <div className="lg:sticky lg:top-[calc(var(--header-h)+4rem)]">
               <SectionLabel>Scope</SectionLabel>
-              <Heading id="service-deliverables" level={2} size="display" className="mt-7 max-w-[14ch]">
+              <Heading id="service-deliverables" level={2} size="display" className="mt-5 max-w-[14ch]">
                 {content.deliverables.heading}
               </Heading>
             </div>
@@ -137,7 +136,7 @@ export default async function ServiceDetailPage({ params }: PageProps<"/services
                   <div className="border-t border-(--color-border) py-7">
                     <span
                       aria-hidden="true"
-                      className="font-serif text-sm text-(--color-accent)"
+                      className="num font-display-sm text-sm text-(--color-accent)"
                     >
                       {String(index + 1).padStart(2, "0")}
                     </span>
@@ -151,7 +150,7 @@ export default async function ServiceDetailPage({ params }: PageProps<"/services
             </dl>
 
             <Reveal className="mt-12 border-t border-(--color-accent)/40 pt-8">
-              <h3 className="text-label font-medium uppercase text-(--color-foreground-subtle)">
+              <h3 className="text-label uppercase text-(--color-foreground-subtle)">
                 Often suited to
               </h3>
               <CheckList items={content.suitedTo} columns={1} className="mt-5" />
@@ -164,7 +163,7 @@ export default async function ServiceDetailPage({ params }: PageProps<"/services
       <Section spacing="lg" tone="muted" aria-labelledby="service-related">
         <Reveal>
           <SectionLabel>Related</SectionLabel>
-          <Heading id="service-related" level={2} size="h2" className="mt-7">
+          <Heading id="service-related" level={2} size="h2" className="mt-5">
             Other capabilities
           </Heading>
         </Reveal>
@@ -185,10 +184,10 @@ export default async function ServiceDetailPage({ params }: PageProps<"/services
                     sizes="(min-width: 640px) 30vw, 100vw"
                   />
 
-                  <span className="mt-6 font-serif text-sm text-(--color-accent)">
+                  <span className="mt-6 num font-display-sm text-sm text-(--color-accent)">
                     {item.number}
                   </span>
-                  <h3 className="mt-3 font-serif text-[1.3125rem] leading-snug text-balance transition-colors duration-300 group-hover:text-(--color-accent)">
+                  <h3 className="mt-3 font-display text-[1.3125rem] leading-snug text-balance transition-colors duration-300 group-hover:text-(--color-accent)">
                     {item.title}
                   </h3>
                   <p className="mt-3 text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">

@@ -55,7 +55,7 @@ export function InsightsPreview() {
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <SectionLabel>Insights</SectionLabel>
-            <Heading id="insights-heading" level={2} size="display" className="mt-7 max-w-[14ch]">
+            <Heading id="insights-heading" level={2} size="display" className="mt-5 max-w-[14ch]">
               Perspectives on Gulf Capital Markets
             </Heading>
           </div>
@@ -69,14 +69,14 @@ export function InsightsPreview() {
         </div>
 
         {showPlaceholderNotice && (
-          <p className="mt-7 max-w-[60ch] border-l-2 border-(--color-accent) pl-5 text-sm leading-relaxed text-(--color-foreground-muted)">
+          <p className="mt-5 max-w-[60ch] border-l-2 border-(--color-accent) pl-5 text-sm leading-relaxed text-(--color-foreground-muted)">
             Sample topics shown to establish the layout. Editorial content is pending and none of
             the entries below are published GCC research.
           </p>
         )}
       </Reveal>
 
-      <div className="mt-14 grid gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
+      <div className="mt-[var(--space-heading)] grid gap-x-16 gap-y-9 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
         {/* Lead article */}
         <Reveal>
           <article className="group h-full">
@@ -92,10 +92,10 @@ export function InsightsPreview() {
                 sizes="(min-width: 1024px) 55vw, 100vw"
               />
 
-              <div className="mt-7">
+              <div className="mt-5">
                 <Meta insight={lead} tone="accent" />
 
-                <h3 className="mt-5 max-w-[22ch] font-serif text-h2 leading-[1.12] text-balance transition-colors duration-300 group-hover:text-(--color-accent)">
+                <h3 className="mt-5 max-w-[22ch] font-display text-h2 leading-[1.12] text-balance transition-colors duration-300 group-hover:text-(--color-accent)">
                   {lead.title}
                 </h3>
 
@@ -120,7 +120,7 @@ export function InsightsPreview() {
                     <div className="min-w-0 flex-1">
                       <Meta insight={insight} />
 
-                      <h3 className="mt-4 font-serif text-[1.3125rem] leading-snug text-balance transition-colors duration-300 group-hover:text-(--color-accent)">
+                      <h3 className="mt-4 font-display text-[1.3125rem] leading-snug text-balance transition-colors duration-300 group-hover:text-(--color-accent)">
                         {insight.title}
                       </h3>
 

@@ -2,6 +2,8 @@ import type { StaticImageData } from "next/image";
 
 import businessBayReflection from "../../public/images/business-bay-reflection.jpg";
 import districtMonochrome from "../../public/images/district-monochrome.jpg";
+import dohaSkylineDay from "../../public/images/doha-skyline-day.jpg";
+import dohaWaterfrontMuted from "../../public/images/doha-waterfront-muted.jpg";
 import downtownSkylineBlueHour from "../../public/images/downtown-skyline-blue-hour.jpg";
 import etihadTowersGoldenHour from "../../public/images/etihad-towers-golden-hour.jpg";
 import facadeDarkCurve from "../../public/images/facade-dark-curve.jpg";
@@ -82,6 +84,22 @@ export const backdrops = {
     src: skylineTwilight,
     alt: "",
     position: "50% 58%",
+  },
+  /** Insights index and article headers. */
+  insights: {
+    src: dohaWaterfrontMuted,
+    alt: "",
+    position: "50% 55%",
+  },
+  /**
+   * Utility routes - 404, privacy, terms. One frame shared across all three:
+   * they are low-traffic pages that still need a proper opening, and a
+   * dedicated photograph each would be weight for no gain.
+   */
+  utility: {
+    src: dohaSkylineDay,
+    alt: "",
+    position: "50% 62%",
   },
 } as const satisfies Record<string, Photo>;
 

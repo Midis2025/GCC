@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Sans, Newsreader } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
@@ -10,30 +10,28 @@ import { createRootMetadata } from "@/lib/seo";
 import "./globals.css";
 
 /**
- * Typography pairing.
+ * Typography.
  *
- * Newsreader carries the major editorial headlines - an optical-size aware
- * text serif with the moderate contrast and slightly narrow set that reads as
- * financial publishing rather than fashion display. Instrument Sans handles
- * navigation, UI and body copy: a quiet grotesque with a taller x-height and
- * less startup association than the usual UI sans.
+ * One family across the whole site: Plus Jakarta Sans, a humanist geometric
+ * sans with the slightly narrow set and open apertures that read as
+ * contemporary corporate rather than as a UI system font.
  *
- * Both are loaded with `display: swap` and latin subsets, so there is no
- * invisible-text flash and no layout shift from a late webfont. The CSS
- * variables are named for their ROLE, not the family, so changing typeface
+ * Single-family by choice. Hierarchy here is carried by WEIGHT, SIZE and
+ * TRACKING rather than by contrasting typefaces - large headings sit at 500
+ * with tight negative tracking, body at 400, labels at 600 with wide tracking.
+ * That is what keeps the display sizes feeling elegant instead of shouty; a
+ * heading does not need to be bold to be dominant when it is 6rem tall.
+ *
+ * Loaded as a variable font, so the entire 200-800 axis is available from a
+ * single file rather than one request per weight. `display: swap` with latin
+ * subsets means no invisible-text flash, and because the fallback metrics are
+ * adjusted automatically there is no layout shift when it lands.
+ *
+ * The CSS variable is named for its ROLE, not the family, so changing typeface
  * later means editing only this file.
  */
-const display = Newsreader({
-  variable: "--font-display",
-  subsets: ["latin"],
-  display: "swap",
-  // Only the 400 upright is used anywhere in the design. Loading the 300/500
-  // weights and the italics pulled six font files for no visual gain.
-  weight: ["400"],
-});
-
-const body = Instrument_Sans({
-  variable: "--font-body",
+const primary = Plus_Jakarta_Sans({
+  variable: "--font-primary",
   subsets: ["latin"],
   display: "swap",
 });
@@ -48,10 +46,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang={siteConfig.locale}
-      className={`${display.variable} ${body.variable} h-full`}
-    >
+    <html lang={siteConfig.locale} className={`${primary.variable} h-full`}>
       <body className="flex min-h-full flex-col">
         <SkipLink />
         <Header />

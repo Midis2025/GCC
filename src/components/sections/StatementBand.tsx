@@ -15,15 +15,18 @@ export interface StatementBandProps {
 }
 
 /**
- * Centred statement band.
+ * Statement band.
  *
- * A deliberate interruption: one oversized line, centred, with its supporting
- * copy set as two newspaper columns underneath. It exists to break the
- * left-aligned two-column rhythm the interior pages otherwise fall into, so it
- * should appear at most once per page.
+ * A deliberate interruption: one oversized line with its supporting copy set
+ * as two newspaper columns beside it. It exists to break the two-column
+ * heading/prose rhythm the interior pages otherwise fall into, so it should
+ * appear at most once per page.
  *
- * The rules either side of the label are drawn, not bordered, so they stay
- * centred on the label regardless of its length.
+ * Left aligned, like every other section heading on the site. It was
+ * previously centred, which made it the one block that did not share the
+ * page's left edge - the statement stood out, but at the cost of the alignment
+ * spine running down every other section. Contrast now comes from the
+ * statement's size and the surface behind it instead.
  */
 export function StatementBand({
   id,
@@ -53,38 +56,30 @@ export function StatementBand({
         </>
       )}
 
-      <div className="mx-auto max-w-4xl text-center">
+      <div className="grid gap-x-16 gap-y-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end">
         <Reveal>
-          {label && (
-            <SectionLabel withRule={false} className="justify-center">
-              <span className="flex items-center gap-3.5">
-                <span aria-hidden="true" className="h-px w-8 bg-(--color-accent)" />
-                {label}
-                <span aria-hidden="true" className="h-px w-8 bg-(--color-accent)" />
-              </span>
-            </SectionLabel>
-          )}
+          {label && <SectionLabel>{label}</SectionLabel>}
 
-          <Heading id={id} level={2} size="display" className={cn(label && "mt-8", "mx-auto max-w-[16ch]")}>
+          <Heading id={id} level={2} size="display" className={cn(label && "mt-5", "max-w-[15ch]")}>
             {heading}
           </Heading>
         </Reveal>
-      </div>
 
-      {paragraphs && paragraphs.length > 0 && (
-        <Reveal delay={140} className="mx-auto mt-12 max-w-4xl">
-          <div className="grid gap-x-14 gap-y-6 text-left sm:grid-cols-2">
-            {paragraphs.map((paragraph) => (
-              <p
-                key={paragraph}
-                className="text-[1.0625rem] leading-relaxed text-(--color-foreground-muted)"
-              >
-                {paragraph}
-              </p>
-            ))}
-          </div>
-        </Reveal>
-      )}
+        {paragraphs && paragraphs.length > 0 && (
+          <Reveal delay={140}>
+            <div className="flex flex-col gap-5">
+              {paragraphs.map((paragraph) => (
+                <p
+                  key={paragraph}
+                  className="max-w-[56ch] text-[1.0625rem] leading-relaxed text-(--color-foreground-muted)"
+                >
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          </Reveal>
+        )}
+      </div>
     </Section>
   );
 }

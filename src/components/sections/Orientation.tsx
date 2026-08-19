@@ -13,7 +13,7 @@ import { orientationContent } from "@/data/homepage";
  * `orientationContent`.
  *
  * Visually it is the page's first hard cut: an asymmetric band on the dark
- * surface, oversized serif numerals against a hairline grid, with no cards.
+ * surface, oversized numerals against a hairline grid, with no cards.
  * Because it follows a full-bleed photographic hero and precedes a light
  * editorial section, it also carries the dark-to-light transition.
  */
@@ -21,12 +21,12 @@ export function Orientation() {
   return (
     <section className="surface-dark relative isolate" aria-labelledby="orientation-heading">
       <Container>
-        <div className="grid gap-x-16 gap-y-12 border-b border-(--color-border) py-[var(--space-section-md)] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.35fr)]">
+        <div className="grid gap-x-16 gap-y-9 border-b border-(--color-border) py-[var(--space-section-md)] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.35fr)]">
           <Reveal variant="mask">
             <Heading id="orientation-heading" level={2} size="h2" className="max-w-[13ch]">
               {orientationContent.statement}
             </Heading>
-            <p className="mt-7 max-w-[42ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
+            <p className="mt-5 max-w-[42ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
               {orientationContent.supporting}
             </p>
           </Reveal>
@@ -46,7 +46,7 @@ export function Orientation() {
 
                 <span
                   aria-hidden="true"
-                  className="order-1 block border-t border-(--color-accent)/40 pt-5 font-serif text-numeral leading-none text-(--color-accent)"
+                  className="order-1 block border-t border-(--color-accent)/40 pt-5 num text-numeral leading-none text-(--color-accent)"
                 >
                   {fact.figure}
                 </span>

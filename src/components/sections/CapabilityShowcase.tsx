@@ -54,16 +54,16 @@ export function CapabilityShowcase() {
 
   return (
     <Section spacing="lg" tone="dark" aria-labelledby="capabilities-heading">
-      <div className="grid gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.85fr)]">
+      <div className="grid gap-x-16 gap-y-9 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.85fr)]">
         <div>
           <Reveal>
             <SectionLabel>What We Do</SectionLabel>
-            <Heading id="capabilities-heading" level={2} size="display" className="mt-7 max-w-[11ch]">
+            <Heading id="capabilities-heading" level={2} size="display" className="mt-5 max-w-[11ch]">
               Our Capabilities
             </Heading>
           </Reveal>
 
-          <ul className="mt-14 border-t border-(--color-border)">
+          <ul className="mt-[var(--space-heading)] border-t border-(--color-border)">
             {capabilities.map((capability, index) => {
               const isActive = active === index;
               const photo = capabilityPhotos[capability.slug];
@@ -81,7 +81,7 @@ export function CapabilityShowcase() {
                         <span
                           aria-hidden="true"
                           className={cn(
-                            "mt-1 shrink-0 font-serif text-[0.9375rem] transition-colors duration-500",
+                            "mt-1 shrink-0 num font-display-sm text-[0.9375rem] transition-colors duration-500",
                             isActive
                               ? "text-(--color-accent)"
                               : "text-(--color-foreground-subtle)",
@@ -99,7 +99,6 @@ export function CapabilityShowcase() {
                           <Heading
                             level={3}
                             size="h3"
-                            font="serif"
                             className={cn(
                               "origin-left transition-[color,transform] duration-500 ease-out",
                               isActive
@@ -171,10 +170,10 @@ export function CapabilityShowcase() {
 
               {/* Caption plate, tracking the active row. */}
               <div className="absolute inset-x-0 bottom-0 z-10 p-7">
-                <p className="font-serif text-sm text-(--color-accent)">
+                <p className="num font-display-sm text-sm text-(--color-accent)">
                   {capabilities[active].number}
                 </p>
-                <p className="mt-2 font-serif text-[1.5rem] leading-snug text-[#f4f1eb]">
+                <p className="mt-2 font-display text-[1.5rem] leading-snug text-[#f4f1eb]">
                   {capabilities[active].title}
                 </p>
               </div>

@@ -146,7 +146,7 @@ export function MobileMenu({ items, cta, className }: MobileMenuProps) {
         />
 
         <div className="flex items-center justify-between">
-          <span className="text-label font-medium uppercase text-(--color-foreground-subtle)">
+          <span className="text-label uppercase text-(--color-foreground-subtle)">
             Menu
           </span>
           <button
@@ -178,10 +178,10 @@ export function MobileMenu({ items, cta, className }: MobileMenuProps) {
                 <NavLink
                   item={item}
                   underline={false}
-                  className="w-full py-4 font-serif text-2xl"
+                  className="w-full py-4 font-display text-2xl"
                   onNavigate={close}
                   prefix={
-                    <span aria-hidden="true" className="font-serif text-xs text-(--color-accent)">
+                    <span aria-hidden="true" className="num font-display-sm text-xs text-(--color-accent)">
                       {String(index + 1).padStart(2, "0")}
                     </span>
                   }

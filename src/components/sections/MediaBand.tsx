@@ -34,7 +34,7 @@ export function MediaBand({ photo, caption, bleed = true, className }: MediaBand
 
       {caption && (
         <Container className="pointer-events-none absolute inset-x-0 bottom-0 z-10 pb-8 sm:pb-10">
-          <p className="max-w-[34ch] font-serif text-[1.25rem] leading-snug text-[#f4f1eb] text-balance sm:text-[1.5rem]">
+          <p className="max-w-[34ch] font-display text-[1.25rem] leading-snug text-[#f4f1eb] text-balance sm:text-[1.5rem]">
             {caption}
           </p>
         </Container>

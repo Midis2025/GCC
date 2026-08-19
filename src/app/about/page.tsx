@@ -52,14 +52,14 @@ export default function AboutPage() {
 
       {/* Positioning - prose with an oversized pull-quote breaking the column. */}
       <Section spacing="lg" aria-labelledby="about-positioning">
-        <div className="grid gap-x-20 gap-y-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
+        <div className="grid gap-x-20 gap-y-9 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
           <Reveal>
             <SectionLabel>{aboutPositioning.label}</SectionLabel>
             <Heading
               id="about-positioning"
               level={2}
               size="h2"
-              className="mt-7 max-w-[15ch] lg:sticky lg:top-[calc(var(--header-h)+4rem)]"
+              className="mt-5 max-w-[15ch] lg:sticky lg:top-[calc(var(--header-h)+4rem)]"
             >
               {aboutPositioning.heading}
             </Heading>
@@ -79,7 +79,7 @@ export default function AboutPage() {
 
             <Reveal delay={200}>
               <blockquote className="mt-12 border-t border-(--color-accent)/40 pt-8">
-                <p className="max-w-[24ch] font-serif text-h2 leading-[1.14] text-balance">
+                <p className="max-w-[24ch] font-display text-h2 leading-[1.14] text-balance">
                   Clarity is a commercial position.
                 </p>
               </blockquote>
@@ -98,11 +98,11 @@ export default function AboutPage() {
 
       {/* Regional understanding - prose beside the market diagram. */}
       <Section spacing="lg" aria-labelledby="about-region">
-        <div className="grid gap-x-20 gap-y-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center">
+        <div className="grid gap-x-20 gap-y-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center">
           <div>
             <Reveal>
               <SectionLabel>{aboutRegion.label}</SectionLabel>
-              <Heading id="about-region" level={2} size="h2" className="mt-7 max-w-[15ch]">
+              <Heading id="about-region" level={2} size="h2" className="mt-5 max-w-[15ch]">
                 {aboutRegion.heading}
               </Heading>
             </Reveal>
@@ -147,7 +147,7 @@ export default function AboutPage() {
         <div className="grid gap-x-20 gap-y-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end">
           <Reveal>
             <SectionLabel>{aboutHowWeWork.label}</SectionLabel>
-            <Heading id="about-how-we-work" level={2} size="display" className="mt-7 max-w-[15ch]">
+            <Heading id="about-how-we-work" level={2} size="display" className="mt-5 max-w-[15ch]">
               {aboutHowWeWork.heading}
             </Heading>
           </Reveal>
@@ -159,13 +159,13 @@ export default function AboutPage() {
           </Reveal>
         </div>
 
-        <dl className="mt-[calc(var(--space-section-sm)+1rem)] grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+        <dl className="mt-[var(--space-heading)] grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-4">
           {aboutHowWeWork.modes.map((mode, index) => (
             <Reveal key={mode.term} delay={index * 80}>
               <div className="border-t border-(--color-foreground)/20 pt-6">
                 <span
                   aria-hidden="true"
-                  className="font-serif text-numeral leading-none text-(--color-accent)/25"
+                  className="num text-numeral leading-none text-(--color-accent)/25"
                 >
                   {String(index + 1).padStart(2, "0")}
                 </span>
@@ -181,11 +181,11 @@ export default function AboutPage() {
 
       {/* Communication - sticky statement against an indexed principles list. */}
       <Section spacing="lg" aria-labelledby="about-communication">
-        <div className="grid gap-x-20 gap-y-14 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+        <div className="grid gap-x-20 gap-y-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
           <div>
             <Reveal className="lg:sticky lg:top-[calc(var(--header-h)+4rem)]">
               <SectionLabel>{aboutCommunication.label}</SectionLabel>
-              <Heading id="about-communication" level={2} size="display" className="mt-7 max-w-[12ch]">
+              <Heading id="about-communication" level={2} size="display" className="mt-5 max-w-[12ch]">
                 {aboutCommunication.heading}
               </Heading>
 
@@ -238,17 +238,17 @@ export default function AboutPage() {
         <Section spacing="lg" tone="muted" aria-labelledby="about-team">
           <Reveal className="max-w-3xl">
             <SectionLabel>Team</SectionLabel>
-            <Heading id="about-team" level={2} size="display" className="mt-7">
+            <Heading id="about-team" level={2} size="display" className="mt-5">
               The People Behind the Work
             </Heading>
           </Reveal>
 
-          <ul className="mt-14 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-[var(--space-heading)] grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
             {team.map((member, index) => (
               <li key={member.name}>
                 <Reveal delay={index * 80}>
                   <article className="border-t border-(--color-border) pt-6">
-                    <h3 className="font-serif text-[1.375rem]">{member.name}</h3>
+                    <h3 className="font-display text-[1.375rem]">{member.name}</h3>
                     <p className="mt-1.5 text-label uppercase text-(--color-foreground-subtle)">
                       {member.role}
                     </p>

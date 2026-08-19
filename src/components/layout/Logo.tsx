@@ -22,12 +22,18 @@ export function Logo({ className, size = "sm" }: LogoProps) {
       href="/"
       aria-label={`${siteConfig.name} - home`}
       className={cn(
-        "inline-flex items-baseline gap-2 font-serif tracking-tight text-(--color-foreground)",
+        /*
+          The wordmark is a three-letter acronym, so it gets more weight and
+          wider tracking than any heading on the site. Tight tracking closes
+          "GCC" into a single unreadable mass; the extra letter-spacing is what
+          makes it read as a mark rather than as a word.
+        */
+        "inline-flex items-baseline gap-2 font-semibold tracking-[0.06em] text-(--color-foreground)",
         "transition-opacity duration-300 hover:opacity-70",
         "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)",
-        size === "sm" && "text-[1.375rem]",
-        size === "md" && "text-[1.75rem]",
-        size === "lg" && "text-[2.5rem]",
+        size === "sm" && "text-[1.1875rem]",
+        size === "md" && "text-[1.5rem]",
+        size === "lg" && "text-[2rem]",
         className,
       )}
     >

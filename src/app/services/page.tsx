@@ -39,24 +39,14 @@ export default function ServicesPage() {
         eyebrow="Services"
         title="Strategic Communications Built Around Capital Markets."
         lead="Four capabilities, run as one connected programme. Companies rarely need all of them at once, and the balance is set by where a business stands with the market rather than by a standard scope."
-      >
-        <ul className="grid gap-x-8 gap-y-4 border-t border-white/15 pt-8 sm:grid-cols-2 lg:grid-cols-4">
-          {capabilities.map((capability) => (
-            <li key={capability.slug} className="flex items-baseline gap-3">
-              <span aria-hidden="true" className="font-serif text-sm text-(--color-accent)">
-                {capability.number}
-              </span>
-              <a
-                href={`#${capability.slug}`}
-                className="link-underline text-[0.9375rem] text-(--color-foreground-muted) transition-colors hover:text-(--color-foreground) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
-              >
-                {capability.title}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </PageHero>
+      />
 
+      {/*
+        The capability index lives here and only here. It previously also ran
+        inside the hero, so the same four titles appeared twice within 100px of
+        each other. This version wins the duplicate: it is sticky, it tracks
+        scroll position, and it stays useful for the whole page.
+      */}
       <ServiceNav />
 
       {capabilities.map((capability, index) => {
@@ -71,7 +61,7 @@ export default function ServicesPage() {
             id={capability.slug}
             className="scroll-mt-[calc(var(--header-h)+4rem)]"
           >
-            <div className="grid gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start">
+            <div className="grid gap-x-16 gap-y-9 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start">
               <Reveal
                 variant="media"
                 className={cn("lg:sticky lg:top-[calc(var(--header-h)+5.5rem)]", imageFirst && "lg:order-2")}
@@ -87,7 +77,7 @@ export default function ServicesPage() {
               <div className={cn(imageFirst && "lg:order-1")}>
                 <Reveal>
                   <div className="flex items-center gap-4">
-                    <span className="font-serif text-numeral leading-none text-(--color-accent)/25">
+                    <span className="num text-numeral leading-none text-(--color-accent)/25">
                       {capability.number}
                     </span>
                     <span aria-hidden="true" className="h-px flex-1 bg-(--color-border)" />
@@ -97,12 +87,12 @@ export default function ServicesPage() {
                     id={`service-${capability.slug}`}
                     level={2}
                     size="display"
-                    className="mt-7 max-w-[14ch]"
+                    className="mt-5 max-w-[14ch]"
                   >
                     {capability.title}
                   </Heading>
 
-                  <p className="mt-7 max-w-[52ch] text-lead text-(--color-foreground-muted)">
+                  <p className="mt-5 max-w-[52ch] text-lead text-(--color-foreground-muted)">
                     {capability.summary}
                   </p>
 
@@ -112,7 +102,7 @@ export default function ServicesPage() {
                 </Reveal>
 
                 <Reveal delay={120}>
-                  <h3 className="mt-11 text-label font-medium uppercase text-(--color-foreground-subtle)">
+                  <h3 className="mt-11 text-label uppercase text-(--color-foreground-subtle)">
                     Areas of work
                   </h3>
                   <CheckList items={capability.areas} className="mt-5" />

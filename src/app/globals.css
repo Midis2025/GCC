@@ -47,12 +47,28 @@
   /* --- Layout ----------------------------------------------------------- */
   --header-h: 4.5rem;
 
-  /* Section rhythm. Sections use these instead of ad-hoc margins. */
-  --space-section-sm: clamp(3.5rem, 6vw, 5rem);
-  --space-section-md: clamp(4.5rem, 8vw, 7.5rem);
-  --space-section-lg: clamp(5.5rem, 11vw, 10rem);
+  /*
+   * Section rhythm. Sections use these instead of ad-hoc margins.
+   *
+   * These are PER EDGE, so consecutive sections contribute twice the value
+   * between them - `lg` at its old 10rem maximum put 320px of empty canvas
+   * between two blocks of content on a large screen, which is what made the
+   * page read as disconnected rather than spacious. The maxima are now sized
+   * so the gap between two sections lands near 224px at the top end, and the
+   * vw term is gentler so the growth from tablet to desktop is less steep.
+   */
+  --space-section-sm: clamp(2.75rem, 4.5vw, 3.75rem);
+  --space-section-md: clamp(3.5rem, 6vw, 5.5rem);
+  --space-section-lg: clamp(4.25rem, 7vw, 7rem);
   /* Reserved for the few full-bleed editorial moments that need real air. */
-  --space-section-xl: clamp(7rem, 14vw, 13rem);
+  --space-section-xl: clamp(5.5rem, 9vw, 9rem);
+
+  /*
+   * Gap between a section's heading block and the content it introduces.
+   * Previously ad-hoc (mt-12/mt-14/mt-16 depending on the file), which is why
+   * the spacing under headings never quite matched from section to section.
+   */
+  --space-heading: clamp(2.25rem, 3.5vw, 3.25rem);
 
   /* --- Elevation --------------------------------------------------------
      Shadows are built from the midnight token rather than neutral black, so
@@ -140,8 +156,7 @@
    * of the same name: that emits `--color-x: var(--color-x)` into :root, a
    * self-reference whose resolution depends on cascade-layer ordering.
    */
-  --font-sans: var(--font-body);
-  --font-serif: var(--font-display);
+  --font-sans: var(--font-primary);
 }
 
 @theme {
@@ -154,46 +169,58 @@
    * a 375px viewport; maximums carry the editorial weight on large screens.
    */
   /*
-   * Editorial extremes. `mega` is reserved for the two or three moments a page
-   * is allowed to shout - the homepage hero and a full-bleed statement. It is
-   * deliberately steeper than `display`: tighter leading and more negative
-   * tracking, which is what makes large serif setting read as considered
-   * rather than merely big.
+   * Scale.
+   *
+   * Sized for a sans, which sets larger on the page than a serif at the same
+   * point size - a taller x-height and wider counters mean the previous serif
+   * maxima would have read as oversized here. Every step is therefore a little
+   * smaller and a little more tightly tracked than its serif equivalent.
+   *
+   * Negative tracking increases with size. Optical spacing that looks correct
+   * at 1rem opens up visibly at 6rem, so the display sizes need to be pulled
+   * in for the word to read as one object rather than a row of letters.
    */
-  --text-mega: clamp(2.75rem, 1rem + 7.4vw, 7rem);
-  --text-mega--line-height: 0.96;
-  --text-mega--letter-spacing: -0.03em;
+
+  /*
+   * `mega` is reserved for the two or three moments a page is allowed to
+   * shout - the homepage hero, a full-bleed statement.
+   */
+  --text-mega: clamp(2.375rem, 1rem + 5.6vw, 5rem);
+  --text-mega--line-height: 1.02;
+  --text-mega--letter-spacing: -0.038em;
 
   /* Oversized numerals for indices and editorial counts. */
-  --text-numeral: clamp(2.25rem, 1rem + 5.2vw, 5rem);
+  --text-numeral: clamp(2rem, 1rem + 4.4vw, 4rem);
   --text-numeral--line-height: 1;
-  --text-numeral--letter-spacing: -0.03em;
+  --text-numeral--letter-spacing: -0.04em;
 
-  --text-display: clamp(2.375rem, 1.35rem + 4.4vw, 5rem);
-  --text-display--line-height: 1.06;
-  --text-display--letter-spacing: -0.02em;
+  --text-display: clamp(2rem, 1.25rem + 3.4vw, 3.75rem);
+  --text-display--line-height: 1.08;
+  --text-display--letter-spacing: -0.032em;
 
-  --text-h1: clamp(2.125rem, 1.35rem + 3.3vw, 4rem);
+  --text-h1: clamp(1.875rem, 1.25rem + 2.8vw, 3.25rem);
   --text-h1--line-height: 1.1;
-  --text-h1--letter-spacing: -0.018em;
+  --text-h1--letter-spacing: -0.03em;
 
-  --text-h2: clamp(1.75rem, 1.2rem + 2.2vw, 3rem);
-  --text-h2--line-height: 1.14;
-  --text-h2--letter-spacing: -0.015em;
+  --text-h2: clamp(1.625rem, 1.2rem + 1.8vw, 2.5rem);
+  --text-h2--line-height: 1.16;
+  --text-h2--letter-spacing: -0.026em;
 
-  --text-h3: clamp(1.375rem, 1.15rem + 0.95vw, 2rem);
-  --text-h3--line-height: 1.24;
-  --text-h3--letter-spacing: -0.01em;
+  --text-h3: clamp(1.25rem, 1.1rem + 0.8vw, 1.75rem);
+  --text-h3--line-height: 1.28;
+  --text-h3--letter-spacing: -0.018em;
 
-  --text-h4: clamp(1.125rem, 1.05rem + 0.35vw, 1.375rem);
-  --text-h4--line-height: 1.35;
+  --text-h4: clamp(1.0625rem, 1.02rem + 0.3vw, 1.25rem);
+  --text-h4--line-height: 1.4;
+  --text-h4--letter-spacing: -0.01em;
 
-  --text-lead: clamp(1.0625rem, 1rem + 0.42vw, 1.3125rem);
-  --text-lead--line-height: 1.62;
+  --text-lead: clamp(1.0625rem, 1rem + 0.38vw, 1.25rem);
+  --text-lead--line-height: 1.6;
+  --text-lead--letter-spacing: -0.005em;
 
-  --text-label: 0.75rem;
+  --text-label: 0.6875rem;
   --text-label--line-height: 1.2;
-  --text-label--letter-spacing: 0.14em;
+  --text-label--letter-spacing: 0.16em;
 }
 
 /* ==========================================================================
@@ -207,11 +234,64 @@ body {
   background-color: var(--color-canvas);
   color: var(--color-foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
-  font-feature-settings: "kern", "liga", "cv11";
+  font-weight: 400;
+  font-feature-settings: "kern", "liga";
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   /* Guards against any single element forcing a horizontal scrollbar. */
   overflow-x: hidden;
+}
+
+/* ==========================================================================
+   TYPOGRAPHY TREATMENTS
+   With one family carrying both headlines and body copy, these are what
+   separate the two. Applied by the Heading component and by any element that
+   needs display setting without being a heading.
+   ========================================================================== */
+
+/*
+ * Display setting. 500 rather than 600 or 700 on purpose: at h2 size and above
+ * a medium weight reads as confident, while bold reads as loud. Size and
+ * tracking are already doing the work of establishing dominance.
+ */
+.font-display {
+  font-weight: 500;
+}
+
+/*
+ * Below about 1.25rem the tracking that flatters a large heading makes small
+ * text look cramped, and 500 stops holding its own against body copy - so the
+ * smaller headings step up in weight and ease off the tracking instead.
+ */
+.font-display-sm {
+  font-weight: 600;
+}
+
+/*
+ * Oversized indices. Tabular figures so "01" through "06" occupy identical
+ * width and the numerals line up down a column or across a row; proportional
+ * figures would let the 1s sit narrow and break the grid.
+ */
+.text-numeral {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+/* Small caps-style labels. The one place extra weight and wide tracking earn
+   their keep, because at 11px neither size nor colour can carry emphasis. */
+.text-label {
+  font-weight: 600;
+}
+
+/*
+ * Small indices - the "01" markers beside capabilities, steps and list rows.
+ * Tabular figures for the same reason as the oversized numerals, plus a touch
+ * of positive tracking: at this size the tight display tracking would close
+ * the digits up into a single blob.
+ */
+.num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
 }
 
 ::selection {

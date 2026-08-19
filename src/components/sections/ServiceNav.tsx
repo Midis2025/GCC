@@ -76,7 +76,7 @@ export function ServiceNav() {
                   <span
                     aria-hidden="true"
                     className={cn(
-                      "font-serif text-xs transition-colors duration-300",
+                      "num font-display-sm text-xs transition-colors duration-300",
                       isActive ? "text-(--color-accent)" : "text-(--color-foreground-subtle)",
                     )}
                   >

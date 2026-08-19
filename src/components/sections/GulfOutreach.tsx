@@ -65,7 +65,7 @@ export function GulfOutreach() {
           <div>
             <Reveal>
               <SectionLabel>{outreachContent.label}</SectionLabel>
-              <Heading id="outreach-heading" level={2} size="display" className="mt-7 max-w-[14ch]">
+              <Heading id="outreach-heading" level={2} size="display" className="mt-5 max-w-[14ch]">
                 {outreachContent.heading}
               </Heading>
             </Reveal>

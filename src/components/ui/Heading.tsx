@@ -25,18 +25,25 @@ export interface HeadingProps extends ComponentPropsWithRef<"h2"> {
   /** Visual size, decoupled from level so the outline stays correct. */
   size?: HeadingSize;
   /**
-   * Typeface. Serif carries the major editorial headlines; sans is used for
-   * smaller structural headings. Defaults by size.
+   * Weight treatment. Defaults by size: the large sizes take the lighter
+   * display setting, the small ones step up. Override only when a heading sits
+   * somewhere its size does not predict, such as inside a dense card.
    */
-  font?: "serif" | "sans";
+  weight?: "display" | "strong";
   /** Balanced wrapping - avoids orphan words in short headlines. */
   balance?: boolean;
 }
 
+/**
+ * The site runs on one typeface, so a heading is distinguished from body copy
+ * by weight, size and tracking rather than by family. `mega` through `h2` take
+ * `.font-display` (500); `h3` and `h4` take `.font-display-sm` (600), because
+ * a medium weight stops reading as a heading once the size drops far enough.
+ */
 export function Heading({
   level = 2,
   size,
-  font,
+  weight,
   balance = true,
   className,
   ...props
@@ -51,15 +58,13 @@ export function Heading({
     resolvedSize === "display" ||
     resolvedSize === "h1" ||
     resolvedSize === "h2";
-  const resolvedFont = font ?? (isMajor ? "serif" : "sans");
+  const resolvedWeight = weight ?? (isMajor ? "display" : "strong");
 
   return (
     <Tag
       className={cn(
         sizes[resolvedSize],
-        resolvedFont === "serif"
-          ? "font-serif font-normal"
-          : "font-sans font-medium tracking-tight",
+        resolvedWeight === "display" ? "font-display" : "font-display-sm",
         balance && "text-balance",
         className,
       )}

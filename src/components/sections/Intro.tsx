@@ -22,11 +22,14 @@ import { introContent } from "@/data/homepage";
 export function Intro() {
   return (
     <Section spacing="lg" aria-labelledby="intro-heading" className="relative overflow-hidden">
-      <div className="grid gap-x-16 gap-y-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] lg:items-start">
-        <div className="lg:pt-6">
+      <div className="grid gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] lg:items-start">
+        {/* No top offset: the section label and the top edge of the photograph
+            share a baseline, which is what makes the two columns read as one
+            band rather than as two blocks that happen to sit side by side. */}
+        <div>
           <Reveal>
             <SectionLabel>{introContent.label}</SectionLabel>
-            <Heading id="intro-heading" level={2} size="display" className="mt-7 max-w-[13ch]">
+            <Heading id="intro-heading" level={2} size="display" className="mt-5 max-w-[13ch]">
               {introContent.heading}
             </Heading>
           </Reveal>
@@ -46,26 +49,41 @@ export function Intro() {
           inside the Container's grid, so nothing can push the page wider than
           100vw - body overflow-x is a guard, not the layout mechanism.
         */}
-        <Reveal variant="media" delay={200} className="relative lg:-mr-12 xl:-mr-16">
-          <Figure
-            photo={photos.introTowers}
-            ratio="tall"
-            overlay="veil"
-            sizes="(min-width: 1024px) 46vw, 100vw"
-          />
+        {/*
+          The caption plate is a SIBLING of the media Reveal, not a child.
+          `variant="media"` animates clip-path, and a clip region on the parent
+          clips absolutely positioned descendants even after the animation
+          settles - which cut the overhanging plate in half. Only the
+          photograph goes inside the clip; the plate is positioned against this
+          wrapper instead.
+        */}
+        <div className="relative lg:-mr-12 xl:-mr-16">
+          <Reveal variant="media" delay={200}>
+            {/*
+              Square rather than 4:5. The taller crop stood ~300px clear of the
+              text column beside it, leaving a void at the bottom of the copy -
+              the plate overhanging into that corner is what now closes it.
+            */}
+            <Figure
+              photo={photos.introTowers}
+              ratio="square"
+              overlay="veil"
+              sizes="(min-width: 1024px) 46vw, 100vw"
+            />
+          </Reveal>
 
-          <div className="absolute -bottom-6 left-4 max-w-[19rem] border-l-2 border-(--color-accent) bg-(--color-canvas) py-5 pl-6 pr-5 shadow-[var(--shadow-lg)] sm:-bottom-8 sm:left-6 lg:-left-14">
-            <p className="text-label font-medium uppercase text-(--color-foreground-subtle)">
+          <div className="absolute -bottom-6 left-4 z-10 max-w-[19rem] border-l-2 border-(--color-accent) bg-(--color-canvas) py-5 pl-6 pr-5 shadow-[var(--shadow-lg)] sm:-bottom-8 sm:left-6 lg:-left-14">
+            <p className="text-label uppercase text-(--color-foreground-subtle)">
               The question behind the work
             </p>
-            <p className="mt-3 font-serif text-[1.0625rem] leading-snug text-balance">
+            <p className="mt-3 font-display text-[1.0625rem] leading-snug text-balance">
               Does the market understand this business the way its leadership intends?
             </p>
           </div>
-        </Reveal>
+        </div>
       </div>
 
-      <div className="mt-[calc(var(--space-section-sm)+2rem)] border-t border-(--color-border) pt-2">
+      <div className="mt-[calc(var(--space-section-sm)+1.5rem)] border-t border-(--color-border) pt-2">
         <ul className="grid sm:grid-cols-2 lg:grid-cols-3">
           {introContent.principles.map((principle, index) => (
             <li key={principle.title}>
@@ -75,7 +93,7 @@ export function Intro() {
               >
                 <span
                   aria-hidden="true"
-                  className="font-serif text-sm leading-none text-(--color-accent)"
+                  className="font-display text-sm leading-none text-(--color-accent)"
                 >
                   {String(index + 1).padStart(2, "0")}
                 </span>

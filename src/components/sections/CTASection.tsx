@@ -48,23 +48,31 @@ export function CTASection() {
         className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(184,148,95,0.5),transparent)]"
       />
 
+      {/*
+        Left aligned and split, so the closing block shares the same left edge
+        as every section above it. The actions sit in the right column on wide
+        screens rather than under the copy, which keeps the band shallow and
+        stops the page ending on a tall stack of centred elements.
+      */}
       <Container className="relative z-10">
-        <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
-          <Reveal variant="mask">
-            <Heading id="cta-heading" level={2} size="display">
-              {ctaContent.heading}
-            </Heading>
-          </Reveal>
+        <div className="grid gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-end">
+          <div>
+            <Reveal variant="mask">
+              <Heading id="cta-heading" level={2} size="display" className="max-w-[14ch]">
+                {ctaContent.heading}
+              </Heading>
+            </Reveal>
 
-          <Reveal delay={140}>
-            <p className="mt-8 max-w-[52ch] text-lead text-(--color-foreground-muted)">
-              {ctaContent.supporting}
-            </p>
-          </Reveal>
+            <Reveal delay={140}>
+              <p className="mt-6 max-w-[50ch] text-lead text-(--color-foreground-muted)">
+                {ctaContent.supporting}
+              </p>
+            </Reveal>
+          </div>
 
           <Reveal
             delay={260}
-            className="mt-11 flex w-full flex-col items-center gap-3 xs:flex-row xs:flex-wrap xs:justify-center xs:gap-4"
+            className="flex flex-col gap-3 xs:flex-row xs:flex-wrap xs:items-center xs:gap-4 lg:justify-end lg:pb-1"
           >
             <Button href={ctaContent.cta.href} size="lg" withArrow>
               {ctaContent.cta.label}

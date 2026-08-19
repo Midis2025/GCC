@@ -15,7 +15,7 @@ export function SectionLabel({ withRule = true, className, children, ...props }:
   return (
     <p
       className={cn(
-        "flex items-center gap-3 text-label font-medium uppercase text-(--color-foreground-muted)",
+        "flex items-center gap-3 text-label uppercase text-(--color-foreground-muted)",
         className,
       )}
       {...props}

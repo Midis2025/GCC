@@ -1,7 +1,6 @@
 import { ContactForm } from "@/components/sections/ContactForm";
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
-import { Figure } from "@/components/ui/Figure";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
@@ -38,18 +37,19 @@ export default function ContactPage() {
   return (
     <>
       <PageHero
-        variant="minimal"
+        variant="feature"
+        photo={backdrops.contact}
         eyebrow={contactContent.eyebrow}
         title={contactContent.title}
         lead={contactContent.lead}
       />
 
       <Section spacing="lg" aria-labelledby="contact-heading">
-        <div className="grid gap-x-16 gap-y-14 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
+        <div className="grid gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
           <div>
             <Reveal>
               <SectionLabel>{contactContent.introHeading}</SectionLabel>
-              <Heading id="contact-heading" level={2} size="h2" className="mt-7 max-w-[16ch]">
+              <Heading id="contact-heading" level={2} size="h2" className="mt-5 max-w-[16ch]">
                 Tell us where the company stands today.
               </Heading>
 
@@ -122,7 +122,7 @@ export default function ContactPage() {
 
             <Reveal delay={140}>
               <div className="mt-12 border-t border-(--color-border) pt-8">
-                <h3 className="text-label font-medium uppercase text-(--color-foreground-subtle)">
+                <h3 className="text-label uppercase text-(--color-foreground-subtle)">
                   Areas of interest
                 </h3>
                 <ul className="mt-5 flex flex-wrap gap-2">
@@ -136,7 +136,7 @@ export default function ContactPage() {
                   ))}
                 </ul>
 
-                <h3 className="mt-9 text-label font-medium uppercase text-(--color-foreground-subtle)">
+                <h3 className="mt-9 text-label uppercase text-(--color-foreground-subtle)">
                   Markets
                 </h3>
                 <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2">
@@ -150,14 +150,6 @@ export default function ContactPage() {
               </div>
             </Reveal>
 
-            <Reveal delay={180} className="mt-12">
-              <Figure
-                photo={backdrops.contact}
-                ratio="wide"
-                overlay="veil"
-                sizes="(min-width: 1024px) 34vw, 100vw"
-              />
-            </Reveal>
           </div>
 
           {/*

@@ -33,7 +33,11 @@ export function Hero() {
   const photo = backdrops.hero;
 
   return (
-    <section className="tokens-dark relative isolate flex min-h-[max(40rem,90svh)] flex-col justify-end overflow-hidden bg-(--midnight)">
+    // Tall, but short of full-height. At 90svh the market card sat exactly on
+    // the fold and the page below gave no hint that it existed; trimming to
+    // ~84svh leaves a sliver of the next section showing, which invites the
+    // scroll.
+    <section className="tokens-dark relative isolate flex min-h-[max(36rem,84svh)] flex-col justify-end overflow-hidden bg-(--midnight)">
       {/* Plane 1 - photography */}
       <div aria-hidden="true" className="absolute inset-0 -z-30">
         {override.src ? (
@@ -82,39 +86,48 @@ export function Hero() {
       />
       <HeroBackdrop variant="overlay" />
 
-      <Container className="relative z-10 pb-[clamp(3rem,6vw,5rem)] pt-[calc(var(--header-h)+clamp(5rem,14vw,10rem))]">
-        <div className="grid gap-y-14 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-x-16">
-          <div className="max-w-[52rem]">
-            <p
-              className="reveal flex items-center gap-3.5 text-label font-medium uppercase text-(--color-accent)"
-              data-visible="true"
-            >
-              <span aria-hidden="true" className="h-px w-10 shrink-0 bg-(--color-accent)" />
-              <span className="max-w-[48ch]">{heroContent.eyebrow}</span>
-            </p>
+      <Container className="relative z-10 pb-[clamp(2.5rem,5vw,4rem)] pt-[calc(var(--header-h)+clamp(3.5rem,9vw,6.5rem))]">
+        <p
+          className="reveal flex items-center gap-3.5 text-label uppercase text-(--color-accent)"
+          data-visible="true"
+        >
+          <span aria-hidden="true" className="h-px w-10 shrink-0 bg-(--color-accent)" />
+          {/* Unconstrained: the eyebrow reads as one line on desktop, and a
+              measure tight enough to wrap it left the rule floating against a
+              two-line block. */}
+          <span>{heroContent.eyebrow}</span>
+        </p>
 
-            {/*
-              Line-by-line reveal. Each line is its own clipping block so the
-              text wipes up from behind its own edge, and the H1 stays a single
-              accessible string - the spans carry no semantics.
-            */}
-            <Heading level={1} size="mega" className="mt-8 max-w-[15ch]" balance={false}>
-              {heroContent.headlineLines.map((line, index) => (
-                <span key={line} className="block overflow-hidden pb-[0.08em]">
-                  <span
-                    className="reveal block"
-                    data-visible="true"
-                    data-variant="mask"
-                    style={at(140 + index * 130)}
-                  >
-                    {line}
-                  </span>
-                </span>
-              ))}
-            </Heading>
+        {/*
+          The headline spans the full container rather than sharing a row with
+          the market card. Squeezed into a column beside the card it re-wrapped
+          each authored line in two, which broke both the phrasing and the
+          line-by-line reveal - "Capital and / Opportunity" is not a line break
+          anyone would choose. The card moves to the row beneath instead.
 
+          Each line is its own clipping block so the text wipes up from behind
+          its own edge; the H1 stays a single accessible string, and the spans
+          carry no semantics.
+        */}
+        <Heading level={1} size="mega" className="mt-7 max-w-[23ch]" balance={false}>
+          {heroContent.headlineLines.map((line, index) => (
+            <span key={line} className="block overflow-hidden pb-[0.08em]">
+              <span
+                className="reveal block"
+                data-visible="true"
+                data-variant="mask"
+                style={at(140 + index * 130)}
+              >
+                {line}
+              </span>
+            </span>
+          ))}
+        </Heading>
+
+        <div className="mt-9 grid gap-y-9 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-x-16">
+          <div className="max-w-[54rem]">
             <p
-              className="reveal mt-9 max-w-[54ch] text-lead text-(--color-foreground-muted)"
+              className="reveal max-w-[54ch] text-lead text-(--color-foreground-muted)"
               data-visible="true"
               style={at(620)}
             >
@@ -122,7 +135,7 @@ export function Hero() {
             </p>
 
             <div
-              className="reveal mt-11 flex flex-col gap-3 xs:flex-row xs:flex-wrap xs:items-center xs:gap-4"
+              className="reveal mt-9 flex flex-col gap-3 xs:flex-row xs:flex-wrap xs:items-center xs:gap-4"
               data-visible="true"
               style={at(760)}
             >
@@ -142,25 +155,30 @@ export function Hero() {
             read as an office footprint.
           */}
           <aside
-            className="reveal w-full border border-white/12 bg-[rgba(12,20,29,0.52)] p-6 backdrop-blur-md sm:p-7 lg:w-[19rem] lg:shrink-0"
+            className="reveal w-full border border-white/12 bg-[rgba(12,20,29,0.52)] p-6 backdrop-blur-md lg:w-[23rem] lg:shrink-0"
             data-visible="true"
             style={at(900)}
             aria-label="Markets"
           >
-            <p className="text-label font-medium uppercase text-(--color-accent)">
+            <p className="text-label uppercase text-(--color-accent)">
               Gulf Market Coverage
             </p>
 
-            <ul className="mt-5 grid grid-cols-2 gap-x-5 gap-y-2.5 lg:grid-cols-1 lg:gap-y-0">
+            {/*
+              Two columns at every breakpoint. A single stacked column ran the
+              card to ~360px, which made it the tallest element in the hero and
+              pushed the whole section past the fold.
+            */}
+            <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-1.5">
               {gulfMarkets.map((market) => (
                 <li
                   key={market.code}
-                  className="flex items-baseline justify-between gap-4 text-[0.9375rem] text-(--color-foreground) lg:border-b lg:border-white/10 lg:py-2.5 lg:last:border-0"
+                  className="flex items-baseline justify-between gap-3 border-b border-white/10 py-1.5 text-[0.9375rem] text-(--color-foreground)"
                 >
                   <span>{market.label}</span>
                   <span
                     aria-hidden="true"
-                    className="font-serif text-xs text-(--color-foreground-subtle)"
+                    className="num font-display-sm text-xs text-(--color-foreground-subtle)"
                   >
                     {market.code}
                   </span>

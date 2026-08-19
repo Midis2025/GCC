@@ -35,7 +35,7 @@ export function DefinitionList({
         <div key={item.term} className="border-t border-(--color-border) pt-5">
           <dt className="flex items-baseline gap-3 text-[1.0625rem] font-medium">
             {numbered && (
-              <span className="font-serif text-sm text-(--color-accent)">
+              <span className="num font-display-sm text-sm text-(--color-accent)">
                 {String(index + 1).padStart(2, "0")}
               </span>
             )}

@@ -79,7 +79,7 @@ export default async function InsightPage({ params }: PageProps<"/insights/[slug
               )}
             </div>
 
-            <Heading level={1} size="h1" className="mt-7">
+            <Heading level={1} size="h1" className="mt-5">
               {insight.title}
             </Heading>
           </Container>
@@ -95,7 +95,7 @@ export default async function InsightPage({ params }: PageProps<"/insights/[slug
           {insight.isPlaceholder && (
             <Reveal delay={100}>
               <div className="mt-12 border-l-2 border-(--color-accent) pl-6">
-                <h2 className="text-label font-medium uppercase text-(--color-foreground-subtle)">
+                <h2 className="text-label uppercase text-(--color-foreground-subtle)">
                   Article pending
                 </h2>
                 <p className="mt-4 max-w-[62ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
@@ -107,7 +107,7 @@ export default async function InsightPage({ params }: PageProps<"/insights/[slug
             </Reveal>
           )}
 
-          <div className="mt-14 border-t border-(--color-border) pt-8">
+          <div className="mt-[var(--space-heading)] border-t border-(--color-border) pt-8">
             <Link
               href="/insights"
               className="link-underline inline-block py-1 text-[0.9375rem] text-(--color-foreground-muted) hover:text-(--color-foreground) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
@@ -123,7 +123,7 @@ export default async function InsightPage({ params }: PageProps<"/insights/[slug
           <Reveal>
             <h2
               id="insight-more"
-              className="text-label font-medium uppercase text-(--color-foreground-subtle)"
+              className="text-label uppercase text-(--color-foreground-subtle)"
             >
               More insights
             </h2>
@@ -140,7 +140,7 @@ export default async function InsightPage({ params }: PageProps<"/insights/[slug
                     <span className="text-label uppercase text-(--color-foreground-subtle)">
                       {item.category}
                     </span>
-                    <p className="mt-4 max-w-[26ch] font-serif text-[1.3125rem] leading-snug text-balance transition-colors duration-300 group-hover:text-(--color-accent)">
+                    <p className="mt-4 max-w-[26ch] font-display text-[1.3125rem] leading-snug text-balance transition-colors duration-300 group-hover:text-(--color-accent)">
                       {item.title}
                     </p>
                   </Link>

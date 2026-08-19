@@ -36,11 +36,11 @@ export function WhyGCC() {
         className="rule-field absolute inset-y-0 right-0 -z-10 w-[45%] [--rule-gap:6rem]"
       />
 
-      <div className="grid gap-x-20 gap-y-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+      <div className="grid gap-x-20 gap-y-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
         <div>
           <Reveal className="lg:sticky lg:top-[calc(var(--header-h)+4rem)]">
             <SectionLabel>{whyContent.label}</SectionLabel>
-            <Heading id="why-heading" level={2} size="display" className="mt-7 max-w-[12ch]">
+            <Heading id="why-heading" level={2} size="display" className="mt-5 max-w-[12ch]">
               {whyContent.heading}
             </Heading>
             <p className="mt-8 max-w-[40ch] text-[1.0625rem] leading-relaxed text-(--color-foreground-muted)">
@@ -61,14 +61,19 @@ export function WhyGCC() {
                   index % 2 === 1 && "lg:ml-14",
                 )}
               >
+                {/*
+                  Ghosted index. Sized to sit inside the plate rather than
+                  bleed past its edges - at 7rem it ran off the top and read as
+                  a stray artifact instead of as texture behind the title.
+                */}
                 <span
                   aria-hidden="true"
-                  className="pointer-events-none absolute -right-1 -top-5 -z-10 font-serif text-[7rem] leading-none text-white/[0.045]"
+                  className="pointer-events-none absolute right-4 top-2 -z-10 num font-display text-[4.5rem] leading-none text-white/[0.05]"
                 >
                   {String(index + 1).padStart(2, "0")}
                 </span>
 
-                <p className="font-serif text-sm text-(--color-accent)">
+                <p className="num font-display-sm text-sm text-(--color-accent)">
                   {String(index + 1).padStart(2, "0")}
                 </p>
                 <h3 className="mt-4 text-h4 font-medium tracking-tight">{pillar.title}</h3>

@@ -5,7 +5,7 @@ import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
 import { Figure } from "@/components/ui/Figure";
 import { Reveal } from "@/components/ui/Reveal";
-import { insightPhotos } from "@/data/imagery";
+import { backdrops, insightPhotos } from "@/data/imagery";
 import { getInsights, hasPlaceholderInsights } from "@/data/insights";
 import { createMetadata } from "@/lib/seo";
 import { formatDate } from "@/lib/utils";
@@ -38,7 +38,8 @@ export default function InsightsPage() {
   return (
     <>
       <PageHero
-        variant="minimal"
+        variant="feature"
+        photo={backdrops.insights}
         eyebrow="Insights"
         title="Perspectives on Gulf Capital Markets"
         lead="Notes on investor relations, market outreach and how companies are understood by the investors that matter to them."
@@ -68,7 +69,7 @@ export default function InsightsPage() {
         ) : (
           <>
             {/* Lead article. */}
-            <Reveal className={showNotice ? "mt-14" : ""}>
+            <Reveal className={showNotice ? "mt-[var(--space-heading)]" : ""}>
               <article className="group">
                 <Link
                   href={`/insights/${lead.slug}`}
@@ -95,7 +96,7 @@ export default function InsightsPage() {
                       )}
                     </div>
 
-                    <h3 className="mt-5 max-w-[22ch] font-serif text-h2 leading-[1.12] text-balance transition-colors duration-300 group-hover:text-(--color-accent)">
+                    <h3 className="mt-5 max-w-[22ch] font-display text-h2 leading-[1.12] text-balance transition-colors duration-300 group-hover:text-(--color-accent)">
                       {lead.title}
                     </h3>
 
@@ -128,7 +129,7 @@ export default function InsightsPage() {
                           </div>
 
                           <div>
-                            <h3 className="max-w-[28ch] font-serif text-h3 leading-snug text-balance transition-colors duration-300 group-hover:text-(--color-accent)">
+                            <h3 className="max-w-[28ch] font-display text-h3 leading-snug text-balance transition-colors duration-300 group-hover:text-(--color-accent)">
                               {insight.title}
                             </h3>
                             <p className="mt-4 max-w-[62ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
