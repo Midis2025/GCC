@@ -1,4 +1,5 @@
 import { Container } from "@/components/ui/Container";
+import { CountUp } from "@/components/ui/CountUp";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { orientationContent } from "@/data/homepage";
@@ -44,11 +45,24 @@ export function Orientation() {
                   {fact.label}
                 </dt>
 
+                {/*
+                  The figure counts up as the block arrives. `padTo` is taken
+                  from the authored string's own length, so "04" keeps its
+                  leading zero and the data stays editorial rather than being
+                  rewritten as a number with formatting rules attached.
+
+                  The count starts fractionally after this block's reveal so
+                  the numeral is already on screen when it begins moving.
+                */}
                 <span
                   aria-hidden="true"
                   className="order-1 block border-t border-(--color-accent)/40 pt-5 num text-numeral leading-none text-(--color-accent)"
                 >
-                  {fact.figure}
+                  <CountUp
+                    value={Number(fact.figure)}
+                    padTo={fact.figure.length}
+                    delay={340 + index * 110}
+                  />
                 </span>
 
                 <dd className="order-3 mt-2.5 text-sm leading-relaxed text-(--color-foreground-muted)">
