@@ -1,10 +1,12 @@
 import { Approach } from "@/components/sections/Approach";
-import { Capabilities } from "@/components/sections/Capabilities";
+import { CapabilityShowcase } from "@/components/sections/CapabilityShowcase";
 import { CTASection } from "@/components/sections/CTASection";
 import { GulfOutreach } from "@/components/sections/GulfOutreach";
 import { Hero } from "@/components/sections/Hero";
 import { InsightsPreview } from "@/components/sections/InsightsPreview";
 import { Intro } from "@/components/sections/Intro";
+import { Orientation } from "@/components/sections/Orientation";
+import { Segments } from "@/components/sections/Segments";
 import { WhyGCC } from "@/components/sections/WhyGCC";
 import { createMetadata } from "@/lib/seo";
 
@@ -17,8 +19,17 @@ export const metadata = createMetadata({
 /**
  * Homepage.
  *
- * Composed entirely of server components. The only client JavaScript on the
- * page is the header scroll state, the mobile menu and the reveal observer.
+ * Sequenced as a visual journey rather than a stack of equal bands. The
+ * surface alternates deliberately - photographic dark, flat dark, light,
+ * photographic dark, light stone, flat dark, light, light stone, photographic
+ * dark - so no two adjacent sections share a treatment, and each one is built
+ * on a different structural idea: layered hero, numeral band, editorial split,
+ * interactive list, feature with diagram, timeline, floating plates, mosaic,
+ * publication grid, centred statement.
+ *
+ * Every section is a server component except `CapabilityShowcase`, which needs
+ * pointer and focus state. The only other client JavaScript on the page is the
+ * header scroll state, the mobile menu and the shared reveal observer.
  *
  * Heading outline: one H1 in the hero, one H2 per section.
  */
@@ -26,11 +37,13 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+      <Orientation />
       <Intro />
-      <Capabilities />
+      <CapabilityShowcase />
       <GulfOutreach />
       <Approach />
       <WhyGCC />
+      <Segments />
       <InsightsPreview />
       <CTASection />
     </>

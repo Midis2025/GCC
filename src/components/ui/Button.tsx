@@ -4,9 +4,9 @@ import type { ComponentPropsWithRef } from "react";
 import { cn, isExternalHref } from "@/lib/utils";
 
 const base =
-  "group inline-flex items-center justify-center gap-2.5 rounded-none " +
+  "group btn-sweep inline-flex items-center justify-center gap-2.5 rounded-none " +
   "text-sm font-medium tracking-wide " +
-  "transition-[background-color,color,border-color] duration-300 ease-out " +
+  "transition-[color,border-color] duration-300 ease-out " +
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring) " +
   "disabled:pointer-events-none disabled:opacity-50 " +
   "aria-disabled:pointer-events-none aria-disabled:opacity-50";
@@ -14,16 +14,23 @@ const base =
 /**
  * Variants reference semantic tokens, so a section wrapped in `.surface-dark`
  * inverts every button automatically with no dark-specific variant.
+ *
+ * Hover is a wipe rather than a cross-fade: `.btn-sweep` scales a pseudo-
+ * element across from the left, and `--sweep-color` tells it what to paint.
+ * The resting background stays on the element itself, so the button is still
+ * fully styled with CSS transforms unavailable or motion reduced.
  */
 const variants = {
   primary:
-    "bg-(--color-accent) text-(--color-accent-foreground) hover:bg-(--color-accent-hover)",
+    "bg-(--color-accent) text-(--color-accent-foreground) [--sweep-color:var(--color-accent-hover)]",
   outline:
     "border border-(--color-foreground)/25 text-(--color-foreground) " +
-    "hover:border-(--color-foreground)/60 hover:bg-(--color-foreground)/5",
+    "hover:border-(--color-foreground)/60 [--sweep-color:color-mix(in_srgb,var(--color-foreground)_8%,transparent)]",
   solid:
-    "bg-(--color-foreground) text-(--color-surface) hover:bg-(--color-foreground)/85",
-  ghost: "text-(--color-foreground) hover:bg-(--color-foreground)/5",
+    "bg-(--color-foreground) text-(--color-surface) " +
+    "[--sweep-color:color-mix(in_srgb,var(--color-foreground)_85%,transparent)]",
+  ghost:
+    "text-(--color-foreground) [--sweep-color:color-mix(in_srgb,var(--color-foreground)_8%,transparent)]",
 } as const;
 
 const sizes = {

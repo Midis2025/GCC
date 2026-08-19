@@ -1,14 +1,16 @@
 export { Approach } from "./Approach";
-export { Capabilities } from "./Capabilities";
+export { CapabilityShowcase } from "./CapabilityShowcase";
 export { ContactForm } from "./ContactForm";
 export { CTASection } from "./CTASection";
 export { GulfOutreach } from "./GulfOutreach";
 export { Hero } from "./Hero";
 export { InsightsPreview } from "./InsightsPreview";
 export { Intro } from "./Intro";
+export { Orientation } from "./Orientation";
 export { PageHero, type PageHeroProps } from "./PageHero";
 export { PendingPolicy, type PendingPolicyProps } from "./PendingPolicy";
 export { ProseSection, type ProseSectionProps } from "./ProseSection";
 export { Section, type SectionProps } from "./Section";
 export { SectionHeader, type SectionHeaderProps } from "./SectionHeader";
+export { Segments } from "./Segments";
 export { WhyGCC } from "./WhyGCC";

@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
  * scale with the viewport rather than stepping at each breakpoint.
  */
 const sizes = {
+  /** Reserved for the one statement per page that is allowed to dominate. */
+  mega: "text-mega",
   display: "text-display",
   h1: "text-h1",
   h2: "text-h2",
@@ -44,7 +46,11 @@ export function Heading({
   const resolvedSize: HeadingSize =
     size ?? (level === 1 ? "h1" : level === 2 ? "h2" : level === 3 ? "h3" : "h4");
 
-  const isMajor = resolvedSize === "display" || resolvedSize === "h1" || resolvedSize === "h2";
+  const isMajor =
+    resolvedSize === "mega" ||
+    resolvedSize === "display" ||
+    resolvedSize === "h1" ||
+    resolvedSize === "h2";
   const resolvedFont = font ?? (isMajor ? "serif" : "sans");
 
   return (

@@ -19,7 +19,7 @@ export interface PendingPolicyProps {
 export function PendingPolicy({ eyebrow, title, scope }: PendingPolicyProps) {
   return (
     <>
-      <PageHero eyebrow={eyebrow} title={title} />
+      <PageHero variant="minimal" eyebrow={eyebrow} title={title} />
 
       <Section spacing="lg" width="narrow">
         <div className="border-l-2 border-(--color-accent) pl-6">

@@ -66,16 +66,22 @@ export const complianceConfig: ComplianceConfig = {
 };
 
 /**
- * Art direction slots for photography.
+ * Client photography overrides.
  *
- * No stock imagery has been supplied, so these are empty and the affected
- * sections fall back to an authored typographic/geometric treatment. Drop a
- * path under /public here (e.g. "/images/hero.jpg") and the section switches
- * to the photographic treatment with no code change.
+ * The site now ships with its own art direction - see `src/data/imagery.ts`
+ * and `public/images/CREDITS.md`. That imagery is licensed stock chosen to fit
+ * the design, NOT client material, and it depicts nothing belonging to GCC.
  *
- * Direction: Gulf financial architecture (DIFC, Abu Dhabi, Riyadh business
- * districts), architectural geometry or executive environments. Dark,
- * atmospheric, typography-led. No handshakes, dunes or tourist landmarks.
+ * These slots exist so a supplied photograph can take precedence without
+ * touching `imagery.ts`: set `src` to a path under /public (e.g.
+ * "/images/client-hero.jpg") with accurate `alt`, and that section switches to
+ * the client asset. Leave empty to keep the shipped art direction, and clear
+ * `imagery.ts` as well to fall back to the authored geometric treatment.
+ *
+ * Direction for commissioned work: Gulf financial architecture (DIFC, Abu
+ * Dhabi, Riyadh business districts), architectural geometry or executive
+ * environments. Dark, atmospheric, typography-led. No handshakes, dunes or
+ * tourist landmarks.
  */
 export interface ImageSlot {
   src: string;

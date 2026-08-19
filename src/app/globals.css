@@ -51,6 +51,25 @@
   --space-section-sm: clamp(3.5rem, 6vw, 5rem);
   --space-section-md: clamp(4.5rem, 8vw, 7.5rem);
   --space-section-lg: clamp(5.5rem, 11vw, 10rem);
+  /* Reserved for the few full-bleed editorial moments that need real air. */
+  --space-section-xl: clamp(7rem, 14vw, 13rem);
+
+  /* --- Elevation --------------------------------------------------------
+     Shadows are built from the midnight token rather than neutral black, so
+     depth reads as part of the palette instead of a grey wash over it. */
+  --shadow-sm: 0 1px 2px rgba(12, 20, 29, 0.05);
+  --shadow-md: 0 12px 28px -12px rgba(12, 20, 29, 0.16);
+  --shadow-lg: 0 34px 70px -28px rgba(12, 20, 29, 0.28);
+  --shadow-float: 0 44px 90px -34px rgba(12, 20, 29, 0.42);
+
+  /* --- Motion -----------------------------------------------------------
+     One easing curve and three durations across the whole site. Anything
+     that moves picks from these, which is what keeps the motion coherent. */
+  --ease-out-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 300ms;
+  --dur-mid: 600ms;
+  --dur-slow: 1000ms;
 }
 
 @media (min-width: 1024px) {
@@ -63,8 +82,14 @@
    Inverted surface. Applied to dark sections (hero, outreach, final CTA):
    re-points the same semantic tokens so every child component inverts without
    needing dark-specific variants.
+
+   `.tokens-dark` carries the identical token re-pointing but paints NO
+   background. Sections backed by photography use it so the image shows
+   through, while every child component still inverts exactly as it does on a
+   solid dark surface.
    -------------------------------------------------------------------------- */
-.surface-dark {
+.surface-dark,
+.tokens-dark {
   --color-canvas: var(--midnight);
   --color-surface: var(--midnight);
   --color-surface-muted: var(--midnight-soft);
@@ -77,9 +102,25 @@
   --color-accent-hover: #cba871;
   --color-accent-foreground: var(--midnight);
   --color-ring: var(--bronze-bright);
+}
 
+.surface-dark {
   background-color: var(--color-surface);
   color: var(--color-foreground);
+}
+
+.tokens-dark {
+  color: var(--color-foreground);
+}
+
+/*
+ * Over photography the muted/subtle foregrounds need more weight than they do
+ * on flat midnight: an image is never a uniform backdrop, so the same rgba
+ * that reads as "quiet" on #0c141d can drop below AA over a bright patch.
+ */
+.tokens-dark {
+  --color-foreground-muted: rgba(244, 241, 235, 0.82);
+  --color-foreground-subtle: rgba(244, 241, 235, 0.72);
 }
 
 .surface-muted {
@@ -112,6 +153,22 @@
    * Minimums are deliberately restrained so mobile headlines never overwhelm
    * a 375px viewport; maximums carry the editorial weight on large screens.
    */
+  /*
+   * Editorial extremes. `mega` is reserved for the two or three moments a page
+   * is allowed to shout - the homepage hero and a full-bleed statement. It is
+   * deliberately steeper than `display`: tighter leading and more negative
+   * tracking, which is what makes large serif setting read as considered
+   * rather than merely big.
+   */
+  --text-mega: clamp(2.75rem, 1rem + 7.4vw, 7rem);
+  --text-mega--line-height: 0.96;
+  --text-mega--letter-spacing: -0.03em;
+
+  /* Oversized numerals for indices and editorial counts. */
+  --text-numeral: clamp(2.25rem, 1rem + 5.2vw, 5rem);
+  --text-numeral--line-height: 1;
+  --text-numeral--letter-spacing: -0.03em;
+
   --text-display: clamp(2.375rem, 1.35rem + 4.4vw, 5rem);
   --text-display--line-height: 1.06;
   --text-display--letter-spacing: -0.02em;
@@ -170,6 +227,10 @@ body {
 /* ==========================================================================
    MOTION
    Subtle, CSS-only. No animation library.
+
+   Every animation below moves only `opacity`, `transform` or `clip-path`, all
+   of which the compositor can run off the main thread. Nothing animates
+   layout-affecting properties, and nothing loops.
    ========================================================================== */
 @keyframes gcc-reveal {
   from {
@@ -182,13 +243,242 @@ body {
   }
 }
 
+/* Text/element wipe: content rises out from behind its own top edge. */
+@keyframes gcc-mask {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+    transform: translate3d(0, 0.75rem, 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 -10% 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Photography: uncovers left-to-right while easing off a slight overscale. */
+@keyframes gcc-media {
+  from {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+    transform: scale(1.06);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+    transform: scale(1);
+  }
+}
+
+@keyframes gcc-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* A rule that draws itself. Used for section dividers and the network links. */
+@keyframes gcc-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes gcc-dash {
+  from {
+    stroke-dashoffset: var(--dash-length, 300);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/*
+ * Hero settle. A very slow, very small scale-down that finishes and stops -
+ * not a looping Ken Burns. It gives the frame a sense of arriving rather than
+ * of drifting, and because it ends there is no permanent compositor work.
+ */
+@keyframes gcc-hero-settle {
+  from {
+    transform: scale(1.09);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
 .reveal {
   opacity: 0;
 }
 
 .reveal[data-visible="true"] {
-  animation: gcc-reveal 700ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  animation: gcc-reveal var(--dur-mid) var(--ease-out-soft) both;
   animation-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal[data-variant="mask"][data-visible="true"] {
+  animation-name: gcc-mask;
+  animation-duration: 900ms;
+  animation-timing-function: var(--ease-out-expo);
+}
+
+.reveal[data-variant="media"][data-visible="true"] {
+  animation-name: gcc-media;
+  animation-duration: var(--dur-slow);
+  animation-timing-function: var(--ease-out-expo);
+}
+
+.reveal[data-variant="fade"][data-visible="true"] {
+  animation-name: gcc-fade;
+  animation-duration: 900ms;
+}
+
+.hero-settle {
+  animation: gcc-hero-settle 2200ms var(--ease-out-expo) both;
+}
+
+/*
+ * Gulf network diagram. The connectors draw themselves and the nodes fade in
+ * behind them, but only once the enclosing Reveal has reported visible - so
+ * the diagram animates when it is actually looked at rather than on load.
+ * Each connector carries its own --dash-length, computed from its true
+ * geometry, which is what keeps short and long links drawing at one rate.
+ */
+.net-link {
+  stroke-dasharray: var(--dash-length, 300);
+  stroke-dashoffset: var(--dash-length, 300);
+}
+
+.net-node {
+  opacity: 0;
+}
+
+.reveal[data-visible="true"] .net-link {
+  animation: gcc-dash 1400ms var(--ease-out-soft) both;
+  animation-delay: var(--net-delay, 0ms);
+}
+
+.reveal[data-visible="true"] .net-node {
+  animation: gcc-fade 700ms var(--ease-out-soft) both;
+  animation-delay: var(--net-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .net-link {
+    stroke-dashoffset: 0;
+  }
+
+  .net-node {
+    opacity: 1;
+  }
+}
+
+/* ==========================================================================
+   SURFACE TREATMENTS
+   ========================================================================== */
+
+/*
+ * Film grain. A tiny inline SVG turbulence tile, scaled up and held at very
+ * low opacity. It stops large flat gradients from banding on wide screens and
+ * gives dark photographic sections a printed rather than digital quality.
+ */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.4;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.32'/%3E%3C/svg%3E");
+}
+
+/*
+ * ---------------------------------------------------------------------------
+ * PHOTOGRAPHIC GRADE
+ * ---------------------------------------------------------------------------
+ * One grade applied to every photograph on the site.
+ *
+ * The source imagery ranges from warm golden-hour concrete to bright cyan sky,
+ * and dropped in ungraded it reads as a stock library rather than as one art
+ * direction. Pulling the saturation back and adding a trace of sepia walks the
+ * cool blues and teals toward the warm neutral the bronze accent lives in,
+ * while the contrast bump stops the result going flat.
+ *
+ * This is an image treatment, not a palette change: no brand colour is
+ * altered, and the photographs simply stop competing with the palette they sit
+ * inside. Remove the class from `Figure` to see the difference.
+ */
+.photo-grade {
+  filter: saturate(0.66) sepia(0.16) contrast(1.06) brightness(0.97);
+}
+
+/*
+ * Fine vertical rule field. Echoes the curtain-wall mullions in the authored
+ * hero backdrop, so photographic and drawn sections share a visual language.
+ */
+.rule-field {
+  background-image: repeating-linear-gradient(
+    to right,
+    color-mix(in srgb, var(--color-foreground) 7%, transparent) 0 1px,
+    transparent 1px var(--rule-gap, 5.5rem)
+  );
+}
+
+/* ==========================================================================
+   INTERACTION
+   ========================================================================== */
+
+/*
+ * Media zoom. The scale sits on the <img>, while the parent clips - so the
+ * frame stays put and only the photograph moves inside it.
+ */
+.media-frame {
+  overflow: hidden;
+}
+
+.media-frame img {
+  transition: transform 900ms var(--ease-out-expo);
+  will-change: transform;
+}
+
+.group:hover .media-frame img,
+.group:focus-visible .media-frame img,
+.media-frame:hover img {
+  transform: scale(1.045);
+}
+
+/*
+ * Button sweep. A pseudo-element wipes the hover colour across from the left
+ * rather than cross-fading the background, which reads as more deliberate at
+ * this scale. Content sits above it via a stacking context on the label.
+ */
+.btn-sweep {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.btn-sweep::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--sweep-color, var(--color-accent-hover));
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 500ms var(--ease-out-expo);
+}
+
+.btn-sweep:hover::before,
+.btn-sweep:focus-visible::before {
+  transform: scaleX(1);
 }
 
 /* Animated underline used by nav links and text CTAs. */
@@ -223,7 +513,28 @@ body {
     scroll-behavior: auto !important;
   }
 
-  .reveal {
+  /*
+   * Killing the duration alone is not enough for the clip-path reveals: the
+   * animation still resolves to its `from` keyframe for that 0.01ms, and any
+   * element whose start state is `inset(0 0 100% 0)` would flash as clipped.
+   * Dropping the animation entirely and pinning the final state is what
+   * guarantees content is simply present for users who opt out of motion.
+   */
+  .reveal,
+  .hero-settle {
+    animation: none !important;
     opacity: 1;
+    clip-path: none !important;
+    transform: none !important;
+  }
+
+  .media-frame img,
+  .group:hover .media-frame img,
+  .media-frame:hover img {
+    transform: none !important;
+  }
+
+  .btn-sweep::before {
+    transition: none;
   }
 }

@@ -15,20 +15,36 @@ import { cn } from "@/lib/utils";
  *
  * Sits transparently over the dark hero at the top of the page, then settles
  * onto a solid surface once scrolled. The transition is a plain CSS
- * background/border change driven by one passive scroll listener.
+ * background/border change driven by one passive scroll listener, with the
+ * scroll position read through requestAnimationFrame so a fast flick cannot
+ * queue a state update per scroll event.
  *
  * While transparent it carries `.surface-dark`, which re-points the semantic
  * colour tokens so the wordmark, nav and CTA invert without variant props.
+ * This is why every page hero keeps a dark top band - see PageHero.
  */
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    let frame = 0;
+
+    const onScroll = () => {
+      if (frame) return;
+
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        setScrolled(window.scrollY > 24);
+      });
+    };
 
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
   }, []);
 
   return (
@@ -37,7 +53,7 @@ export function Header() {
         "fixed inset-x-0 top-0 z-40 h-(--header-h)",
         "transition-[background-color,border-color,box-shadow] duration-500 ease-out",
         scrolled
-          ? "border-b border-(--color-border) bg-(--color-canvas)/95 backdrop-blur-md"
+          ? "border-b border-(--color-border) bg-(--color-canvas)/92 shadow-[var(--shadow-sm)] backdrop-blur-xl"
           : "surface-dark border-b border-transparent bg-transparent",
       )}
     >
@@ -78,6 +94,20 @@ export function Header() {
           <MobileMenu items={mainNav} cta={headerCta} />
         </div>
       </Container>
+
+      {/*
+        Hairline under the transparent state. Present only while unscrolled, so
+        the header still reads as an edge over photography without a border
+        that would look heavy against the hero.
+      */}
+      <div
+        aria-hidden="true"
+        className={cn(
+          "pointer-events-none absolute inset-x-0 bottom-0 h-px transition-opacity duration-500",
+          "bg-[linear-gradient(90deg,transparent,rgba(244,241,235,0.16),transparent)]",
+          scrolled ? "opacity-0" : "opacity-100",
+        )}
+      />
     </header>
   );
 }

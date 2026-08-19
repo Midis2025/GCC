@@ -60,11 +60,17 @@ export function FormField({
     <FormFieldContext.Provider
       value={{ id, descriptionId, errorId, hasError: Boolean(error), required }}
     >
-      <div className={cn("flex flex-col gap-1.5", className)}>
-        <label htmlFor={id} className={cn("text-sm font-medium", hideLabel && "sr-only")}>
+      <div className={cn("flex flex-col gap-2", className)}>
+        <label
+          htmlFor={id}
+          className={cn(
+            "text-label font-medium uppercase text-(--color-foreground-subtle)",
+            hideLabel && "sr-only",
+          )}
+        >
           {label}
           {required && (
-            <span className="ml-0.5 text-(--color-danger)" aria-hidden="true">
+            <span className="ml-1 text-(--color-accent)" aria-hidden="true">
               *
             </span>
           )}
@@ -74,13 +80,18 @@ export function FormField({
         {children}
 
         {description && (
-          <p id={descriptionId} className="text-sm text-(--color-foreground-muted)">
+          <p id={descriptionId} className="text-sm text-(--color-foreground-subtle)">
             {description}
           </p>
         )}
 
         {error && (
-          <p id={errorId} role="alert" className="text-sm text-(--color-danger)">
+          <p
+            id={errorId}
+            role="alert"
+            className="flex items-start gap-2 text-sm text-(--color-danger)"
+          >
+            <span aria-hidden="true" className="mt-1.5 h-1 w-1 shrink-0 bg-(--color-danger)" />
             {error}
           </p>
         )}

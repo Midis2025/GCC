@@ -77,11 +77,10 @@ export function ContactForm() {
 
   if (submitted) {
     return (
-      <div
-        role="status"
-        className="border border-(--color-border) bg-(--color-surface) p-8 sm:p-10"
-      >
-        <h3 className="font-serif text-h3">Thank you for your enquiry.</h3>
+      // Borderless - the contact page already frames the form in a card.
+      <div role="status">
+        <span aria-hidden="true" className="block h-px w-12 bg-(--color-accent)" />
+        <h3 className="mt-6 font-serif text-h3">Thank you for your enquiry.</h3>
         <p className="mt-4 max-w-[48ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
           Your details have been captured by the form. Enquiries are reviewed directly and you can
           expect a reply from a member of the team.

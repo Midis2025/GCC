@@ -3,6 +3,7 @@ import { NavLink } from "@/components/layout/NavLink";
 import { Container } from "@/components/ui/Container";
 import { footerNav, legalNav, socialLinks } from "@/data/navigation";
 import { complianceConfig, contactConfig, siteConfig } from "@/data/site";
+import { gulfMarkets } from "@/data/homepage";
 
 /**
  * Institutional footer.
@@ -10,6 +11,11 @@ import { complianceConfig, contactConfig, siteConfig } from "@/data/site";
  * Every contact and compliance value is read from the central config and each
  * block is conditional, so unsupplied details are omitted entirely rather than
  * rendering an empty row or placeholder text.
+ *
+ * Structurally it closes the page rather than repeating it: an oversized
+ * wordmark and the market line sit above the link columns, and a fine rule
+ * field carries the same drawn language as the heroes. It never carries a call
+ * to action, because `CTASection` already precedes it on every route.
  */
 export function Footer() {
   const year = new Date().getFullYear();
@@ -18,72 +24,94 @@ export function Footer() {
   );
 
   return (
-    <footer className="surface-dark">
-      <Container className="pb-10 pt-[var(--space-section-sm)]">
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,2fr)] lg:gap-16">
-          <div className="max-w-sm">
-            <Logo size="md" />
-            <p className="mt-6 text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
+    <footer className="surface-dark relative isolate overflow-hidden">
+      <div
+        aria-hidden="true"
+        className="rule-field absolute inset-y-0 right-0 -z-10 w-[40%] opacity-70 [--rule-gap:6.5rem]"
+      />
+
+      <Container className="pb-10 pt-[var(--space-section-md)]">
+        {/* Identity band. */}
+        <div className="flex flex-col gap-8 border-b border-(--color-border) pb-12 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-lg">
+            <Logo size="lg" />
+            <p className="mt-6 text-[1.0625rem] leading-relaxed text-(--color-foreground-muted)">
               {siteConfig.shortDescription}
             </p>
+          </div>
+
+          <div className="lg:text-right">
+            <p className="text-label font-medium uppercase text-(--color-foreground-subtle)">
+              Markets
+            </p>
+            <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2 lg:justify-end">
+              {gulfMarkets.map((market) => (
+                <li key={market.code} className="text-[0.9375rem] text-(--color-foreground-muted)">
+                  {market.label}
+                </li>
+              ))}
+              <li className="text-[0.9375rem] text-(--color-accent)">International</li>
+            </ul>
+
             {contactConfig.locality && (
-              <p className="mt-4 text-label uppercase text-(--color-foreground-subtle)">
+              <p className="mt-5 text-label uppercase text-(--color-foreground-subtle)">
                 {contactConfig.locality}
               </p>
             )}
           </div>
+        </div>
 
-          <div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3">
-            {footerNav.map((group) => (
-              <nav key={group.label} aria-label={group.label}>
-                <h2 className="text-label font-medium uppercase text-(--color-foreground-subtle)">
-                  {group.label}
-                </h2>
-                <ul className="mt-5 flex flex-col gap-3">
-                  {group.items.map((item) => (
-                    <li key={`${group.label}-${item.href}-${item.label}`}>
-                      <NavLink item={item} className="py-1 text-[0.9375rem]" />
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            ))}
+        {/* Link columns. */}
+        <div className="grid grid-cols-2 gap-x-8 gap-y-10 pt-12 sm:grid-cols-3 lg:grid-cols-4">
+          {footerNav.map((group) => (
+            <nav key={group.label} aria-label={group.label}>
+              <h2 className="text-label font-medium uppercase text-(--color-foreground-subtle)">
+                {group.label}
+              </h2>
+              <ul className="mt-5 flex flex-col gap-3">
+                {group.items.map((item) => (
+                  <li key={`${group.label}-${item.href}-${item.label}`}>
+                    <NavLink item={item} className="py-1 text-[0.9375rem]" />
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ))}
 
-            {hasContactDetails && (
-              <div>
-                <h2 className="text-label font-medium uppercase text-(--color-foreground-subtle)">
-                  Contact
-                </h2>
-                <ul className="mt-5 flex flex-col gap-3 text-[0.9375rem] text-(--color-foreground-muted)">
-                  {contactConfig.email && (
-                    <li>
-                      <a
-                        href={`mailto:${contactConfig.email}`}
-                        className="link-underline inline-block py-1 hover:text-(--color-foreground)"
-                      >
-                        {contactConfig.email}
-                      </a>
-                    </li>
-                  )}
-                  {contactConfig.phone && (
-                    <li>
-                      <a
-                        href={`tel:${contactConfig.phone.replace(/\s+/g, "")}`}
-                        className="link-underline inline-block py-1 hover:text-(--color-foreground)"
-                      >
-                        {contactConfig.phone}
-                      </a>
-                    </li>
-                  )}
-                  {contactConfig.address && (
-                    <li>
-                      <address className="not-italic">{contactConfig.address}</address>
-                    </li>
-                  )}
-                </ul>
-              </div>
-            )}
-          </div>
+          {hasContactDetails && (
+            <div>
+              <h2 className="text-label font-medium uppercase text-(--color-foreground-subtle)">
+                Contact
+              </h2>
+              <ul className="mt-5 flex flex-col gap-3 text-[0.9375rem] text-(--color-foreground-muted)">
+                {contactConfig.email && (
+                  <li>
+                    <a
+                      href={`mailto:${contactConfig.email}`}
+                      className="link-underline inline-block py-1 hover:text-(--color-foreground)"
+                    >
+                      {contactConfig.email}
+                    </a>
+                  </li>
+                )}
+                {contactConfig.phone && (
+                  <li>
+                    <a
+                      href={`tel:${contactConfig.phone.replace(/\s+/g, "")}`}
+                      className="link-underline inline-block py-1 hover:text-(--color-foreground)"
+                    >
+                      {contactConfig.phone}
+                    </a>
+                  </li>
+                )}
+                {contactConfig.address && (
+                  <li>
+                    <address className="not-italic">{contactConfig.address}</address>
+                  </li>
+                )}
+              </ul>
+            </div>
+          )}
         </div>
 
         {/* Client-approved compliance wording only. Omitted while unsupplied. */}
@@ -109,7 +137,7 @@ export function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={link.label}
-                className="inline-flex h-11 w-11 items-center justify-center -ml-3 text-(--color-foreground-muted) transition-colors hover:text-(--color-foreground) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
+                className="-ml-3 inline-flex h-11 w-11 items-center justify-center text-(--color-foreground-muted) transition-colors hover:text-(--color-foreground) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
               >
                 <LinkedInGlyph />
               </a>

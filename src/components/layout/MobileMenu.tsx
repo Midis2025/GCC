@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type CSSProperties } from "react";
 
 import { NavLink } from "@/components/layout/NavLink";
 import { Button } from "@/components/ui/Button";
@@ -20,6 +20,12 @@ export interface MobileMenuProps {
 
 /**
  * Full-height off-canvas navigation for small viewports.
+ *
+ * The panel stays mounted and is driven by `data-open`, so it can animate both
+ * in and out - the previous `hidden` toggle made an exit transition
+ * impossible. While closed it carries `inert`, which removes it from the
+ * accessibility tree and from the tab order just as `hidden` did, so nothing
+ * behind the scenes is reachable.
  *
  * Accessibility: the trigger exposes aria-expanded/aria-controls, the panel is
  * a labelled modal dialog, focus is trapped while open and restored on close,
@@ -110,15 +116,15 @@ export function MobileMenu({ items, cta, className }: MobileMenuProps) {
         <MenuGlyph />
       </button>
 
-      {open && (
-        <button
-          type="button"
-          tabIndex={-1}
-          aria-hidden="true"
-          onClick={close}
-          className="fixed inset-0 z-50 cursor-default bg-black/45 backdrop-blur-[2px]"
-        />
-      )}
+      {/* Scrim. Fades rather than appearing, and is not focusable. */}
+      <div
+        aria-hidden="true"
+        onClick={close}
+        className={cn(
+          "fixed inset-0 z-50 bg-black/55 backdrop-blur-[3px] transition-opacity duration-500 ease-out",
+          open ? "opacity-100" : "pointer-events-none opacity-0",
+        )}
+      />
 
       <div
         id={panelId}
@@ -126,11 +132,23 @@ export function MobileMenu({ items, cta, className }: MobileMenuProps) {
         role="dialog"
         aria-modal="true"
         aria-label="Site menu"
-        hidden={!open}
-        className="surface-dark fixed inset-y-0 right-0 z-50 flex w-full max-w-[26rem] flex-col overflow-y-auto px-6 pb-8 pt-5 sm:px-8"
+        inert={!open}
+        data-open={open ? "true" : "false"}
+        className={cn(
+          "surface-dark fixed inset-y-0 right-0 z-50 flex w-full max-w-[27rem] flex-col overflow-y-auto px-6 pb-8 pt-5 sm:px-8",
+          "transition-transform duration-500 ease-[var(--ease-out-expo)] motion-reduce:transition-none",
+          open ? "translate-x-0" : "translate-x-full",
+        )}
       >
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 left-0 w-px bg-[linear-gradient(to_bottom,transparent,rgba(184,148,95,0.45),transparent)]"
+        />
+
         <div className="flex items-center justify-between">
-          <span className="font-serif text-[1.375rem] text-(--color-foreground)">Menu</span>
+          <span className="text-label font-medium uppercase text-(--color-foreground-subtle)">
+            Menu
+          </span>
           <button
             type="button"
             onClick={close}
@@ -143,20 +161,43 @@ export function MobileMenu({ items, cta, className }: MobileMenuProps) {
 
         <nav aria-label="Mobile" className="mt-10">
           <ul className="flex flex-col">
-            {items.map((item) => (
-              <li key={item.href} className="border-b border-(--color-border-subtle)">
+            {items.map((item, index) => (
+              <li
+                key={item.href}
+                /*
+                  Each row eases in behind the panel with a stagger. The delay
+                  applies on open only - on close every row leaves at once, so
+                  dismissing never feels slower than opening.
+                */
+                style={{ transitionDelay: open ? `${120 + index * 45}ms` : "0ms" } as CSSProperties}
+                className={cn(
+                  "border-b border-(--color-border-subtle) transition-[opacity,transform] duration-500 ease-out motion-reduce:transition-none",
+                  open ? "translate-x-0 opacity-100" : "translate-x-6 opacity-0",
+                )}
+              >
                 <NavLink
                   item={item}
                   underline={false}
-                  className="block py-4 font-serif text-2xl"
+                  className="w-full py-4 font-serif text-2xl"
                   onNavigate={close}
+                  prefix={
+                    <span aria-hidden="true" className="font-serif text-xs text-(--color-accent)">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                  }
                 />
               </li>
             ))}
           </ul>
         </nav>
 
-        <div className="mt-auto pt-10">
+        <div
+          style={{ transitionDelay: open ? `${140 + items.length * 45}ms` : "0ms" }}
+          className={cn(
+            "mt-auto pt-10 transition-[opacity,transform] duration-500 ease-out motion-reduce:transition-none",
+            open ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
+          )}
+        >
           {cta && (
             <Button href={cta.href} fullWidth size="lg" withArrow onClick={close}>
               {cta.label}

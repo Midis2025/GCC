@@ -1,11 +1,16 @@
+import Link from "next/link";
+
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
 import { Button } from "@/components/ui/Button";
+import { Reveal } from "@/components/ui/Reveal";
+import { mainNav } from "@/data/navigation";
 
 export default function NotFound() {
   return (
     <>
       <PageHero
+        variant="minimal"
         eyebrow="404"
         title="This page could not be found."
         lead="The page you are looking for may have moved, or the address may be incorrect."
@@ -20,7 +25,38 @@ export default function NotFound() {
           </>
         }
       />
-      <Section spacing="sm" />
+
+      {/* A route list, so the page is a way forward rather than a dead end. */}
+      <Section spacing="md" aria-labelledby="not-found-nav">
+        <Reveal>
+          <h2
+            id="not-found-nav"
+            className="text-label font-medium uppercase text-(--color-foreground-subtle)"
+          >
+            Go to
+          </h2>
+
+          <ul className="mt-8 border-t border-(--color-border)">
+            {mainNav
+              .filter((item) => item.href !== "/")
+              .map((item, index) => (
+                <li key={item.href} className="border-b border-(--color-border)">
+                  <Link
+                    href={item.href}
+                    className="group flex items-baseline gap-5 py-6 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
+                  >
+                    <span aria-hidden="true" className="font-serif text-sm text-(--color-accent)">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className="font-serif text-h3 transition-colors duration-300 group-hover:text-(--color-accent)">
+                      {item.label}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+          </ul>
+        </Reveal>
+      </Section>
     </>
   );
 }

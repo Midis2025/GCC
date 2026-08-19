@@ -4,10 +4,22 @@ import { useEffect, useRef, useState, type CSSProperties, type ElementType, type
 
 import { cn } from "@/lib/utils";
 
+/**
+ * Motion vocabulary. Four options, deliberately - the restraint is what keeps
+ * a long page from feeling like a demo reel.
+ *
+ * - `rise`  fade and lift. The default, and correct for most copy blocks.
+ * - `mask`  wipes up from behind its own top edge. For headlines and numerals.
+ * - `media` uncovers left-to-right off a slight overscale. For photography.
+ * - `fade`  opacity only. For anything already carrying its own movement.
+ */
+export type RevealVariant = "rise" | "mask" | "media" | "fade";
+
 export interface RevealProps {
   children: ReactNode;
   /** Stagger in milliseconds, applied as an animation-delay. */
   delay?: number;
+  variant?: RevealVariant;
   as?: ElementType;
   className?: string;
 }
@@ -50,7 +62,13 @@ function getObserver(): IntersectionObserver | null {
  * honoured in globals.css, which pins `.reveal` to full opacity, so content is
  * never hidden from users who opt out of motion.
  */
-export function Reveal({ children, delay = 0, as: Component = "div", className }: RevealProps) {
+export function Reveal({
+  children,
+  delay = 0,
+  variant = "rise",
+  as: Component = "div",
+  className,
+}: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -82,6 +100,7 @@ export function Reveal({ children, delay = 0, as: Component = "div", className }
       ref={ref}
       className={cn("reveal", className)}
       data-visible={visible ? "true" : "false"}
+      data-variant={variant === "rise" ? undefined : variant}
       style={delay ? ({ "--reveal-delay": `${delay}ms` } as CSSProperties) : undefined}
     >
       {children}

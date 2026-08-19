@@ -8,10 +8,50 @@
 export const heroContent = {
   eyebrow: "Gulf Capital Markets / Investor Relations / Strategic Communications",
   headline: "Connecting Companies, Capital and Opportunity Across the Gulf.",
+  /**
+   * The same headline, broken for the line-by-line reveal in the hero.
+   * Presentation only - the phrasing must stay identical to `headline`, which
+   * remains the single source for metadata and any non-animated rendering.
+   */
+  headlineLines: ["Connecting Companies,", "Capital and Opportunity", "Across the Gulf."],
   supporting:
     "GCC advises companies on investor visibility, capital-markets communication and engagement with the investor audiences most relevant to their strategy, across Gulf and international markets.",
   primaryCta: { label: "Explore Our Capabilities", href: "/services" },
   secondaryCta: { label: "Start a Conversation", href: "/contact" },
+} as const;
+
+/**
+ * Orientation strip, directly below the hero.
+ *
+ * CONTENT INTEGRITY: every figure here is a count of something described
+ * elsewhere on this site - four capabilities, six named markets, one corporate
+ * narrative. None of them is a performance claim.
+ *
+ * Do NOT add years of experience, client counts, assets raised, mandates
+ * completed or deal values. None have been supplied, none would be verifiable,
+ * and a figure of that kind in this position reads as a track record.
+ */
+export const orientationContent = {
+  statement: "One narrative. Four capabilities. Six Gulf markets.",
+  supporting:
+    "The practice is organised so that investor relations, outreach, media and digital work draw on a single account of the business.",
+  facts: [
+    {
+      figure: "04",
+      label: "Connected capabilities",
+      description: "Investor relations, outreach, media and digital communications.",
+    },
+    {
+      figure: "06",
+      label: "Gulf markets",
+      description: "UAE, Saudi Arabia, Qatar, Kuwait, Bahrain and Oman.",
+    },
+    {
+      figure: "01",
+      label: "Corporate narrative",
+      description: "One account of the business, adapted in expression, not substance.",
+    },
+  ],
 } as const;
 
 export const introContent = {
