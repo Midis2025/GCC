@@ -686,8 +686,8 @@ function drawHubNetwork(
   project(hub.lon, hub.lat, rot, cx, cy, radius, N);
   if (N.z > 0.02) {
     const strength = Math.min(1, N.z * 2.6);
-    const bloom = ctx.createRadialGradient(N.sx, N.sy, 0, N.sx, N.sy, radius * 0.16);
-    bloom.addColorStop(0, `rgba(${WARM},${0.5 * strength})`);
+    const bloom = ctx.createRadialGradient(N.sx, N.sy, 0, N.sx, N.sy, radius * 0.115);
+    bloom.addColorStop(0, `rgba(${WARM},${0.42 * strength})`);
     bloom.addColorStop(0.35, `rgba(${WARM},${0.16 * strength})`);
     bloom.addColorStop(1, `rgba(${WARM},0)`);
 

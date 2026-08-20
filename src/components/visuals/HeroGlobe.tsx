@@ -174,12 +174,14 @@ export function HeroGlobe({ className }: { className?: string }) {
   */
   const frame = useMemo(
     () => ({
-      cx: wide ? 0.54 : 0.5,
-      cy: wide ? 0.5 : 0.5,
-      // On desktop the disc fills its layer edge to edge; because the layer
-      // itself runs past the top and right of the section, that is what makes
-      // the globe bleed off the page.
-      radius: compact ? 0.4 : wide ? 0.52 : 0.42,
+      cx: 0.5,
+      // Lifted slightly so the disc's lower edge falls behind the standing bar
+      // rather than being cut by it.
+      cy: wide ? 0.46 : 0.5,
+      // The layer is half the viewport wide and the full section tall, so on
+      // any normal desktop the shorter side is the width - which is what ties
+      // the globe's size to the monitor rather than to the amount of copy.
+      radius: compact ? 0.4 : wide ? 0.5 : 0.42,
     }),
     [wide, compact],
   );
@@ -193,29 +195,78 @@ export function HeroGlobe({ className }: { className?: string }) {
     text rendered here. Recomputed only on resize: the label end of a leader is
     fixed, and it is the marker end that moves with the globe.
   */
-  const [box, setBox] = useState({ width: 0, height: 0 });
+  /**
+   * The layer's own size, plus how far it hangs past the right of the viewport.
+   * The overhang is what the labels have to be kept out of - it is deliberate
+   * for the globe, which is supposed to bleed, and fatal for text.
+   */
+  const [box, setBox] = useState({ width: 0, height: 0, overhang: 0, safeLeft: 0 });
 
   useEffect(() => {
     const element = wrapper.current;
     if (!element) return;
 
-    const observer = new ResizeObserver(([entry]) => {
-      const { width, height } = entry.contentRect;
-      setBox({ width, height });
-    });
+    const measure = () => {
+      const rect = element.getBoundingClientRect();
+      const viewport = document.documentElement.clientWidth;
 
+      /*
+        Where the headline actually ends, measured rather than assumed.
+
+        A fixed percentage was wrong: because the type scales on both axes, the
+        headline finishes anywhere between 51% and 67% of the viewport
+        depending on the window, so any constant either let labels land on the
+        type at one size or pushed them needlessly right at another.
+
+        The h1's own box is no use either - it is `max-w-[26ch]`, so its right
+        edge is the measure rather than the words. Its lines carry `w-fit`
+        precisely so that they can be measured here.
+      */
+      const lines = element.closest("section")?.querySelectorAll("h1 span.reveal");
+      const textRight = lines?.length
+        ? Math.max(...Array.from(lines, (line) => line.getBoundingClientRect().right))
+        : 0;
+
+      const safeLeft = Math.max(0, textRight + 32 - rect.left);
+
+      setBox({
+        width: rect.width,
+        height: rect.height,
+        overhang: Math.max(0, rect.right - viewport),
+        safeLeft,
+      });
+    };
+
+    const observer = new ResizeObserver(measure);
     observer.observe(element);
+    measure();
+
     return () => observer.disconnect();
   }, []);
 
   const anchors = useMemo(() => {
-    const { width, height } = box;
+    const { width, height, overhang, safeLeft } = box;
     if (!wide || width === 0) return undefined;
+
+    // A label sits to the right of its anchor, so the anchor has to leave room
+    // for the whole box inside the visible part of the layer, and must clear
+    // the type column on the other side. Clamping here rather than tuning the
+    // slots per breakpoint is what makes one arrangement survive 1024 through
+    // 2560 without a table of exceptions.
+    const labelWidth = width > 760 ? 168 : 148;
+    const maxX = Math.max(safeLeft, width - overhang - labelWidth);
+    const maxY = height - 70;
 
     return Object.fromEntries(
       heroMarkets.map((market) => {
-        const slot = heroLabelSlots[market.code] ?? { x: 0.6, y: 0.5 };
-        return [market.code, { x: width * slot.x, y: height * slot.y }];
+        const slot = heroLabelSlots[market.code] ?? { x: 0.5, y: 0.5 };
+        return [
+          market.code,
+          {
+            x: Math.min(Math.max(width * slot.x, safeLeft), maxX),
+            y: Math.min(Math.max(height * slot.y, 70), maxY),
+          },
+        ];
       }),
     );
   }, [box, wide]);
@@ -224,20 +275,23 @@ export function HeroGlobe({ className }: { className?: string }) {
     <div
       ref={wrapper}
       className={cn(
-        // Stacked below the copy on small screens; from `lg` a layer that runs
-        // off the top and the right of the section, so the disc is bigger than
-        // the frame that holds it. That oversize is the whole effect - a globe
-        // fully inside its box reads as an illustration of a globe.
+        // Stacked below the copy on small screens; from `lg` a full-height
+        // layer down the right of the section, running 8% past the edge so the
+        // disc bleeds off the page.
         //
-        // It reaches back to 38%, which does put the limb behind the end of the
-        // headline. That is deliberate and matches the reference: the limb is
-        // near-black under the hero lighting, so the type sits on it with more
-        // contrast than it has over the photograph alone.
+        // Anchored at 58% and sized off the viewport rather than off the
+        // section's own height. The headline is capped at 4rem, so it ends
+        // between 51% and 56% of the viewport at every width from `lg` up -
+        // starting the layer at 58% clears it everywhere, and because the disc
+        // is half the viewport wide it grows with the monitor instead of
+        // ballooning off it. At 1920 the previous geometry put the disc's left
+        // limb at 50% and the rest of it off-screen, which is why the right of
+        // the frame read as empty.
         //
-        // `-z-[3]` puts it above the scrims and the drawn field but below the
-        // container, which is `z-10` - so it is behind every word of type.
+        // `-z-[3]` puts it above the scrims but below the container, which is
+        // `z-10` - so it is behind every word of type.
         "relative mx-auto aspect-square w-full max-w-[19rem] sm:max-w-[23rem]",
-        "lg:absolute lg:left-[38%] lg:right-[-12%] lg:top-[-12%] lg:bottom-[-4%] lg:-z-[3] lg:aspect-auto lg:mx-0 lg:w-auto lg:max-w-none",
+        "lg:absolute lg:inset-y-0 lg:left-[52%] lg:right-[-8%] lg:-z-[3] lg:aspect-auto lg:mx-0 lg:w-auto lg:max-w-none",
         className,
       )}
     >
@@ -274,7 +328,12 @@ export function HeroGlobe({ className }: { className?: string }) {
               key={market.code}
               aria-hidden="true"
               className={cn(
-                "pointer-events-none absolute z-10 w-[9.5rem] transition-opacity duration-500",
+                "pointer-events-none absolute z-10 w-[8.5rem] transition-opacity duration-500 xl:w-[9.5rem]",
+                // The ground behind a label is a rotating globe, so it is never
+                // one colour: a marker sits over dark ocean one moment and the
+                // lit Gulf the next. A soft shadow is what keeps 12px grey
+                // legible over both without putting a plate behind every label.
+                "[text-shadow:0_1px_14px_rgba(4,8,14,0.95)]",
                 isActive ? "opacity-100" : "opacity-65",
               )}
               style={{

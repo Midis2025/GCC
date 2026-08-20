@@ -62,7 +62,7 @@ const marks: Record<string, React.ReactNode> = {
 
 export function HeroStats() {
   return (
-    <Container className="relative z-10 pb-[clamp(1.25rem,2.5vw,2rem)]">
+    <Container className="relative z-10 pb-[clamp(0.5rem,1.5svh,1.75rem)]">
       <dl
         className={[
           "grid grid-cols-1 border border-white/12 backdrop-blur-[14px] xs:grid-cols-2 lg:grid-cols-4",
@@ -73,7 +73,7 @@ export function HeroStats() {
           <div
             key={stat.label}
             className={[
-              "flex items-start gap-4 px-5 py-5 sm:gap-5 sm:px-6 sm:py-6",
+              "flex items-start gap-4 px-5 py-[clamp(0.6rem,1.7svh,1.5rem)] sm:gap-5 sm:px-6",
               // Hairlines between cells only - never on the panel's own edges,
               // which the border already draws.
               index > 0 ? "border-t border-white/10 xs:border-t-0" : "",

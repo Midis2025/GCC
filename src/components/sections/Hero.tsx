@@ -29,11 +29,15 @@ const at = (ms: number) => ({ "--reveal-delay": `${ms}ms` }) as CSSProperties;
  */
 export function Hero() {
   return (
-    // Taller than it was. The globe needs vertical room to read as a globe
-    // rather than as a disc wedged beside the type, and the standing bar now
-    // occupies the foot - so the fold lands on the bar, which is a better
-    // invitation to scroll than a half-visible card ever was.
-    <section className="tokens-dark relative isolate flex min-h-[max(40rem,90svh)] flex-col justify-end overflow-hidden bg-(--midnight)">
+    // Full viewport, not "most of it".
+    //
+    // At 90svh the section stopped short of the fold and left a strip of the
+    // next section showing under the standing bar, which on a large monitor
+    // read as the hero having run out rather than as an invitation to scroll.
+    // `100svh` closes it. The floor in rem is what stops a short laptop window
+    // from crushing the composition instead: below that the section simply
+    // grows and the bar goes under the fold, which is the right trade.
+    <section className="tokens-dark relative isolate flex min-h-[max(38rem,100svh)] flex-col overflow-hidden bg-(--midnight)">
       {/*
         Plane 1 - the ground.
 
@@ -76,11 +80,16 @@ export function Hero() {
       />
 
       {/*
-        Tighter than it was, top and bottom. The standing bar now has to fit
-        inside the same fold, and 30-odd pixels of padding is a cheaper thing to
-        give up than having the bar sit permanently just below it.
+        The copy takes the space the standing bar does not, and centres itself
+        in it. With the section pinned to the viewport this is what keeps the
+        composition balanced at any height - on a tall monitor the type sits in
+        the middle of the frame rather than being shoved against the bar by a
+        `justify-end`, and on a short one it simply tightens up.
+
+        The top padding is header clearance and nothing more; the rest of the
+        spacing is now the centring.
       */}
-      <Container className="relative z-10 pb-[clamp(1.75rem,3.5vw,2.5rem)] pt-[calc(var(--header-h)+clamp(3rem,7vw,4.5rem))]">
+      <Container className="relative z-10 flex flex-1 flex-col justify-center pb-[clamp(0.5rem,1.6svh,2.5rem)] pt-[calc(var(--header-h)+clamp(0.75rem,2svh,3rem))]">
         <p
           className="reveal flex items-center gap-3.5 text-label uppercase text-(--color-accent)"
           data-visible="true"
@@ -104,20 +113,27 @@ export function Hero() {
           carry no semantics.
         */}
         {/*
-          Sized down from the shared `mega` maximum of 5rem to 4rem, inline so
-          the token is untouched and every other page keeps the scale it had.
+          Sized inline, against both axes of the viewport, and capped at 4rem
+          rather than the shared `mega` maximum of 5rem.
 
-          This is the one change that makes the reference composition possible:
-          at 5rem the headline runs to 70% of the viewport and there is nowhere
-          for seven annotated labels to go. At 4rem it settles at just under
-          half, which is where the reference puts it, and the authored line
-          breaks still hold.
+          The cap is what makes the composition possible: at 5rem the headline
+          runs to 70% of the viewport and there is nowhere for seven annotated
+          labels to go. At 4rem it settles at just under half, which is where
+          the reference puts it, and the authored line breaks still hold.
+
+          The height term matters just as much now the section is pinned to
+          100svh: a 1280x705 laptop is wide enough to ask for 4rem and far too
+          short to hold it alongside a paragraph, two buttons and a standing
+          bar. `min()` lets whichever axis is scarcer win, so the type gives way
+          on a short screen instead of pushing the bar under the fold.
+
+          Inline rather than in the token, so every other page keeps its scale.
         */}
         <Heading
           level={1}
           size="mega"
-          className="mt-7 max-w-[26ch]"
-          style={{ fontSize: "clamp(2.375rem, 1rem + 4.3vw, 4rem)" }}
+          className="mt-[clamp(1rem,2.6svh,1.75rem)] max-w-[26ch]"
+          style={{ fontSize: "clamp(2.375rem, min(1rem + 4.3vw, 8svh), 4rem)" }}
           balance={false}
         >
           {heroContent.headlineLines.map((line, index) => {
@@ -130,8 +146,15 @@ export function Hero() {
 
             return (
               <span key={line} className="block overflow-hidden pb-[0.08em]">
+                {/*
+                  `w-fit` so the box hugs the words. Nothing visual depends on
+                  it - a full-width block looks identical - but `HeroGlobe`
+                  measures these to find where the type column actually ends,
+                  and a full-width box would report the measure instead of the
+                  line.
+                */}
                 <span
-                  className="reveal block"
+                  className="reveal block w-fit"
                   data-visible="true"
                   data-variant="mask"
                   style={at(140 + index * 130)}
@@ -150,7 +173,7 @@ export function Hero() {
           already narrower than this - so nothing about the reading experience
           moves; only the empty space to its right does.
         */}
-        <div className="mt-9 max-w-[54rem] lg:max-w-[52%]">
+        <div className="mt-[clamp(1.25rem,3.4svh,2.25rem)] max-w-[54rem] lg:max-w-[52%]">
           <p
             className="reveal max-w-[54ch] text-lead text-(--color-foreground-muted)"
             data-visible="true"
@@ -160,7 +183,7 @@ export function Hero() {
           </p>
 
           <div
-            className="reveal mt-9 flex flex-col gap-3 xs:flex-row xs:flex-wrap xs:items-center xs:gap-4"
+            className="reveal mt-[clamp(1.25rem,3.4svh,2.25rem)] flex flex-col gap-3 xs:flex-row xs:flex-wrap xs:items-center xs:gap-4"
             data-visible="true"
             style={at(760)}
           >
