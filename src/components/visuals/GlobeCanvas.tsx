@@ -13,6 +13,8 @@ import type { Projected, Rotation } from "@/lib/globe";
    -------------------------------------------------------------------------- */
 const BRONZE = "184,148,95";
 const IVORY = "244,241,235";
+/** City lights and the hub glow. Warmer and lighter than the bronze accent. */
+const WARM = "232,190,126";
 
 /** Radians per second of automatic drift. A full turn takes just over 2min. */
 const AUTO_SPEED = 0.05;
@@ -40,11 +42,28 @@ export interface GlobeCanvasProps {
   /** Drops the graticule density and the outer glow on small screens. */
   compact: boolean;
   /**
-   * True when the information panel floats over the lower-left of the globe.
-   * The disc is pushed right and up so the Gulf - which is what the panel is
-   * describing - never ends up behind it.
+   * Where the disc sits inside the canvas, as fractions. `cx`/`cy` are of the
+   * canvas box; `radius` is of its shorter side.
+   *
+   * This is what lets one renderer serve two very different placements - the
+   * outreach section pushes the disc clear of its floating panel, the hero
+   * pushes it right and lets it bleed past the edge of the frame.
    */
-  offsetForPanel: boolean;
+  frame: { cx: number; cy: number; radius: number };
+  /**
+   * `panel` is the outreach treatment: lit from the upper left, no region wash,
+   * no leader lines.
+   *
+   * `hero` is lit from the centre-right and washes the Gulf in bronze, so the
+   * limb that passes behind the headline stays near-black while the region the
+   * page is about is the brightest thing on the sphere. It also draws a leader
+   * from each market to its standing label.
+   *
+   * Defaulted to `panel` so the outreach section is unaffected by any of this.
+   */
+  variant?: "panel" | "hero";
+  /** Label anchor positions in canvas pixels, keyed by market code. */
+  labelAnchors?: Record<string, { x: number; y: number }>;
   className?: string;
 }
 
@@ -88,7 +107,9 @@ export function GlobeCanvas({
   onHover,
   reducedMotion,
   compact,
-  offsetForPanel,
+  frame,
+  variant = "panel",
+  labelAnchors,
   className,
 }: GlobeCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -104,6 +125,13 @@ export function GlobeCanvas({
   const pointer = useRef({ dragging: false, moved: 0, x: 0, y: 0 });
   /** Screen positions of every market, refreshed each frame for hit testing. */
   const hits = useRef<{ index: number; x: number; y: number }[]>([]);
+  /**
+   * Placement, held in a ref so a caller passing an inline object literal
+   * cannot restart the draw loop - which would rebuild both observers and drop
+   * a frame - on every one of its own renders.
+   */
+  const layout = useRef(frame);
+  const anchors = useRef(labelAnchors);
 
   /* --- Coastlines, off the critical path -------------------------------- */
   useEffect(() => {
@@ -127,6 +155,14 @@ export function GlobeCanvas({
     linkProgress.current = reducedMotion ? 1 : 0;
   }, [activeIndex, reducedMotion]);
 
+  useEffect(() => {
+    layout.current = frame;
+  }, [frame]);
+
+  useEffect(() => {
+    anchors.current = labelAnchors;
+  }, [labelAnchors]);
+
   /* --- Draw loop -------------------------------------------------------- */
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -142,16 +178,32 @@ export function GlobeCanvas({
     let frame = 0;
     let last = performance.now();
     let elapsed = 0;
+    let backingRatio = 1;
+    let layers: GlobeLayers | null = null;
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    /*
+      Device pixel ratio, scaled down as the canvas gets bigger.
 
+      This globe is drawn from big radial gradients - atmosphere, body,
+      terminator, region wash - each of which covers the whole disc, so the
+      frame cost is fill rate rather than JavaScript. At the hero's size a flat
+      DPR of 2 means 4.4 million backing pixels and roughly half the frames it
+      should have. Backing off to 1.25 there costs nothing visible on a globe
+      whose sharpest feature is a one-pixel coastline, and hands back the
+      frames. The outreach globe is small enough to stay at 2.
+    */
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
       width = rect.width;
       height = rect.height;
-      canvas.width = Math.round(width * dpr);
-      canvas.height = Math.round(height * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const area = width * height;
+      const cap = area > 900_000 ? 1.25 : area > 400_000 ? 1.6 : 2;
+      backingRatio = Math.min(window.devicePixelRatio || 1, cap);
+
+      canvas.width = Math.round(width * backingRatio);
+      canvas.height = Math.round(height * backingRatio);
+      ctx.setTransform(backingRatio, 0, 0, backingRatio, 0, 0);
     };
 
     resize();
@@ -218,29 +270,79 @@ export function GlobeCanvas({
       }
 
       /* --- Frame ------------------------------------------------------- */
-      const cx = width * (offsetForPanel ? 0.55 : 0.5);
-      const cy = height * (offsetForPanel ? 0.44 : 0.5);
-      const radius = Math.min(width, height) * (compact ? 0.38 : 0.44);
+      const { cx: fx, cy: fy, radius: fr } = layout.current;
+      const cx = width * fx;
+      const cy = height * fy;
+      const radius = Math.min(width, height) * fr;
 
       ctx.clearRect(0, 0, width, height);
 
-      drawAtmosphere(ctx, cx, cy, radius, compact);
-      drawSphere(ctx, cx, cy, radius);
+      const hero = variant === "hero";
+
+      /*
+        The body of the globe does not rotate.
+
+        Atmosphere, sphere, terminator and rim are all functions of cx, cy and
+        radius alone - nothing in them depends on the orientation - yet they are
+        four large radial gradients, which is the most expensive thing in the
+        frame. So they are rendered once into two offscreen layers and blitted
+        thereafter, and only the parts that actually turn are redrawn. Rebuilt
+        only when the geometry itself changes.
+      */
+      if (
+        !layers ||
+        layers.cx !== cx ||
+        layers.cy !== cy ||
+        layers.radius !== radius ||
+        layers.dpr !== backingRatio
+      ) {
+        layers = buildLayers(width, height, backingRatio, cx, cy, radius, compact, hero);
+      }
+
+      ctx.drawImage(layers.base, 0, 0, width, height);
 
       ctx.save();
       ctx.beginPath();
       ctx.arc(cx, cy, radius, 0, Math.PI * 2);
       ctx.clip();
 
-      drawGraticule(ctx, rot, cx, cy, radius, compact);
-      if (land.current) drawCoastlines(ctx, land.current, rot, cx, cy, radius);
-      drawTerminator(ctx, cx, cy, radius);
+      drawGraticule(ctx, rot, cx, cy, radius, compact, hero);
+
+      if (land.current) {
+        // Project every coastline vertex ONCE, then let the fill, the stroke
+        // and the light field all read the same buffer. Projecting per layer
+        // instead cost three passes over 1,500 vertices and took the hero from
+        // 60fps to 30.
+        projectLand(land.current, rot, cx, cy, radius);
+
+        // The hero reads as a night earth: land carries a fill so the
+        // continents are masses rather than wireframes, and the coasts are lit.
+        if (hero) drawLandmass(ctx, land.current);
+        drawCoastlines(ctx, land.current, hero);
+        if (hero) drawCityLights(ctx, land.current);
+      }
+
+      if (hero) drawRegionWash(ctx, rot, cx, cy, radius);
 
       ctx.restore();
 
-      drawRim(ctx, cx, cy, radius);
-      drawConnections(ctx, market, rot, cx, cy, radius, linkProgress.current);
-      drawMarkets(ctx, rot, cx, cy, radius, active.current, hovered.current, elapsed, reducedMotion, fontFamily, hits);
+      // Terminator and rim, pre-rendered together.
+      ctx.drawImage(layers.overlay, 0, 0, width, height);
+
+      if (hero) {
+        // Left boundary for the arcs, as a fraction of the layer. The layer
+        // starts at 38% of the viewport and the headline ends near 58%, so
+        // ~0.27 of the layer is where the type column stops.
+        drawHubNetwork(ctx, rot, cx, cy, radius, active.current, linkProgress.current, width * 0.27);
+        if (anchors.current) {
+          drawLeaders(ctx, rot, cx, cy, radius, anchors.current, active.current);
+        }
+      } else {
+        drawConnections(ctx, market, rot, cx, cy, radius, linkProgress.current);
+      }
+      // The hero carries a standing HTML label for every market, so the canvas
+      // must not draw one too - two names on one dot is just a double image.
+      drawMarkets(ctx, rot, cx, cy, radius, active.current, hovered.current, elapsed, reducedMotion, fontFamily, hits, !hero);
     };
 
     frame = requestAnimationFrame(draw);
@@ -250,7 +352,7 @@ export function GlobeCanvas({
       resizeObserver.disconnect();
       visibility.disconnect();
     };
-  }, [reducedMotion, compact, offsetForPanel]);
+  }, [reducedMotion, compact, variant]);
 
   /* --- Pointer ---------------------------------------------------------- */
   const pick = useCallback((clientX: number, clientY: number) => {
@@ -354,16 +456,77 @@ export function GlobeCanvas({
    Drawing
    ========================================================================== */
 
-/** Outer glow. Bronze close in, cool steel further out, gone by 1.3r. */
+/**
+ * The two pre-rendered, rotation-independent layers of the globe.
+ *
+ * `base` is what goes under everything (atmosphere and body); `overlay` is what
+ * goes over the rotating content (terminator and rim). The geometry they were
+ * built for is carried alongside so the draw loop can tell when they are stale.
+ */
+interface GlobeLayers {
+  base: HTMLCanvasElement;
+  overlay: HTMLCanvasElement;
+  cx: number;
+  cy: number;
+  radius: number;
+  dpr: number;
+}
+
+function buildLayers(
+  width: number,
+  height: number,
+  dpr: number,
+  cx: number,
+  cy: number,
+  radius: number,
+  compact: boolean,
+  hero: boolean,
+): GlobeLayers {
+  const make = () => {
+    const surface = document.createElement("canvas");
+    surface.width = Math.max(1, Math.round(width * dpr));
+    surface.height = Math.max(1, Math.round(height * dpr));
+    const context = surface.getContext("2d");
+    context?.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { surface, context };
+  };
+
+  const base = make();
+  if (base.context) {
+    drawAtmosphere(base.context, cx, cy, radius, compact || hero);
+    drawSphere(base.context, cx, cy, radius, hero);
+  }
+
+  const overlay = make();
+  if (overlay.context) {
+    overlay.context.save();
+    overlay.context.beginPath();
+    overlay.context.arc(cx, cy, radius, 0, Math.PI * 2);
+    overlay.context.clip();
+    drawTerminator(overlay.context, cx, cy, radius, hero);
+    overlay.context.restore();
+    drawRim(overlay.context, cx, cy, radius, hero);
+  }
+
+  return { base: base.surface, overlay: overlay.surface, cx, cy, radius, dpr };
+}
+
+/**
+ * Outer glow. Bronze close in, cool steel further out, gone by 1.3r.
+ *
+ * `dim` is passed for the hero as well as for small screens: at hero scale the
+ * limb runs directly behind the headline, and a glow bright enough to look
+ * right on a 400px disc becomes a lit band across an 80px word.
+ */
 function drawAtmosphere(
   ctx: CanvasRenderingContext2D,
   cx: number,
   cy: number,
   radius: number,
-  compact: boolean,
+  dim: boolean,
 ) {
   const gradient = ctx.createRadialGradient(cx, cy, radius * 0.94, cx, cy, radius * 1.3);
-  gradient.addColorStop(0, `rgba(${BRONZE},${compact ? 0.13 : 0.17})`);
+  gradient.addColorStop(0, `rgba(${BRONZE},${dim ? 0.11 : 0.17})`);
   gradient.addColorStop(0.34, "rgba(150,168,190,0.075)");
   gradient.addColorStop(1, "rgba(150,168,190,0)");
 
@@ -373,25 +536,216 @@ function drawAtmosphere(
   ctx.fill();
 }
 
-/** The body. A single off-centre radial gradient does all the metal. */
-function drawSphere(ctx: CanvasRenderingContext2D, cx: number, cy: number, radius: number) {
+/** Edge light strength, eased back at hero scale for the same reason. */
+function rimAlpha(hero: boolean, base: number) {
+  return hero ? base * 0.55 : base;
+}
+
+/**
+ * The body. A single off-centre radial gradient does all the metal.
+ *
+ * The hero lights from the centre-right and sits darker overall, because its
+ * left limb passes behind the headline: a highlight there would be the one
+ * thing on this page capable of pulling an 80px word down toward AA.
+ */
+function drawSphere(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  radius: number,
+  hero: boolean,
+) {
   const gradient = ctx.createRadialGradient(
-    cx - radius * 0.36,
-    cy - radius * 0.42,
+    cx + radius * (hero ? 0.2 : -0.36),
+    cy - radius * (hero ? 0.26 : 0.42),
     radius * 0.04,
     cx,
     cy,
     radius * 1.04,
   );
-  gradient.addColorStop(0, "#38506a");
-  gradient.addColorStop(0.4, "#20303f");
-  gradient.addColorStop(0.78, "#111d27");
-  gradient.addColorStop(1, "#0b131b");
+
+  if (hero) {
+    gradient.addColorStop(0, "#3d5877");
+    gradient.addColorStop(0.38, "#1f3244");
+    gradient.addColorStop(0.72, "#111e29");
+    gradient.addColorStop(1, "#0a1119");
+  } else {
+    gradient.addColorStop(0, "#38506a");
+    gradient.addColorStop(0.4, "#20303f");
+    gradient.addColorStop(0.78, "#111d27");
+    gradient.addColorStop(1, "#0b131b");
+  }
 
   ctx.fillStyle = gradient;
   ctx.beginPath();
   ctx.arc(cx, cy, radius, 0, Math.PI * 2);
   ctx.fill();
+}
+
+/**
+ * The hero network: every connection at once, radiating from Dubai.
+ *
+ * Structurally different from the outreach globe's connections, which fan out
+ * from whichever market is active. Here the hub is fixed - the whole graphic is
+ * a statement about one gateway reaching outward, so the arcs are permanent and
+ * the active market only brightens the one that belongs to it.
+ *
+ * Each arc is stroked twice: a wide, very faint pass that reads as bloom, then
+ * the hairline itself. That is what makes a 1px line look lit rather than drawn,
+ * and it costs one extra stroke rather than a shadow blur.
+ */
+function drawHubNetwork(
+  ctx: CanvasRenderingContext2D,
+  rot: Rotation,
+  cx: number,
+  cy: number,
+  radius: number,
+  activeIndex: number,
+  progress: number,
+  clipX: number,
+) {
+  const hub = globeMarkets.find((market) => market.code === "AE");
+  if (!hub) return;
+
+  const activeCode = globeMarkets[activeIndex]?.code;
+  const internationalActive = globeMarkets[activeIndex]?.international;
+
+  ctx.lineCap = "round";
+
+  /*
+    Arcs are batched into three paths - quiet, active, outbound - and each path
+    is stroked twice: once wide and faint for bloom, once at a hairline. Stroked
+    per arc instead, this was 24 stroke calls a frame against 6, and the
+    difference was most of the hero's frame budget.
+  */
+  const trace = (points: number[][], altitude: number, drawnFraction: number) => {
+    const limit = Math.max(2, Math.floor(points.length * drawnFraction));
+    let started = false;
+
+    for (let i = 0; i < limit; i += 1) {
+      const t = i / (points.length - 1);
+      const lift = altitude * Math.sin(Math.PI * t);
+
+      project(points[i][0], points[i][1], rot, cx, cy, radius, P, lift);
+
+      // The westbound legs are geographically correct and visually wrong: they
+      // run left across the whole frame and end up under the headline. Cutting
+      // them at the type column keeps the reach honest - the arc still leaves
+      // the region - without drawing line work behind words.
+      if (P.sx < clipX || P.z <= -0.28) {
+        started = false;
+        continue;
+      }
+
+      if (started) ctx.lineTo(P.sx, P.sy);
+      else {
+        ctx.moveTo(P.sx, P.sy);
+        started = true;
+      }
+    }
+  };
+
+  const paint = (alpha: number) => {
+    ctx.lineWidth = 3.5;
+    ctx.strokeStyle = `rgba(${BRONZE},${alpha * 0.22})`;
+    ctx.stroke();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = `rgba(${BRONZE},${alpha})`;
+    ctx.stroke();
+  };
+
+  // Quiet Gulf legs.
+  ctx.beginPath();
+  for (const market of globeMarkets) {
+    if (market.international || market.code === hub.code || market.code === activeCode) continue;
+    trace(cachedArc(hub.lon, hub.lat, market.lon, market.lat, 26), 0.06, 1);
+  }
+  paint(0.34);
+
+  // The active leg, drawn in as the market changes.
+  const activeMarket = globeMarkets[activeIndex];
+  if (activeMarket && !activeMarket.international && activeMarket.code !== hub.code) {
+    ctx.beginPath();
+    trace(cachedArc(hub.lon, hub.lat, activeMarket.lon, activeMarket.lat, 26), 0.06, progress);
+    paint(0.78);
+  }
+
+  // Outbound legs. Lifted well clear so they read as leaving the region.
+  ctx.beginPath();
+  for (const target of internationalArcs) {
+    trace(
+      cachedArc(hub.lon, hub.lat, target.lon, target.lat, 54),
+      0.28,
+      internationalActive ? progress : 1,
+    );
+  }
+  paint(internationalActive ? 0.7 : 0.3);
+
+  // The hub itself: a warm bloom over Dubai, which is the brightest thing on
+  // the sphere and the point every arc leaves from.
+  project(hub.lon, hub.lat, rot, cx, cy, radius, N);
+  if (N.z > 0.02) {
+    const strength = Math.min(1, N.z * 2.6);
+    const bloom = ctx.createRadialGradient(N.sx, N.sy, 0, N.sx, N.sy, radius * 0.16);
+    bloom.addColorStop(0, `rgba(${WARM},${0.5 * strength})`);
+    bloom.addColorStop(0.35, `rgba(${WARM},${0.16 * strength})`);
+    bloom.addColorStop(1, `rgba(${WARM},0)`);
+
+    ctx.fillStyle = bloom;
+    ctx.beginPath();
+    ctx.arc(N.sx, N.sy, radius * 0.16, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(N.sx, N.sy, 2.6, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,238,210,${0.95 * strength})`;
+    ctx.fill();
+  }
+}
+
+/**
+ * Hairline leaders from each market to its standing label.
+ *
+ * Drawn here rather than as DOM elements because one end of every line moves
+ * with the globe: the marker end is a projected point that changes each frame,
+ * and only the label end is fixed. The active market's leader is brought up a
+ * step, which is what ties the card to the dot it belongs to.
+ */
+function drawLeaders(
+  ctx: CanvasRenderingContext2D,
+  rot: Rotation,
+  cx: number,
+  cy: number,
+  radius: number,
+  anchors: Record<string, { x: number; y: number }>,
+  activeIndex: number,
+) {
+  ctx.lineWidth = 1;
+
+  globeMarkets.forEach((market, index) => {
+    const anchor = anchors[market.code];
+    if (!anchor) return;
+
+    // The international step has no node of its own; its leader runs from the
+    // Gulf, which is where the outbound arcs leave from.
+    project(market.lon, market.lat, rot, cx, cy, radius, P);
+    if (P.z <= 0.04) return;
+
+    const depth = Math.min(1, (P.z - 0.04) * 3);
+    const isActive = index === activeIndex;
+
+    ctx.beginPath();
+    ctx.moveTo(P.sx, P.sy);
+    ctx.lineTo(anchor.x, anchor.y);
+    ctx.strokeStyle = `rgba(${BRONZE},${(isActive ? 0.42 : 0.16) * depth})`;
+    ctx.stroke();
+
+    // A tick at the label end, so the line resolves into the text.
+    ctx.beginPath();
+    ctx.arc(anchor.x, anchor.y, isActive ? 2.2 : 1.6, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${BRONZE},${(isActive ? 0.85 : 0.45) * depth})`;
+    ctx.fill();
+  });
 }
 
 function drawGraticule(
@@ -401,12 +755,15 @@ function drawGraticule(
   cy: number,
   radius: number,
   compact: boolean,
+  hero: boolean,
 ) {
   const meridianStep = compact ? 40 : 25;
   const parallelStep = compact ? 30 : 20;
   const sample = compact ? 5 : 3;
 
-  ctx.strokeStyle = `rgba(${IVORY},0.1)`;
+  // Barely there in the hero. The grid is structure, not subject; against a
+  // night earth it should register only once you look for it.
+  ctx.strokeStyle = `rgba(${IVORY},${hero ? 0.045 : 0.1})`;
   ctx.lineWidth = 1;
   ctx.beginPath();
 
@@ -454,29 +811,164 @@ function drawGraticule(
  * real projection-library problem. A stroked polyline only has to break when it
  * crosses behind the limb, which is one comparison per point.
  */
-function drawCoastlines(
-  ctx: CanvasRenderingContext2D,
+/**
+ * Per-frame projection buffer for the coastline set: sx, sy, z per vertex.
+ *
+ * Module-level and reused, because the alternative is allocating a 4,700-float
+ * array sixty times a second. Sized once, on the first frame the geometry
+ * arrives.
+ */
+let landBuffer: Float32Array | null = null;
+
+function projectLand(
   lines: readonly (readonly number[])[],
   rot: Rotation,
   cx: number,
   cy: number,
   radius: number,
 ) {
-  ctx.strokeStyle = `rgba(${IVORY},0.38)`;
+  let vertices = 0;
+  for (const line of lines) vertices += line.length / 2;
+
+  if (!landBuffer || landBuffer.length !== vertices * 3) {
+    landBuffer = new Float32Array(vertices * 3);
+  }
+
+  let k = 0;
+  for (const line of lines) {
+    for (let i = 0; i < line.length; i += 2) {
+      project(line[i], line[i + 1], rot, cx, cy, radius, P);
+      landBuffer[k] = P.sx;
+      landBuffer[k + 1] = P.sy;
+      landBuffer[k + 2] = P.z;
+      k += 3;
+    }
+  }
+}
+
+/**
+ * Land as filled masses.
+ *
+ * Every entry in the coastline set is a closed ring - the source has no shared
+ * borders between separate landmasses, so each one is a single complete arc -
+ * which is what makes filling them possible at all.
+ *
+ * Rings that cross the horizon are closed with a chord across the visible run
+ * rather than along the horizon arc. That is not strictly correct, and on a
+ * bright globe it would show; here the terminator has the limb down to near
+ * black by the time a chord could be spotted, and the alternative is a full
+ * circle-clipping routine for a difference no one can see.
+ */
+function drawLandmass(ctx: CanvasRenderingContext2D, lines: readonly (readonly number[])[]) {
+  const buffer = landBuffer;
+  if (!buffer) return;
+
+  ctx.fillStyle = "rgba(27,40,54,0.55)";
+  ctx.beginPath();
+
+  let k = 0;
+  for (const line of lines) {
+    let started = false;
+
+    for (let i = 0; i < line.length; i += 2, k += 3) {
+      if (buffer[k + 2] > 0) {
+        if (started) ctx.lineTo(buffer[k], buffer[k + 1]);
+        else {
+          ctx.moveTo(buffer[k], buffer[k + 1]);
+          started = true;
+        }
+      } else if (started) {
+        ctx.closePath();
+        started = false;
+      }
+    }
+
+    if (started) ctx.closePath();
+  }
+
+  ctx.fill();
+}
+
+/**
+ * City lights.
+ *
+ * Placed on coastline vertices rather than on a population raster, which is a
+ * cheat that happens to be true: on any night image of the earth the lights sit
+ * overwhelmingly on the coasts and the great river valleys. Two tiers, batched
+ * so the whole field costs two fill styles rather than one per point, and
+ * `fillRect` rather than `arc` because at one pixel the difference is invisible
+ * and the cost is not.
+ *
+ * Jitter is derived from the vertex index, never from `Math.random`, so the
+ * field is identical on every frame and does not shimmer.
+ */
+function drawCityLights(ctx: CanvasRenderingContext2D, lines: readonly (readonly number[])[]) {
+  const buffer = landBuffer;
+  if (!buffer) return;
+
+  // Three tiers, each one pass, so the whole field costs three fill styles
+  // rather than one per point. `fillRect` rather than `arc` because at one
+  // pixel the difference is invisible and the cost is not.
+  let k = 0;
+  let index = 0;
+
+  ctx.fillStyle = `rgba(${WARM},0.5)`;
+  for (const line of lines) {
+    for (let i = 0; i < line.length; i += 2, k += 3, index += 1) {
+      if (index % 3 !== 0) continue;
+      if (buffer[k + 2] > 0.06) ctx.fillRect(buffer[k], buffer[k + 1], 1, 1);
+    }
+  }
+
+  // Bright tier: a scattering of larger points, reading as the cities big
+  // enough to see from orbit.
+  k = 0;
+  index = 0;
+  ctx.fillStyle = `rgba(${WARM},0.9)`;
+  for (const line of lines) {
+    for (let i = 0; i < line.length; i += 2, k += 3, index += 1) {
+      if (index % 9 !== 0) continue;
+      if (buffer[k + 2] > 0.12) ctx.fillRect(buffer[k] - 0.5, buffer[k + 1] - 0.5, 2, 2);
+    }
+  }
+
+  // The Gulf and its neighbours burn brighter than the rest of the field. Not
+  // a claim about anything - it is where the page is looking, and a night earth
+  // that is uniformly lit gives the eye nowhere to land.
+  k = 0;
+  ctx.fillStyle = "rgba(255,222,178,0.95)";
+  for (const line of lines) {
+    for (let i = 0; i < line.length; i += 2, k += 3) {
+      const lon = line[i];
+      const lat = line[i + 1];
+      if (lon < 25 || lon > 85 || lat < 5 || lat > 45) continue;
+      if (buffer[k + 2] > 0.12) ctx.fillRect(buffer[k] - 1, buffer[k + 1] - 1, 2.4, 2.4);
+    }
+  }
+}
+
+function drawCoastlines(
+  ctx: CanvasRenderingContext2D,
+  lines: readonly (readonly number[])[],
+  hero: boolean,
+) {
+  const buffer = landBuffer;
+  if (!buffer) return;
+
+  ctx.strokeStyle = `rgba(${IVORY},${hero ? 0.2 : 0.38})`;
   ctx.lineWidth = 1;
   ctx.lineJoin = "round";
   ctx.beginPath();
 
+  let k = 0;
   for (const line of lines) {
     let started = false;
 
-    for (let i = 0; i < line.length; i += 2) {
-      project(line[i], line[i + 1], rot, cx, cy, radius, P);
-
-      if (P.z > 0) {
-        if (started) ctx.lineTo(P.sx, P.sy);
+    for (let i = 0; i < line.length; i += 2, k += 3) {
+      if (buffer[k + 2] > 0) {
+        if (started) ctx.lineTo(buffer[k], buffer[k + 1]);
         else {
-          ctx.moveTo(P.sx, P.sy);
+          ctx.moveTo(buffer[k], buffer[k + 1]);
           started = true;
         }
       } else {
@@ -488,19 +980,58 @@ function drawCoastlines(
   ctx.stroke();
 }
 
+/**
+ * Soft bronze wash over the Gulf.
+ *
+ * Centred on the region rather than on any one market, and drawn under the
+ * terminator so it dims with the rest of the sphere as the region turns toward
+ * the limb - a highlight that stayed at full strength on the edge of the disc
+ * would read as a sticker rather than as part of the surface.
+ */
+function drawRegionWash(
+  ctx: CanvasRenderingContext2D,
+  rot: Rotation,
+  cx: number,
+  cy: number,
+  radius: number,
+) {
+  // Roughly the centre of the six markets.
+  project(51.5, 25.5, rot, cx, cy, radius, P);
+  if (P.z <= 0.06) return;
+
+  const strength = Math.min(1, (P.z - 0.06) * 2.4);
+  const reach = radius * 0.36;
+
+  const gradient = ctx.createRadialGradient(P.sx, P.sy, 0, P.sx, P.sy, reach);
+  gradient.addColorStop(0, `rgba(${BRONZE},${0.22 * strength})`);
+  gradient.addColorStop(0.5, `rgba(${BRONZE},${0.085 * strength})`);
+  gradient.addColorStop(1, `rgba(${BRONZE},0)`);
+
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  ctx.arc(P.sx, P.sy, reach, 0, Math.PI * 2);
+  ctx.fill();
+}
+
 /** Shades the sphere away from the light, so the limb rolls off. */
-function drawTerminator(ctx: CanvasRenderingContext2D, cx: number, cy: number, radius: number) {
+function drawTerminator(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  radius: number,
+  hero: boolean,
+) {
   const gradient = ctx.createRadialGradient(
-    cx - radius * 0.32,
-    cy - radius * 0.4,
+    cx + radius * (hero ? 0.18 : -0.32),
+    cy - radius * (hero ? 0.24 : 0.4),
     radius * 0.1,
-    cx - radius * 0.12,
-    cy - radius * 0.14,
+    cx + radius * (hero ? 0.06 : -0.12),
+    cy - radius * (hero ? 0.06 : 0.14),
     radius * 1.55,
   );
   gradient.addColorStop(0, "rgba(5,9,14,0)");
-  gradient.addColorStop(0.58, "rgba(5,9,14,0.26)");
-  gradient.addColorStop(1, "rgba(4,7,11,0.76)");
+  gradient.addColorStop(0.58, `rgba(5,9,14,${hero ? 0.28 : 0.26})`);
+  gradient.addColorStop(1, `rgba(4,7,11,${hero ? 0.8 : 0.76})`);
 
   ctx.fillStyle = gradient;
   ctx.beginPath();
@@ -509,17 +1040,23 @@ function drawTerminator(ctx: CanvasRenderingContext2D, cx: number, cy: number, r
 }
 
 /** Edge light: bronze where the light hits, gone by the far side. */
-function drawRim(ctx: CanvasRenderingContext2D, cx: number, cy: number, radius: number) {
+function drawRim(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  radius: number,
+  hero: boolean,
+) {
   const gradient = ctx.createLinearGradient(
     cx - radius,
     cy - radius,
     cx + radius,
     cy + radius * 0.85,
   );
-  gradient.addColorStop(0, `rgba(${BRONZE},0.62)`);
-  gradient.addColorStop(0.4, `rgba(${BRONZE},0.24)`);
-  gradient.addColorStop(0.78, "rgba(150,168,190,0.12)");
-  gradient.addColorStop(1, "rgba(150,168,190,0.04)");
+  gradient.addColorStop(0, `rgba(${BRONZE},${rimAlpha(hero, 0.62)})`);
+  gradient.addColorStop(0.4, `rgba(${BRONZE},${rimAlpha(hero, 0.24)})`);
+  gradient.addColorStop(0.78, `rgba(150,168,190,${rimAlpha(hero, 0.12)})`);
+  gradient.addColorStop(1, `rgba(150,168,190,${rimAlpha(hero, 0.04)})`);
 
   ctx.strokeStyle = gradient;
   ctx.lineWidth = 1;
@@ -610,6 +1147,7 @@ function drawMarkets(
   reducedMotion: boolean,
   fontFamily: string,
   hits: React.RefObject<{ index: number; x: number; y: number }[]>,
+  withLabel: boolean,
 ) {
   const picks: { index: number; x: number; y: number }[] = [];
 
@@ -654,7 +1192,7 @@ function drawMarkets(
 
     // Active only. A hovered market gets the HTML tooltip, which can carry its
     // city as well - two labels on one node would just be clutter.
-    if (isActive) {
+    if (isActive && withLabel) {
       const context = ctx as CanvasRenderingContext2D & { letterSpacing?: string };
       const previous = context.letterSpacing;
       context.letterSpacing = "1.5px";

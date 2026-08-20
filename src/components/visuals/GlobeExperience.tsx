@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import type { GlobeMarket } from "@/data/outreach-globe";
 import { globeMarkets, globePanelContent } from "@/data/outreach-globe";
@@ -157,6 +157,17 @@ export function GlobeExperience({ className }: { className?: string }) {
 
   const market = globeMarkets[activeIndex];
 
+  // Pushed right and up once the panel starts floating over the lower-left, so
+  // the Gulf never ends up behind the thing describing it.
+  const frame = useMemo(
+    () => ({
+      cx: panelFloats ? 0.55 : 0.5,
+      cy: panelFloats ? 0.44 : 0.5,
+      radius: compact ? 0.38 : 0.44,
+    }),
+    [panelFloats, compact],
+  );
+
   return (
     <div ref={wrapper} className={cn("relative", className)}>
       {/* --- Stage: the globe, with the panel floating over it on desktop --- */}
@@ -168,7 +179,7 @@ export function GlobeExperience({ className }: { className?: string }) {
             onHover={handleHover}
             reducedMotion={reducedMotion}
             compact={compact}
-            offsetForPanel={panelFloats}
+            frame={frame}
             className="h-full w-full"
           />
 
