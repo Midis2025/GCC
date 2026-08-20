@@ -53,31 +53,87 @@ export function Hero() {
       */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-30 bg-[radial-gradient(120%_100%_at_72%_44%,#101d2b_0%,#0a121b_46%,#06090f_100%)]"
+        className="absolute inset-0 -z-30 bg-[radial-gradient(130%_115%_at_78%_46%,#132234_0%,#0c1622_38%,#070c14_72%,#05080e_100%)]"
+      />
+
+      {/*
+        Plane 2 - the left half of the environment.
+
+        Three very quiet layers, and the answer to a hero whose left side was
+        simply empty. None of them is a shape: each is a gradient or a texture
+        that fades to nothing well before it reaches anything else, so there is
+        no edge anywhere for the eye to read as a division.
+      */}
+
+      {/* A high, soft key light from above the type. */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-20 bg-[radial-gradient(70%_55%_at_14%_8%,rgba(120,158,196,0.1)_0%,rgba(120,158,196,0.04)_38%,transparent_72%)]"
+      />
+
+      {/*
+        Architectural texture: the site's own mullion field, at a whisper. It
+        is the same drawn language as the rest of the brand, held at 30% and
+        masked off long before it reaches the globe, so it registers as surface
+        rather than as pattern.
+      */}
+      <div
+        aria-hidden="true"
+        className="rule-field absolute inset-y-0 left-0 -z-20 hidden w-[46%] opacity-30 [--rule-gap:5.5rem] [mask-image:linear-gradient(90deg,transparent,black_18%,black_52%,transparent_100%)] lg:block"
+      />
+
+      {/*
+        A few gold motes over the type column. Static, not drifting: the globe
+        is already the thing that moves, and a second animated layer behind a
+        headline is exactly the clutter the brief rules out.
+      */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-20 hidden opacity-[0.55] lg:block bg-[radial-gradient(1.5px_1.5px_at_12%_28%,rgba(200,166,112,0.55),transparent),radial-gradient(1.5px_1.5px_at_23%_62%,rgba(200,166,112,0.4),transparent),radial-gradient(2px_2px_at_31%_18%,rgba(200,166,112,0.3),transparent),radial-gradient(1.5px_1.5px_at_8%_74%,rgba(200,166,112,0.35),transparent),radial-gradient(1.5px_1.5px_at_38%_82%,rgba(200,166,112,0.28),transparent),radial-gradient(2px_2px_at_18%_44%,rgba(200,166,112,0.22),transparent)]"
+      />
+
+      {/*
+        Plane 3 - the ambient light the globe casts into the room.
+
+        This is in CSS rather than on the canvas deliberately. The canvas glow
+        can only ever reach the edge of its own element; this one is full-bleed,
+        so the light from the globe spreads across the whole section and dies
+        out gradually instead of stopping at a boundary. It is what makes the
+        globe sit *in* the hero rather than next to it.
+      */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-[6] bg-[radial-gradient(46%_58%_at_80%_46%,rgba(96,140,190,0.16)_0%,rgba(78,116,162,0.07)_34%,transparent_70%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-[6] bg-[radial-gradient(30%_38%_at_82%_47%,rgba(186,146,88,0.12)_0%,rgba(186,146,88,0.04)_42%,transparent_74%)]"
+      />
+
+      {/*
+        Plane 4 - a soft hold behind the type column.
+
+        Wide and very gradual, and no longer a panel with a width: it reaches
+        three-quarters of the way across so that its own falloff is never
+        visible, which is what stops the left of the hero reading as a separate
+        background from the right.
+      */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-[4] bg-[linear-gradient(100deg,rgba(5,9,15,0.82)_0%,rgba(5,9,15,0.6)_26%,rgba(5,9,15,0.3)_48%,rgba(5,9,15,0.08)_66%,transparent_82%)]"
       />
 
       {/* Vignette, so the frame closes at the corners rather than running out. */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-20 bg-[radial-gradient(90%_75%_at_50%_50%,transparent_38%,rgba(4,7,11,0.55)_100%)]"
+        className="absolute inset-0 -z-[2] bg-[radial-gradient(105%_88%_at_52%_48%,transparent_46%,rgba(3,6,10,0.5)_100%)]"
       />
 
       {/*
-        Plane 2 - grain only. The mullion field and the drawn backdrop are both
-        gone from this section: they are fine line work, the globe is fine line
-        work, and over each other they read as interference. Grain stays,
-        because it is what keeps a full-bleed gradient from banding.
+        Grain, over everything. It is what keeps this many overlapping
+        full-bleed gradients from banding on a wide display.
       */}
-      <div aria-hidden="true" className="grain absolute inset-0 -z-10" />
-
-      {/*
-        Plane 3 - a soft hold behind the type column, so the headline never has
-        to compete with the globe's limb for contrast.
-      */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-y-0 left-0 -z-[4] w-[58%] bg-[linear-gradient(90deg,rgba(6,10,16,0.86)_0%,rgba(6,10,16,0.5)_44%,rgba(6,10,16,0.14)_80%,transparent_100%)]"
-      />
+      <div aria-hidden="true" className="grain absolute inset-0 -z-[1]" />
 
       {/*
         The copy takes the space the standing bar does not, and centres itself
@@ -132,7 +188,7 @@ export function Hero() {
         <Heading
           level={1}
           size="mega"
-          className="mt-[clamp(1rem,2.6svh,1.75rem)] max-w-[26ch]"
+          className="mt-[clamp(1rem,2.6svh,1.75rem)] max-w-[26ch] [text-shadow:0_2px_24px_rgba(4,8,14,0.7)]"
           style={{ fontSize: "clamp(2.375rem, min(1rem + 4.3vw, 8svh), 4rem)" }}
           balance={false}
         >
@@ -173,9 +229,9 @@ export function Hero() {
           already narrower than this - so nothing about the reading experience
           moves; only the empty space to its right does.
         */}
-        <div className="mt-[clamp(1.25rem,3.4svh,2.25rem)] max-w-[54rem] lg:max-w-[52%]">
+        <div className="mt-[clamp(1.25rem,3.4svh,2.25rem)] max-w-[54rem] lg:max-w-[48%]">
           <p
-            className="reveal max-w-[54ch] text-lead text-(--color-foreground-muted)"
+            className="reveal max-w-[54ch] text-lead text-(--color-foreground-muted) [text-shadow:0_1px_18px_rgba(4,8,14,0.75)]"
             data-visible="true"
             style={at(620)}
           >

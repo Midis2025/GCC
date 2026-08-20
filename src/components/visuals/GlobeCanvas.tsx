@@ -132,6 +132,16 @@ export function GlobeCanvas({
    */
   const layout = useRef(frame);
   const anchors = useRef(labelAnchors);
+  const anchorLeft = useRef(Number.POSITIVE_INFINITY);
+  /**
+   * Where the disc actually landed this frame, in canvas pixels.
+   *
+   * The hero's canvas is full-bleed so its glow can fade into the page instead
+   * of being cut off at a box edge, which means the element is far larger than
+   * the globe. Dragging is gated on this so the interactive area stays the
+   * globe itself rather than becoming the entire hero.
+   */
+  const geometry = useRef({ cx: 0, cy: 0, radius: 0 });
 
   /* --- Coastlines, off the critical path -------------------------------- */
   useEffect(() => {
@@ -161,6 +171,11 @@ export function GlobeCanvas({
 
   useEffect(() => {
     anchors.current = labelAnchors;
+    // Precomputed here rather than scanned per frame: the draw loop only needs
+    // the leftmost anchor, and it changes on resize, not on rotation.
+    anchorLeft.current = labelAnchors
+      ? Math.min(...Object.values(labelAnchors).map((anchor) => anchor.x))
+      : Number.POSITIVE_INFINITY;
   }, [labelAnchors]);
 
   /* --- Draw loop -------------------------------------------------------- */
@@ -275,7 +290,31 @@ export function GlobeCanvas({
       const cy = height * fy;
       const radius = Math.min(width, height) * fr;
 
-      ctx.clearRect(0, 0, width, height);
+      geometry.current.cx = cx;
+      geometry.current.cy = cy;
+      geometry.current.radius = radius;
+
+      /*
+        Clear only what is ever drawn to.
+
+        The hero's canvas is the size of the section but the drawing occupies
+        its right-hand side: the glow at its widest, and the label leaders,
+        whose far ends are clamped to the right of the type column. Clearing the
+        full element there meant wiping two million transparent pixels a frame.
+        Anything left of `dirtyLeft` is never painted, so it is already clear.
+      */
+      let dirtyLeft = 0;
+      if (variant === "hero") {
+        let leftmost = cx - radius * GLOW_REACH;
+        if (anchors.current) {
+          for (const anchor of Object.values(anchors.current)) {
+            if (anchor.x < leftmost) leftmost = anchor.x;
+          }
+        }
+        dirtyLeft = Math.max(0, Math.floor(leftmost) - 48);
+      }
+
+      ctx.clearRect(dirtyLeft, 0, width - dirtyLeft, height);
 
       const hero = variant === "hero";
 
@@ -296,10 +335,10 @@ export function GlobeCanvas({
         layers.radius !== radius ||
         layers.dpr !== backingRatio
       ) {
-        layers = buildLayers(width, height, backingRatio, cx, cy, radius, compact, hero);
+        layers = buildLayers(backingRatio, cx, cy, radius, compact, hero);
       }
 
-      ctx.drawImage(layers.base, 0, 0, width, height);
+      ctx.drawImage(layers.base, layers.originX, layers.originY, layers.size, layers.size);
 
       ctx.save();
       ctx.beginPath();
@@ -327,7 +366,7 @@ export function GlobeCanvas({
       ctx.restore();
 
       // Terminator and rim, pre-rendered together.
-      ctx.drawImage(layers.overlay, 0, 0, width, height);
+      ctx.drawImage(layers.overlay, layers.originX, layers.originY, layers.size, layers.size);
 
       if (hero) {
         // Left boundary for the arcs, as a fraction of the layer. The layer
@@ -378,6 +417,14 @@ export function GlobeCanvas({
   }, []);
 
   const handlePointerDown = useCallback((event: React.PointerEvent<HTMLCanvasElement>) => {
+    // Only inside the disc. Everywhere else in the canvas is background, and a
+    // press there belongs to the page - selecting the headline, for instance -
+    // not to the globe.
+    const rect = event.currentTarget.getBoundingClientRect();
+    const { cx, cy, radius } = geometry.current;
+    const distance = Math.hypot(event.clientX - rect.left - cx, event.clientY - rect.top - cy);
+    if (radius === 0 || distance > radius) return;
+
     pointer.current = { dragging: true, moved: 0, x: event.clientX, y: event.clientY };
     event.currentTarget.setPointerCapture(event.pointerId);
   }, []);
@@ -470,11 +517,16 @@ interface GlobeLayers {
   cy: number;
   radius: number;
   dpr: number;
+  /** Where the layers sit in canvas space, and how big they are. */
+  originX: number;
+  originY: number;
+  size: number;
 }
 
+/** How far the widest gradient reaches, in radii. Sizes the cached layers. */
+const GLOW_REACH = 1.32;
+
 function buildLayers(
-  width: number,
-  height: number,
   dpr: number,
   cx: number,
   cy: number,
@@ -482,12 +534,24 @@ function buildLayers(
   compact: boolean,
   hero: boolean,
 ): GlobeLayers {
+  // Sized to the globe and its glow rather than to the whole canvas. The hero's
+  // canvas is now full-bleed, and blitting two viewport-sized images every
+  // frame to move a disc that occupies half of one is most of a frame budget
+  // spent on transparent pixels.
+  const size = Math.ceil(radius * GLOW_REACH * 2);
+  const originX = cx - radius * GLOW_REACH;
+  const originY = cy - radius * GLOW_REACH;
+
   const make = () => {
     const surface = document.createElement("canvas");
-    surface.width = Math.max(1, Math.round(width * dpr));
-    surface.height = Math.max(1, Math.round(height * dpr));
+    surface.width = Math.max(1, Math.round(size * dpr));
+    surface.height = Math.max(1, Math.round(size * dpr));
     const context = surface.getContext("2d");
-    context?.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (context) {
+      context.setTransform(dpr, 0, 0, dpr, 0, 0);
+      // Draw in canvas coordinates; the translate puts the disc in the layer.
+      context.translate(-originX, -originY);
+    }
     return { surface, context };
   };
 
@@ -508,7 +572,17 @@ function buildLayers(
     drawRim(overlay.context, cx, cy, radius, hero);
   }
 
-  return { base: base.surface, overlay: overlay.surface, cx, cy, radius, dpr };
+  return {
+    base: base.surface,
+    overlay: overlay.surface,
+    cx,
+    cy,
+    radius,
+    dpr,
+    originX,
+    originY,
+    size,
+  };
 }
 
 /**

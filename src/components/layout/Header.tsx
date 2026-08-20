@@ -19,9 +19,17 @@ import { cn } from "@/lib/utils";
  * scroll position read through requestAnimationFrame so a fast flick cannot
  * queue a state update per scroll event.
  *
- * While transparent it carries `.surface-dark`, which re-points the semantic
+ * While transparent it carries `.tokens-dark`, which re-points the semantic
  * colour tokens so the wordmark, nav and CTA invert without variant props.
  * This is why every page hero keeps a dark top band - see PageHero.
+ *
+ * `.tokens-dark` rather than `.surface-dark` deliberately: the two are
+ * identical except that `.surface-dark` also PAINTS a midnight background. Over
+ * a hero that already paints one, that second fill landed as a flat band across
+ * the top of the page with a visible edge where it ended - the header reading
+ * as a separate block bolted above the hero rather than floating over it. Every
+ * hero on the site paints its own `bg-(--midnight)`, so dropping the fill
+ * changes nothing anywhere except that the band is gone.
  */
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -54,7 +62,7 @@ export function Header() {
         "transition-[background-color,border-color,box-shadow] duration-500 ease-out",
         scrolled
           ? "border-b border-(--color-border) bg-(--color-canvas)/92 shadow-[var(--shadow-sm)] backdrop-blur-xl"
-          : "surface-dark border-b border-transparent bg-transparent",
+          : "tokens-dark border-b border-transparent bg-transparent",
       )}
     >
       <Container className="flex h-full items-center justify-between gap-8">

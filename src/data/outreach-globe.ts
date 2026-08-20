@@ -208,9 +208,9 @@ export const heroMarkets: readonly GlobeMarket[] = globeMarkets.map((market) => 
  * 0.66 so a ~10rem label cannot reach the right edge of the viewport.
  */
 export const heroLabelSlots: Record<string, { x: number; y: number }> = {
-  // The reference's arrangement, resolved against the globe layer - which runs
-  // from 58% of the viewport to 8% past its right edge. `x` is the label's left
-  // edge, `y` its vertical centre.
+  // The reference's arrangement, as fractions of the globe layer - which is now
+  // the whole hero section. `x` is the label's left edge, `y` its vertical
+  // centre.
   //
   // The reference sets its copy 3% from the left edge; this site sets it at the
   // container margin, so the headline ends further across and the two left-hand
@@ -220,11 +220,11 @@ export const heroLabelSlots: Record<string, { x: number; y: number }> = {
   // anchor to the visible part of the layer, because the layer deliberately
   // overhangs the viewport and a slot that is comfortable at 1920 would
   // otherwise push a label off the edge at 1024.
-  SA: { x: 0.02, y: 0.41 },
-  BH: { x: 0.02, y: 0.6 },
-  KW: { x: 0.1, y: 0.21 },
-  OM: { x: 0.3, y: 0.67 },
-  INT: { x: 0.44, y: 0.16 },
-  AE: { x: 0.46, y: 0.5 },
-  QA: { x: 0.52, y: 0.29 },
+  SA: { x: 0.531, y: 0.41 },
+  BH: { x: 0.531, y: 0.6 },
+  KW: { x: 0.576, y: 0.21 },
+  OM: { x: 0.688, y: 0.67 },
+  INT: { x: 0.766, y: 0.16 },
+  AE: { x: 0.778, y: 0.5 },
+  QA: { x: 0.811, y: 0.29 },
 };

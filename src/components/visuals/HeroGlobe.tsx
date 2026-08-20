@@ -166,39 +166,12 @@ export function HeroGlobe({ className }: { className?: string }) {
     setCard({ index, mode: "anchored" });
   }, []);
 
-  /* --- Placement --------------------------------------------------------- */
-  /*
-    Desktop pushes the disc right and lets it run past the frame, so it bleeds
-    off the edge of the page rather than sitting centred in a column. Below
-    `lg` the globe is a stacked block under the copy and is simply centred.
-  */
-  const frame = useMemo(
-    () => ({
-      cx: 0.5,
-      // Lifted slightly so the disc's lower edge falls behind the standing bar
-      // rather than being cut by it.
-      cy: wide ? 0.46 : 0.5,
-      // The layer is half the viewport wide and the full section tall, so on
-      // any normal desktop the shorter side is the width - which is what ties
-      // the globe's size to the monitor rather than to the amount of copy.
-      radius: compact ? 0.4 : wide ? 0.5 : 0.42,
-    }),
-    [wide, compact],
-  );
-
-  const shown = card ? heroMarkets[card.index] : null;
-
-  /* --- Standing labels --------------------------------------------------- */
-  /*
-    Anchors are the slot fractions resolved against the measured box, and the
-    same values go to the canvas so the leaders it draws land exactly on the
-    text rendered here. Recomputed only on resize: the label end of a leader is
-    fixed, and it is the marker end that moves with the globe.
-  */
+  /* --- Measurement -------------------------------------------------------- */
   /**
-   * The layer's own size, plus how far it hangs past the right of the viewport.
-   * The overhang is what the labels have to be kept out of - it is deliberate
-   * for the globe, which is supposed to bleed, and fatal for text.
+   * The layer's own size, how far it hangs past the right of the viewport, and
+   * where the type column ends. Everything positional below is derived from
+   * this one measurement, so the globe, the leaders and the labels can never
+   * disagree about the geometry they are placed against.
    */
   const [box, setBox] = useState({ width: 0, height: 0, overhang: 0, safeLeft: 0 });
 
@@ -244,6 +217,44 @@ export function HeroGlobe({ className }: { className?: string }) {
     return () => observer.disconnect();
   }, []);
 
+  /* --- Placement --------------------------------------------------------- */
+  /*
+    Expressed against a box that is now the whole section.
+
+    The globe is approved and must not move, so this reproduces the geometry it
+    had when the layer ran from 52% of the viewport to 8% past its right edge: a
+    disc centred at 80% of the width, with a radius of half the smaller of that
+    old 56%-wide box and the section height. Written out rather than reduced to
+    constants precisely so the arithmetic stays checkable against what it
+    replaced.
+
+    Below `lg` the globe is a stacked block under the copy and is centred.
+  */
+  const frame = useMemo(() => {
+    if (!wide) return { cx: 0.5, cy: 0.5, radius: compact ? 0.4 : 0.42 };
+
+    const { width, height } = box;
+    if (width === 0 || height === 0) return { cx: 0.8, cy: 0.46, radius: 0.28 };
+
+    const radiusPx = 0.5 * Math.min(width * 0.56, height);
+
+    return {
+      cx: 0.8,
+      // Lifted slightly so the disc's lower edge falls behind the standing bar
+      // rather than being cut by it.
+      cy: 0.46,
+      radius: radiusPx / Math.min(width, height),
+    };
+  }, [wide, compact, box]);
+
+  const shown = card ? heroMarkets[card.index] : null;
+
+  /* --- Standing labels --------------------------------------------------- */
+  /*
+    Slot fractions resolved against the measured box, then clamped. The same
+    values go to the canvas so the leaders it draws land exactly on the text
+    rendered here.
+  */
   const anchors = useMemo(() => {
     const { width, height, overhang, safeLeft } = box;
     if (!wide || width === 0) return undefined;
@@ -275,23 +286,25 @@ export function HeroGlobe({ className }: { className?: string }) {
     <div
       ref={wrapper}
       className={cn(
-        // Stacked below the copy on small screens; from `lg` a full-height
-        // layer down the right of the section, running 8% past the edge so the
-        // disc bleeds off the page.
+        // Stacked below the copy on small screens; from `lg` it covers the
+        // whole section.
         //
-        // Anchored at 58% and sized off the viewport rather than off the
-        // section's own height. The headline is capped at 4rem, so it ends
-        // between 51% and 56% of the viewport at every width from `lg` up -
-        // starting the layer at 58% clears it everywhere, and because the disc
-        // is half the viewport wide it grows with the monitor instead of
-        // ballooning off it. At 1920 the previous geometry put the disc's left
-        // limb at 50% and the rest of it off-screen, which is why the right of
-        // the frame read as empty.
+        // Full-bleed on purpose. The layer used to start at 52% of the
+        // viewport, and the globe's atmosphere reaches about 1.3 radii - some
+        // 107px further left than that at 1920 - so the glow was being cut off
+        // dead straight at the element's edge. That cut was the vertical seam
+        // that made the hero look like two sections bolted together. A canvas
+        // the size of the section has no edge for it to hit, so the glow falls
+        // off into the background the way light actually does.
+        //
+        // Where the disc sits is unchanged: `frame` below reproduces the old
+        // geometry exactly against the new box, and dragging is gated to the
+        // disc so the interactive area has not grown either.
         //
         // `-z-[3]` puts it above the scrims but below the container, which is
         // `z-10` - so it is behind every word of type.
         "relative mx-auto aspect-square w-full max-w-[19rem] sm:max-w-[23rem]",
-        "lg:absolute lg:inset-y-0 lg:left-[52%] lg:right-[-8%] lg:-z-[3] lg:aspect-auto lg:mx-0 lg:w-auto lg:max-w-none",
+        "lg:absolute lg:inset-0 lg:-z-[3] lg:aspect-auto lg:mx-0 lg:w-auto lg:max-w-none",
         className,
       )}
     >
