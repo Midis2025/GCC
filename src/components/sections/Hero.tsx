@@ -1,14 +1,11 @@
 import type { CSSProperties } from "react";
-import NextImage from "next/image";
 
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
-import { HeroBackdrop } from "@/components/visuals/HeroBackdrop";
-import { MarketPanel } from "@/components/visuals/MarketPanel";
-import { backdrops } from "@/data/imagery";
-import { heroContent } from "@/data/homepage";
-import { imageConfig } from "@/data/site";
+import { HeroGlobe } from "@/components/visuals/HeroGlobe";
+import { HeroStats } from "@/components/sections/HeroStats";
+import { heroContent, marketOrientationNote } from "@/data/homepage";
 
 /** Animation delay as an inline custom property, for the on-mount reveals. */
 const at = (ms: number) => ({ "--reveal-delay": `${ms}ms` }) as CSSProperties;
@@ -16,78 +13,74 @@ const at = (ms: number) => ({ "--reveal-delay": `${ms}ms` }) as CSSProperties;
 /**
  * Homepage hero.
  *
- * A layered composition rather than a headline sitting on a photograph:
- * photography, a directional scrim, film grain, a fine mullion field, the
- * type, and a floating market card - six planes, each doing one job.
+ * The globe is the subject. Everything else is arranged around it: a deep
+ * field, a hold behind the type column, the copy on the left, the market
+ * annotations on the right, and the standing bar along the foot.
+ *
+ * This section no longer opens on photography. Every other hero on the site
+ * still does - `PageHero` and `backdrops` are untouched - but a lit skyline
+ * behind a lit earth is two subjects competing for the same frame, and the
+ * earth carries more meaning here than the skyline did.
  *
  * Motion runs on mount rather than on scroll. Above-the-fold content must
  * never wait on an IntersectionObserver, so the reveals are pure CSS with
- * staggered delays and the frame eases off a slight overscale as it arrives.
- * The whole sequence resolves inside ~1.5s and then stops - nothing loops.
- *
- * Art direction is swappable: a path set on `imageConfig.hero` overrides the
- * default photograph, and clearing the photography entirely falls back to the
- * authored architectural backdrop with no code change.
+ * staggered delays. The whole sequence resolves inside ~1.5s and then stops -
+ * nothing loops except the globe's own drift.
  */
 export function Hero() {
-  const override = imageConfig.hero;
-  const photo = backdrops.hero;
-
   return (
-    // Tall, but short of full-height. At 90svh the market card sat exactly on
-    // the fold and the page below gave no hint that it existed; trimming to
-    // ~84svh leaves a sliver of the next section showing, which invites the
-    // scroll.
-    <section className="tokens-dark relative isolate flex min-h-[max(36rem,84svh)] flex-col justify-end overflow-hidden bg-(--midnight)">
-      {/* Plane 1 - photography */}
-      <div aria-hidden="true" className="absolute inset-0 -z-30">
-        {override.src ? (
-          <NextImage
-            src={override.src}
-            alt=""
-            fill
-            preload
-            sizes="100vw"
-            className="hero-settle photo-grade object-cover"
-          />
-        ) : (
-          <NextImage
-            src={photo.src}
-            alt=""
-            fill
-            preload
-            sizes="100vw"
-            placeholder="blur"
-            style={{ objectPosition: photo.position }}
-            className="hero-settle photo-grade object-cover"
-          />
-        )}
-      </div>
-
+    // Taller than it was. The globe needs vertical room to read as a globe
+    // rather than as a disc wedged beside the type, and the standing bar now
+    // occupies the foot - so the fold lands on the bar, which is a better
+    // invitation to scroll than a half-visible card ever was.
+    <section className="tokens-dark relative isolate flex min-h-[max(40rem,90svh)] flex-col justify-end overflow-hidden bg-(--midnight)">
       {/*
-        Plane 2 - directional scrim. Two gradients rather than one: the
-        diagonal anchors the type column on the left, the vertical protects the
-        CTAs and the market card along the bottom edge. Together they hold the
-        headline well clear of AA over the brightest part of the frame.
+        Plane 1 - the ground.
+
+        No photograph. The hero used to open on a Dubai skyline; the globe is
+        now the subject, and a lit skyline behind a lit earth is two subjects
+        arguing. What replaces it is a deep field with a single cool lift behind
+        the globe, so the sphere has somewhere to sit rather than floating on
+        flat black.
+
+        The photograph is not deleted - `backdrops.hero` and the `imageConfig`
+        override still exist and every other hero on the site still uses them.
+        Restoring it here is re-adding one <NextImage>.
       */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-20 bg-[linear-gradient(104deg,#0c141d_6%,rgba(12,20,29,0.9)_38%,rgba(12,20,29,0.55)_72%,rgba(12,20,29,0.42)_100%)]"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 -z-20 bg-[linear-gradient(to_top,rgba(12,20,29,0.92)_0%,rgba(12,20,29,0.35)_38%,transparent_72%)]"
+        className="absolute inset-0 -z-30 bg-[radial-gradient(120%_100%_at_72%_44%,#101d2b_0%,#0a121b_46%,#06090f_100%)]"
       />
 
-      {/* Plane 3 - grain and the drawn mullion field, echoing the fallback backdrop */}
+      {/* Vignette, so the frame closes at the corners rather than running out. */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-20 bg-[radial-gradient(90%_75%_at_50%_50%,transparent_38%,rgba(4,7,11,0.55)_100%)]"
+      />
+
+      {/*
+        Plane 2 - grain only. The mullion field and the drawn backdrop are both
+        gone from this section: they are fine line work, the globe is fine line
+        work, and over each other they read as interference. Grain stays,
+        because it is what keeps a full-bleed gradient from banding.
+      */}
       <div aria-hidden="true" className="grain absolute inset-0 -z-10" />
+
+      {/*
+        Plane 3 - a soft hold behind the type column, so the headline never has
+        to compete with the globe's limb for contrast.
+      */}
       <div
         aria-hidden="true"
-        className="rule-field absolute inset-y-0 right-0 -z-10 hidden w-[58%] [--rule-gap:7rem] lg:block"
+        className="absolute inset-y-0 left-0 -z-[4] w-[58%] bg-[linear-gradient(90deg,rgba(6,10,16,0.86)_0%,rgba(6,10,16,0.5)_44%,rgba(6,10,16,0.14)_80%,transparent_100%)]"
       />
-      <HeroBackdrop variant="overlay" />
 
-      <Container className="relative z-10 pb-[clamp(2.5rem,5vw,4rem)] pt-[calc(var(--header-h)+clamp(3.5rem,9vw,6.5rem))]">
+      {/*
+        Tighter than it was, top and bottom. The standing bar now has to fit
+        inside the same fold, and 30-odd pixels of padding is a cheaper thing to
+        give up than having the bar sit permanently just below it.
+      */}
+      <Container className="relative z-10 pb-[clamp(1.75rem,3.5vw,2.5rem)] pt-[calc(var(--header-h)+clamp(3rem,7vw,4.5rem))]">
         <p
           className="reveal flex items-center gap-3.5 text-label uppercase text-(--color-accent)"
           data-visible="true"
@@ -110,53 +103,111 @@ export function Hero() {
           its own edge; the H1 stays a single accessible string, and the spans
           carry no semantics.
         */}
-        <Heading level={1} size="mega" className="mt-7 max-w-[23ch]" balance={false}>
-          {heroContent.headlineLines.map((line, index) => (
-            <span key={line} className="block overflow-hidden pb-[0.08em]">
-              <span
-                className="reveal block"
-                data-visible="true"
-                data-variant="mask"
-                style={at(140 + index * 130)}
-              >
-                {line}
+        {/*
+          Sized down from the shared `mega` maximum of 5rem to 4rem, inline so
+          the token is untouched and every other page keeps the scale it had.
+
+          This is the one change that makes the reference composition possible:
+          at 5rem the headline runs to 70% of the viewport and there is nowhere
+          for seven annotated labels to go. At 4rem it settles at just under
+          half, which is where the reference puts it, and the authored line
+          breaks still hold.
+        */}
+        <Heading
+          level={1}
+          size="mega"
+          className="mt-7 max-w-[26ch]"
+          style={{ fontSize: "clamp(2.375rem, 1rem + 4.3vw, 4rem)" }}
+          balance={false}
+        >
+          {heroContent.headlineLines.map((line, index) => {
+            // The accent word is a suffix of whichever line carries it. Split
+            // rather than hard-coded, so changing the copy cannot leave a
+            // stray span behind on the wrong line.
+            const accent = heroContent.headlineAccent;
+            const carriesAccent = line.endsWith(accent);
+            const lead = carriesAccent ? line.slice(0, -accent.length) : line;
+
+            return (
+              <span key={line} className="block overflow-hidden pb-[0.08em]">
+                <span
+                  className="reveal block"
+                  data-visible="true"
+                  data-variant="mask"
+                  style={at(140 + index * 130)}
+                >
+                  {lead}
+                  {carriesAccent && <span className="text-(--color-accent)">{accent}</span>}
+                </span>
               </span>
-            </span>
-          ))}
+            );
+          })}
         </Heading>
 
-        <div className="mt-9 grid gap-y-9 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-x-16">
-          <div className="max-w-[54rem]">
-            <p
-              className="reveal max-w-[54ch] text-lead text-(--color-foreground-muted)"
-              data-visible="true"
-              style={at(620)}
-            >
-              {heroContent.supporting}
-            </p>
+        {/*
+          The copy column is held to ~50% from `lg` so the globe has the right
+          of the frame to itself. The paragraph measure is unchanged - it was
+          already narrower than this - so nothing about the reading experience
+          moves; only the empty space to its right does.
+        */}
+        <div className="mt-9 max-w-[54rem] lg:max-w-[52%]">
+          <p
+            className="reveal max-w-[54ch] text-lead text-(--color-foreground-muted)"
+            data-visible="true"
+            style={at(620)}
+          >
+            {heroContent.supporting}
+          </p>
 
-            <div
-              className="reveal mt-9 flex flex-col gap-3 xs:flex-row xs:flex-wrap xs:items-center xs:gap-4"
-              data-visible="true"
-              style={at(760)}
-            >
-              <Button href={heroContent.primaryCta.href} size="lg" withArrow>
-                {heroContent.primaryCta.label}
-              </Button>
-              <Button href={heroContent.secondaryCta.href} size="lg" variant="outline">
-                {heroContent.secondaryCta.label}
-              </Button>
-            </div>
+          <div
+            className="reveal mt-9 flex flex-col gap-3 xs:flex-row xs:flex-wrap xs:items-center xs:gap-4"
+            data-visible="true"
+            style={at(760)}
+          >
+            <Button href={heroContent.primaryCta.href} size="lg" withArrow>
+              {heroContent.primaryCta.label}
+            </Button>
+            <Button href={heroContent.secondaryCta.href} size="lg" variant="outline">
+              {heroContent.secondaryCta.label}
+            </Button>
           </div>
-
-          {/*
-            Floating market presence panel. Glass over the photograph, and real
-            content rather than decoration - the same six markets named
-            throughout the site. See `MarketPanel` for the composition.
-          */}
-          <MarketPanel delay={900} />
         </div>
+
       </Container>
+
+      {/*
+        Below `lg` the globe is a block in the flow beneath the CTAs, exactly
+        where the market card used to sit. From `lg` its own classes lift it out
+        into a full-height layer pinned to the right of the SECTION rather than
+        the container - it has to reach the viewport edge to bleed, and the
+        container stops 78rem short of it on a wide screen.
+
+        Its left edge is set at 70% so the disc starts clear of the headline at
+        every width the headline is capped at. One instance, two placements, so
+        there is never a second canvas running off-screen.
+      */}
+      <HeroGlobe className="mt-12 px-5 sm:px-8 lg:mt-0 lg:px-0" />
+
+      {/*
+        CONTENT INTEGRITY: required, and not in the reference.
+
+        The globe now names six markets and six cities and draws lit connection
+        lines between them - a materially stronger implication than the card it
+        replaced. `gulfMarkets` states the rule plainly: wherever the markets are
+        rendered, the orientation caption goes with them.
+
+        It lives here rather than inside the globe layer because that layer
+        deliberately runs past the right edge of the viewport, and a caption
+        positioned inside it ends up off-screen. In the container it is bounded
+        by the same margins as everything else.
+      */}
+      <Container className="relative z-10 pb-3">
+        <p className="text-[0.6875rem] leading-relaxed text-(--color-foreground-subtle) lg:text-right">
+          {marketOrientationNote}
+        </p>
+      </Container>
+
+      <HeroStats />
     </section>
   );
 }

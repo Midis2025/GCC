@@ -14,6 +14,12 @@ export const heroContent = {
    * remains the single source for metadata and any non-animated rendering.
    */
   headlineLines: ["Connecting Companies,", "Capital and Opportunity", "Across the Gulf."],
+  /**
+   * The one word of the headline set in bronze. Presentation only - it is a
+   * suffix of the last authored line, so `headline` remains the single source
+   * for metadata and the H1 stays one uninterrupted string.
+   */
+  headlineAccent: "Gulf.",
   supporting:
     "GCC advises companies on investor visibility, capital-markets communication and engagement with the investor audiences most relevant to their strategy, across Gulf and international markets.",
   primaryCta: { label: "Explore Our Capabilities", href: "/services" },
@@ -108,6 +114,54 @@ export const gulfMarkets = [
 
 /** Caption that must accompany any rendering of `gulfMarkets`. */
 export const marketOrientationNote = "Market orientation only. Not offices or registrations.";
+
+/**
+ * Hero standing bar.
+ *
+ * CONTENT INTEGRITY. Same rule as `orientationContent`: the only figure
+ * permitted here is a count of something named elsewhere on this site. "06" is
+ * the six markets listed in `gulfMarkets` and nothing more.
+ *
+ * The second slot was specified as "100+ Investor Networks". It is deliberately
+ * NOT rendered that way. A network-size figure is exactly the class of claim
+ * this site is built to avoid - it is unverifiable, none has been supplied, and
+ * in a hero standing bar it reads as a track record. `Global` states the same
+ * reach without asserting a quantity. If GCC supplies a substantiated figure,
+ * this is the one line to change.
+ */
+export const heroStats = [
+  {
+    figure: "06",
+    label: "Gulf Markets",
+    note: "Deep regional coverage",
+    mark: "markets",
+  },
+  {
+    figure: "Global",
+    label: "Investor Networks",
+    /**
+     * Specified as "Institutional relationships across the globe". Reworded:
+     * an investor relationship is precisely what `outreachContent.disclaimer`
+     * states this site does not claim, in any jurisdiction. Reach can be
+     * described; relationships cannot.
+     */
+    note: "Reach across international investor audiences",
+    mark: "network",
+  },
+  {
+    figure: "Cross-Border",
+    label: "Engagement",
+    note: "Connecting companies with the right capital",
+    mark: "engagement",
+  },
+  {
+    figure: "Strategic",
+    label: "Communication",
+    /** Specified as "market impact". Reworded: a result, and unverifiable. */
+    note: "Clarity, relevance and consistency",
+    mark: "communication",
+  },
+] as const;
 
 /** Hero market-coverage panel copy. */
 export const marketPanelContent = {

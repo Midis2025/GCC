@@ -136,3 +136,92 @@ export const globePanelContent = {
   focusLabel: "Focus",
   hint: "Drag to rotate. Select a market to explore.",
 } as const;
+
+/* ==========================================================================
+   HERO VARIANT
+   ========================================================================== */
+
+/**
+ * Hero copy for the same seven markets.
+ *
+ * The hero states each market a little differently from the outreach section -
+ * shorter, and framed around what the market is rather than what an engagement
+ * programme does there - and its `focus` lines name the practice's capabilities
+ * rather than the outreach sub-disciplines.
+ *
+ * Only the prose differs. Geography, view angles and the international flag are
+ * taken from `globeMarkets` below, so the two globes can never disagree about
+ * where a market is or which one is which.
+ */
+const heroCopy: Record<string, { description: string; focus: readonly string[] }> = {
+  AE: {
+    description:
+      "Regional gateway for Gulf capital markets and international investor engagement.",
+    focus: ["Investor Relations", "Market Outreach", "Capital Communication"],
+  },
+  SA: {
+    description: "Major regional market with growing institutional participation.",
+    focus: ["Investor Relations", "Investor Targeting", "Capital Communication"],
+  },
+  QA: {
+    description: "Important Gulf financial centre.",
+    focus: ["Investor Relations", "Market Outreach", "Digital Communications"],
+  },
+  KW: {
+    description: "Established private capital ecosystem.",
+    focus: ["Investor Targeting", "Market Outreach", "Capital Communication"],
+  },
+  BH: {
+    description: "Regional financial services hub.",
+    focus: ["Investor Relations", "Market Outreach", "Media Relations"],
+  },
+  OM: {
+    description: "Part of the wider Gulf investment landscape.",
+    focus: ["Investor Targeting", "Capital Communication", "Digital Communications"],
+  },
+  INT: {
+    description: "Global investors and institutional networks worldwide.",
+    focus: ["Cross-Border Engagement", "Market Outreach", "Investor Relations"],
+  },
+};
+
+/** The hero's seven markets: shared geography, hero prose. */
+export const heroMarkets: readonly GlobeMarket[] = globeMarkets.map((market) => ({
+  ...market,
+  description: heroCopy[market.code]?.description ?? market.description,
+  focus: heroCopy[market.code]?.focus ?? market.focus,
+}));
+
+/**
+ * Where each market's standing label sits, as fractions of the globe layer.
+ *
+ * Fixed slots rather than labels pinned to the markers. The six Gulf markets
+ * sit within a few degrees of each other, so labels anchored to them would be
+ * one illegible pile; fanning them out and drawing a leader back to each marker
+ * is what a printed map does, and what the reference does.
+ *
+ * Laid out against the layer box rather than radially about the disc, because
+ * the constraint that actually governs them is not the globe - it is the
+ * headline. Every slot has to clear the type column at every width, and the
+ * type column is a rectangle, so slots that are also rectangles are the ones
+ * that can be reasoned about. `x` is the label's left edge and is capped at
+ * 0.66 so a ~10rem label cannot reach the right edge of the viewport.
+ */
+export const heroLabelSlots: Record<string, { x: number; y: number }> = {
+  // Taken from the reference and then pushed right where they had to be. The
+  // reference sets its copy 3% from the left edge; this site sets it at the
+  // container margin, so the headline ends further across and the two left-hand
+  // labels - Saudi Arabia and Bahrain - could not stay where the reference puts
+  // them without landing on it. Everything else is where the reference has it.
+  //
+  // `y` is the label's vertical centre, and nothing starts above 0.26: the
+  // layer runs higher than the section, so the top of the box is behind the
+  // fixed header.
+  INT: { x: 0.57, y: 0.26 },
+  KW: { x: 0.33, y: 0.29 },
+  QA: { x: 0.62, y: 0.42 },
+  SA: { x: 0.28, y: 0.47 },
+  AE: { x: 0.58, y: 0.57 },
+  BH: { x: 0.22, y: 0.66 },
+  OM: { x: 0.48, y: 0.72 },
+};
