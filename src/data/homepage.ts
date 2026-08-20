@@ -90,17 +90,31 @@ export const introContent = {
 } as const;
 
 /**
- * Markets shown in the outreach visual.
+ * Markets shown in the outreach visual and the hero coverage panel.
  * Indicates market orientation only. Not offices, registrations or relationships.
+ *
+ * `city` is the market's principal financial centre, carried purely as a
+ * geographic reference point. It is NOT an office location - anywhere it is
+ * rendered, the market-orientation caption must be rendered with it.
  */
 export const gulfMarkets = [
-  { code: "AE", label: "UAE" },
-  { code: "SA", label: "Saudi Arabia" },
-  { code: "QA", label: "Qatar" },
-  { code: "KW", label: "Kuwait" },
-  { code: "BH", label: "Bahrain" },
-  { code: "OM", label: "Oman" },
+  { code: "AE", label: "UAE", city: "Dubai" },
+  { code: "SA", label: "Saudi Arabia", city: "Riyadh" },
+  { code: "QA", label: "Qatar", city: "Doha" },
+  { code: "KW", label: "Kuwait", city: "Kuwait City" },
+  { code: "BH", label: "Bahrain", city: "Manama" },
+  { code: "OM", label: "Oman", city: "Muscat" },
 ] as const;
+
+/** Caption that must accompany any rendering of `gulfMarkets`. */
+export const marketOrientationNote = "Market orientation only. Not offices or registrations.";
+
+/** Hero market-coverage panel copy. */
+export const marketPanelContent = {
+  eyebrow: "Gulf Market Coverage",
+  statement: "Regional Focus Across Key Gulf Markets",
+  note: marketOrientationNote,
+} as const;
 
 export const outreachContent = {
   label: "Investor Outreach",

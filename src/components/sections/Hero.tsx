@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { HeroBackdrop } from "@/components/visuals/HeroBackdrop";
+import { MarketPanel } from "@/components/visuals/MarketPanel";
 import { backdrops } from "@/data/imagery";
-import { gulfMarkets, heroContent } from "@/data/homepage";
+import { heroContent } from "@/data/homepage";
 import { imageConfig } from "@/data/site";
 
 /** Animation delay as an inline custom property, for the on-mount reveals. */
@@ -149,47 +150,11 @@ export function Hero() {
           </div>
 
           {/*
-            Floating market card. Glass over the photograph, and real content
-            rather than decoration - the same six markets named throughout the
-            site. Carries the integrity caption inline so the list can never be
-            read as an office footprint.
+            Floating market presence panel. Glass over the photograph, and real
+            content rather than decoration - the same six markets named
+            throughout the site. See `MarketPanel` for the composition.
           */}
-          <aside
-            className="reveal w-full border border-white/12 bg-[rgba(12,20,29,0.52)] p-6 backdrop-blur-md lg:w-[23rem] lg:shrink-0"
-            data-visible="true"
-            style={at(900)}
-            aria-label="Markets"
-          >
-            <p className="text-label uppercase text-(--color-accent)">
-              Gulf Market Coverage
-            </p>
-
-            {/*
-              Two columns at every breakpoint. A single stacked column ran the
-              card to ~360px, which made it the tallest element in the hero and
-              pushed the whole section past the fold.
-            */}
-            <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-1.5">
-              {gulfMarkets.map((market) => (
-                <li
-                  key={market.code}
-                  className="flex items-baseline justify-between gap-3 border-b border-white/10 py-1.5 text-[0.9375rem] text-(--color-foreground)"
-                >
-                  <span>{market.label}</span>
-                  <span
-                    aria-hidden="true"
-                    className="num font-display-sm text-xs text-(--color-foreground-subtle)"
-                  >
-                    {market.code}
-                  </span>
-                </li>
-              ))}
-            </ul>
-
-            <p className="mt-5 text-xs leading-relaxed text-(--color-foreground-subtle)">
-              Market orientation only. Not offices or registrations.
-            </p>
-          </aside>
+          <MarketPanel delay={900} />
         </div>
       </Container>
     </section>
