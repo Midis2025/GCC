@@ -5,9 +5,9 @@ import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { GulfNetwork } from "@/components/visuals/GulfNetwork";
+import { GlobeExperience } from "@/components/visuals/GlobeExperience";
 import { backdrops } from "@/data/imagery";
-import { gulfMarkets, outreachContent } from "@/data/homepage";
+import { outreachContent } from "@/data/homepage";
 
 /**
  * Gulf investor outreach feature - the strongest section on the page.
@@ -103,30 +103,17 @@ export function GulfOutreach() {
           </div>
 
           {/*
-            The diagram sits on its own glass plate rather than directly on the
-            photograph: the connectors are hairlines, and they need a settled
-            ground behind them to stay readable over a varied image.
+            The globe sits directly on the photograph rather than on a glass
+            plate. It carries its own atmosphere and its own floating panel, and
+            boxing that inside a second surface flattened both - the plate is
+            what the diagram it replaced needed, not what this needs.
+
+            Market names, the information panel and the integrity caption all
+            live inside `GlobeExperience` as real text, so the section reads
+            identically with the canvas chunk missing.
           */}
-          <Reveal delay={160} className="border border-white/12 bg-[rgba(12,20,29,0.55)] p-7 backdrop-blur-md sm:p-9">
-            <GulfNetwork />
-
-            <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 border-t border-white/10 pt-6">
-              {gulfMarkets.map((market) => (
-                <li
-                  key={market.code}
-                  className="text-label uppercase text-(--color-foreground-subtle)"
-                >
-                  {market.label}
-                </li>
-              ))}
-              <li className="text-label uppercase text-(--color-foreground-subtle)">
-                International Capital
-              </li>
-            </ul>
-
-            <p className="mt-6 max-w-[46ch] text-sm leading-relaxed text-(--color-foreground-subtle)">
-              {outreachContent.disclaimer}
-            </p>
+          <Reveal delay={160}>
+            <GlobeExperience />
           </Reveal>
         </div>
       </Container>
