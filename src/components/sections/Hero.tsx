@@ -123,17 +123,25 @@ export function Hero() {
         className="absolute inset-0 -z-[4] bg-[linear-gradient(100deg,rgba(5,9,15,0.82)_0%,rgba(5,9,15,0.6)_26%,rgba(5,9,15,0.3)_48%,rgba(5,9,15,0.08)_66%,transparent_82%)]"
       />
 
-      {/* Vignette, so the frame closes at the corners rather than running out. */}
+      {/*
+        Vignette, so the frame closes at the corners rather than running out.
+
+        `pointer-events-none`, like the grain below it: both of these sit ABOVE
+        the globe layer in the stacking order (-2 and -1 against its -3), and a
+        full-bleed div with no pointer rule of its own is still a hit-test
+        target - so between them they were swallowing every press aimed at the
+        globe. They are scrims; nothing should ever be pointing at them.
+      */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-[2] bg-[radial-gradient(105%_88%_at_52%_48%,transparent_46%,rgba(3,6,10,0.5)_100%)]"
+        className="pointer-events-none absolute inset-0 -z-[2] bg-[radial-gradient(105%_88%_at_52%_48%,transparent_46%,rgba(3,6,10,0.5)_100%)]"
       />
 
       {/*
         Grain, over everything. It is what keeps this many overlapping
         full-bleed gradients from banding on a wide display.
       */}
-      <div aria-hidden="true" className="grain absolute inset-0 -z-[1]" />
+      <div aria-hidden="true" className="grain pointer-events-none absolute inset-0 -z-[1]" />
 
       {/*
         The copy takes the space the standing bar does not, and centres itself
@@ -144,10 +152,22 @@ export function Hero() {
 
         The top padding is header clearance and nothing more; the rest of the
         spacing is now the centring.
+
+        `pointer-events-none` here, `auto` on each block inside.
+
+        From `lg` the globe is a layer behind this container, and the container
+        is the full width and height of the section - so it was intercepting
+        every press across the whole hero and the globe could not be grabbed at
+        all on desktop. Turning the BOX transparent and handing pointer events
+        back to the three blocks that actually hold content means the type is
+        still selectable and the buttons still clickable, while the empty space
+        around them - which is most of the right-hand half, where the disc is -
+        reaches the canvas. Below `lg` the globe is in the flow beneath this and
+        was never covered, which is why touch already worked there.
       */}
-      <Container className="relative z-10 flex flex-1 flex-col justify-center pb-[clamp(0.5rem,1.6svh,2.5rem)] pt-[calc(var(--header-h)+clamp(0.75rem,2svh,3rem))]">
+      <Container className="pointer-events-none relative z-10 flex flex-1 flex-col justify-center pb-[clamp(0.5rem,1.6svh,2.5rem)] pt-[calc(var(--header-h)+clamp(0.75rem,2svh,3rem))]">
         <p
-          className="reveal flex items-center gap-3.5 text-label uppercase text-(--color-accent)"
+          className="reveal pointer-events-auto flex w-fit items-center gap-3.5 text-label uppercase text-(--color-accent)"
           data-visible="true"
         >
           <span aria-hidden="true" className="h-px w-10 shrink-0 bg-(--color-accent)" />
@@ -208,9 +228,15 @@ export function Hero() {
                   measures these to find where the type column actually ends,
                   and a full-width box would report the measure instead of the
                   line.
+
+                  It is also what makes the headline cost the globe as little
+                  as possible: pointer events come back on HERE rather than on
+                  the h1, so the words stay selectable while the empty space to
+                  the right of each line - inside the 26ch measure, over the
+                  disc - stays reachable.
                 */}
                 <span
-                  className="reveal block w-fit"
+                  className="reveal pointer-events-auto block w-fit"
                   data-visible="true"
                   data-variant="mask"
                   style={at(140 + index * 130)}
@@ -229,7 +255,12 @@ export function Hero() {
           already narrower than this - so nothing about the reading experience
           moves; only the empty space to its right does.
         */}
-        <div className="mt-[clamp(1.25rem,3.4svh,2.25rem)] max-w-[54rem] lg:max-w-[48%]">
+        {/*
+          Pointer events come back on for the whole copy column. It is capped
+          at 48% from `lg` and the disc is centred at 80% of the section, so
+          this block cannot cover any part of the globe worth grabbing.
+        */}
+        <div className="pointer-events-auto mt-[clamp(1.25rem,3.4svh,2.25rem)] max-w-[54rem] lg:max-w-[48%]">
           <p
             className="reveal max-w-[54ch] text-lead text-(--color-foreground-muted) [text-shadow:0_1px_18px_rgba(4,8,14,0.75)]"
             data-visible="true"
@@ -285,8 +316,11 @@ export function Hero() {
         positioned inside it ends up off-screen. In the container it is bounded
         by the same margins as everything else.
       */}
-      <Container className="relative z-10 pb-3">
-        <p className="text-[0.6875rem] leading-relaxed text-(--color-foreground-subtle) lg:text-right">
+      <Container className="pointer-events-none relative z-10 pb-3">
+        {/* Same treatment as the copy column: the caption is one line of text
+            near the foot of the disc, so the box around it gives its pointer
+            events back to the globe and the words keep theirs. */}
+        <p className="pointer-events-auto text-[0.6875rem] leading-relaxed text-(--color-foreground-subtle) lg:text-right">
           {marketOrientationNote}
         </p>
       </Container>

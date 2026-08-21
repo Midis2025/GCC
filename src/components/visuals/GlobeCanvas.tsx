@@ -64,6 +64,16 @@ export interface GlobeCanvasProps {
   variant?: "panel" | "hero";
   /** Label anchor positions in canvas pixels, keyed by market code. */
   labelAnchors?: Record<string, { x: number; y: number }>;
+  /**
+   * Draws the active market's name on the globe, beside its marker.
+   *
+   * Defaults to on for `panel` and off for `hero`, because the hero normally
+   * carries a standing HTML label for every market and two names on one dot is
+   * a double image. The hero turns it back on below `lg`, where there is no
+   * room to fan seven labels and the standing set is not rendered - so this is
+   * what keeps the markets named on a phone.
+   */
+  markerLabels?: boolean;
   className?: string;
 }
 
@@ -110,6 +120,7 @@ export function GlobeCanvas({
   frame,
   variant = "panel",
   labelAnchors,
+  markerLabels,
   className,
 }: GlobeCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -381,7 +392,7 @@ export function GlobeCanvas({
       }
       // The hero carries a standing HTML label for every market, so the canvas
       // must not draw one too - two names on one dot is just a double image.
-      drawMarkets(ctx, rot, cx, cy, radius, active.current, hovered.current, elapsed, reducedMotion, fontFamily, hits, !hero);
+      drawMarkets(ctx, rot, cx, cy, radius, active.current, hovered.current, elapsed, reducedMotion, fontFamily, hits, markerLabels ?? !hero);
     };
 
     frame = requestAnimationFrame(draw);
@@ -391,7 +402,7 @@ export function GlobeCanvas({
       resizeObserver.disconnect();
       visibility.disconnect();
     };
-  }, [reducedMotion, compact, variant]);
+  }, [reducedMotion, compact, variant, markerLabels]);
 
   /* --- Pointer ---------------------------------------------------------- */
   const pick = useCallback((clientX: number, clientY: number) => {
@@ -416,18 +427,44 @@ export function GlobeCanvas({
     return best;
   }, []);
 
-  const handlePointerDown = useCallback((event: React.PointerEvent<HTMLCanvasElement>) => {
-    // Only inside the disc. Everywhere else in the canvas is background, and a
-    // press there belongs to the page - selecting the headline, for instance -
-    // not to the globe.
-    const rect = event.currentTarget.getBoundingClientRect();
+  /** True when the pointer is over the disc rather than the canvas around it. */
+  const onDisc = useCallback((element: HTMLCanvasElement, clientX: number, clientY: number) => {
+    const rect = element.getBoundingClientRect();
     const { cx, cy, radius } = geometry.current;
-    const distance = Math.hypot(event.clientX - rect.left - cx, event.clientY - rect.top - cy);
-    if (radius === 0 || distance > radius) return;
-
-    pointer.current = { dragging: true, moved: 0, x: event.clientX, y: event.clientY };
-    event.currentTarget.setPointerCapture(event.pointerId);
+    if (radius === 0) return false;
+    return Math.hypot(clientX - rect.left - cx, clientY - rect.top - cy) <= radius;
   }, []);
+
+  /*
+    Written straight onto the element rather than held in state.
+
+    The canvas is far larger than the globe - the hero's is the whole section -
+    so a blanket `cursor: grab` would advertise the entire hero as draggable
+    when only the disc is. Setting it per move keeps the affordance honest, and
+    doing it through the style object rather than through React keeps it off the
+    render path.
+  */
+  const setCursor = useCallback((element: HTMLCanvasElement, value: string) => {
+    if (element.style.cursor !== value) element.style.cursor = value;
+  }, []);
+
+  const handlePointerDown = useCallback(
+    (event: React.PointerEvent<HTMLCanvasElement>) => {
+      // Only inside the disc. Everywhere else in the canvas is background, and a
+      // press there belongs to the page - selecting the headline, for instance -
+      // not to the globe.
+      if (!onDisc(event.currentTarget, event.clientX, event.clientY)) return;
+
+      // Stops the press turning into a text selection or a native image drag
+      // as the pointer travels across the section.
+      event.preventDefault();
+
+      pointer.current = { dragging: true, moved: 0, x: event.clientX, y: event.clientY };
+      event.currentTarget.setPointerCapture(event.pointerId);
+      setCursor(event.currentTarget, "grabbing");
+    },
+    [onDisc, setCursor],
+  );
 
   const handlePointerMove = useCallback(
     (event: React.PointerEvent<HTMLCanvasElement>) => {
@@ -453,6 +490,13 @@ export function GlobeCanvas({
         return;
       }
 
+      // Grab only over the disc; plain elsewhere, because "elsewhere" on the
+      // hero is the whole section.
+      setCursor(
+        event.currentTarget,
+        onDisc(event.currentTarget, event.clientX, event.clientY) ? "grab" : "default",
+      );
+
       const index = pick(event.clientX, event.clientY);
       if (index !== hovered.current) {
         hovered.current = index;
@@ -460,7 +504,7 @@ export function GlobeCanvas({
         onHover(index, event.clientX - rect.left, event.clientY - rect.top);
       }
     },
-    [onHover, pick],
+    [onHover, pick, onDisc, setCursor],
   );
 
   const handlePointerUp = useCallback(
@@ -468,28 +512,78 @@ export function GlobeCanvas({
       const state = pointer.current;
       state.dragging = false;
 
+      setCursor(
+        event.currentTarget,
+        onDisc(event.currentTarget, event.clientX, event.clientY) ? "grab" : "default",
+      );
+
       if (state.moved <= DRAG_THRESHOLD) {
         const index = pick(event.clientX, event.clientY);
-        if (index !== null) onSelect(index);
+
+        // Touch has no "moved away", so a tap on bare globe is the only way to
+        // put a card away again. Without this it would stand until the next
+        // marker was found.
+        if (index === null && event.pointerType === "touch" && hovered.current !== null) {
+          hovered.current = null;
+          onHover(null, 0, 0);
+        }
+
+        if (index !== null) {
+          /*
+            Report the position before the selection. A touch tap can produce
+            no pointermove at all, so without this the card would be shown at
+            wherever the last pointer report left it - which on a phone, where
+            there may never have been one, is the corner of the layer.
+          */
+          if (hovered.current !== index) {
+            hovered.current = index;
+            const rect = event.currentTarget.getBoundingClientRect();
+            onHover(index, event.clientX - rect.left, event.clientY - rect.top);
+          }
+          onSelect(index);
+        }
       }
     },
-    [onSelect, pick],
+    [onSelect, onHover, pick, onDisc, setCursor],
   );
 
-  const handlePointerLeave = useCallback(() => {
-    pointer.current.dragging = false;
-    if (hovered.current !== null) {
-      hovered.current = null;
-      onHover(null, 0, 0);
-    }
-  }, [onHover]);
+  const handlePointerLeave = useCallback(
+    (event: React.PointerEvent<HTMLCanvasElement>) => {
+      pointer.current.dragging = false;
+      setCursor(event.currentTarget, "default");
+
+      /*
+        A touch pointer ceases to exist the moment the finger lifts, so the
+        browser fires `pointerleave` immediately after every `pointerup`.
+        Treating that as "the pointer has moved away" wiped the card a tap had
+        just opened - which is why tapping a marker on a phone appeared to do
+        nothing at all. Hover is a pointing-device idea; a tap is a choice, and
+        it stands until the next one.
+      */
+      if (event.pointerType === "touch") return;
+
+      if (hovered.current !== null) {
+        hovered.current = null;
+        onHover(null, 0, 0);
+      }
+    },
+    [onHover, setCursor],
+  );
 
   return (
     <canvas
       ref={canvasRef}
       aria-hidden="true"
       className={className}
-      style={{ touchAction: "pan-y", cursor: "grab" }}
+      /*
+        `pan-y` is what lets the page keep scrolling vertically under a finger
+        while a horizontal swipe turns the globe instead of panning the page -
+        so dragging the globe can never produce a sideways scroll.
+
+        `userSelect: none` stops a drag that starts on the disc from running on
+        into a text selection of whatever the canvas is layered over.
+      */
+      style={{ touchAction: "pan-y", userSelect: "none", WebkitUserSelect: "none" }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}

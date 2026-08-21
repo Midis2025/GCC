@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { globePanelContent, heroLabelSlots, heroMarkets } from "@/data/outreach-globe";
 
@@ -22,6 +22,53 @@ const GlobeCanvas = dynamic(
 const TOUR_STEP_MS = 5200;
 /** How long a hover or a keyboard focus outranks the scroll position. */
 const HOLD_MS = 6000;
+
+/** Matches the 1.25rem in the card's own "sit to my left" transform. */
+const CARD_GAP = 20;
+/** How much of the viewport the card must always keep clear of. */
+const CARD_EDGE = 8;
+
+/**
+ * Keeps the pointer-anchored card inside the viewport.
+ *
+ * The card is placed to the LEFT of the pointer and centred on it, which on a
+ * desktop hero lands it in the quiet band between the type and the disc. On a
+ * phone there is no such band: the disc is centred in a 264px column, so a
+ * 240px card hung off the left of a marker rendered at roughly x = -217 -
+ * entirely off-screen, which is the one thing a label must never be.
+ *
+ * So the translate is clamped rather than the geometry redesigned. Nothing
+ * changes on desktop, where the unclamped position is already inside the
+ * bounds; on mobile the card slides along until it fits. When the viewport is
+ * too narrow to hold it clear of the pointer at all, the lower bound wins and
+ * the card sits against the left edge, overlapping the globe but readable.
+ */
+function clampCard(
+  node: HTMLDivElement,
+  layer: HTMLDivElement | null,
+  x: number,
+  y: number,
+): { x: number; y: number } {
+  const inner = node.firstElementChild as HTMLElement | null;
+  if (!layer || !inner || inner.offsetWidth === 0) return { x, y };
+
+  const box = layer.getBoundingClientRect();
+  const vw = document.documentElement.clientWidth;
+  const vh = document.documentElement.clientHeight;
+  const w = inner.offsetWidth;
+  const h = inner.offsetHeight;
+
+  // Bounds on the translate, derived from where the card itself then lands.
+  const minX = CARD_EDGE - box.left + w + CARD_GAP;
+  const maxX = vw - CARD_EDGE - box.left + CARD_GAP;
+  const minY = CARD_EDGE - box.top + h / 2;
+  const maxY = vh - CARD_EDGE - box.top - h / 2;
+
+  return {
+    x: maxX < minX ? minX : Math.min(Math.max(x, minX), maxX),
+    y: maxY < minY ? minY : Math.min(Math.max(y, minY), maxY),
+  };
+}
 
 type CardMode = "pointer" | "anchored";
 
@@ -55,6 +102,8 @@ export function HeroGlobe({ className }: { className?: string }) {
 
   const wrapper = useRef<HTMLDivElement>(null);
   const cardElement = useRef<HTMLDivElement>(null);
+  /** Last pointer report, in canvas pixels, so the card can be re-clamped. */
+  const lastPoint = useRef({ x: 0, y: 0 });
   const heldUntil = useRef(0);
   /** Cleared by the first scroll: the opening tour runs only once, if at all. */
   const touring = useRef(true);
@@ -146,13 +195,34 @@ export function HeroGlobe({ className }: { className?: string }) {
 
     // Moved through the element rather than through state: chasing the pointer
     // with a React render would be the most expensive thing in the hero.
+    lastPoint.current = { x, y };
     const node = cardElement.current;
-    if (node) node.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    if (node) {
+      const point = clampCard(node, wrapper.current, x, y);
+      node.style.transform = `translate3d(${point.x}px, ${point.y}px, 0)`;
+    }
 
     hold();
     setActiveIndex(index);
     setCard({ index, mode: "pointer" });
   }, []);
+
+  /*
+    Re-clamp once the card is carrying the market it is about.
+
+    The clamp above runs on the pointer report, which is one render before the
+    new copy is in the box - so it measures the PREVIOUS market's height, and
+    the descriptions differ by about 40px. Re-running it here, against the same
+    pointer position and the settled size, is what keeps the bottom edge inside
+    a short viewport.
+  */
+  useLayoutEffect(() => {
+    if (card?.mode !== "pointer") return;
+    const node = cardElement.current;
+    if (!node) return;
+    const point = clampCard(node, wrapper.current, lastPoint.current.x, lastPoint.current.y);
+    node.style.transform = `translate3d(${point.x}px, ${point.y}px, 0)`;
+  }, [card]);
 
   const handleSelect = useCallback((index: number) => {
     hold();
@@ -317,6 +387,15 @@ export function HeroGlobe({ className }: { className?: string }) {
         frame={frame}
         variant="hero"
         labelAnchors={anchors}
+        /*
+          Below `lg` the standing labels are not rendered - there is nowhere to
+          fan seven of them around a disc a third of the size - so the markets
+          would otherwise be unnamed dots on a phone. This turns on the
+          renderer's own on-globe label for the active market, the same one the
+          outreach globe already uses, so the name travels with the marker and
+          can be neither clipped by the viewport nor piled on top of another.
+        */
+        markerLabels={!wide}
         className="h-full w-full"
       />
 
