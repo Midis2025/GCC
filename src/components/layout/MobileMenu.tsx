@@ -1,7 +1,16 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useId, useRef, useState, type CSSProperties } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type CSSProperties,
+} from "react";
+import { createPortal } from "react-dom";
 
 import { NavLink } from "@/components/layout/NavLink";
 import { Button } from "@/components/ui/Button";
@@ -11,6 +20,9 @@ import type { NavItem } from "@/types";
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+/** Whether the document exists never changes, so the store never emits. */
+const subscribeNever = () => () => {};
 
 export interface MobileMenuProps {
   items: NavItem[];
@@ -38,6 +50,16 @@ export function MobileMenu({ items, cta, className }: MobileMenuProps) {
   const pathname = usePathname();
 
   const close = useCallback(() => setOpen(false), []);
+
+  /**
+   * Gates the portal, which needs a `document` the server has not got.
+   *
+   * `useSyncExternalStore` rather than a flag set in an effect: it reports the
+   * server snapshot through hydration and the client one after, so the markup
+   * React hydrates matches what the server sent and there is no setState in an
+   * effect to cascade a second render.
+   */
+  const mounted = useSyncExternalStore(subscribeNever, () => true, () => false);
 
   // Close on route change. Adjusted during render rather than in an effect, so
   // an open panel never survives into the new route.
@@ -103,20 +125,26 @@ export function MobileMenu({ items, cta, className }: MobileMenuProps) {
 
   if (items.length === 0) return null;
 
-  return (
-    // Mirrors the Header's `xl` breakpoint - see the note on its <nav>.
-    <div className={cn("xl:hidden", className)}>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        aria-expanded={open}
-        aria-controls={panelId}
-        aria-label="Open menu"
-        className="-mr-2 inline-flex h-11 w-11 items-center justify-center text-(--color-foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
-      >
-        <MenuGlyph />
-      </button>
+  /*
+    The scrim and the panel, which are portalled to <body> below.
 
+    Both are `position: fixed`, and they used to live here inside the <header>.
+    That worked at the top of the page and nowhere else: once scrolled, the
+    header takes `backdrop-blur-xl`, and an element with a `backdrop-filter`
+    becomes the CONTAINING BLOCK for its fixed descendants exactly as `filter`
+    and `transform` do. So below the fold `inset-y-0` stopped meaning "the
+    viewport" and started meaning "the header" - the panel resolved to 390x71
+    instead of 390x844, the scrim covered only the bar, and the navigation was
+    laid out inside a 72px strip with the page still on top of it.
+
+    Moving them to <body> puts them back in the viewport's coordinate space at
+    every scroll position. The trigger stays in the header, where it belongs.
+  */
+  const overlay = (
+    // Carries the header's `xl` breakpoint across the portal: outside this
+    // subtree it would no longer inherit it, and a panel left open while the
+    // window is widened past `xl` would stay on screen.
+    <div className="xl:hidden">
       {/* Scrim. Fades rather than appearing, and is not focusable. */}
       <div
         aria-hidden="true"
@@ -215,6 +243,31 @@ export function MobileMenu({ items, cta, className }: MobileMenuProps) {
           )}
         </div>
       </div>
+    </div>
+  );
+
+  return (
+    // Mirrors the Header's `xl` breakpoint - see the note on its <nav>.
+    <div className={cn("xl:hidden", className)}>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-expanded={open}
+        aria-controls={panelId}
+        aria-label="Open menu"
+        className="-mr-2 inline-flex h-11 w-11 items-center justify-center text-(--color-foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+      >
+        <MenuGlyph />
+      </button>
+
+      {/*
+        Portalled only once mounted, because there is no `document` to portal
+        into while this renders on the server. The panel is `inert` and off
+        canvas until it is opened, so nothing is lost by it arriving with
+        hydration - and every link in it is also in the header's own nav and in
+        the footer, both of which are server-rendered.
+      */}
+      {mounted ? createPortal(overlay, document.body) : null}
     </div>
   );
 }
