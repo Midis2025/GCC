@@ -12,6 +12,14 @@
  */
 export const siteConfig = {
   name: "GCC",
+  /**
+   * The name set in the supplied logo artwork, read off `/images/logo.svg`.
+   *
+   * Not invented and not a legal entity name - it is the wordmark the client
+   * drew, and it exists so the logo's accessible name matches the words a
+   * sighted visitor can see in it. `legalName` below is still outstanding.
+   */
+  wordmark: "Gulf Connect Consultancy",
   /** TODO: confirm the registered legal entity name. */
   legalName: "",
   /** Used as the <title> suffix and in the footer wordmark. */
