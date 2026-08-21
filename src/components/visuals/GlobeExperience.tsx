@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { GlobeMarket } from "@/data/outreach-globe";
 import { globeMarkets, globePanelContent } from "@/data/outreach-globe";
 import { outreachContent } from "@/data/homepage";
+import { GLOW_REACH, glowBox } from "@/lib/globe";
 import { cn } from "@/lib/utils";
 
 /**
@@ -157,14 +158,27 @@ export function GlobeExperience({ className }: { className?: string }) {
 
   const market = globeMarkets[activeIndex];
 
-  // Pushed right and up once the panel starts floating over the lower-left, so
-  // the Gulf never ends up behind the thing describing it.
-  const frame = useMemo(
-    () => ({
-      cx: panelFloats ? 0.55 : 0.5,
-      cy: panelFloats ? 0.44 : 0.5,
-      radius: compact ? 0.38 : 0.44,
-    }),
+  /*
+    Where the disc sits in the STAGE - the square box the layout reserves for
+    it. Pushed right and up once the panel starts floating over the lower-left,
+    so the Gulf never ends up behind the thing describing it.
+
+    These three numbers are the approved placement and are unchanged. What
+    changes is that they are no longer handed straight to the canvas: the disc
+    carries a glow that reaches 1.32 radii, which at this placement overruns
+    the stage by 13% on the right and 14% at the top, and the canvas was
+    cutting it off dead straight at those edges. `glowBox` turns the placement
+    into the canvas it actually needs and restates the disc against it, so the
+    globe keeps exactly this size and position and the light gets somewhere to
+    fade out.
+  */
+  const { inset, frame } = useMemo(
+    () =>
+      glowBox({
+        cx: panelFloats ? 0.55 : 0.5,
+        cy: panelFloats ? 0.44 : 0.5,
+        radius: compact ? 0.38 : 0.44,
+      }),
     [panelFloats, compact],
   );
 
@@ -173,33 +187,45 @@ export function GlobeExperience({ className }: { className?: string }) {
       {/* --- Stage: the globe, with the panel floating over it on desktop --- */}
       <div className="relative">
         <div className="relative mx-auto aspect-square w-full max-w-[21rem] sm:max-w-[26rem] md:max-w-[30rem] lg:max-w-none">
-          <GlobeCanvas
-            activeIndex={activeIndex}
-            onSelect={select}
-            onHover={handleHover}
-            reducedMotion={reducedMotion}
-            compact={compact}
-            frame={frame}
-            className="h-full w-full"
-          />
+          {/*
+            The canvas is the glow's box, so it sits slightly proud of the
+            stage on the sides the light overruns. The stage itself is
+            untouched, which is what keeps the section height, the panel and
+            the rail exactly where they were.
 
-          {/* Pointer-anchored tooltip. Hidden rather than unmounted, so the
-              transform written above survives between hovers. */}
-          <div
-            ref={tooltipElement}
-            aria-hidden="true"
-            className={cn(
-              "pointer-events-none absolute left-0 top-0 z-20 transition-opacity duration-200",
-              tooltip.visible ? "opacity-100" : "opacity-0",
-            )}
-          >
-            <div className="-translate-x-1/2 -translate-y-[calc(100%+1.25rem)] whitespace-nowrap border border-white/15 bg-[rgba(9,15,22,0.9)] px-3 py-2 backdrop-blur-md">
-              <p className="text-[0.6875rem] uppercase leading-none tracking-[0.14em] text-(--color-accent)">
-                {tooltip.market?.label ?? ""}
-              </p>
-              <p className="mt-1.5 text-[0.8125rem] leading-none text-(--color-foreground)">
-                {tooltip.market?.city ?? ""}
-              </p>
+            The tooltip lives in here rather than on the stage because
+            `onHover` reports the pointer in CANVAS pixels: anchored to the
+            stage it would now be out by the inset.
+          */}
+          <div className="absolute" style={inset}>
+            <GlobeCanvas
+              activeIndex={activeIndex}
+              onSelect={select}
+              onHover={handleHover}
+              reducedMotion={reducedMotion}
+              compact={compact}
+              frame={frame}
+              className="h-full w-full"
+            />
+
+            {/* Pointer-anchored tooltip. Hidden rather than unmounted, so the
+                transform written above survives between hovers. */}
+            <div
+              ref={tooltipElement}
+              aria-hidden="true"
+              className={cn(
+                "pointer-events-none absolute left-0 top-0 z-20 transition-opacity duration-200",
+                tooltip.visible ? "opacity-100" : "opacity-0",
+              )}
+            >
+              <div className="-translate-x-1/2 -translate-y-[calc(100%+1.25rem)] whitespace-nowrap border border-white/15 bg-[rgba(9,15,22,0.9)] px-3 py-2 backdrop-blur-md">
+                <p className="text-[0.6875rem] uppercase leading-none tracking-[0.14em] text-(--color-accent)">
+                  {tooltip.market?.label ?? ""}
+                </p>
+                <p className="mt-1.5 text-[0.8125rem] leading-none text-(--color-foreground)">
+                  {tooltip.market?.city ?? ""}
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -326,7 +352,16 @@ export function GlobeExperience({ className }: { className?: string }) {
 function GlobePlaceholder() {
   return (
     <div className="flex h-full w-full items-center justify-center" aria-hidden="true">
-      <div className="aspect-square w-[80%] rounded-full bg-[radial-gradient(circle_at_32%_28%,#1b2937,#101b25_55%,#0a1017)] opacity-70" />
+      {/*
+        Sized against the canvas box rather than the stage. That box is the
+        glow's bounding square, so the disc inside it is always `1 / GLOW_REACH`
+        of it across - derived rather than eyeballed, so the silhouette cannot
+        drift out of step with the globe that replaces it.
+      */}
+      <div
+        className="aspect-square rounded-full bg-[radial-gradient(circle_at_32%_28%,#1b2937,#101b25_55%,#0a1017)] opacity-70"
+        style={{ width: `${100 / GLOW_REACH}%` }}
+      />
     </div>
   );
 }

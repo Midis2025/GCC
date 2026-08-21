@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef } from "react";
 
 import { globeMarkets, internationalArcs } from "@/data/outreach-globe";
-import { DEG, approach, greatCircle, project, shortestAngle } from "@/lib/globe";
+import { DEG, GLOW_REACH, approach, greatCircle, project, shortestAngle } from "@/lib/globe";
 import type { Projected, Rotation } from "@/lib/globe";
 
 /* --------------------------------------------------------------------------
@@ -522,9 +522,6 @@ interface GlobeLayers {
   originY: number;
   size: number;
 }
-
-/** How far the widest gradient reaches, in radii. Sizes the cached layers. */
-const GLOW_REACH = 1.32;
 
 function buildLayers(
   dpr: number,

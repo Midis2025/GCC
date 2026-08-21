@@ -165,3 +165,63 @@ export function shortestAngle(a: number, b: number): number {
 export function approach(current: number, target: number, smoothing: number, dt: number): number {
   return current + (target - current) * (1 - Math.pow(smoothing, dt));
 }
+
+/* ==========================================================================
+   GLOW GEOMETRY
+   ========================================================================== */
+
+/**
+ * How far the atmosphere reaches past the limb, in radii.
+ *
+ * Lives here rather than in the renderer because it settles two things that
+ * have to agree, and which are decided in two different files: how large the
+ * cached glow layer is, and how large the CANVAS ELEMENT has to be for that
+ * glow to fade out rather than stop.
+ */
+export const GLOW_REACH = 1.32;
+
+/** Where a disc sits inside a box, as fractions of that box. */
+export interface Disc {
+  cx: number;
+  cy: number;
+  /** Of the box's shorter side. */
+  radius: number;
+}
+
+/**
+ * The canvas a disc placement actually needs, given that the disc carries a
+ * glow around it.
+ *
+ * A canvas sized to the globe rather than to the globe's light guillotines the
+ * falloff at the element's edge. The gradient is still mid-strength there, so
+ * what lands on the page is a dead-straight step in a soft field - down one
+ * side of the disc, up the other - and the eye reads a pair of straight edges
+ * around a bright centre as a panel boundary. That is the seam, and no amount
+ * of tuning the gradient removes it: the cut is rectangular and the light is
+ * radial, so they can never agree.
+ *
+ * So the canvas becomes the glow's bounding box instead of the globe's. The
+ * returned `inset` positions it against the layout box the caller already has
+ * - negative on any side the glow overruns, positive on any side it does not,
+ * so the element is always exactly as big as the light and never larger.
+ *
+ * Because that box is square and centred on the disc by construction, `frame`
+ * is the same for every caller: the disc keeps precisely the size and position
+ * the placement asked for, and only the transparent room around it changes.
+ */
+export function glowBox(disc: Disc) {
+  const reach = disc.radius * GLOW_REACH;
+  // Negative where the glow overruns the layout box.
+  const inset = (overrun: number) => `${(-overrun * 100).toFixed(4)}%`;
+
+  return {
+    inset: {
+      top: inset(reach - disc.cy),
+      right: inset(reach - (1 - disc.cx)),
+      bottom: inset(reach - (1 - disc.cy)),
+      left: inset(reach - disc.cx),
+    },
+    /** The same disc, restated against the enlarged canvas. */
+    frame: { cx: 0.5, cy: 0.5, radius: 1 / (2 * GLOW_REACH) },
+  } as const;
+}
