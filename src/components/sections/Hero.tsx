@@ -164,8 +164,14 @@ export function Hero() {
         around them - which is most of the right-hand half, where the disc is -
         reaches the canvas. Below `lg` the globe is in the flow beneath this and
         was never covered, which is why touch already worked there.
+
+        The phone-only bottom padding replaces what the globe used to provide.
+        It sat between the CTAs and the standing bar with 48px of its own margin
+        above it; taking it away left the second button 14px off the bar, which
+        reads as truncated rather than as composed. Same 640px line, so nothing
+        above it moves.
       */}
-      <Container className="pointer-events-none relative z-10 flex flex-1 flex-col justify-center pb-[clamp(0.5rem,1.6svh,2.5rem)] pt-[calc(var(--header-h)+clamp(0.75rem,2svh,3rem))]">
+      <Container className="pointer-events-none relative z-10 flex flex-1 flex-col justify-center pb-[clamp(0.5rem,1.6svh,2.5rem)] pt-[calc(var(--header-h)+clamp(0.75rem,2svh,3rem))] max-sm:pb-9">
         <p
           className="reveal pointer-events-auto flex w-fit items-center gap-3.5 text-label uppercase text-(--color-accent)"
           data-visible="true"
@@ -300,8 +306,15 @@ export function Hero() {
         Stacked below `lg`, so it carries the page gutter itself rather than
         sitting in a Container - the same token, so it lines up with the copy
         above it at every width.
+
+        `max-sm:hidden` takes it off phones entirely. At that size the six Gulf
+        markets project into a knot a few pixels across, so the globe was
+        reading as decoration rather than as the map it is on a wide screen.
+        The boundary is 640px, the same line the renderer already uses to tell a
+        phone from a tablet - so the tablet globe and the desktop layer are
+        untouched.
       */}
-      <HeroGlobe className="mt-12 px-(--gutter) lg:mt-0 lg:px-0" />
+      <HeroGlobe className="mt-12 px-(--gutter) max-sm:hidden lg:mt-0 lg:px-0" />
 
       {/*
         CONTENT INTEGRITY: required, and not in the reference.
@@ -315,8 +328,15 @@ export function Hero() {
         deliberately runs past the right edge of the viewport, and a caption
         positioned inside it ends up off-screen. In the container it is bounded
         by the same margins as everything else.
+
+        It goes with the globe on phones, at the same 640px line. The rule is
+        that the caption accompanies any rendering of `gulfMarkets`; with the
+        globe gone there is nothing on the mobile hero rendering them, and a
+        line qualifying a map that is not on screen only raises the question it
+        was written to answer. `HeroStats` counts the markets rather than naming
+        them, and carries its own note.
       */}
-      <Container className="pointer-events-none relative z-10 pb-3">
+      <Container className="pointer-events-none relative z-10 pb-3 max-sm:hidden">
         {/* Same treatment as the copy column: the caption is one line of text
             near the foot of the disc, so the box around it gives its pointer
             events back to the globe and the words keep theirs. */}
