@@ -109,6 +109,24 @@ export const backdrops = {
     alt: "",
     position: "50% 58%",
   },
+  /**
+   * The enquiry band on the contact page, below the hero.
+   *
+   * The Gulf financial district at night - the same frame the sitewide CTA
+   * uses, which is not on this route, so the pair never meet. It is the
+   * darkest photograph in the set, and the enquiry panel sits directly on it:
+   * anything brighter would have to be scrimmed so far back that the image
+   * would stop being architecture and become a grey wash.
+   *
+   * Deliberately not the twilight skyline above it. A page that opens on one
+   * skyline and then repeats it 900px later reads as a tiling error rather
+   * than as a composition.
+   */
+  enquiry: {
+    src: gulfFinancialDistrictNight,
+    alt: "",
+    position: "50% 55%",
+  },
   /** Insights index and article headers. */
   insights: {
     src: dohaWaterfrontMuted,

@@ -35,6 +35,12 @@ export const marketOptions: SelectOption[] = [
 
 export const contactContent = {
   eyebrow: "Contact",
+  /**
+   * Label on the enquiry panel itself. A UI affordance rather than copy - it
+   * names the object the visitor is looking at, the way `SectionLabel` names a
+   * section, and claims nothing.
+   */
+  formLabel: "Enquiry",
   title: "Start a Conversation",
   lead: "For companies considering an investor relations programme, an outreach mandate or a review of how they are currently understood by the market.",
   introHeading: "Before you write",

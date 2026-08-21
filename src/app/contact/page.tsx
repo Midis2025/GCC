@@ -1,6 +1,8 @@
+import NextImage from "next/image";
+
 import { ContactForm } from "@/components/sections/ContactForm";
 import { PageHero } from "@/components/sections/PageHero";
-import { Section } from "@/components/sections/Section";
+import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
@@ -44,8 +46,77 @@ export default function ContactPage() {
         lead={contactContent.lead}
       />
 
-      <Section spacing="lg" aria-labelledby="contact-heading">
-        <div className="grid gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
+      {/*
+        The enquiry band.
+        ---------------------------------------------------------------------
+        Built from the treatment `GulfOutreach` and `CTASection` already use -
+        full-bleed photograph, a diagonal scrim heavy at the type edge and
+        open at the far one, grain over the top, and a hairline cut top and
+        bottom. Nothing here is a new idea; it is the site's own way of making
+        a band feel like a place, applied to the one section that had been
+        left as fields on flat canvas.
+
+        `tokens-dark` rather than `surface-dark`: identical token inversion for
+        every child, but no painted background, so the photograph shows
+        through. It also carries the stronger muted/subtle foregrounds that
+        globals.css reserves for type over photography, which is what keeps
+        every label and every line of help text at AA over a moving backdrop.
+      */}
+      <section
+        className="tokens-dark relative isolate overflow-hidden bg-(--midnight) py-[var(--space-section-lg)]"
+        aria-labelledby="contact-heading"
+      >
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-20">
+          <NextImage
+            src={backdrops.enquiry.src}
+            alt=""
+            fill
+            sizes="100vw"
+            placeholder="blur"
+            style={{ objectPosition: backdrops.enquiry.position }}
+            className="photo-grade object-cover"
+          />
+        </div>
+
+        {/*
+          One diagonal scrim, tuned the same way `GulfOutreach` tunes its own:
+          heaviest at the edge the reading column sits on and open at the far
+          one, so the photograph is architecture where nothing is written over
+          it and a flat ground where something is.
+
+          The far end stops at 0.58 rather than going darker. A second flat
+          scrim under this one was the first attempt and it was wrong - between
+          them they left about a fifth of the image showing and the band read
+          as black, which is the failure the brief describes in the other
+          direction: atmosphere is the point, and an image nobody can see is
+          just a payload.
+
+          The panel that lands on the open end carries its own glass at ~0.86,
+          so the fields sit at roughly 0.94 combined regardless.
+        */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(104deg,rgba(9,14,21,0.95)_6%,rgba(10,16,24,0.86)_42%,rgba(12,20,29,0.58)_100%)]"
+        />
+        {/* Settles the top and bottom edges into the sections either side. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(to_bottom,rgba(9,14,21,0.55)_0%,transparent_18%,transparent_84%,rgba(9,14,21,0.6)_100%)]"
+        />
+        <div aria-hidden="true" className="grain pointer-events-none absolute inset-0 -z-10" />
+
+        {/* Hairlines, so the band reads as a deliberate cut in the page. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(184,148,95,0.45),transparent)]"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-[linear-gradient(90deg,transparent,rgba(184,148,95,0.28),transparent)]"
+        />
+
+        <Container className="relative z-10">
+        <div className="grid gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-start">
           <div>
             <Reveal>
               <SectionLabel>{contactContent.introHeading}</SectionLabel>
@@ -125,11 +196,17 @@ export default function ContactPage() {
                 <h3 className="text-label uppercase text-(--color-foreground-subtle)">
                   Areas of interest
                 </h3>
+                {/*
+                  Still the same five labels, still tags. What changes is that
+                  a tag now has a ground of its own instead of being an outline
+                  on the page - over a photograph an outline-only chip reads as
+                  a gap in the image rather than as an object on it.
+                */}
                 <ul className="mt-5 flex flex-wrap gap-2">
                   {areaOfInterestOptions.map((option) => (
                     <li
                       key={option.value}
-                      className="border border-(--color-border) px-3.5 py-1.5 text-sm text-(--color-foreground-muted)"
+                      className="border border-(--color-border) bg-white/[0.04] px-3.5 py-2 text-sm text-(--color-foreground-muted) backdrop-blur-[2px]"
                     >
                       {option.label}
                     </li>
@@ -139,13 +216,25 @@ export default function ContactPage() {
                 <h3 className="mt-9 text-label uppercase text-(--color-foreground-subtle)">
                   Markets
                 </h3>
-                <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2">
-                  {gulfMarkets.map((market) => (
-                    <li key={market.code} className="text-sm text-(--color-foreground-muted)">
-                      {market.label}
+                {/*
+                  The markets were a row of words with gaps between them, which
+                  read as a wrapped sentence rather than as a list. The accent
+                  mark is the one the outreach section already uses for its
+                  category list, so the two agree.
+                */}
+                <ul className="mt-5 flex flex-wrap gap-x-6 gap-y-2.5">
+                  {[...gulfMarkets.map((m) => m.label), "International"].map((label) => (
+                    <li
+                      key={label}
+                      className="flex items-center gap-2.5 text-sm text-(--color-foreground-muted)"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="h-1 w-1 shrink-0 bg-(--color-accent)"
+                      />
+                      {label}
                     </li>
                   ))}
-                  <li className="text-sm text-(--color-foreground-muted)">International</li>
                 </ul>
               </div>
             </Reveal>
@@ -153,17 +242,38 @@ export default function ContactPage() {
           </div>
 
           {/*
-            The form sits on a raised surface with a hairline border, so it
-            reads as a distinct object on the page rather than as loose fields
-            in a column.
+            The enquiry panel.
+
+            The same glass the globe's information panel and the hero's market
+            card are built from - a steep dark gradient, a hairline in white at
+            12%, a long soft shadow and a modest blur - so this reads as another
+            object in the same system rather than as a form component that
+            wandered in. The bronze rule along its top edge is that system's
+            way of marking the leading edge of a floating surface.
+
+            Not a white card on a dark band: a light rectangle here would be
+            the brightest thing on the page by a wide margin, and the eye would
+            go to the box instead of to the fields inside it.
           */}
           <Reveal delay={120}>
-            <div className="border border-(--color-border) bg-(--color-surface) p-6 shadow-[var(--shadow-md)] sm:p-9 lg:p-10">
+            <div
+              className={[
+                "relative isolate border border-white/12 p-6 backdrop-blur-[14px] sm:p-9 lg:p-10",
+                "bg-[linear-gradient(152deg,rgba(21,32,44,0.9)_0%,rgba(12,19,28,0.82)_52%,rgba(9,15,22,0.9)_100%)]",
+                "shadow-[0_40px_90px_-40px_rgba(0,0,0,0.9)]",
+              ].join(" ")}
+            >
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(to_right,transparent,rgba(184,148,95,0.7)_45%,transparent)]"
+              />
+
               <ContactForm />
             </div>
           </Reveal>
         </div>
-      </Section>
+        </Container>
+      </section>
     </>
   );
 }

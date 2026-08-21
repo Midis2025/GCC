@@ -7,7 +7,12 @@ import { FormField } from "@/components/ui/FormField";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
-import { areaOfInterestOptions, contactFormConfig, marketOptions } from "@/data/contact";
+import {
+  areaOfInterestOptions,
+  contactContent,
+  contactFormConfig,
+  marketOptions,
+} from "@/data/contact";
 
 type Errors = Partial<Record<string, string>>;
 
@@ -116,9 +121,21 @@ export function ContactForm() {
       onSubmit={handleSubmit}
       noValidate
       aria-describedby={contactFormConfig.deliveryConfigured ? undefined : statusId}
-      className="flex flex-col gap-6"
+      className="flex flex-col gap-7"
     >
-      <div className="grid gap-6 sm:grid-cols-2">
+      {/*
+        Names the panel and gives the fields something to hang from. The page's
+        own heading sits in the left rail and is unchanged; this is a label, not
+        a second title competing with it.
+      */}
+      <div className="flex items-center gap-3.5 border-b border-(--color-border) pb-5">
+        <span aria-hidden="true" className="h-px w-8 shrink-0 bg-(--color-accent)" />
+        <span className="text-label uppercase text-(--color-accent)">
+          {contactContent.formLabel}
+        </span>
+      </div>
+
+      <div className="grid gap-x-6 gap-y-7 sm:grid-cols-2">
         <FormField label="Full name" error={errors.name} required>
           <Input name="name" autoComplete="name" />
         </FormField>
@@ -150,16 +167,31 @@ export function ContactForm() {
         description="A short outline of your situation and what you are looking for."
         required
       >
-        <Textarea name="message" rows={6} />
+        {/*
+          Five rows rather than six. Six ran to roughly 240px, which on the
+          contact page was the tallest single element on screen and made the
+          form read as mostly empty box - and nobody writes six lines into an
+          enquiry before they have had a reply.
+        */}
+        <Textarea name="message" rows={5} />
       </FormField>
 
+      {/*
+        The delivery notice is a status, not body copy, so it is set apart on
+        the accent rule the site uses elsewhere for qualifying statements. The
+        wording is untouched: nothing here may imply a message was sent.
+      */}
       {!contactFormConfig.deliveryConfigured && (
-        <p id={statusId} className="text-sm leading-relaxed text-(--color-foreground-subtle)">
+        <p
+          id={statusId}
+          className="border-l-2 border-(--color-accent)/50 pl-4 text-sm leading-relaxed text-(--color-foreground-subtle)"
+        >
           Form delivery is not yet connected. Submissions are not sent or stored.
         </p>
       )}
 
-      <div className="mt-2">
+      <div className="mt-1 border-t border-(--color-border) pt-7">
+        {/* Button already goes full width below `xs` and hugs above it. */}
         <Button type="submit" size="lg" withArrow>
           Submit Enquiry
         </Button>

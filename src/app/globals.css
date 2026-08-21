@@ -160,6 +160,16 @@
   --color-accent-hover: #cba871;
   --color-accent-foreground: var(--midnight);
   --color-ring: var(--bronze-bright);
+
+  /*
+   * Feedback has to invert too, and until the enquiry form moved onto a dark
+   * band nothing on a dark surface had ever needed to say "this is wrong".
+   * The light-surface #9b2c2c is a deep red chosen to clear AA against ivory;
+   * on midnight it lands at about 2.5:1, which is a validation message a
+   * visitor cannot read. This is the same hue opened up until it clears AA the
+   * other way round.
+   */
+  --color-danger: #f0918d;
 }
 
 .surface-dark {
