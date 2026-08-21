@@ -48,6 +48,39 @@
   --header-h: 4.5rem;
 
   /*
+   * Page gutter.
+   *
+   * The ONE horizontal measurement on the site. `Container` pads by it, and
+   * anything that deliberately breaks out of the content column cancels it
+   * with `calc(var(--gutter) * -1)` rather than restating a pixel value - so a
+   * bleed can never drift out of step with the padding it is bleeding past.
+   *
+   * Fluid rather than stepped, because the previous px-5/px-8/px-12/px-16
+   * ladder jumped by 16-32px at a breakpoint and then held flat across a 640px
+   * range. The clamps below move continuously between the same endpoints.
+   *
+   * Mobile is the base value; the tablet and desktop steps are set in the
+   * media queries under this block.
+   */
+  --gutter: 20px;
+
+  /*
+   * Content ceiling.
+   *
+   * NOT a page width. The old container capped at 78rem (1248px), which on a
+   * 1920 display left 336px of empty canvas down each side and made the site
+   * read as a narrow column parked in a large window. Content now uses the
+   * width the viewport actually offers, and these only engage on displays
+   * wider than about 2000px, where an uncapped line would stop being a layout
+   * and start being a stretch. Readability is handled where it belongs -
+   * on the individual text blocks, in `ch`.
+   */
+  --page-max: 126rem; /* 2016px */
+  --page-max-wide: 136rem; /* 2176px */
+  /* The one genuine reading column: long-form article bodies. */
+  --page-max-narrow: 46rem;
+
+  /*
    * Section rhythm. Sections use these instead of ad-hoc margins.
    *
    * These are PER EDGE, so consecutive sections contribute twice the value
@@ -88,9 +121,18 @@
   --dur-slow: 1000ms;
 }
 
+/* Tablet. */
+@media (min-width: 640px) {
+  :root {
+    --gutter: clamp(24px, 4vw, 48px);
+  }
+}
+
+/* Desktop and up. */
 @media (min-width: 1024px) {
   :root {
     --header-h: 5.5rem;
+    --gutter: clamp(32px, 5vw, 96px);
   }
 }
 
@@ -228,9 +270,13 @@
    ========================================================================== */
 html {
   scroll-behavior: smooth;
+  width: 100%;
+  max-width: 100%;
 }
 
 body {
+  width: 100%;
+  max-width: 100%;
   background-color: var(--color-canvas);
   color: var(--color-foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
@@ -238,8 +284,26 @@ body {
   font-feature-settings: "kern", "liga";
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  /* Guards against any single element forcing a horizontal scrollbar. */
+  /*
+   * A backstop, not the layout mechanism. Every element that intentionally
+   * breaks the content column does it by cancelling exactly one `--gutter`,
+   * which cannot exceed the viewport - so nothing on the site relies on this
+   * to stay inside 100vw. It is here to catch a future mistake, and it is
+   * deliberately NOT also set on `html`: overflow on both makes `body` a real
+   * scroll container and the sticky rails (service nav, capability panel,
+   * `WhyGCC`) stop sticking.
+   */
   overflow-x: hidden;
+}
+
+/*
+ * Long unbroken strings - an address, an email, a URL supplied later - must
+ * wrap rather than set the minimum width of the column they sit in.
+ */
+address,
+a[href^="mailto:"],
+a[href^="tel:"] {
+  overflow-wrap: anywhere;
 }
 
 /* ==========================================================================

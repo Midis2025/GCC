@@ -43,7 +43,7 @@ export function ProseSection({
       <div
         className={cn(
           narrow
-            ? "max-w-[46rem]"
+            ? "max-w-[var(--page-max-narrow)]"
             : "grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-20",
         )}
       >

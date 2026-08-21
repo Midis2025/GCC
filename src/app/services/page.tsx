@@ -66,10 +66,20 @@ export default function ServicesPage() {
                 variant="media"
                 className={cn("lg:sticky lg:top-[calc(var(--header-h)+5.5rem)]", imageFirst && "lg:order-2")}
               >
+                {/*
+                  The 4:5 crop is right up to about 1600px. Past that the
+                  column is wide enough that a portrait frame stands 300px
+                  clear of the text beside it, and the band ends on a void
+                  under the copy. Relaxing to square from `2xl` keeps the
+                  photograph substantial without letting it tower - the crop
+                  is the only thing that changes, and only on very large
+                  displays.
+                */}
                 <Figure
                   photo={capabilityPhotos[capability.slug]}
                   ratio="tall"
                   overlay="veil"
+                  className="2xl:aspect-square"
                   sizes="(min-width: 1024px) 46vw, 100vw"
                 />
               </Reveal>

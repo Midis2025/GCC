@@ -90,7 +90,10 @@ export default function IndustriesPage() {
                     variant="media"
                     className={cn(
                       "relative",
-                      imageLeft ? "lg:-ml-12 xl:-ml-16" : "lg:order-2 lg:-mr-12 xl:-mr-16",
+                      // One gutter, read from the token rather than restated,
+                      // so the frame stays flush to the page edge at every
+                      // width instead of only at lg and xl.
+                      imageLeft ? "lg:-ml-(--gutter)" : "lg:order-2 lg:-mr-(--gutter)",
                     )}
                   >
                     <Figure

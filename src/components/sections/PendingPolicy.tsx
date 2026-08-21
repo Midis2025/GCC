@@ -28,8 +28,15 @@ export function PendingPolicy({ eyebrow, title, scope }: PendingPolicyProps) {
         title={title}
       />
 
-      <Section spacing="lg" width="narrow">
-        <div className="border-l-2 border-(--color-accent) pl-6">
+      {/*
+        The measure belongs to the text block, not to the section.
+        `width="narrow"` centred the whole column, so the body sat hundreds of
+        pixels inboard of the H1 in the hero directly above it - two different
+        left edges on one short page. The section now uses the page gutter like
+        every other section, and the reading width is carried by the block.
+      */}
+      <Section spacing="lg">
+        <div className="max-w-[var(--page-max-narrow)] border-l-2 border-(--color-accent) pl-6">
           <h2 className="text-label uppercase text-(--color-foreground-subtle)">
             Document pending
           </h2>

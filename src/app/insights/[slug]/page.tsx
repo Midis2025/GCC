@@ -66,8 +66,15 @@ export default async function InsightPage({ params }: PageProps<"/insights/[slug
           />
           <HeroBackdrop variant="overlay" className="opacity-35" />
 
-          <Container width="narrow">
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-label uppercase text-(--color-accent)">
+          {/*
+            The article reads down one column, but that column starts at the
+            page gutter like every other section rather than being centred in
+            the viewport - a centred block left the title floating in the
+            middle of a wide display while the "more insights" grid below it,
+            and every other page on the site, ran from the left edge.
+          */}
+          <Container>
+            <div className="flex max-w-[var(--page-max-narrow)] flex-wrap items-center gap-x-4 gap-y-2 text-label uppercase text-(--color-accent)">
               <span>{insight.category}</span>
               <time dateTime={insight.date} className="text-(--color-foreground-subtle)">
                 {formatDate(insight.date)}
@@ -79,7 +86,7 @@ export default async function InsightPage({ params }: PageProps<"/insights/[slug
               )}
             </div>
 
-            <Heading level={1} size="h1" className="mt-5">
+            <Heading level={1} size="h1" className="mt-5 max-w-[var(--page-max-narrow)]">
               {insight.title}
             </Heading>
           </Container>
@@ -87,33 +94,36 @@ export default async function InsightPage({ params }: PageProps<"/insights/[slug
 
         <MediaBand photo={photo} />
 
-        <Section spacing="lg" width="narrow">
-          <Reveal>
-            <p className="text-lead text-(--color-foreground)">{insight.excerpt}</p>
-          </Reveal>
-
-          {insight.isPlaceholder && (
-            <Reveal delay={100}>
-              <div className="mt-12 border-l-2 border-(--color-accent) pl-6">
-                <h2 className="text-label uppercase text-(--color-foreground-subtle)">
-                  Article pending
-                </h2>
-                <p className="mt-4 max-w-[62ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
-                  This is a sample entry used to establish the article layout. The full text has not
-                  been written, and nothing has been published under this heading. The page is
-                  excluded from search indexing until real content is supplied.
-                </p>
-              </div>
+        {/* Same column as the header above: page gutter, reading measure. */}
+        <Section spacing="lg">
+          <div className="max-w-[var(--page-max-narrow)]">
+            <Reveal>
+              <p className="text-lead text-(--color-foreground)">{insight.excerpt}</p>
             </Reveal>
-          )}
 
-          <div className="mt-[var(--space-heading)] border-t border-(--color-border) pt-8">
-            <Link
-              href="/insights"
-              className="link-underline inline-block py-1 text-[0.9375rem] text-(--color-foreground-muted) hover:text-(--color-foreground) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
-            >
-              Back to all insights
-            </Link>
+            {insight.isPlaceholder && (
+              <Reveal delay={100}>
+                <div className="mt-12 border-l-2 border-(--color-accent) pl-6">
+                  <h2 className="text-label uppercase text-(--color-foreground-subtle)">
+                    Article pending
+                  </h2>
+                  <p className="mt-4 max-w-[62ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
+                    This is a sample entry used to establish the article layout. The full text has
+                    not been written, and nothing has been published under this heading. The page is
+                    excluded from search indexing until real content is supplied.
+                  </p>
+                </div>
+              </Reveal>
+            )}
+
+            <div className="mt-[var(--space-heading)] border-t border-(--color-border) pt-8">
+              <Link
+                href="/insights"
+                className="link-underline inline-block py-1 text-[0.9375rem] text-(--color-foreground-muted) hover:text-(--color-foreground) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
+              >
+                Back to all insights
+              </Link>
+            </div>
           </div>
         </Section>
       </article>

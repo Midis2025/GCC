@@ -259,13 +259,18 @@ export function Hero() {
         where the market card used to sit. From `lg` its own classes lift it out
         into a full-height layer pinned to the right of the SECTION rather than
         the container - it has to reach the viewport edge to bleed, and the
-        container stops 78rem short of it on a wide screen.
+        container always stops one gutter short of it.
 
         Its left edge is set at 70% so the disc starts clear of the headline at
         every width the headline is capped at. One instance, two placements, so
         there is never a second canvas running off-screen.
       */}
-      <HeroGlobe className="mt-12 px-5 sm:px-8 lg:mt-0 lg:px-0" />
+      {/*
+        Stacked below `lg`, so it carries the page gutter itself rather than
+        sitting in a Container - the same token, so it lines up with the copy
+        above it at every width.
+      */}
+      <HeroGlobe className="mt-12 px-(--gutter) lg:mt-0 lg:px-0" />
 
       {/*
         CONTENT INTEGRITY: required, and not in the reference.

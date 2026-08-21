@@ -44,10 +44,13 @@ export function Intro() {
         </div>
 
         {/*
-          The photograph is pulled to the viewport edge on large screens. A
-          negative right margin rather than a full-bleed wrapper keeps it
-          inside the Container's grid, so nothing can push the page wider than
-          100vw - body overflow-x is a guard, not the layout mechanism.
+          The photograph is pulled back out to the page edge on large screens.
+          A negative margin of exactly one gutter rather than a full-bleed
+          wrapper keeps it inside the Container's grid, so nothing can push the
+          page wider than 100vw - body overflow-x is a guard, not the layout
+          mechanism. It reads `--gutter` rather than restating the padding,
+          which is why it stays flush at every width rather than only at the
+          two the old `-mr-12 / -mr-16` pair happened to match.
         */}
         {/*
           The caption plate is a SIBLING of the media Reveal, not a child.
@@ -57,17 +60,24 @@ export function Intro() {
           photograph goes inside the clip; the plate is positioned against this
           wrapper instead.
         */}
-        <div className="relative lg:-mr-12 xl:-mr-16">
+        <div className="relative lg:-mr-(--gutter)">
           <Reveal variant="media" delay={200}>
             {/*
               Square rather than 4:5. The taller crop stood ~300px clear of the
               text column beside it, leaving a void at the bottom of the copy -
               the plate overhanging into that corner is what now closes it.
+
+              The `2xl` step applies that same rule one size further out. Once
+              the content column stops wrapping the copy, the text block gets
+              shorter while a square frame keeps getting taller, and the gap
+              the square was chosen to close re-opens. 4:3 holds the balance
+              at 1600px and beyond.
             */}
             <Figure
               photo={photos.introTowers}
               ratio="square"
               overlay="veil"
+              className="2xl:aspect-[4/3]"
               sizes="(min-width: 1024px) 46vw, 100vw"
             />
           </Reveal>

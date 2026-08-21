@@ -41,7 +41,13 @@ export function Segments() {
         </div>
       </Reveal>
 
-      <ul className="mt-[var(--space-heading)] grid gap-3 sm:grid-cols-2 lg:grid-cols-12 lg:grid-rows-[repeat(2,13rem)] lg:gap-4">
+      {/*
+        The mosaic row height is fluid rather than a flat 13rem. Spans control
+        width only, so on a wide display a fixed row turned the five-column
+        panel into a letterbox slot; scaling the row with the viewport keeps
+        each panel's crop close to the proportion it was composed at.
+      */}
+      <ul className="mt-[var(--space-heading)] grid gap-3 sm:grid-cols-2 lg:grid-cols-12 lg:grid-rows-[repeat(2,clamp(13rem,14vw,18rem))] lg:gap-4">
         {audienceContent.segments.map((segment, index) => {
           const photo = segmentPhotos[index % segmentPhotos.length];
           const layout = PANEL_LAYOUT[index] ?? "lg:col-span-4";
@@ -90,5 +96,5 @@ const PANEL_LAYOUT = [
   "lg:col-span-3",
   "lg:col-span-4",
   "lg:col-span-3",
-  "lg:col-span-12 lg:row-start-3 lg:h-[13rem]",
+  "lg:col-span-12 lg:row-start-3 lg:h-[clamp(13rem,14vw,18rem)]",
 ] as const;
