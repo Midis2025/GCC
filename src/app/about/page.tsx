@@ -6,7 +6,7 @@ import { AboutPositioning } from "@/components/sections/AboutPositioning";
 import { AboutPrinciples } from "@/components/sections/AboutPrinciples";
 import { AboutPurpose } from "@/components/sections/AboutPurpose";
 import { AboutRiyadh } from "@/components/sections/AboutRiyadh";
-import { AboutStatement } from "@/components/sections/AboutStatement";
+import { EditorialStatement } from "@/components/sections/EditorialStatement";
 import { CTASection } from "@/components/sections/CTASection";
 import { Section } from "@/components/sections/Section";
 import { Heading } from "@/components/ui/Heading";
@@ -86,7 +86,7 @@ export default function AboutPage() {
       <AboutMarkets />
 
       {/* 5 - The turn from the region to the work. */}
-      <AboutStatement
+      <EditorialStatement
         id="about-transition"
         statement={aboutTransition.statement}
         photo={backdrops.aboutTransition}
@@ -106,7 +106,7 @@ export default function AboutPage() {
       <AboutPrinciples />
 
       {/* 10 - The closing thought, before the ask. */}
-      <AboutStatement
+      <EditorialStatement
         id="about-philosophy"
         label={aboutPhilosophy.label}
         statement={aboutPhilosophy.statement}

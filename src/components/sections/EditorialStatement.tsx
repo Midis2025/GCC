@@ -5,7 +5,7 @@ import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import type { Photo } from "@/data/imagery";
 
-export interface AboutStatementProps {
+export interface EditorialStatementProps {
   id: string;
   /** Small uppercase label above the statement. Optional by design. */
   label?: string;
@@ -16,6 +16,15 @@ export interface AboutStatementProps {
    * the last thing before the call to action.
    */
   photo?: Photo;
+  /**
+   * How far back the photograph sits.
+   *
+   * `normal` scrims it to architecture behind the statement. `faint` pushes it
+   * almost into the ground, for a frame that is texture rather than subject -
+   * a bright skyline at `normal` competes with the line in front of it, and a
+   * detailed city read at that strength also brings its signage with it.
+   */
+  photoStrength?: "normal" | "faint";
   /** Tightens the band where it is a transition rather than a destination. */
   compact?: boolean;
 }
@@ -37,13 +46,14 @@ export interface AboutStatementProps {
  * anonymous region. The statement is an H2, which keeps the page outline
  * intact - one H1 in the hero, an H2 per section.
  */
-export function AboutStatement({
+export function EditorialStatement({
   id,
   label,
   statement,
   photo,
+  photoStrength = "normal",
   compact = false,
-}: AboutStatementProps) {
+}: EditorialStatementProps) {
   return (
     <section
       aria-labelledby={id}
@@ -83,7 +93,11 @@ export function AboutStatement({
           */}
           <div
             aria-hidden="true"
-            className="absolute inset-0 -z-10 bg-[linear-gradient(100deg,rgba(12,20,29,0.95)_10%,rgba(12,20,29,0.84)_46%,rgba(12,20,29,0.6)_100%)]"
+            className={
+              photoStrength === "faint"
+                ? "absolute inset-0 -z-10 bg-[linear-gradient(100deg,rgba(12,20,29,0.985)_10%,rgba(12,20,29,0.95)_46%,rgba(12,20,29,0.88)_100%)]"
+                : "absolute inset-0 -z-10 bg-[linear-gradient(100deg,rgba(12,20,29,0.95)_10%,rgba(12,20,29,0.84)_46%,rgba(12,20,29,0.6)_100%)]"
+            }
           />
           <div aria-hidden="true" className="grain absolute inset-0 -z-10" />
         </>

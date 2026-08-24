@@ -62,14 +62,32 @@ crediting them on the site.
 | `capital-markets-desk.jpg` | Services index hero, insight card | https://images.unsplash.com/photo-1639428530618-e70b1ff28da2 |
 | `executives-skyline-dusk.jpg` | Investor outreach band and page hero | https://images.unsplash.com/photo-1560142249-f8718fd9cd88 |
 | `strategy-session-night.jpg` | Insights index and article headers | https://images.unsplash.com/photo-1758520145408-dedb359d1c49 |
-| `corporate-corridor-night.jpg` | About hero | https://images.unsplash.com/photo-1768396747960-ae6ba3c855bc |
+| `corporate-corridor-night.jpg` | Not currently placed — see note below | https://images.unsplash.com/photo-1768396747960-ae6ba3c855bc |
 | `abu-dhabi-night.jpg` | Lead insight card | https://images.unsplash.com/photo-1624317937315-0ced8736c9e9 |
 | `investor-briefing-room.jpg` | Insight card | https://images.unsplash.com/photo-1627931539006-d5c4677e05ea |
 | `leadership-review-night.jpg` | Segment panel — Private Companies | https://images.unsplash.com/photo-1758520145132-b0ecdb967295 |
 | `corporate-lobby-dark.jpg` | Contact enquiry band, segment panel | https://images.unsplash.com/photo-1782834293617-4161d0b7344e |
 | `riyadh-night-aerial.jpg` | Regional frame (about, investor outreach), segment panel | https://images.unsplash.com/photo-1663900108404-a05e8bf82cda |
-| `downtown-dubai-dusk.jpg` | Segment panel — Growth Companies | https://images.unsplash.com/photo-1708361089093-beef4c4584e7 |
+| `downtown-dubai-dusk.jpg` | About hero, segment panel — Growth Companies | https://images.unsplash.com/photo-1708361089093-beef4c4584e7 |
 | `office-night-windows.jpg` | Segment panel — Leadership & IR Teams | https://images.unsplash.com/photo-1772059409102-86d89782265b |
+
+### A note on `corporate-corridor-night.jpg`
+
+It opened the about page until the hero was changed to a Gulf financial
+district, and it is kept here rather than deleted: it is a good frame, it is
+the only premium interior in the set, and restoring it is one line in
+`src/data/imagery.ts`. Nothing on the site renders it at present.
+
+### A note on signage in the Dubai frames
+
+`downtown-dubai-dusk.jpg`, `downtown-dubai-blue-hour.jpg` and
+`skyline-twilight.jpg` all carry a developer's name on towers in the frame, as
+most photographs of Downtown Dubai do. It is incidental city signage and
+implies no relationship of any kind. Where such a frame is placed, the crop and
+the scrim are set so the most legible of it falls outside the frame or under
+the heaviest part of the wash — the about hero is cropped and scrimmed on
+exactly that basis. Commissioned photography would remove the question
+entirely.
 
 ### City and sector photography — original set
 

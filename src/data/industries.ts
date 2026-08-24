@@ -35,6 +35,21 @@ export interface Industry {
   challenge: string;
   /** Where communication effort concentrates for companies in this sector. */
   focus: readonly string[];
+  /**
+   * Three words set very large and very faint behind the active sector panel.
+   *
+   * DECORATIVE, and constrained accordingly. Each one is a noun already used in
+   * that sector's own `summary`, `challenge` or `focus` lines - "capital",
+   * "risk" and "governance" are all in the financial services entry, and so on
+   * down the list. They are typography, not content: they add emphasis and no
+   * meaning, and nothing here may introduce a term the sector's own copy does
+   * not already use. A keyword that said something new would be a claim set in
+   * 12rem type.
+   *
+   * Rendered `aria-hidden`, because a screen reader announcing three
+   * disconnected nouns between a heading and a paragraph is noise.
+   */
+  keywords: readonly [string, string, string];
 }
 
 export const industriesHero = {
@@ -67,6 +82,7 @@ export const industries: Industry[] = [
       "Analyst and ratings engagement",
       "Governance communication",
     ],
+    keywords: ["Capital", "Risk", "Governance"],
   },
   {
     number: "02",
@@ -82,6 +98,7 @@ export const industries: Industry[] = [
       "Long-cycle project communication",
       "International investor engagement",
     ],
+    keywords: ["Energy", "Transition", "Capital"],
   },
   {
     number: "03",
@@ -97,6 +114,7 @@ export const industries: Industry[] = [
       "Delivery and milestone reporting",
       "Recurring-income narrative",
     ],
+    keywords: ["Assets", "Pipeline", "Valuation"],
   },
   {
     number: "04",
@@ -112,6 +130,7 @@ export const industries: Industry[] = [
       "Capital expenditure communication",
       "Diversification rationale",
     ],
+    keywords: ["Scale", "Margins", "Capital"],
   },
   {
     number: "05",
@@ -127,6 +146,7 @@ export const industries: Industry[] = [
       "Cyclicality and resilience framing",
       "Cross-border investor engagement",
     ],
+    keywords: ["Trade", "Volume", "Infrastructure"],
   },
   {
     number: "06",
@@ -142,6 +162,7 @@ export const industries: Industry[] = [
       "Pre-IPO and listing communication",
       "Institutional investor education",
     ],
+    keywords: ["Growth", "Metrics", "Connectivity"],
   },
 ];
 
@@ -152,6 +173,21 @@ export const industriesApproach = {
     "Knowing how a sector reports is useful only to the point where it stops describing the company in front of you. Two industrial groups on the same exchange can need entirely different programmes, because one is understood by the market and the other is not.",
     "We use sector context to work out which questions a company will be asked and which comparisons it will be judged against. The programme itself is then built around that company's position, not around a sector playbook.",
   ],
+} as const;
+
+/**
+ * The turn from sector knowledge to the markets it is applied in.
+ *
+ * A restatement, deliberately. "Different sectors. Different questions." is the
+ * hero's own proposition - every sector explains itself differently - and "one
+ * disciplined approach" is `industriesContent.intro` saying the disciplines are
+ * constant. It introduces nothing and claims nothing; it exists to mark the
+ * point where the page stops being about sectors and starts being about where
+ * they are covered.
+ */
+export const industriesTransition = {
+  statement:
+    "Different sectors. Different questions. One disciplined approach to market communication.",
 } as const;
 
 export function getIndustry(slug: string): Industry | undefined {

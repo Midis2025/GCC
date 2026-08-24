@@ -1204,6 +1204,292 @@ a[href^="tel:"] {
 }
 
 /* ==========================================================================
+   INDUSTRIES
+   --------------------------------------------------------------------------
+   Scoped to one route. Structure and data attributes live in the components;
+   what those attributes look like lives here.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Hero - the sector labels floating over the frame
+   -------------------------------------------------------------------------- */
+
+.ind-hero-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  opacity: 0;
+  animation: gcc-fade 1400ms var(--ease-out-soft) both;
+  animation-delay: var(--reveal-delay, 0ms);
+  /*
+   * 0.34, and it is meant to be looked for rather than read at a glance. These
+   * are six names scattered over a photograph behind a headline; at full
+   * strength they compete with the one sentence in the hero that matters.
+   * They are decorative and `aria-hidden` - all six are real ordered text one
+   * screen further down.
+   */
+  --ind-label-strength: 0.44;
+  color: rgba(244, 241, 235, var(--ind-label-strength));
+  text-shadow: 0 1px 12px rgba(12, 20, 29, 0.7);
+}
+
+.ind-hero-tick {
+  display: block;
+  width: 1.25rem;
+  height: 1px;
+  background: var(--color-accent);
+  opacity: 0.7;
+}
+
+/* --------------------------------------------------------------------------
+   Sector coverage - the 01-06 contents rule
+   -------------------------------------------------------------------------- */
+
+.ind-contents-index {
+  opacity: 0;
+}
+
+.reveal[data-visible="true"] .ind-contents-index {
+  animation: gcc-reveal 700ms var(--ease-out-soft) both;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+
+/* --------------------------------------------------------------------------
+   Sector explorer - the index
+   -------------------------------------------------------------------------- */
+
+.ind-nav-index,
+.ind-nav-title {
+  transition: color 500ms var(--ease-out-soft);
+  color: var(--color-foreground-subtle);
+}
+
+.ind-nav[data-active="true"] .ind-nav-index,
+.ind-acc[data-open="true"] .ind-nav-index {
+  color: var(--color-accent);
+}
+
+.ind-nav[data-active="true"] .ind-nav-title,
+.ind-acc[data-open="true"] .ind-nav-title {
+  color: var(--color-foreground);
+}
+
+/* The gold rule that extends when a sector is selected. */
+.ind-nav-rule {
+  transform: scaleX(0.3);
+  transform-origin: right;
+  opacity: 0.35;
+  transition:
+    transform 600ms var(--ease-out-expo),
+    opacity 600ms var(--ease-out-soft);
+}
+
+.ind-nav[data-active="true"] .ind-nav-rule {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+/* Bronze top edge on the selected row, over the neutral border. */
+.ind-nav-edge {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 600ms var(--ease-out-expo);
+}
+
+.ind-nav[data-active="true"] .ind-nav-edge {
+  transform: scaleX(1);
+}
+
+/* --------------------------------------------------------------------------
+   Sector explorer - the frame and its copy
+   -------------------------------------------------------------------------- */
+
+/*
+ * 520ms, inside the 400-700ms the brief asks for. All six frames are mounted
+ * and only opacity and scale move, so changing sector can never show a decode
+ * flash or a half-loaded image.
+ */
+.ind-frame {
+  opacity: 0;
+  transform: scale(1.035);
+  transition:
+    opacity 520ms var(--ease-out-soft),
+    transform 900ms var(--ease-out-expo);
+}
+
+.ind-frame[data-on="true"] {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* The copy block is keyed on the slug, so this runs on every sector change. */
+.ind-panel-copy {
+  animation: gcc-reveal 620ms var(--ease-out-soft) both;
+}
+
+/*
+ * Decorative background typography that must never compete with the paragraph
+ * in front of it - the test is that a reader notices depth rather than words.
+ *
+ * The faintness lives in the COLOUR, not in `opacity`, and that distinction is
+ * load-bearing. `gcc-fade` runs from `opacity: 0` to `opacity: 1` with
+ * `animation-fill-mode: both`, so the filled animation pins the final value and
+ * overrides any `opacity` declared on the element. Declaring `opacity: 0.035`
+ * here did precisely nothing: the keywords rendered at full strength in
+ * off-white across the sector photograph, cut in half by the frame they sat
+ * behind. Alpha on `color` is outside the animation's reach - which is also how
+ * `.ind-hero-label` above solves the same problem.
+ */
+.ind-keyword {
+  color: rgb(244 241 235 / 0.07);
+  animation: gcc-fade 900ms var(--ease-out-soft) both;
+  animation-delay: var(--kw-delay, 0ms);
+}
+
+/* --------------------------------------------------------------------------
+   Where the work concentrates
+   -------------------------------------------------------------------------- */
+
+.ind-focus-rule {
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 600ms var(--ease-out-expo);
+}
+
+.ind-focus-text {
+  transition: color 500ms var(--ease-out-soft);
+  color: var(--color-foreground-muted);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ind-focus:hover .ind-focus-rule {
+    transform: scaleX(1);
+  }
+
+  .ind-focus:hover .ind-focus-text {
+    color: var(--color-foreground);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Accordion, below lg
+   -------------------------------------------------------------------------- */
+
+/*
+ * Height by grid track rather than by max-height.
+ *
+ * A row going from `0fr` to `1fr` animates to the content's real height, so
+ * there is no guessed maximum to overshoot on a short panel or clip on a long
+ * one. The inner element must carry `overflow: hidden` for the collapsed state
+ * to actually hide anything.
+ */
+.ind-acc-panel {
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 620ms var(--ease-out-expo);
+}
+
+.ind-acc-panel[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+
+/* The vertical bar of the plus sign, closing as the panel opens. */
+.ind-acc-bar {
+  transform: translateX(-50%) scaleY(1);
+  transition: transform 500ms var(--ease-out-expo);
+}
+
+.ind-acc[data-open="true"] .ind-acc-bar {
+  transform: translateX(-50%) scaleY(0);
+}
+
+/* --------------------------------------------------------------------------
+   Markets strip and the reach diagram
+   -------------------------------------------------------------------------- */
+
+.ind-market-rule {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 600ms var(--ease-out-expo);
+}
+
+.ind-market-label {
+  transition: color 500ms var(--ease-out-soft);
+}
+
+.ind-market[data-active="true"] .ind-market-rule {
+  transform: scaleX(1);
+}
+
+.ind-market[data-active="true"] .ind-market-label {
+  color: var(--color-accent);
+}
+
+/* Outbound links and endpoints brighten with the market they belong to. */
+.reach-out,
+.reach-dot {
+  transition:
+    stroke-opacity 500ms var(--ease-out-soft),
+    fill-opacity 500ms var(--ease-out-soft);
+}
+
+.reach-dot {
+  fill-opacity: 0.55;
+}
+
+.reach-dot[data-on="true"] {
+  fill-opacity: 1;
+}
+
+.reach-out[data-on="true"] {
+  stroke-opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Motion opt-out
+   --------------------------------------------------------------------------
+   The global reduced-motion block flattens durations. These are the states
+   that must not merely be instant: anything that starts life scaled to zero or
+   at zero opacity would otherwise be pinned invisible.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .ind-hero-label,
+  .ind-contents-index,
+  .ind-keyword,
+  .ind-panel-copy {
+    animation: none !important;
+    opacity: 1;
+  }
+
+  /*
+   * `opacity: 1` above is correct for both the hero labels and the keywords,
+   * and neither needs an override here: both carry their faintness as alpha on
+   * `color`, so full element opacity is exactly what they want. An earlier
+   * version re-applied `--ind-label-strength` as an opacity on top of the same
+   * value already in the colour, which multiplied the two and rendered the
+   * labels at roughly half the intended strength for anyone who had asked for
+   * less motion.
+   */
+
+  /*
+   * The state toggles are deliberately NOT reset here.
+   *
+   * `.ind-nav-edge`, `.ind-nav-rule`, `.ind-focus-rule` and `.ind-market-rule`
+   * start at `scaleX(0)` because that is their OFF state, not because they are
+   * waiting to animate in - forcing them to `none` would light a bronze edge on
+   * all six index rows at once and leave every focus rule permanently drawn.
+   * The global reduced-motion block already flattens their transitions, so they
+   * simply snap between off and on, which is the correct behaviour.
+   *
+   * The frame keeps its opacity swap for the same reason: without it no sector
+   * photograph would be visible at all.
+   */
+  .ind-frame {
+    transform: none !important;
+  }
+}
+
+/* ==========================================================================
    INTERACTION
    ========================================================================== */
 

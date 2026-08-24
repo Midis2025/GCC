@@ -3,7 +3,6 @@ import type { StaticImageData } from "next/image";
 import abuDhabiNight from "../../public/images/abu-dhabi-night.jpg";
 import businessBayReflection from "../../public/images/business-bay-reflection.jpg";
 import capitalMarketsDesk from "../../public/images/capital-markets-desk.jpg";
-import corporateCorridorNight from "../../public/images/corporate-corridor-night.jpg";
 import corporateLobbyDark from "../../public/images/corporate-lobby-dark.jpg";
 import digitalMarketData from "../../public/images/digital-market-data.jpg";
 import downtownDubaiBlueHour from "../../public/images/downtown-dubai-blue-hour.jpg";
@@ -21,8 +20,10 @@ import outreachConferenceHall from "../../public/images/outreach-conference-hall
 import riyadhNightAerial from "../../public/images/riyadh-night-aerial.jpg";
 import sectorDevelopmentCranes from "../../public/images/sector-development-cranes.jpg";
 import sectorEnergyDusk from "../../public/images/sector-energy-dusk.jpg";
+import sectorEnergySolarField from "../../public/images/sector-energy-solar-field.jpg";
 import sectorIndustrialMono from "../../public/images/sector-industrial-mono.jpg";
 import sectorLogisticsPort from "../../public/images/sector-logistics-port.jpg";
+import sectorManufacturingRobotics from "../../public/images/sector-manufacturing-robotics.jpg";
 import sectorTechnologyRacks from "../../public/images/sector-technology-racks.jpg";
 import skylineTwilight from "../../public/images/skyline-twilight.jpg";
 import strategySessionNight from "../../public/images/strategy-session-night.jpg";
@@ -208,11 +209,32 @@ export const backdrops = {
     alt: "",
     position: "50% 52%",
   },
-  /** Industries index hero. */
+  /**
+   * Industries index hero. Abu Dhabi at night.
+   *
+   * A city rather than a sector. The container terminal that opened this page
+   * before was one of the six sectors listed below it, which quietly promoted
+   * logistics above the other five before the reader had reached them - a hero
+   * on a page about six industries cannot be a photograph of one of them.
+   */
   industries: {
-    src: sectorLogisticsPort,
+    src: abuDhabiNight,
     alt: "",
-    position: "50% 50%",
+    position: "50% 55%",
+  },
+  /**
+   * The transition band on the industries page, between sector knowledge and
+   * the markets it is applied in. Downtown Dubai at blue hour.
+   *
+   * Sits at very low opacity behind a statement, which is the whole reason
+   * this frame works here and nowhere else on the site: it is the brightest
+   * skyline in the set, so it survives being pushed almost all the way back
+   * into the ground where a darker one would simply disappear.
+   */
+  industriesTransition: {
+    src: downtownDubaiBlueHour,
+    alt: "",
+    position: "50% 46%",
   },
   /** Projects index hero. */
   projects: {
@@ -354,20 +376,41 @@ export const industryPhotos: Record<string, Photo> = {
     alt: "A Gulf business district reflected in still water at night.",
     position: "50% 45%",
   },
+  /**
+   * A concentrated-solar field in the desert, seen from the air.
+   *
+   * Replaces the storage tanks at dusk, which were the wrong frame twice over.
+   * They read as extraction rather than as the sector - the entry beside them
+   * is about "the transition businesses being built alongside" producers - and
+   * they were near-identical in subject to the industrials frame two sections
+   * below, so the page said "tanks" twice and meant two different things.
+   *
+   * The tank photograph is not retired: `projectPhotos` still uses it on the
+   * engagements page, which is why this is a new file rather than an edit to
+   * the shared one.
+   */
   "energy-and-utilities": {
-    src: sectorEnergyDusk,
-    alt: "Storage tanks silhouetted against a low sun.",
-    position: "50% 50%",
+    src: sectorEnergySolarField,
+    alt: "A concentrated-solar field in the desert, its mirrors ringing a central tower.",
+    position: "50% 52%",
   },
   "real-estate-and-development": {
     src: sectorDevelopmentCranes,
     alt: "Tower cranes over a development site against a clear sky.",
     position: "50% 55%",
   },
+  /**
+   * A robotic arm on a production line.
+   *
+   * Replaces the monochrome tanks for the same reason the energy frame changed:
+   * the sector entry is about manufacturers and diversified industrial groups,
+   * and a tank farm is neither. The original file stays in use on the
+   * engagements page through `projectPhotos`.
+   */
   "industrials-and-manufacturing": {
-    src: sectorIndustrialMono,
-    alt: "Industrial storage tanks and an external stairway, in black and white.",
-    position: "50% 50%",
+    src: sectorManufacturingRobotics,
+    alt: "A robotic arm on an automated production line.",
+    position: "50% 45%",
   },
   "transport-and-logistics": {
     src: sectorLogisticsPort,
