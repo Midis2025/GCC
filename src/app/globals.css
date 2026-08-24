@@ -784,13 +784,14 @@ a[href^="tel:"] {
   transition: opacity 900ms var(--ease-out-soft);
 }
 
-/* Progress fill, vertical and horizontal. Scales from the leading edge. */
-.why-progress-y {
-  transform: scaleY(var(--why-progress, 0));
-  transform-origin: top;
-  transition: transform 1000ms var(--ease-out-expo);
-}
-
+/*
+ * Progress fill. Scales from the left edge along a hairline track.
+ *
+ * A transform rather than an animated `width`: scaling is a compositor
+ * operation, where growing a width is a layout one on every frame of a
+ * one-second transition. The track clips it, so the scale never shows as a
+ * stretched edge.
+ */
 .why-progress-x {
   transform: scaleX(var(--why-progress, 0));
   transform-origin: left;

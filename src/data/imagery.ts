@@ -247,6 +247,27 @@ export const photos = {
     alt: "The Riyadh skyline at night from above, its towers lit against the city grid.",
     position: "50% 42%",
   },
+  /**
+   * The differentiation section on the homepage, beside the sticky statement.
+   *
+   * That column held a heading, a line of copy and a progress rail, and then
+   * stopped - leaving the lower half of it empty for the whole length of the
+   * scroll. A market frame under "Built for the Way Gulf Markets Work" is the
+   * one photograph the statement actually calls for.
+   *
+   * Reused from the contact hero rather than introduced as a seventeenth
+   * frame. It appears nowhere else on the homepage, which is the constraint
+   * that matters; the two never share a page.
+   *
+   * Crop favours the lower band. The frame is nearly half twilight sky, and a
+   * centred crop in a wide slot returns mostly empty violet - dropping to 58%
+   * takes the towers and the lit streets instead.
+   */
+  whyMarket: {
+    src: skylineTwilight,
+    alt: "Downtown Dubai at twilight, its towers and streets lit under a violet sky.",
+    position: "50% 58%",
+  },
 } as const satisfies Record<string, Photo>;
 
 /**

@@ -3,11 +3,12 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 import { Section } from "@/components/sections/Section";
+import { Figure } from "@/components/ui/Figure";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
+import { photos } from "@/data/imagery";
 import { whyContent } from "@/data/homepage";
-import { cn } from "@/lib/utils";
 
 /**
  * Line marks, one per pillar.
@@ -85,24 +86,19 @@ function PillarMark({ index }: { index: number }) {
 /**
  * Progress indicator, 01 through 04.
  *
- * Rendered twice - once vertically beside the sticky statement, once
- * horizontally above the panels on small screens - because the two are
- * genuinely different objects rather than one object rotated, and the branch
- * is cheaper than the CSS that would have made a single element do both.
+ * One object at every width. It was briefly two - a vertical rail beside the
+ * sticky statement on desktop, a horizontal one above the panels on a phone -
+ * on the reasoning that a rotated instrument is a different instrument. In
+ * practice it just meant the section explained its own sequence two different
+ * ways depending on the window, and the horizontal reading is the clearer of
+ * the two anyway: four numbers spaced along a rule state "four of these, you
+ * are here" without needing to be scanned downward first.
  *
- * Both are `aria-hidden`. What they communicate is a reading position, which
- * is a visual fact with no meaning to announce; the numbering itself is real
- * text on every panel, and an ordered list carries the sequence.
+ * `aria-hidden`. What it communicates is a reading position - a visual fact
+ * with nothing to announce; the numbering itself is real text on every panel,
+ * and the ordered list of panels carries the sequence.
  */
-function Progress({
-  count,
-  active,
-  orientation,
-}: {
-  count: number;
-  active: number | null;
-  orientation: "vertical" | "horizontal";
-}) {
+function Progress({ count, active }: { count: number; active: number | null }) {
   /*
    * Nothing filled until a reading position is known. The fill is a claim
    * about where the visitor is, and before the first panel reaches the
@@ -110,37 +106,16 @@ function Progress({
    */
   const progress = active === null ? 0 : (active + 1) / count;
   const style = { "--why-progress": progress } as CSSProperties;
-  const isVertical = orientation === "vertical";
 
   return (
-    <div
-      aria-hidden="true"
-      className={cn("flex", isVertical ? "gap-4" : "w-full flex-col gap-3")}
-    >
-      {/* Track, with the bronze fill scaling along it. */}
-      <div
-        className={cn(
-          "relative shrink-0 overflow-hidden bg-white/12",
-          isVertical ? "w-px self-stretch" : "order-2 h-px w-full",
-        )}
-      >
-        <span
-          style={style}
-          className={cn(
-            "absolute inset-0 bg-(--color-accent)",
-            isVertical ? "why-progress-y" : "why-progress-x",
-          )}
-        />
-      </div>
-
-      <ol
-        className={cn(
-          "flex num font-display-sm text-[0.6875rem] tracking-[0.14em]",
-          isVertical
-            ? "flex-col justify-between gap-5"
-            : "order-1 w-full justify-between",
-        )}
-      >
+    <div aria-hidden="true" className="flex w-full flex-col gap-3">
+      {/*
+        `justify-between` rather than an even grid: it puts 01 hard against the
+        left edge, in line with the label rule, the headline and the paragraph
+        above it, and 04 flush with the end of the rule. A grid would inset
+        both ends by half a cell and break the column's one shared edge.
+      */}
+      <ol className="flex w-full justify-between num font-display-sm text-[0.6875rem] tracking-[0.14em]">
         {Array.from({ length: count }, (_, index) => (
           <li
             key={index}
@@ -159,6 +134,11 @@ function Progress({
           </li>
         ))}
       </ol>
+
+      {/* Track, with the bronze fill scaling along it from the left. */}
+      <div className="relative h-px w-full overflow-hidden bg-white/12">
+        <span style={style} className="why-progress-x absolute inset-0 bg-(--color-accent)" />
+      </div>
     </div>
   );
 }
@@ -318,7 +298,28 @@ export function WhyGCC() {
             enough for it to hold against; below that it simply leads.
             --------------------------------------------------------------- */}
         <div>
-          <div className="lg:sticky lg:top-[calc(var(--header-h)+4.5rem)]">
+          {/*
+            The sticky block is a flex column with a height ceiling, and both
+            parts of that matter.
+
+            The statement, the indicator and the photograph together are taller
+            than the statement alone was, and a sticky element taller than the
+            space below the header cannot be seen in full - it pins to the top and
+            its bottom sits off-screen for the whole scroll. Sizing the block
+            to the space that is actually available keeps it in view, and the
+            flex column then lets the photograph absorb whatever is left after
+            the type has taken what it needs - so the composition holds on a
+            short laptop and on a tall monitor without a breakpoint for either.
+
+            A definite height, not a ceiling. `max-height` alone leaves the
+            block content-sized whenever the content is shorter, which means no
+            free space for `flex-1` to distribute and a frame stuck at its
+            minimum: a 3.5:1 sliver on a laptop. Given a real height the frame
+            takes the remainder and lands near 2:1 there and squarer on a tall
+            display. The `min-h` floor is what stops a very short window
+            squeezing it back to nothing.
+          */}
+          <div className="lg:sticky lg:top-[calc(var(--header-h)+4.5rem)] lg:flex lg:h-[calc(100svh-var(--header-h)-7.5rem)] lg:min-h-[26rem] lg:flex-col">
             <Reveal>
               <SectionLabel>{whyContent.label}</SectionLabel>
               <Heading id="why-heading" level={2} size="display" className="mt-5 max-w-[12ch]">
@@ -329,28 +330,49 @@ export function WhyGCC() {
               </p>
             </Reveal>
 
-            {/* Vertical progress. Desktop only - it tracks a sticky column. */}
-            <Reveal delay={180} className="mt-12 hidden lg:block">
-              {/*
-                Fixed height rather than content height: the four indices set
-                their own spacing, and a rail that sized to them came out short
-                enough to read as a caption beside the paragraph instead of as
-                an instrument tracking a column of panels.
-              */}
-              <div className="h-52">
-                <Progress count={pillars.length} active={active} orientation="vertical" />
-              </div>
+            {/*
+              The indicator sits directly under the paragraph it belongs to.
+              `mt-8` matches the gap between the headline and that paragraph,
+              so the three read as one block rather than as a statement with an
+              instrument parked somewhere below it.
+
+              `shrink-0`: inside the flex column below `lg`'s height ceiling,
+              the photograph is the element that gives, never this one.
+            */}
+            <Reveal delay={150} className="mt-8 shrink-0">
+              <Progress count={pillars.length} active={active} />
+            </Reveal>
+
+            {/*
+              The photograph. Flush left with the indicator, the paragraph and
+              the headline - one edge down the whole column.
+
+              Two sizings in one element rather than two elements. Below `lg`
+              the frame sets its own 16:10 and the column simply flows. From
+              `lg` up it drops the ratio and stretches as a flex item, taking
+              whatever the type left over - a skyline reads as happily at 2:1
+              on a laptop as it does nearly square on a tall display.
+
+              It is a FLEX CHILD there, not an `h-full` one. A percentage height
+              resolves against the parent's specified height, and a parent whose
+              height comes from `min-height` with `height: auto` gives back
+              auto - so `h-full` collapsed, the fill image contributed nothing,
+              and the frame rendered at zero. Stretching it gives it a real used
+              height, which is what the absolutely positioned image needs.
+            */}
+            <Reveal
+              delay={220}
+              className="mt-9 lg:mt-8 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col"
+            >
+              <Figure
+                photo={photos.whyMarket}
+                ratio="auto"
+                overlay="veil"
+                className="aspect-[16/10] w-full lg:aspect-auto lg:min-h-[9rem] lg:flex-1"
+                sizes="(min-width: 1024px) 34vw, 100vw"
+              />
             </Reveal>
           </div>
-
-          {/*
-            Horizontal progress, below `lg`. Same index, different object: on a
-            phone the statement scrolls away, so the indicator travels with the
-            panels instead of watching them from a fixed column.
-          */}
-          <Reveal delay={120} className="mt-10 lg:hidden">
-            <Progress count={pillars.length} active={active} orientation="horizontal" />
-          </Reveal>
         </div>
 
         {/* ---------------------------------------------------------------
