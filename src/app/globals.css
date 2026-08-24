@@ -586,6 +586,269 @@ a[href^="tel:"] {
 }
 
 /* ==========================================================================
+   WHY GCC
+   --------------------------------------------------------------------------
+   The one scroll-driven section on the site, so its state styling lives here
+   rather than as a wall of `group-data-[…]` variants in the component. Same
+   arrangement as `.reveal` and `.net-*`: the component owns structure and
+   sets a data attribute, this owns what that attribute looks like.
+
+   Everything that moves is `opacity` or `transform`. Nothing here animates a
+   layout property, and nothing loops.
+   ========================================================================== */
+
+/*
+ * Architectural grid. Two rule fields crossed, the horizontal held lighter
+ * than the vertical so the field reads as a facade rather than as graph paper.
+ * Masked to nothing at the edges - a grid that runs into the section boundary
+ * announces itself as a texture; one that dissolves stays a suggestion.
+ */
+.why-grid {
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      rgba(244, 241, 235, 0.05) 0 1px,
+      transparent 1px var(--why-grid-gap, 7rem)
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(244, 241, 235, 0.032) 0 1px,
+      transparent 1px var(--why-grid-gap, 7rem)
+    );
+}
+
+/*
+ * Khatam. The eight-point star of Gulf and wider Islamic geometry, drawn as
+ * two overlapping squares - which is how the figure is actually constructed,
+ * not a decorative approximation of it.
+ *
+ * Held at 0.022 opacity. That is low enough to be felt rather than seen, which
+ * is the point: the motif belongs to the region the firm works in, and a
+ * legible pattern behind body copy would be costume.
+ */
+.why-khatam {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23b8945f' stroke-width='1.4'%3E%3Crect x='45' y='45' width='70' height='70'/%3E%3Crect x='45' y='45' width='70' height='70' transform='rotate(45 80 80)'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  opacity: 0.022;
+}
+
+/*
+ * One falloff for the whole pattern plane, rather than a mask per layer.
+ *
+ * The first attempt masked the grid and left the star tiling edge to edge, so
+ * the motif that was supposed to be the quieter of the two ended up the only
+ * one reaching the empty left column - reading as scattered boxes on bare
+ * ground instead of as texture under content. Both layers now fade on the same
+ * curve, weighted to the side the panels are on.
+ */
+.why-plane {
+  mask-image: radial-gradient(
+    118% 92% at 76% 26%,
+    #000 0%,
+    rgba(0, 0, 0, 0.5) 46%,
+    transparent 84%
+  );
+}
+
+/*
+ * Depth. The pattern plane drifts against the content as the section passes,
+ * which is what stops a flat background from reading as a printed backdrop.
+ *
+ * Driven by a scroll-progress timeline rather than by a scroll listener, so it
+ * runs on the compositor and costs the main thread nothing. Browsers without
+ * `animation-timeline` simply get the static plane - the effect is decoration,
+ * so there is nothing to polyfill. The layer is oversized by the drift
+ * distance in `.why-plane` so neither extreme exposes an edge.
+ */
+@keyframes why-drift {
+  from {
+    transform: translate3d(0, -3.2%, 0);
+  }
+  to {
+    transform: translate3d(0, 3.2%, 0);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .why-plane {
+      animation: why-drift linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+    }
+  }
+}
+
+/*
+ * Panel state.
+ *
+ * `data-active` is set by the component; `data-settled` marks the point where
+ * a reading position is actually known. Before that every panel sits at full
+ * strength, so a visitor whose JavaScript has not run - or who never scrolls -
+ * is never left looking at dimmed copy.
+ */
+.why-panel {
+  --why-lift: 0;
+  --why-emphasis: 1;
+  transition:
+    opacity 900ms var(--ease-out-soft),
+    transform 900ms var(--ease-out-expo);
+  transform: translate3d(0, var(--why-lift), 0);
+}
+
+/*
+ * 0.66, and not a point lower.
+ *
+ * The description sits at `--color-foreground-muted`, rgba(244,241,235,0.82).
+ * Multiplied by this opacity over midnight it lands at about 5.3:1, which
+ * clears AA for body text with room to spare; 0.55 would look better and
+ * measures 4.2:1, which is a paragraph a visitor cannot read. Quieting an
+ * inactive panel is a hierarchy effect, and it stops being worth having the
+ * moment it costs someone the words.
+ */
+.why-panels[data-settled="true"] .why-panel {
+  opacity: 0.66;
+  --why-emphasis: 0;
+}
+
+.why-panels[data-settled="true"] .why-panel[data-active="true"] {
+  opacity: 1;
+  --why-emphasis: 1;
+  --why-lift: -0.375rem;
+}
+
+/*
+ * Hairline along the top edge, in two stacked layers rather than one
+ * interpolated colour: a permanent neutral rule, and a bronze one over it that
+ * fades up with emphasis. Two layers because mixing a colour by a custom
+ * property - `color-mix(… calc(var(--why-emphasis) * 55%) …)` - is a
+ * construct with uneven support, and opacity on a second element is both
+ * cheaper to composite and impossible to get wrong.
+ */
+.why-edge {
+  background: linear-gradient(
+    to right,
+    rgba(244, 241, 235, 0.14),
+    rgba(244, 241, 235, 0.05) 62%,
+    transparent
+  );
+}
+
+.why-edge-lit {
+  opacity: var(--why-emphasis);
+  background: linear-gradient(
+    to right,
+    var(--color-accent),
+    rgba(184, 148, 95, 0.22) 58%,
+    transparent
+  );
+  transition: opacity 900ms var(--ease-out-soft);
+}
+
+/* Vertical bronze rail. Grows out of the top edge rather than fading in. */
+.why-rail {
+  transform: scaleY(var(--why-emphasis));
+  transform-origin: top;
+  transition: transform 900ms var(--ease-out-expo);
+}
+
+/*
+ * The glow. A single soft radial anchored to the panel's own top-left, so the
+ * light appears to come off the rail rather than sitting behind the text as a
+ * rectangle of haze.
+ */
+.why-glow {
+  opacity: var(--why-emphasis);
+  background: radial-gradient(
+    68% 130% at 4% 0%,
+    rgba(184, 148, 95, 0.11) 0%,
+    rgba(184, 148, 95, 0.045) 38%,
+    transparent 74%
+  );
+  transition: opacity 1100ms var(--ease-out-soft);
+}
+
+/* Oversized ghost index. Rises and opens up a little as its panel takes over. */
+.why-numeral {
+  opacity: calc(0.035 + var(--why-emphasis) * 0.055);
+  transform: translate3d(0, calc(var(--why-emphasis) * -0.5rem), 0)
+    scale(calc(1 + var(--why-emphasis) * 0.04));
+  transition:
+    opacity 900ms var(--ease-out-soft),
+    transform 1100ms var(--ease-out-expo);
+}
+
+/* The small line mark. Quiet until its panel is the one being read. */
+.why-mark {
+  opacity: calc(0.3 + var(--why-emphasis) * 0.7);
+  transition: opacity 900ms var(--ease-out-soft);
+}
+
+/* Progress fill, vertical and horizontal. Scales from the leading edge. */
+.why-progress-y {
+  transform: scaleY(var(--why-progress, 0));
+  transform-origin: top;
+  transition: transform 1000ms var(--ease-out-expo);
+}
+
+.why-progress-x {
+  transform: scaleX(var(--why-progress, 0));
+  transform-origin: left;
+  transition: transform 1000ms var(--ease-out-expo);
+}
+
+/* Progress ticks. */
+.why-tick {
+  opacity: 0.34;
+  transition:
+    opacity 700ms var(--ease-out-soft),
+    color 700ms var(--ease-out-soft);
+}
+
+.why-tick[data-state="past"] {
+  opacity: 0.62;
+}
+
+.why-tick[data-state="current"] {
+  opacity: 1;
+  color: var(--color-accent);
+}
+
+/*
+ * Pointer emphasis, and pointer only.
+ *
+ * `hover: hover` keeps every rule below off touch devices, where `:hover`
+ * sticks after a tap and would leave a panel lit until the next one is
+ * touched. On touch the scroll position is the only thing that decides
+ * emphasis, which is the behaviour that belongs there anyway.
+ */
+@media (hover: hover) and (pointer: fine) {
+  .why-panels[data-settled="true"] .why-panel:hover {
+    opacity: 1;
+    --why-emphasis: 1;
+    --why-lift: -0.625rem;
+  }
+}
+
+/*
+ * Motion opt-out.
+ *
+ * The global reduced-motion block already flattens durations. Emphasis is a
+ * state rather than a movement, so it survives - but the lift does not, and
+ * the dimming goes with it: snapping four panels between two opacities as the
+ * page scrolls is exactly the involuntary movement the preference asks to be
+ * spared.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .why-panel,
+  .why-panels[data-settled="true"] .why-panel {
+    opacity: 1;
+    --why-lift: 0;
+    transform: none;
+  }
+}
+
+/* ==========================================================================
    INTERACTION
    ========================================================================== */
 

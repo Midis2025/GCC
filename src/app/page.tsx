@@ -27,9 +27,11 @@ export const metadata = createMetadata({
  * interactive list, feature with diagram, timeline, floating plates, mosaic,
  * publication grid, centred statement.
  *
- * Every section is a server component except `CapabilityShowcase`, which needs
- * pointer and focus state. The only other client JavaScript on the page is the
- * header scroll state, the mobile menu and the shared reveal observer.
+ * Every section is a server component except two: `CapabilityShowcase`, which
+ * needs pointer and focus state, and `WhyGCC`, whose active panel is a
+ * function of scroll position. Both cost one IntersectionObserver and no
+ * scroll listener. The only other client JavaScript on the page is the header
+ * scroll state, the mobile menu and the shared reveal observer.
  *
  * Heading outline: one H1 in the hero, one H2 per section.
  */
