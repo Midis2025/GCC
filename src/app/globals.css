@@ -850,6 +850,360 @@ a[href^="tel:"] {
 }
 
 /* ==========================================================================
+   ABOUT
+   --------------------------------------------------------------------------
+   Scoped to one route. Same arrangement as the WHY GCC block above: the
+   components own structure and set a data attribute, this owns what that
+   attribute looks like.
+
+   Everything that moves is `opacity` or `transform`. Nothing animates a layout
+   property, nothing loops, and every rule that moves is behind the
+   reduced-motion block at the end of this section.
+   ========================================================================== */
+
+/*
+ * Architectural grid. Two rule fields crossed, the horizontal held lighter
+ * than the vertical so the field reads as a facade rather than as graph paper,
+ * and masked to nothing at the edges so it never announces itself.
+ */
+.about-grid {
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      rgba(244, 241, 235, 0.045) 0 1px,
+      transparent 1px var(--about-grid-gap, 7rem)
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(244, 241, 235, 0.028) 0 1px,
+      transparent 1px var(--about-grid-gap, 7rem)
+    );
+  mask-image: radial-gradient(
+    120% 95% at 70% 30%,
+    #000 0%,
+    rgba(0, 0, 0, 0.5) 48%,
+    transparent 86%
+  );
+}
+
+/*
+ * Parallax, on a scroll-progress timeline.
+ *
+ * Driven by `view()` rather than a scroll listener, so it runs on the
+ * compositor and costs the main thread nothing. Browsers without
+ * `animation-timeline` get the static plane - the effect is decoration, so
+ * there is nothing to polyfill. Every element carrying this is oversized by
+ * more than the drift distance, so neither extreme exposes an edge.
+ */
+@keyframes about-drift {
+  from {
+    transform: translate3d(0, -3.5%, 0);
+  }
+  to {
+    transform: translate3d(0, 3.5%, 0);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .about-parallax {
+      animation: about-drift linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+    }
+  }
+}
+
+/*
+ * Horizontal rule expansion.
+ *
+ * Draws outward from its left edge once the enclosing `Reveal` reports
+ * visible - the same hook `.net-link` uses, which is why this needs no
+ * JavaScript of its own. `scaleX` rather than an animated width: one is a
+ * compositor operation, the other is layout on every frame.
+ */
+.about-rule {
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.reveal[data-visible="true"] .about-rule,
+.reveal[data-visible="true"].about-rule {
+  animation: about-rule-in 1100ms var(--ease-out-expo) both;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+
+@keyframes about-rule-in {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Purpose - the four criteria
+   -------------------------------------------------------------------------- */
+
+/*
+ * The rule runs the full width it is given and changes only in weight.
+ *
+ * It was first built to grow - a quarter-width dash at rest, full on hover -
+ * and at rest that read as a stray mark floating in the gap rather than as
+ * part of a measured row. A rule that reaches the edge is an index entry; a
+ * rule that stops short of it for no reason is a bug.
+ */
+.about-criterion-rule {
+  opacity: 0.25;
+  transition: opacity 600ms var(--ease-out-soft);
+}
+
+.about-criterion-term {
+  transition: color 500ms var(--ease-out-soft);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .about-criterion:hover .about-criterion-rule {
+    opacity: 0.85;
+  }
+
+  .about-criterion:hover .about-criterion-term {
+    color: var(--color-accent);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Regional map
+   -------------------------------------------------------------------------- */
+
+/* Selector chips. The frame is a sibling, so it brightens without repainting text. */
+.about-market-frame {
+  transition:
+    border-color 500ms var(--ease-out-soft),
+    background-color 500ms var(--ease-out-soft);
+}
+
+.about-market {
+  transition: color 500ms var(--ease-out-soft);
+}
+
+.about-market[data-active="true"] {
+  color: var(--color-accent);
+}
+
+.about-market[data-active="true"] .about-market-frame {
+  border-color: color-mix(in srgb, var(--color-accent) 55%, transparent);
+  background-color: color-mix(in srgb, var(--color-accent) 7%, transparent);
+}
+
+/*
+ * Connectors between markets. All thirty are always in the DOM and only
+ * opacity moves, so switching markets can never show a half-drawn line.
+ */
+.about-market-link {
+  opacity: 0;
+  transition: opacity 800ms var(--ease-out-soft);
+}
+
+.about-market-link[data-on="true"] {
+  opacity: 0.28;
+}
+
+.about-market-node circle {
+  transition:
+    opacity 600ms var(--ease-out-soft),
+    r 600ms var(--ease-out-expo);
+}
+
+.about-market-node {
+  opacity: 0.42;
+  transition: opacity 600ms var(--ease-out-soft);
+}
+
+.about-market-node[data-on="true"] {
+  opacity: 1;
+}
+
+.about-market-ring {
+  stroke-opacity: 0.22;
+  transition: stroke-opacity 600ms var(--ease-out-soft);
+}
+
+.about-market-node[data-on="true"] .about-market-ring {
+  stroke-opacity: 0.65;
+}
+
+.about-market-glow,
+.about-market-label {
+  transition:
+    cx 700ms var(--ease-out-expo),
+    cy 700ms var(--ease-out-expo),
+    x 700ms var(--ease-out-expo),
+    y 700ms var(--ease-out-expo);
+}
+
+.about-market-label {
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+/* --------------------------------------------------------------------------
+   How we work - the four stages
+   -------------------------------------------------------------------------- */
+
+.about-stage {
+  --about-emphasis: 1;
+  --about-lift: 0;
+  transform: translate3d(0, var(--about-lift), 0);
+  transition:
+    opacity 900ms var(--ease-out-soft),
+    transform 900ms var(--ease-out-expo);
+}
+
+/*
+ * 0.66, and not a point lower - the same floor, for the same reason, as the
+ * differentiation panels on the homepage.
+ *
+ * The description sits at `--color-foreground-muted`, rgba(244,241,235,0.82).
+ * Multiplied by this opacity over midnight it lands around 5.3:1, which clears
+ * AA for body text with room to spare; 0.55 would look better and measures
+ * about 4.2:1, which is a paragraph a visitor cannot read. Quieting an
+ * inactive stage is a hierarchy effect, and it stops being worth having the
+ * moment it costs someone the words.
+ */
+.about-stages[data-settled="true"] .about-stage {
+  opacity: 0.66;
+  --about-emphasis: 0;
+}
+
+.about-stages[data-settled="true"] .about-stage[data-active="true"] {
+  opacity: 1;
+  --about-emphasis: 1;
+  --about-lift: -0.3125rem;
+}
+
+/* Top hairline, in two layers: a permanent neutral rule and a bronze one over it. */
+.about-stage-edge {
+  background: linear-gradient(
+    to right,
+    rgba(244, 241, 235, 0.14),
+    rgba(244, 241, 235, 0.05) 60%,
+    transparent
+  );
+}
+
+.about-stage-edge-lit {
+  opacity: var(--about-emphasis);
+  background: linear-gradient(
+    to right,
+    var(--color-accent),
+    rgba(184, 148, 95, 0.2) 56%,
+    transparent
+  );
+  transition: opacity 900ms var(--ease-out-soft);
+}
+
+.about-stage-index {
+  color: var(--color-foreground-subtle);
+  transition: color 700ms var(--ease-out-soft);
+}
+
+.about-stage[data-active="true"] .about-stage-index {
+  color: var(--color-accent);
+}
+
+.about-stage-rule {
+  transform: scaleX(calc(0.45 + var(--about-emphasis) * 0.55));
+  transform-origin: left;
+  transition: transform 900ms var(--ease-out-expo);
+}
+
+.about-stage-ghost {
+  opacity: calc(0.03 + var(--about-emphasis) * 0.05);
+  transform: translate3d(0, calc(var(--about-emphasis) * -0.4rem), 0);
+  transition:
+    opacity 900ms var(--ease-out-soft),
+    transform 1100ms var(--ease-out-expo);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .about-stages[data-settled="true"] .about-stage:hover {
+    opacity: 1;
+    --about-emphasis: 1;
+    --about-lift: -0.5rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Principles
+   -------------------------------------------------------------------------- */
+
+.about-principle-rule {
+  transform: scaleX(1);
+  transform-origin: left;
+  transition: transform 700ms var(--ease-out-expo);
+}
+
+.about-principle-index {
+  transition: transform 700ms var(--ease-out-expo);
+}
+
+.about-principle-wash {
+  opacity: 0;
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--color-accent) 7%, transparent) 0%,
+    transparent 62%
+  );
+  transition: opacity 700ms var(--ease-out-soft);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .about-principle:hover .about-principle-rule {
+    transform: scaleX(2.4);
+  }
+
+  .about-principle:hover .about-principle-index {
+    transform: translate3d(-0.25rem, 0, 0);
+  }
+
+  .about-principle:hover .about-principle-wash {
+    opacity: 1;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Motion opt-out
+   --------------------------------------------------------------------------
+   The global reduced-motion block flattens durations everywhere. These are the
+   states that must not merely be instant but must not happen at all: the
+   dimming of a stage, the lift under it, and every rule that starts life
+   scaled to zero and would otherwise be pinned invisible.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .about-rule,
+  .about-criterion-rule,
+  .about-principle-rule,
+  .about-stage-rule {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .about-stage,
+  .about-stages[data-settled="true"] .about-stage {
+    opacity: 1;
+    --about-lift: 0;
+    transform: none;
+  }
+
+  .about-market-link[data-on="true"] {
+    opacity: 0.28;
+  }
+}
+
+/* ==========================================================================
    INTERACTION
    ========================================================================== */
 

@@ -191,6 +191,23 @@ export const backdrops = {
     alt: "",
     position: "50% 62%",
   },
+  /**
+   * The transition band on the about page - "Regional understanding. Global
+   * investor perspective." - between the market map and how the firm works.
+   *
+   * Abu Dhabi at night, and the teal in it is why. The band sits between a
+   * dark drawn map and a light section, so it has to read as a photograph in
+   * one glance from behind a heavy scrim; a warmer frame went muddy at that
+   * opacity while this one holds its shape.
+   *
+   * The about page shows no insight cards, so it never meets the other use of
+   * this frame.
+   */
+  aboutTransition: {
+    src: abuDhabiNight,
+    alt: "",
+    position: "50% 52%",
+  },
   /** Industries index hero. */
   industries: {
     src: sectorLogisticsPort,
@@ -208,25 +225,32 @@ export const backdrops = {
 /** Photographs that carry content and are described for assistive tech. */
 export const photos = {
   /**
-   * About hero. A lift lobby at night, lit low, its stone floor reflecting the
-   * ceiling.
+   * About hero. Downtown Dubai at dusk, from above.
    *
-   * The page is about how the firm works, and an interior is the register that
-   * belongs to it - closer to the room a conversation happens in than the
-   * ribbed concrete exterior that used to sit here. Symmetrical and receding,
-   * so the split hero has a photograph with a direction in it rather than a
-   * texture.
+   * The headline it sits beside is "Built Around the Gulf. Connected to Global
+   * Capital.", and a Gulf financial district is what that sentence is about. A
+   * lift lobby stood here first and was the quieter, more oblique choice - an
+   * interior, on the reasoning that the page is about how the firm works. It
+   * was too oblique: an anonymous corridor opens a page about the Gulf without
+   * saying Gulf anywhere.
    *
-   * Photographic, deliberately. The first frame tried here was a brighter
-   * marble-and-brass reception hall, and it was an architectural render:
-   * lighting with no source, plants with no weight. It read as a visualisation
-   * of a building rather than a building, which is the one thing the art
-   * direction cannot carry.
+   * Crop favours the right of the frame. Only the width is ever cut here - the
+   * hero column is narrower than the photograph at every breakpoint, so the Y
+   * value is inert and the X does all the work. At 58% the tower carrying the
+   * most legible signage sits at the left edge on a wide screen and is cropped
+   * out altogether on a phone, where the window narrows to the middle of the
+   * frame and closes on the Burj Khalifa.
+   *
+   * On that signage: this is a photograph of a real city and the developer's
+   * name is on several towers in it, as it is in most photographs of Downtown
+   * Dubai. It is incidental to the frame and implies nothing - the same
+   * condition as the twilight skyline already on the contact hero. Commissioned
+   * photography would remove the question; see `public/images/CREDITS.md`.
    */
   aboutPortrait: {
-    src: corporateCorridorNight,
-    alt: "A lift lobby at night, lit low, its polished stone floor reflecting the ceiling.",
-    position: "50% 50%",
+    src: downtownDubaiDusk,
+    alt: "Downtown Dubai at dusk from above, its towers lit under a violet sky.",
+    position: "58% 50%",
   },
   introTowers: {
     src: etihadTowersGoldenHour,

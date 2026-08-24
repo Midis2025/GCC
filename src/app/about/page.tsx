@@ -1,22 +1,19 @@
+import { AboutEngagements } from "@/components/sections/AboutEngagements";
+import { AboutHero } from "@/components/sections/AboutHero";
+import { AboutMarkets } from "@/components/sections/AboutMarkets";
+import { AboutNarrative } from "@/components/sections/AboutNarrative";
+import { AboutPositioning } from "@/components/sections/AboutPositioning";
+import { AboutPrinciples } from "@/components/sections/AboutPrinciples";
+import { AboutPurpose } from "@/components/sections/AboutPurpose";
+import { AboutRiyadh } from "@/components/sections/AboutRiyadh";
+import { AboutStatement } from "@/components/sections/AboutStatement";
 import { CTASection } from "@/components/sections/CTASection";
-import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
-import { StatementBand } from "@/components/sections/StatementBand";
-import { Figure } from "@/components/ui/Figure";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { GulfNetwork } from "@/components/visuals/GulfNetwork";
-import { photos } from "@/data/imagery";
-import {
-  aboutCommunication,
-  aboutHero,
-  aboutHowWeWork,
-  aboutPositioning,
-  aboutPurpose,
-  aboutRegion,
-} from "@/data/about";
-import { gulfMarkets } from "@/data/homepage";
+import { backdrops } from "@/data/imagery";
+import { aboutPhilosophy, aboutTransition } from "@/data/about";
 import { hasTeam, team } from "@/data/team";
 import { createMetadata } from "@/lib/seo";
 
@@ -30,201 +27,90 @@ export const metadata = createMetadata({
 /**
  * About.
  *
- * Six sections, six different structures: editorial split hero, prose with a
- * pull-quote, a centred statement band, a market split carrying the network
- * diagram, an indexed four-column grid, and a principles list against a sticky
- * statement. Nothing repeats, and no section is a row of identical cards.
+ * Read as one argument rather than as a stack of sections. The order is the
+ * argument: who the firm is, why clarity is commercial, which markets it reads
+ * and how they differ, how engagements are shaped, how one narrative stays one
+ * narrative, what holds it all to a standard, and then the ask.
  *
- * Content integrity: this page makes no claim about size, history, headcount,
- * offices, clients or credentials, because none have been supplied. The team
- * section renders only when `data/team.ts` holds real people.
+ * Eleven blocks, and no two built the same way: an asymmetric hero, an
+ * editorial split with an oversized pull-quote, a dark band with a measured
+ * criteria column, an interactive map, a full-bleed statement, a scroll-driven
+ * four-stage sequence, a drawn diagram, a full-bleed photograph, a 2x2
+ * principles grid, a closing statement, and the sitewide call to action.
+ *
+ * ---------------------------------------------------------------------------
+ * What this page does NOT do
+ * ---------------------------------------------------------------------------
+ * Every section here is About-specific and lives in its own component. The
+ * shared building blocks - `PageHero`, `StatementBand`, `CTASection`, `Figure`,
+ * `Reveal`, `Section` - are untouched, because each of them is used by other
+ * routes and this was a redesign of one page.
+ *
+ * `CTASection` in particular is left exactly as it is. It is already a
+ * full-bleed dark photographic band with a display heading, the supporting
+ * copy and the two actions - which is the closing treatment this page wants -
+ * and it renders on ten other routes, so redesigning it here would have
+ * redesigned all of them.
+ *
+ * ---------------------------------------------------------------------------
+ * Client JavaScript
+ * ---------------------------------------------------------------------------
+ * Two components: `AboutMarkets`, which needs selection state, and
+ * `AboutEngagements`, whose active stage is a function of scroll position.
+ * Between them that is one IntersectionObserver and one `useState`. There is
+ * no scroll listener on this page - the parallax runs on CSS scroll-progress
+ * timelines and the entry animations reuse the shared observer inside
+ * `Reveal`.
+ *
+ * ---------------------------------------------------------------------------
+ * Content integrity
+ * ---------------------------------------------------------------------------
+ * This page makes no claim about size, history, headcount, offices, clients or
+ * credentials, because none have been supplied. The market map states in
+ * standing text that it shows orientation and not presence. The team section
+ * renders only when `data/team.ts` holds real people.
  */
 export default function AboutPage() {
   return (
     <>
-      <PageHero
-        variant="split"
-        photo={photos.aboutPortrait}
-        eyebrow={aboutHero.eyebrow}
-        title={aboutHero.title}
-        lead={aboutHero.lead}
+      {/* 1 - Who GCC is. */}
+      <AboutHero />
+
+      {/* 2 - The firm, stated. Ends on the quote the next section argues. */}
+      <AboutPositioning />
+
+      {/* 3 - Why clarity matters. */}
+      <AboutPurpose />
+
+      {/* 4 - Which markets, and how they differ. */}
+      <AboutMarkets />
+
+      {/* 5 - The turn from the region to the work. */}
+      <AboutStatement
+        id="about-transition"
+        statement={aboutTransition.statement}
+        photo={backdrops.aboutTransition}
+        compact
       />
 
-      {/* Positioning - prose with an oversized pull-quote breaking the column. */}
-      <Section spacing="lg" aria-labelledby="about-positioning">
-        <div className="grid gap-x-20 gap-y-9 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
-          <Reveal>
-            <SectionLabel>{aboutPositioning.label}</SectionLabel>
-            <Heading
-              id="about-positioning"
-              level={2}
-              size="h2"
-              className="mt-5 max-w-[15ch] lg:sticky lg:top-[calc(var(--header-h)+4rem)]"
-            >
-              {aboutPositioning.heading}
-            </Heading>
-          </Reveal>
+      {/* 6 - How engagements are shaped. */}
+      <AboutEngagements />
 
-          <div>
-            <Reveal delay={120} className="flex flex-col gap-6">
-              {aboutPositioning.paragraphs.map((paragraph) => (
-                <p
-                  key={paragraph}
-                  className="max-w-[62ch] text-[1.0625rem] leading-relaxed text-(--color-foreground-muted)"
-                >
-                  {paragraph}
-                </p>
-              ))}
-            </Reveal>
+      {/* 7 - How one narrative stays one narrative. */}
+      <AboutNarrative />
 
-            <Reveal delay={200}>
-              <blockquote className="mt-12 border-t border-(--color-accent)/40 pt-8">
-                <p className="max-w-[24ch] font-display text-h2 leading-[1.14] text-balance">
-                  Clarity is a commercial position.
-                </p>
-              </blockquote>
-            </Reveal>
-          </div>
-        </div>
-      </Section>
+      {/* 8 - The page's one photographic moment. */}
+      <AboutRiyadh />
 
-      {/* Purpose - the page's one centred interruption. */}
-      <StatementBand
-        id="about-purpose"
-        label={aboutPurpose.label}
-        heading={aboutPurpose.heading}
-        paragraphs={aboutPurpose.paragraphs}
+      {/* 9 - What holds the work to a standard. */}
+      <AboutPrinciples />
+
+      {/* 10 - The closing thought, before the ask. */}
+      <AboutStatement
+        id="about-philosophy"
+        label={aboutPhilosophy.label}
+        statement={aboutPhilosophy.statement}
       />
-
-      {/* Regional understanding - prose beside the market diagram. */}
-      <Section spacing="lg" aria-labelledby="about-region">
-        <div className="grid gap-x-20 gap-y-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center">
-          <div>
-            <Reveal>
-              <SectionLabel>{aboutRegion.label}</SectionLabel>
-              <Heading id="about-region" level={2} size="h2" className="mt-5 max-w-[15ch]">
-                {aboutRegion.heading}
-              </Heading>
-            </Reveal>
-
-            <Reveal delay={120} className="mt-8 flex flex-col gap-5">
-              {aboutRegion.paragraphs.map((paragraph) => (
-                <p
-                  key={paragraph}
-                  className="max-w-[58ch] text-[1.0625rem] leading-relaxed text-(--color-foreground-muted)"
-                >
-                  {paragraph}
-                </p>
-              ))}
-            </Reveal>
-
-            <Reveal delay={180}>
-              <ul className="mt-10 flex flex-wrap gap-x-3 gap-y-3">
-                {gulfMarkets.map((market) => (
-                  <li
-                    key={market.code}
-                    className="border border-(--color-border) px-4 py-2 text-[0.9375rem]"
-                  >
-                    {market.label}
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-          </div>
-
-          <Reveal delay={160} className="surface-dark p-8 sm:p-10">
-            <GulfNetwork />
-            <p className="mt-6 max-w-[46ch] text-sm leading-relaxed text-(--color-foreground-subtle)">
-              Market orientation shown for reference. It does not represent offices, registrations
-              or investor relationships in any jurisdiction.
-            </p>
-          </Reveal>
-        </div>
-      </Section>
-
-      {/* How we work - four indexed columns, no cards. */}
-      <Section spacing="lg" tone="muted" aria-labelledby="about-how-we-work">
-        <div className="grid gap-x-20 gap-y-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end">
-          <Reveal>
-            <SectionLabel>{aboutHowWeWork.label}</SectionLabel>
-            <Heading id="about-how-we-work" level={2} size="display" className="mt-5 max-w-[15ch]">
-              {aboutHowWeWork.heading}
-            </Heading>
-          </Reveal>
-
-          <Reveal delay={120}>
-            <p className="max-w-[48ch] text-[1.0625rem] leading-relaxed text-(--color-foreground-muted) lg:pb-2">
-              {aboutHowWeWork.intro}
-            </p>
-          </Reveal>
-        </div>
-
-        <dl className="mt-[var(--space-heading)] grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-4">
-          {aboutHowWeWork.modes.map((mode, index) => (
-            <Reveal key={mode.term} delay={index * 80}>
-              <div className="border-t border-(--color-foreground)/20 pt-6">
-                <span
-                  aria-hidden="true"
-                  className="num text-numeral leading-none text-(--color-accent)/25"
-                >
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <dt className="mt-5 text-h4 font-medium tracking-tight">{mode.term}</dt>
-                <dd className="mt-3 text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
-                  {mode.description}
-                </dd>
-              </div>
-            </Reveal>
-          ))}
-        </dl>
-      </Section>
-
-      {/* Communication - sticky statement against an indexed principles list. */}
-      <Section spacing="lg" aria-labelledby="about-communication">
-        <div className="grid gap-x-20 gap-y-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-          <div>
-            <Reveal className="lg:sticky lg:top-[calc(var(--header-h)+4rem)]">
-              <SectionLabel>{aboutCommunication.label}</SectionLabel>
-              <Heading id="about-communication" level={2} size="display" className="mt-5 max-w-[12ch]">
-                {aboutCommunication.heading}
-              </Heading>
-
-              <div className="mt-8 flex max-w-[50ch] flex-col gap-5">
-                {aboutCommunication.paragraphs.map((paragraph) => (
-                  <p
-                    key={paragraph}
-                    className="text-[1.0625rem] leading-relaxed text-(--color-foreground-muted)"
-                  >
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-            </Reveal>
-          </div>
-
-          <div className="lg:pt-3">
-            <Figure
-              photo={photos.regionStreet}
-              ratio="cinema"
-              overlay="veil"
-              sizes="(min-width: 1024px) 48vw, 100vw"
-            />
-
-            <dl className="mt-10 flex flex-col">
-              {aboutCommunication.principles.map((principle, index) => (
-                <Reveal key={principle.term} delay={index * 70}>
-                  <div className="border-l-2 border-(--color-accent)/35 py-5 pl-6 transition-colors duration-500 hover:border-(--color-accent)">
-                    <dt className="text-[1.0625rem] font-medium">{principle.term}</dt>
-                    <dd className="mt-2 max-w-[52ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
-                      {principle.description}
-                    </dd>
-                  </div>
-                </Reveal>
-              ))}
-            </dl>
-          </div>
-        </div>
-      </Section>
 
       {/*
         Team section architecture.
@@ -265,6 +151,7 @@ export default function AboutPage() {
         </Section>
       )}
 
+      {/* 11 - Why to engage. */}
       <CTASection />
     </>
   );
