@@ -43,11 +43,18 @@ function Arrow({ className }: { className?: string }) {
  * Interaction notes:
  * - `onFocus` mirrors `onMouseEnter`, so the panel tracks keyboard traversal
  *   exactly as it tracks the pointer.
+ * - `onTouchStart` mirrors it too, which is what makes the panel work on a
+ *   touch device wide enough to be rendering it. A tablet in landscape is past
+ *   the `lg` breakpoint and gets the sticky panel, but it never fires
+ *   `mouseenter`, so without this the panel sat on capability 01 for the whole
+ *   section. Touching a row now swaps the image on the way to following the
+ *   link.
  * - The panel is `aria-hidden`; it is a visual accompaniment to a row whose
  *   text is already the accessible content, and announcing it on every focus
  *   move would be noise.
- * - Below `lg` there is no hover to depend on, so the layout inverts: each row
- *   carries its own image inline and the sticky panel is not rendered.
+ * - Below `lg` there is no panel to drive: the layout inverts and each row
+ *   carries its own photograph inline, so every capability shows its own image
+ *   without an interaction being needed to reveal it.
  */
 export function CapabilityShowcase() {
   const [active, setActive] = useState(0);
@@ -75,6 +82,7 @@ export function CapabilityShowcase() {
                       href={capability.href}
                       onMouseEnter={() => setActive(index)}
                       onFocus={() => setActive(index)}
+                      onTouchStart={() => setActive(index)}
                       className="group block py-8 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring) sm:py-10"
                     >
                       <div className="flex items-start gap-5 sm:gap-8">
@@ -153,7 +161,14 @@ export function CapabilityShowcase() {
                 <div
                   key={capability.slug}
                   className={cn(
-                    "absolute inset-0 transition-opacity duration-700 ease-out",
+                    /*
+                      400ms, just inside the row's own 500ms colour and
+                      transform moves. At 700ms the photograph was still
+                      arriving well after the title had finished turning
+                      bronze, so running down the list left the panel trailing
+                      the row it was meant to be illustrating.
+                    */
+                    "absolute inset-0 transition-opacity duration-[400ms] ease-out",
                     active === index ? "opacity-100" : "opacity-0",
                   )}
                 >

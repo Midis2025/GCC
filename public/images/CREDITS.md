@@ -4,19 +4,26 @@ These photographs are **art direction placeholders**, not client assets.
 
 Every file in this directory is an [Unsplash](https://unsplash.com) photograph, used
 under the [Unsplash Licence](https://unsplash.com/license): free to use for commercial
-and non-commercial purposes, no permission or attribution required. Attribution is
-recorded below anyway, so the source of each frame can be verified.
+and non-commercial purposes, no permission or attribution required. The source of each
+frame is recorded below anyway, so any of them can be verified.
+
+Only free Unsplash photographs are used. Nothing here comes from Unsplash+
+(`plus.unsplash.com/premium_photo-…`), which is a separate paid licence.
 
 ## Content integrity
 
 **None of these images depicts GCC, its offices, its people, its clients or its work.**
-They are architectural and city photography chosen to give the typography a setting.
+They are photographs chosen to give the typography a setting and to say what a section
+is about.
 
-Two consequences follow, and both matter:
+Three consequences follow, and all of them matter:
 
-- Alt text must stay descriptive of the *photograph* ("glass office towers on a Gulf
-  waterfront at sunset"), never of the firm. Never write alt text, a caption or a
-  heading that implies a building shown here is a GCC office or a GCC project.
+- Alt text must stay descriptive of the *photograph* ("delegates seated in a darkened
+  conference hall"), never of the firm. Never write alt text, a caption or a heading
+  that implies a room shown here is a GCC office, a GCC event or a GCC project.
+- The people in these frames are not GCC's people. Frames showing identifiable faces
+  are avoided; the ones with figures in them are silhouettes, crowds seen from behind,
+  or subjects too small or too dark to identify. Never caption one as a named person.
 - Frames used purely as a backdrop behind a headline carry `alt=""` and are marked
   decorative, because the headline already carries the meaning.
 
@@ -29,34 +36,79 @@ Two consequences follow, and both matter:
 No component needs to change. Sizes, crops, scrims, the grain treatment and the
 sitewide colour grade are all applied by `src/components/ui/Figure.tsx`.
 
-The art direction to brief a photographer against: Gulf financial districts and
-architectural geometry, shot dark and atmospheric. No handshakes, no meeting-room
-stock, no dunes, no tourist framing.
+The art direction to brief a photographer against: **the work, shot dark.** Investor
+meetings, conference halls, financial media, market data and premium Gulf interiors,
+with Gulf financial districts as the setting rather than the subject. Cinematic,
+desaturated, cool, strong negative space. No handshakes, no bright open-plan
+meeting-room stock, no dunes, no tourist framing, and nothing carrying legible
+third-party branding.
 
-## Files
+## Files in use
+
+Source is given as the Unsplash CDN URL, which is the exact frame downloaded and can be
+opened directly to verify it. Photographer names were recorded for the first set at
+download time; for the second set they were not captured, and are left blank rather
+than filled in with an unverified guess. The Unsplash Licence does not require
+crediting them on the site.
+
+### Subject photography — added in the imagery pass
+
+| File | Used for | Source |
+| --- | --- | --- |
+| `ir-boardroom-window.jpg` | Investor Relations capability | https://images.unsplash.com/photo-1638312105950-27539b2efce4 |
+| `outreach-conference-hall.jpg` | Investor Targeting & Market Outreach capability | https://images.unsplash.com/photo-1540575467063-178a50c2df87 |
+| `media-broadcast-camera.jpg` | Media Relations capability | https://images.unsplash.com/photo-1567506476376-1282584643ca |
+| `digital-market-data.jpg` | Digital Communications capability | https://images.unsplash.com/photo-1649003515353-c58a239cf662 |
+| `capital-markets-desk.jpg` | Services index hero, insight card | https://images.unsplash.com/photo-1639428530618-e70b1ff28da2 |
+| `executives-skyline-dusk.jpg` | Investor outreach band and page hero | https://images.unsplash.com/photo-1560142249-f8718fd9cd88 |
+| `strategy-session-night.jpg` | Insights index and article headers | https://images.unsplash.com/photo-1758520145408-dedb359d1c49 |
+| `corporate-corridor-night.jpg` | About hero | https://images.unsplash.com/photo-1768396747960-ae6ba3c855bc |
+| `abu-dhabi-night.jpg` | Lead insight card | https://images.unsplash.com/photo-1624317937315-0ced8736c9e9 |
+| `investor-briefing-room.jpg` | Insight card | https://images.unsplash.com/photo-1627931539006-d5c4677e05ea |
+| `leadership-review-night.jpg` | Segment panel — Private Companies | https://images.unsplash.com/photo-1758520145132-b0ecdb967295 |
+| `corporate-lobby-dark.jpg` | Contact enquiry band, segment panel | https://images.unsplash.com/photo-1782834293617-4161d0b7344e |
+| `riyadh-night-aerial.jpg` | Regional frame (about, investor outreach), segment panel | https://images.unsplash.com/photo-1663900108404-a05e8bf82cda |
+| `downtown-dubai-dusk.jpg` | Segment panel — Growth Companies | https://images.unsplash.com/photo-1708361089093-beef4c4584e7 |
+| `office-night-windows.jpg` | Segment panel — Leadership & IR Teams | https://images.unsplash.com/photo-1772059409102-86d89782265b |
+
+### City and sector photography — original set
 
 | File | Used for | Photographer | Source |
 | --- | --- | --- | --- |
-| `downtown-dubai-blue-hour.jpg` | Homepage hero | Timo Volz | https://unsplash.com/photos/yP8oPC3_v38 |
+| `downtown-dubai-blue-hour.jpg` | Homepage hero backdrop (held in reserve — the hero currently opens on the globe) | Timo Volz | https://unsplash.com/photos/yP8oPC3_v38 |
 | `gulf-financial-district-night.jpg` | Sitewide final CTA | Kevin Lee | https://unsplash.com/photos/sx0cAH8TEYk |
-| `business-bay-reflection.jpg` | Investor outreach feature, segment panel | Darcey Beau | https://unsplash.com/photos/cV4qkkorDFY |
-| `skyline-twilight.jpg` | Contact page | Ahmed Aldaie | https://unsplash.com/photos/WyfXOHgI49s |
+| `business-bay-reflection.jpg` | Financial Services sector, engagement card, segment panel | Darcey Beau | https://unsplash.com/photos/cV4qkkorDFY |
+| `skyline-twilight.jpg` | Contact page hero | Ahmed Aldaie | https://unsplash.com/photos/WyfXOHgI49s |
 | `etihad-towers-golden-hour.jpg` | Homepage introduction | Saeed Alsoomehi | https://unsplash.com/photos/ytrAZCINPM4 |
-| `facade-warm-concrete.jpg` | About hero, segment panel | Ryan Ancill | https://unsplash.com/photos/IYolRpP1Oh4 |
-| `facade-dark-curve.jpg` | Services hero | Ricardo Gomez Angel | https://unsplash.com/photos/saL6UM59j-c |
-| `facade-ribs.jpg` | Investor Relations capability | Joel Filipe | https://unsplash.com/photos/-6zFVL4YuaM |
-| `facade-steel-curve.jpg` | Investor Outreach capability | Zhang Kaiyv | https://unsplash.com/photos/hDOnQGPofuU |
-| `facade-woven.jpg` | Media Relations capability | Danist Soh | https://unsplash.com/photos/T5nXYXCf50I |
-| `facade-oculus.jpg` | Digital Communications capability | Jason Dent | https://unsplash.com/photos/LIWeSq3b17U |
-| `facade-white-curve.jpg` | Segment panel | Sonnie Hiles | https://unsplash.com/photos/mQiZnKwGXW0 |
-| `district-monochrome.jpg` | Regional street frame, segment panel | Yash Jain | https://unsplash.com/photos/wanP9sgaxsc |
-| `doha-waterfront-muted.jpg` | Insights index and article heroes | Riza Mohammed | https://unsplash.com/photos/lH5qhXh3Exo |
 | `doha-skyline-day.jpg` | Utility routes (404, privacy, terms) | Em Kwan | https://unsplash.com/photos/qReCgLOaNew |
 | `sector-energy-dusk.jpg` | Energy & Utilities sector | Andrey Sharpilo | https://unsplash.com/photos/-kKIqAizsgs |
 | `sector-logistics-port.jpg` | Transport & Logistics sector, Industries hero | Venti Views | https://unsplash.com/photos/sWOvgOOFk1g |
 | `sector-development-cranes.jpg` | Real Estate & Development sector, Selected Work hero | Ivan Bandura | https://unsplash.com/photos/t4Ot1iDE0hQ |
 | `sector-industrial-mono.jpg` | Industrials & Manufacturing sector | Marc Kleen | https://unsplash.com/photos/GgVEflVPBgA |
 | `sector-technology-racks.jpg` | Technology & Digital Infrastructure sector | Kaur Kristjan | https://unsplash.com/photos/2JJ3wBHu4_0 |
+
+## Removed in the imagery pass
+
+The abstract architectural set was retired: four capabilities that do four different
+things all carried a curved building, which gave a reader nothing to tell them apart
+with. These files were deleted rather than left in place unused, so this directory
+holds only what the site actually renders.
+
+They are recoverable from git history if a frame is ever wanted again — the commit
+before this one still has them. Sources are recorded here so any of them can also be
+downloaded fresh.
+
+| File | Photographer | Source |
+| --- | --- | --- |
+| `facade-warm-concrete.jpg` | Ryan Ancill | https://unsplash.com/photos/IYolRpP1Oh4 |
+| `facade-dark-curve.jpg` | Ricardo Gomez Angel | https://unsplash.com/photos/saL6UM59j-c |
+| `facade-ribs.jpg` | Joel Filipe | https://unsplash.com/photos/-6zFVL4YuaM |
+| `facade-steel-curve.jpg` | Zhang Kaiyv | https://unsplash.com/photos/hDOnQGPofuU |
+| `facade-woven.jpg` | Danist Soh | https://unsplash.com/photos/T5nXYXCf50I |
+| `facade-oculus.jpg` | Jason Dent | https://unsplash.com/photos/LIWeSq3b17U |
+| `facade-white-curve.jpg` | Sonnie Hiles | https://unsplash.com/photos/mQiZnKwGXW0 |
+| `district-monochrome.jpg` | Yash Jain | https://unsplash.com/photos/wanP9sgaxsc |
+| `doha-waterfront-muted.jpg` | Riza Mohammed | https://unsplash.com/photos/lH5qhXh3Exo |
 
 ### A note on the sector photographs
 
@@ -65,6 +117,5 @@ worked on. None of them depicts a real engagement. Keep alt text describing the
 photograph, and never caption one in a way that implies it shows GCC's work —
 `src/data/projects.ts` explains the same constraint for the engagement pages.
 
-Photographer names are recorded as published on Unsplash at the time of download and
-are provided for verification only; the Unsplash Licence does not require crediting
-them on the site.
+Photographer names in the tables above are recorded as published on Unsplash at the
+time of download and are provided for verification only.
