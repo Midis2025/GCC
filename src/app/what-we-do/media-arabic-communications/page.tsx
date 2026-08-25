@@ -1,5 +1,6 @@
 import { CTASection } from "@/components/sections/CTASection";
 import { OtherServiceLines } from "@/components/sections/OtherServiceLines";
+import { EditorialStatement } from "@/components/sections/EditorialStatement";
 import { MarketMap } from "@/components/sections/MarketMap";
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
@@ -10,6 +11,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { capabilityPhotos } from "@/data/imagery";
 import { mediaArabic as page } from "@/data/service-lines";
+import { mediaStrategy } from "@/data/services-depth";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({
@@ -75,6 +77,25 @@ export default function MediaArabicPage() {
           </Reveal>
         </div>
       </Section>
+
+      {/*
+        The distinction the whole service rests on, set as a statement band.
+
+        A single line on a photograph between two dense sections - the "why
+        media" argument above and the map below - so the page has one place
+        where the eye is given nothing to read but one sentence.
+
+        COMPLIANCE: "understood" describes what the work is aimed at, not a
+        claim about coverage or sentiment. The honest line further down this
+        page says who decides the outcome. Do not rewrite this into a promise
+        that a company will be understood.
+      */}
+      <EditorialStatement
+        id="media-strategy"
+        statement={mediaStrategy.statement}
+        photo={capabilityPhotos["digital-communications"]}
+        compact
+      />
 
       {/*
         Regional reach, as a map.

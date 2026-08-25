@@ -1,3 +1,4 @@
+import { AdvisoryAreas } from "@/components/sections/AdvisoryAreas";
 import { CTASection } from "@/components/sections/CTASection";
 import { OtherServiceLines } from "@/components/sections/OtherServiceLines";
 import { PageHero } from "@/components/sections/PageHero";
@@ -83,6 +84,21 @@ export default function AdvisoryPage() {
           <DefinitionList items={page.areas.items} numbered columns={2} />
         </Reveal>
       </Section>
+
+      {/*
+        The five areas in detail: what each addresses, and what each involves.
+
+        This page was the thinnest of the four service lines - a hero, an
+        intro, one summary list and the footer. Advisory is also the least
+        tangible of the four, with no room and no publication to point at, so
+        naming the situation each area exists to address is how the work is
+        made concrete.
+
+        COMPLIANCE: the listing-assessment entry ends on the boundary of the
+        work - not advice on the merits of listing, or on any security. That
+        item is a qualifier, not a bullet. See `AdvisoryAreas`.
+      */}
+      <AdvisoryAreas />
 
       <OtherServiceLines currentSlug={page.slug} />
       <CTASection />

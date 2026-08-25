@@ -7,6 +7,10 @@ import { AboutPositioning } from "@/components/sections/AboutPositioning";
 import { AboutPrinciples } from "@/components/sections/AboutPrinciples";
 import { AboutPurpose } from "@/components/sections/AboutPurpose";
 import { AboutRiyadh } from "@/components/sections/AboutRiyadh";
+import {
+  CommunicationEffects,
+  WorkBehindTheRoom,
+} from "@/components/sections/CommunicationEffects";
 import { EditorialStatement } from "@/components/sections/EditorialStatement";
 import { CTASection } from "@/components/sections/CTASection";
 import { Section } from "@/components/sections/Section";
@@ -33,11 +37,17 @@ export const metadata = createMetadata({
  * and how they differ, how engagements are shaped, how one narrative stays one
  * narrative, what holds it all to a standard, and then the ask.
  *
- * Eleven blocks: an asymmetric hero, an editorial split with an oversized
+ * Thirteen numbered blocks plus the conditional team section and the sitewide
+ * call to action: an asymmetric hero, an editorial split with an oversized
  * pull-quote, a dark band with a measured criteria column, an interactive map,
- * a full-bleed statement, a scroll-driven four-stage sequence, a SECOND
- * interactive map, a full-bleed photograph, a 2x2 principles grid, a closing
- * statement, and the sitewide call to action.
+ * a full-bleed statement, a fee-and-audience split, two typographic principal
+ * biographies, a scroll-driven four-stage sequence, a dark 2x2 field of verbs,
+ * a three-column accounting of the work, a SECOND interactive map, a full-bleed
+ * photograph, a 2x2 principles grid and a closing statement.
+ *
+ * The count is stated because it keeps drifting. If a section is added, update
+ * it and the numbered comments in the body together - a numbered list that has
+ * gone out of step with itself is worse than no numbering at all.
  *
  * Sections 4 and 9 are the same component rendering the same six markets from
  * the same coordinates, requested in place of the drawn hub-and-branch diagram
@@ -118,7 +128,21 @@ export default function AboutPage() {
       <AboutEngagements />
 
       {/*
-        9 - How one narrative stays one narrative.
+        9 - What communication is for, and what producing it costs.
+
+        Two sections, one argument. A dark 2x2 field of oversized verbs, then
+        three quiet cream columns accounting for the work either side of the
+        meetings a programme is usually judged by. The middle column is the
+        shortest of the three, which is the argument made by layout.
+
+        COMPLIANCE: each verb describes a property of the COMMUNICATION, never
+        an effect the firm produces in a market. See `data/about-depth.ts`.
+      */}
+      <CommunicationEffects />
+      <WorkBehindTheRoom />
+
+      {/*
+        10 - How one narrative stays one narrative.
 
         A drawn hub-and-branch diagram stood here - one centre, three lines
         out to investors, media and a company's own channels. It is now the
@@ -140,13 +164,13 @@ export default function AboutPage() {
         tone="muted"
       />
 
-      {/* 10 - The page's one photographic moment. */}
+      {/* 11 - The page's one photographic moment. */}
       <AboutRiyadh />
 
-      {/* 11 - What holds the work to a standard. */}
+      {/* 12 - What holds the work to a standard. */}
       <AboutPrinciples />
 
-      {/* 12 - The closing thought, before the ask. */}
+      {/* 13 - The closing thought, before the ask. */}
       <EditorialStatement
         id="about-philosophy"
         label={aboutPhilosophy.label}
@@ -192,7 +216,7 @@ export default function AboutPage() {
         </Section>
       )}
 
-      {/* 11 - Why to engage. */}
+      {/* 14 - Why to engage. */}
       <CTASection />
     </>
   );

@@ -1,5 +1,6 @@
 import { CTASection } from "@/components/sections/CTASection";
 import { PageHero } from "@/components/sections/PageHero";
+import { PhaseJourney } from "@/components/sections/PhaseJourney";
 import { Section } from "@/components/sections/Section";
 import { OtherServiceLines } from "@/components/sections/OtherServiceLines";
 import { StageSequence } from "@/components/sections/StageSequence";
@@ -89,6 +90,17 @@ export default function InvestorRoadshowsPage() {
           <DefinitionList items={page.format.items} numbered columns={2} />
         </Reveal>
       </Section>
+
+      {/*
+        Before, during and after.
+
+        The page said what a programme costs to attend and what tier it sits
+        in, and never said what the work actually contains. Three phases on one
+        rule - the same station construction the five-stage Approach uses,
+        because both are sequences of work over time and the site should say
+        that the same way twice rather than invent a second grammar.
+      */}
+      <PhaseJourney />
 
       {/*
         The four formats, as a scroll-driven sequence.
