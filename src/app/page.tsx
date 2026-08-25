@@ -1,4 +1,8 @@
 import { ArabicGap } from "@/components/sections/ArabicGap";
+import { ContinuityCompare } from "@/components/sections/ContinuityCompare";
+import { MarketContexts } from "@/components/sections/MarketContexts";
+import { OpeningQuestions } from "@/components/sections/OpeningQuestions";
+import { RegionalCase } from "@/components/sections/RegionalCase";
 import { Approach } from "@/components/sections/Approach";
 import { CapabilityShowcase } from "@/components/sections/CapabilityShowcase";
 import { CTASection } from "@/components/sections/CTASection";
@@ -38,12 +42,22 @@ export const metadata = createMetadata({
  *   Proposition   dark      what we do
  *   Intro         canvas    how we think about the work
  *   Globe         dark      why the Gulf, why now
+ *   Regional case canvas    why the region is not a branch office
+ *   Questions     dark      where an engagement starts
  *   Segments      canvas    who it is for
  *   Capabilities  dark      the disciplines, in detail
+ *   Continuity    canvas    a visit against a programme
  *   Approach      muted     how an engagement runs
  *   Arabic gap    dark      the differentiator
+ *   Markets       canvas    where programmes run
  *   Invitation    muted     the other audience
  *   Insight       muted     what we have published
+ *
+ * Four sections were added to that spine and every one of them was placed by
+ * tone as well as by argument. The regional case sits after the globe rather
+ * than after Intro because Intro is canvas and so is it; continuity is canvas
+ * rather than muted because Approach below it is muted. Read the column above
+ * before inserting anything: no two neighbours share a ground.
  *
  * Three of these bands are full dark - the globe, the capabilities and the
  * Arabic gap - and the requested running order put all three within four
@@ -131,6 +145,26 @@ export default function HomePage() {
       />
 
       {/*
+        Why the Gulf is not a branch office of somewhere else.
+
+        Typography-led on a rule field, and the only section of its kind here:
+        the page already carries a photographic split, a mosaic, a globe and a
+        sticky panel, so a fifth image in a row would have flattened the
+        rhythm. Four numbered reasons under a sticky claim.
+      */}
+      <RegionalCase />
+
+      {/*
+        The three questions an engagement opens with.
+
+        A stepped dark column - each question inset further than the one above
+        it - so the set descends through the section rather than stacking
+        flush. Questions rather than claims: they commit the firm to where the
+        work starts and to nothing about where it ends.
+      */}
+      <OpeningQuestions />
+
+      {/*
         Selected Markets - the photographic mosaic.
 
         Restored, with its categories re-cut to the launch positioning. The
@@ -151,6 +185,15 @@ export default function HomePage() {
       <CapabilityShowcase />
 
       {/*
+        One visit against a running programme.
+
+        COMPLIANCE: this compares two shapes of WORK, never two sets of
+        results. No ticks, no crosses, no scoring, and no column labelled
+        better - see the header of .
+      */}
+      <ContinuityCompare />
+
+      {/*
         Our Approach - the five-stage rule.
 
         Numerals on a single continuous line: horizontal from `lg`, a vertical
@@ -161,6 +204,16 @@ export default function HomePage() {
 
       {/* The clearest differentiator. */}
       <ArabicGap />
+
+      {/*
+        Dubai, Abu Dhabi and Riyadh, as three staggered editorial panels.
+
+        CONTENT INTEGRITY: the standing caption denies offices, registrations,
+        licences and relationships. Three cities named under a firm's logo,
+        over photographs of those cities, is the easiest thing on this site to
+        misread as a footprint.
+      */}
+      <MarketContexts />
 
       {/* The other audience. */}
       <InvestorInvitation />

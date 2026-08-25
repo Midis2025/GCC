@@ -1,0 +1,102 @@
+import { Section } from "@/components/sections/Section";
+import { Heading } from "@/components/ui/Heading";
+import { Reveal } from "@/components/ui/Reveal";
+import { SectionLabel } from "@/components/ui/SectionLabel";
+import { gulfDifference } from "@/data/home-depth";
+
+/**
+ * ============================================================================
+ * THE REGIONAL CASE
+ * ============================================================================
+ * The argument the business rests on: the Gulf is not a branch office of
+ * another financial centre, and the parts of an overseas investor-relations
+ * approach that travel are the materials rather than the method.
+ *
+ * TYPOGRAPHY-LED, deliberately, and it is the only section of its kind on the
+ * homepage. The page already carries a photographic split (`Intro`), a
+ * photographic mosaic (`Segments`), a globe, a sticky panel and two dark
+ * statement bands. A fourth picture here would have been the fifth image in a
+ * row; four paragraphs of argument set against a fine architectural grid is a
+ * different rhythm, and the rhythm is the point.
+ *
+ * The heading is sticky against the paragraphs it introduces, so the claim
+ * stays on screen while the four reasons for it are read - which is what makes
+ * them read as support rather than as a list that happens to follow.
+ *
+ * COMPLIANCE: every paragraph is an observation about market structure -
+ * investor types, relationship cadence, media ecosystem, language. Nothing is
+ * a forecast, a measurement or a claim about outcome. See the header of
+ * `data/home-depth.ts`.
+ */
+export function RegionalCase() {
+  return (
+    <Section spacing="lg" aria-labelledby="home-regional-case" className="relative isolate">
+      {/*
+        A fine rule field rather than a photograph. It reads as drawing rather
+        than decoration and gives the section depth without another image.
+      */}
+      <div
+        aria-hidden="true"
+        className="rule-field absolute inset-0 -z-10 [--rule-gap:6rem] opacity-60"
+      />
+
+      <div className="grid gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-x-24">
+        <div className="lg:sticky lg:top-[calc(var(--header-h)+4rem)] lg:self-start">
+          <Reveal>
+            <span
+              aria-hidden="true"
+              className="about-rule mb-7 block h-px w-16 bg-[linear-gradient(90deg,var(--color-accent),transparent)]"
+            />
+            <SectionLabel>{gulfDifference.label}</SectionLabel>
+            <Heading
+              id="home-regional-case"
+              level={2}
+              size="display"
+              className="mt-7 max-w-[15ch]"
+            >
+              {gulfDifference.heading}
+            </Heading>
+          </Reveal>
+        </div>
+
+        <div>
+          {/*
+            Each paragraph carries its own hairline and index. Four unbroken
+            paragraphs at this length read as an essay; divided, they read as
+            four separate reasons, which is what they are.
+          */}
+          <ol className="flex flex-col">
+            {gulfDifference.paragraphs.map((paragraph, index) => (
+              <li key={paragraph} className="border-t border-(--color-border)">
+                <Reveal delay={index * 110}>
+                  <div className="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-x-4 py-7 sm:grid-cols-[3.5rem_minmax(0,1fr)] sm:gap-x-6">
+                    <span
+                      aria-hidden="true"
+                      className="num font-display-sm text-[0.625rem] tracking-[0.14em] text-(--color-accent) sm:pt-1"
+                    >
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <p className="max-w-[62ch] text-[1.0625rem] leading-relaxed text-(--color-foreground-muted)">
+                      {paragraph}
+                    </p>
+                  </div>
+                </Reveal>
+              </li>
+            ))}
+          </ol>
+
+          {/*
+            The closing line, set at statement scale under the four reasons.
+            It is the firm's position rather than another observation, so it
+            sits apart from the numbered set and carries no index.
+          */}
+          <Reveal delay={480} variant="mask">
+            <p className="mt-12 max-w-[44ch] font-display text-h3 leading-snug text-balance">
+              {gulfDifference.closing}
+            </p>
+          </Reveal>
+        </div>
+      </div>
+    </Section>
+  );
+}

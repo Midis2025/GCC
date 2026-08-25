@@ -1,10 +1,12 @@
 import NextImage from "next/image";
 
+import { CoverageSectors } from "@/components/sections/CoverageSectors";
 import { CTASection } from "@/components/sections/CTASection";
 import { InvestorForm } from "@/components/sections/InvestorForm";
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
 import { StageSequence } from "@/components/sections/StageSequence";
+import { briefingProcess } from "@/data/investors-depth";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
@@ -99,6 +101,18 @@ export default function ForInvestorsPage() {
           description: item.description,
         }))}
       />
+
+      {/*
+        What the coverage is about.
+
+        Three wide bands with the photograph alternating sides, rather than a
+        three-column grid - this page already has a sequence, a typographic
+        band and a split form, and a grid here would have been a fourth.
+
+        COMPLIANCE: the standing caption states this is informational, not
+        research and not a recommendation. See `CoverageSectors`.
+      */}
+      <CoverageSectors />
 
       {/*
         Who registers.
@@ -208,6 +222,25 @@ export default function ForInvestorsPage() {
         </Section>
       )}
 
+      {/*
+        How a briefing actually reaches a registrant.
+
+        The scroll-driven sequence, reused - the same treatment the benefits
+        use above, which is right here: both are ordered sets read one at a
+        time. Step 05 is load-bearing and states that registration does not
+        guarantee a place at every briefing. See `data/investors-depth.ts`.
+      */}
+      <StageSequence
+        id="investors-process"
+        label={briefingProcess.label}
+        heading={briefingProcess.heading}
+        tone="muted"
+        stages={briefingProcess.steps.map((step) => ({
+          term: step.term,
+          description: step.description,
+        }))}
+      />
+
       {/* Registration. */}
       <Section spacing="lg" tone="muted" aria-labelledby="investors-register">
         <div
@@ -236,7 +269,7 @@ export default function ForInvestorsPage() {
           <div className="tokens-dark relative isolate overflow-hidden lg:-ml-(--gutter)">
             <div aria-hidden="true" className="absolute inset-0 -z-20">
               <NextImage
-                src={backdrops.investors.src}
+                src={backdrops.register.src}
                 alt=""
                 fill
                 sizes="(min-width: 1024px) 42vw, 100vw"

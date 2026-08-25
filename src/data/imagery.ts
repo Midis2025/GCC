@@ -165,6 +165,24 @@ export const backdrops = {
   },
 
   /**
+   * The registration panel on For Investors.
+   *
+   * A different frame from that page's hero, which is the whole reason this
+   * exists as its own entry. The panel first reused `backdrops.investors` and
+   * the page then rendered the same Abu Dhabi skyline twice - once behind the
+   * headline and again behind the form a few screens down. Caught by counting
+   * distinct images per page rather than by eye.
+   *
+   * Business Bay reflected in still water: dark and quiet, and legible under
+   * the heavy diagonal scrim the panel lays over it.
+   */
+  register: {
+    src: businessBayReflection,
+    alt: "",
+    position: "50% 52%",
+  },
+
+  /**
    * Advisory hero. The Louvre Abu Dhabi dome, from beneath.
    *
    * Advisory is the least literal of the four service lines - judgement and
@@ -720,3 +738,42 @@ export const segmentPhotos = {
 } as const satisfies Record<string, Photo>;
 
 export type SegmentPhotoKey = keyof typeof segmentPhotos;
+
+/**
+ * The three markets, for `MarketContexts` on the homepage.
+ *
+ * Chosen against what is already on that page rather than purely on merit.
+ * The homepage carries fourteen photographs by the time this section renders,
+ * and three of the obvious choices were already spoken for: Downtown Dubai at
+ * dusk closes the segment mosaic, Etihad Towers anchors it, and Sheikh Zayed
+ * Road opens Regional Perspective. Repeating any of them a few screens later
+ * would read as a mistake rather than as a motif.
+ *
+ * So Dubai takes the blue-hour frame that was held in reserve for a hero the
+ * page no longer uses, Abu Dhabi takes the night skyline that heads For
+ * Investors on another route, and Riyadh takes the aerial that appears only on
+ * About. Nothing here repeats within the page.
+ *
+ * `alt` is empty on all three: the city name is set as a heading directly
+ * beneath each frame, so an announced description would only repeat it.
+ */
+export const cityPhotos = {
+  dubai: {
+    src: downtownDubaiBlueHour,
+    alt: "",
+    position: "50% 42%",
+    /* Taller frame on a phone; the skyline needs to sit higher in it. */
+    positionMobile: "50% 34%",
+  },
+  "abu-dhabi": {
+    src: abuDhabiNight,
+    alt: "",
+    position: "50% 58%",
+    positionMobile: "50% 62%",
+  },
+  riyadh: {
+    src: riyadhNightAerial,
+    alt: "",
+    position: "50% 48%",
+  },
+} as const satisfies Record<string, Photo>;
