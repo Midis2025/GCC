@@ -6,24 +6,38 @@ import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { insightPhotos } from "@/data/imagery";
-import { getInsights, hasPlaceholderInsights, type Insight } from "@/data/insights";
+import {
+  HOMEPAGE_INSIGHT_THRESHOLD,
+  getFormat,
+  latestInsightItems,
+  type InsightItem,
+} from "@/data/insight";
 import { formatDate } from "@/lib/utils";
 
-/** Category / date / sample-flag line, shared by both card sizes. */
-function Meta({ insight, tone = "subtle" }: { insight: Insight; tone?: "subtle" | "accent" }) {
+/**
+ * Format / date line, shared by both card sizes.
+ *
+ * The category slot now carries the FORMAT name - The Gulf Brief, Five
+ * Questions, Sector Notes, From the Room - because that is what the current
+ * taxonomy classifies a piece by. A reader who values one format can spot it
+ * from the homepage without opening anything.
+ *
+ * The "Sample" flag the old version rendered is gone with the placeholder
+ * system it belonged to. Nothing reaches this component now unless it is a
+ * real published item, so a badge marking it as not-real would always be
+ * wrong.
+ */
+function Meta({ item, tone = "subtle" }: { item: InsightItem; tone?: "subtle" | "accent" }) {
+  const format = getFormat(item.format);
+
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-label uppercase">
       <span className={tone === "accent" ? "text-(--color-accent)" : "text-(--color-foreground-subtle)"}>
-        {insight.category}
+        {format?.name ?? "Insight"}
       </span>
-      <time dateTime={insight.date} className="text-(--color-foreground-subtle)">
-        {formatDate(insight.date)}
+      <time dateTime={item.date} className="text-(--color-foreground-subtle)">
+        {formatDate(item.date)}
       </time>
-      {insight.isPlaceholder && (
-        <span className="border border-(--color-border) px-2 py-0.5 text-(--color-foreground-subtle)">
-          Sample
-        </span>
-      )}
     </div>
   );
 }
@@ -36,18 +50,33 @@ function Meta({ insight, tone = "subtle" }: { insight: Insight; tone?: "subtle" 
  * uses, rather than three identical cards. The whole card is one link, so the
  * hit target is large on touch and reaches the same destination by keyboard.
  *
- * Content integrity: the entries in `data/insights.ts` are layout
- * placeholders, not published Gulf Connect research. While any entry is flagged the
- * section carries a visible notice and every card is labelled "Sample".
- * Emptying the data array hides the section entirely rather than rendering an
- * empty grid.
+ * ---------------------------------------------------------------------------
+ * The gate
+ * ---------------------------------------------------------------------------
+ * RENDERS NOTHING below three published items, which is a rule of the current
+ * brief rather than an edge case this happens to handle. A homepage section
+ * headed "Perspectives on Gulf Capital Markets" showing one item, or three
+ * skeletons, or a "coming soon" card, announces an empty library far more
+ * loudly than its absence does.
+ *
+ * This layout needs the gate more than the plain list it replaced did, not
+ * less: it is built around a lead article and a secondary column, so at two
+ * items the column beside the lead holds a single orphan and at one item it is
+ * empty. The threshold and the layout's minimum are the same number by
+ * coincidence, and the gate is what enforces it either way.
+ *
+ * The site launches with an empty library by design, so at build this returns
+ * null. Publish three items and the section appears with no other change.
+ *
+ * The old placeholder machinery - sample entries, the "Sample" badge, the
+ * pending-content notice - is gone with `data/insights.ts`. Nothing reaches
+ * this component now that is not a real published piece.
  */
 export function InsightsPreview() {
-  const insights = getInsights().slice(0, 3);
-  if (insights.length === 0) return null;
+  const items = latestInsightItems(3);
+  if (items.length < HOMEPAGE_INSIGHT_THRESHOLD) return null;
 
-  const [lead, ...rest] = insights;
-  const showPlaceholderNotice = hasPlaceholderInsights();
+  const [lead, ...rest] = items;
 
   return (
     <Section spacing="lg" tone="muted" aria-labelledby="insights-heading">
@@ -61,19 +90,13 @@ export function InsightsPreview() {
           </div>
 
           <Link
-            href="/insights"
+            href="/insight"
             className="link-underline self-start py-1 text-[0.9375rem] text-(--color-foreground-muted) hover:text-(--color-foreground) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring) sm:self-auto"
           >
             All insights
           </Link>
         </div>
 
-        {showPlaceholderNotice && (
-          <p className="mt-5 max-w-[60ch] border-l-2 border-(--color-accent) pl-5 text-sm leading-relaxed text-(--color-foreground-muted)">
-            Sample topics shown to establish the layout. Editorial content is pending and none of
-            the entries below are published Gulf Connect research.
-          </p>
-        )}
       </Reveal>
 
       <div className="mt-[var(--space-heading)] grid gap-x-16 gap-y-9 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
@@ -81,7 +104,7 @@ export function InsightsPreview() {
         <Reveal>
           <article className="group h-full">
             <Link
-              href={`/insights/${lead.slug}`}
+              href={`/insight/${lead.slug}`}
               className="flex h-full flex-col focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
             >
               <Figure
@@ -93,7 +116,7 @@ export function InsightsPreview() {
               />
 
               <div className="mt-5">
-                <Meta insight={lead} tone="accent" />
+                <Meta item={lead} tone="accent" />
 
                 <h3 className="mt-5 max-w-[22ch] font-display text-h2 leading-[1.12] text-balance transition-colors duration-300 group-hover:text-(--color-accent)">
                   {lead.title}
@@ -109,23 +132,23 @@ export function InsightsPreview() {
 
         {/* Secondary column */}
         <ul className="flex flex-col lg:pt-2">
-          {rest.map((insight, index) => (
-            <li key={insight.slug} className="border-t border-(--color-border) last:border-b">
+          {rest.map((item, index) => (
+            <li key={item.slug} className="border-t border-(--color-border) last:border-b">
               <Reveal delay={120 + index * 90}>
                 <article className="group">
                   <Link
-                    href={`/insights/${insight.slug}`}
+                    href={`/insight/${item.slug}`}
                     className="flex gap-6 py-8 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
                   >
                     <div className="min-w-0 flex-1">
-                      <Meta insight={insight} />
+                      <Meta item={item} />
 
                       <h3 className="mt-4 font-display text-[1.3125rem] leading-snug text-balance transition-colors duration-300 group-hover:text-(--color-accent)">
-                        {insight.title}
+                        {item.title}
                       </h3>
 
                       <p className="mt-3.5 text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
-                        {insight.excerpt}
+                        {item.excerpt}
                       </p>
                     </div>
 

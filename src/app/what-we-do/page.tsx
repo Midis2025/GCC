@@ -1,3 +1,4 @@
+import { Approach } from "@/components/sections/Approach";
 import { CTASection } from "@/components/sections/CTASection";
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
@@ -132,6 +133,22 @@ export default function WhatWeDoPage() {
           </div>
         </div>
       </Section>
+
+      {/*
+        Our Approach - the five-stage rule, reused from the homepage.
+
+        It earns its place here rather than being duplicated for the sake of
+        it: this page sets out WHAT is sold and on what commercial terms, and
+        the stages are the only account on it of HOW an engagement actually
+        runs. A reader who has just read four service lines and a fee model is
+        exactly the reader with that question.
+
+        The other restored sections are not repeated here. `CapabilityShowcase`
+        in particular would be the same interaction pattern as the showcase
+        above it on this very page, which is why it stays on the homepage
+        alone.
+      */}
+      <Approach tone="canvas" />
 
       <CTASection />
     </>

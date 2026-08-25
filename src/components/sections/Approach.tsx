@@ -15,10 +15,16 @@ import { approachContent } from "@/data/homepage";
  *
  * Distinct from every other section on the page by construction: no cards, no
  * photography, no borders around content - just numerals sitting on a line.
+ *
+ * The ground is a prop because the section is used on two pages that seat it
+ * differently. On the homepage it follows the dark capability showcase and
+ * muted is the right lift. On What We Do it follows the commercial model,
+ * which is already muted, and two muted bands in succession read as one long
+ * section with a heading dropped into the middle of it.
  */
-export function Approach() {
+export function Approach({ tone = "muted" }: { tone?: "muted" | "canvas" } = {}) {
   return (
-    <Section spacing="lg" tone="muted" aria-labelledby="approach-heading">
+    <Section spacing="lg" tone={tone} aria-labelledby="approach-heading">
       <div className="grid gap-y-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end lg:gap-x-20">
         <Reveal>
           <SectionLabel>{approachContent.label}</SectionLabel>

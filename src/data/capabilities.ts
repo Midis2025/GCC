@@ -17,13 +17,34 @@ export interface Capability {
  *
  * Copy describes activity, not outcomes: no reference to guaranteed
  * introductions, funding, valuation or transaction completion.
+ *
+ * ---------------------------------------------------------------------------
+ * Capabilities are DISCIPLINES. Service lines are what you buy.
+ * ---------------------------------------------------------------------------
+ * These four are how the work is described professionally - investor
+ * relations, targeting and outreach, media, digital. The client sitemap sells
+ * four differently-cut products: Investor Roadshows, The Gulf Programme, Media
+ * & Arabic Communications and Advisory. Both framings are true, and they are
+ * not the same list, which is why this file still exists alongside
+ * `data/what-we-do.ts` rather than being folded into it.
+ *
+ * `href` is therefore a MAPPING, not an identity - each discipline points at
+ * the service page where that work is actually bought. Two of them land on the
+ * media page, because both media relations and digital communication are sold
+ * there. The old `/services/*` and `/investor-outreach` targets they used to
+ * carry are gone; they now only redirect, so leaving them would have sent
+ * every row on the homepage through a 308.
+ *
+ * `slug` is NOT a route. It keys `capabilityPhotos` in `data/imagery.ts` and
+ * is left alone deliberately - renaming it would silently drop the photograph
+ * out of every row.
  */
 export const capabilities: Capability[] = [
   {
     number: "01",
     title: "Investor Relations",
     slug: "investor-relations",
-    href: "/services/investor-relations",
+    href: "/what-we-do/gulf-programme",
     summary:
       "IR programmes built on a defined investment narrative, consistent disclosure and informed dialogue with the market.",
     description:
@@ -43,7 +64,7 @@ export const capabilities: Capability[] = [
     number: "02",
     title: "Investor Targeting & Market Outreach",
     slug: "investor-outreach",
-    href: "/investor-outreach",
+    href: "/what-we-do/investor-roadshows",
     summary:
       "Identifying and engaging investors whose mandate, geography and investment profile align with a company's objectives.",
     description:
@@ -66,7 +87,7 @@ export const capabilities: Capability[] = [
     number: "03",
     title: "Media Relations",
     slug: "media-relations",
-    href: "/services/media-relations",
+    href: "/what-we-do/media-arabic-communications",
     summary:
       "Corporate and financial media engagement that supports how a company is read by the market.",
     description:
@@ -85,7 +106,7 @@ export const capabilities: Capability[] = [
     number: "04",
     title: "Digital Communications",
     slug: "digital-communications",
-    href: "/services/digital-communications",
+    href: "/what-we-do/media-arabic-communications",
     summary:
       "Investor-facing digital communication that holds the corporate narrative consistent across owned and public channels.",
     description:

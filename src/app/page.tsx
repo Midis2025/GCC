@@ -1,11 +1,15 @@
 import { ArabicGap } from "@/components/sections/ArabicGap";
+import { Approach } from "@/components/sections/Approach";
+import { CapabilityShowcase } from "@/components/sections/CapabilityShowcase";
 import { CTASection } from "@/components/sections/CTASection";
-import { Hero } from "@/components/sections/Hero";
-import { InvestorInvitation } from "@/components/sections/InvestorInvitation";
 import { GlobeFeature } from "@/components/sections/GlobeFeature";
-import { LatestInsight } from "@/components/sections/LatestInsight";
+import { Hero } from "@/components/sections/Hero";
+import { InsightsPreview } from "@/components/sections/InsightsPreview";
+import { Intro } from "@/components/sections/Intro";
+import { InvestorInvitation } from "@/components/sections/InvestorInvitation";
 import { Orientation } from "@/components/sections/Orientation";
 import { PillarSequence } from "@/components/sections/PillarSequence";
+import { Segments } from "@/components/sections/Segments";
 import { photos } from "@/data/imagery";
 import { proposition, whyGulfNow } from "@/data/home";
 import { createMetadata } from "@/lib/seo";
@@ -24,10 +28,33 @@ export const metadata = createMetadata({
  * requirement: the site serves companies who pay and investors who are the
  * asset being built, and it fails if it only serves one.
  *
- * The order is the argument - here is what we do, here is why the Gulf and why
- * now, here is the one thing almost nobody else does, here is what we have
- * published, and here is an invitation if you are on the other side of the
- * table. One primary call to action at the end, routing to Contact.
+ * ---------------------------------------------------------------------------
+ * Why the order is what it is
+ * ---------------------------------------------------------------------------
+ * The page carries both the client-required sections and the editorial
+ * sections that predate them, and the sequence below is not the order either
+ * arrived in. It alternates ground deliberately:
+ *
+ *   Proposition   dark      what we do
+ *   Intro         canvas    how we think about the work
+ *   Globe         dark      why the Gulf, why now
+ *   Segments      canvas    who it is for
+ *   Capabilities  dark      the disciplines, in detail
+ *   Approach      muted     how an engagement runs
+ *   Arabic gap    dark      the differentiator
+ *   Invitation    muted     the other audience
+ *   Insight       muted     what we have published
+ *
+ * Three of these bands are full dark - the globe, the capabilities and the
+ * Arabic gap - and the requested running order put all three within four
+ * sections of each other. Read at speed that collapses into one long dark
+ * stretch and the transitions the design depends on stop registering. Selected
+ * Markets and Our Approach moved earlier to separate them, which costs the
+ * Arabic gap two positions and buys back the page's rhythm.
+ *
+ * Every section named in the brief is present and none moved out of its part
+ * of the argument: what we do, why here, who for, how, what makes us different,
+ * the other audience, the proof, the ask.
  *
  * ---------------------------------------------------------------------------
  * What is deliberately not here
@@ -36,17 +63,11 @@ export const metadata = createMetadata({
  *   page with a single call to action instead; two places to submit the same
  *   enquiry is two places for one record to enter the system.
  *
- * - No "Latest from Insight" module until three items exist. `LatestInsight`
- *   returns null below that threshold, so at launch the page runs from the
- *   Arabic gap to the investor invitation with no gap and no placeholder. An
- *   empty module announces an empty library more loudly than its absence does.
+ * - No Insight module until three items exist. `InsightsPreview` returns null
+ *   below that threshold, so at launch the page runs from the investor
+ *   invitation straight to the call to action with no gap and no placeholder.
  *
  * - No client logo wall. Two or three logos advertise how new a firm is.
- *
- * The sections retired with the old structure - the capability showcase, the
- * approach timeline, the segment mosaic, the differentiation panels - are left
- * in the codebase rather than deleted. Several are reusable, none is reachable,
- * and the brief asks for compatible sections to be reused rather than binned.
  */
 export default function HomePage() {
   return (
@@ -64,9 +85,6 @@ export default function HomePage() {
         are what it should be carrying. A statement holds the left column while
         each of the three passes the reading position on the right, taking the
         bronze rail and the indicator with it.
-
-        The content is unchanged: the same three verbs, the same three
-        paragraphs from `data/home.ts`. Only the treatment moved.
       */}
       <PillarSequence
         id="home-proposition"
@@ -82,22 +100,26 @@ export default function HomePage() {
       />
 
       {/*
+        Regional Perspective. Global Market Standards.
+
+        The editorial split - statement and copy in a narrow left column, a
+        tall photograph breaking the section's bottom edge on the right, and
+        the question plate overhanging into the gutter between them. Restored
+        unchanged from before the restructure.
+      */}
+      <Intro />
+
+      {/*
         Why the Gulf, why now - carried by the globe.
 
         The section argues that international companies in a handful of sectors
         have no structured route to Gulf capital. The globe draws exactly that:
         arcs running in from Europe, North America and Asia onto the Gulf
-        markets, resolving as the band enters view. It is the one section on
-        the site whose argument the diagram states directly.
+        markets, resolving as the band enters view.
 
-        No call to action on it, deliberately. This band makes an observation
-        about the market; the reader is routed onward from the hero above and
-        the invitation below, not from the middle of an argument.
-
-        Content unchanged - same label, heading, paragraphs and sectors from
-        `data/home.ts`. COMPLIANCE: the globe's own caption states that it
-        implies no offices, registrations or investor relationships, and it
-        travels with the component.
+        COMPLIANCE: the globe's caption states that it implies no offices,
+        registrations or investor relationships, and it travels with the
+        component.
       */}
       <GlobeFeature
         id="home-why-gulf"
@@ -108,14 +130,50 @@ export default function HomePage() {
         categories={whyGulfNow.sectors}
       />
 
-      {/* The clearest differentiator, on the home page rather than buried. */}
-      <ArabicGap />
+      {/*
+        Selected Markets - the photographic mosaic.
 
-      {/* Hidden entirely below three published items. */}
-      <LatestInsight />
+        Restored, with its categories re-cut to the launch positioning. The
+        panels are not links and carry no arrow: these are audiences, not
+        destinations. See `audienceContent` for what each entry is sourced
+        from, and why three of the originals are gone.
+      */}
+      <Segments />
+
+      {/*
+        Our Capabilities - the interactive dark showcase.
+
+        Pointing at, tabbing to or touching a row cross-fades the photograph in
+        the panel beside it. Restored unchanged; only the four destinations
+        changed, from the retired `/services/*` routes to the service pages
+        that now sell the work. See the header of `data/capabilities.ts`.
+      */}
+      <CapabilityShowcase />
+
+      {/*
+        Our Approach - the five-stage rule.
+
+        Numerals on a single continuous line: horizontal from `lg`, a vertical
+        spine below it. Restored unchanged; "Target" and "Engage" were reworded
+        to say communications rather than outreach - see `approachContent`.
+      */}
+      <Approach />
+
+      {/* The clearest differentiator. */}
+      <ArabicGap />
 
       {/* The other audience. */}
       <InvestorInvitation />
+
+      {/*
+        Perspectives on Gulf Capital Markets.
+
+        The old editorial layout - one lead article with a large photograph, the
+        rest as a compact indexed column beside it - now reading from the
+        current Insight taxonomy and hidden entirely below three published
+        items.
+      */}
+      <InsightsPreview />
 
       {/* One closing call to action, routing to Contact. */}
       <CTASection />

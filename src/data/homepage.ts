@@ -234,13 +234,26 @@ export const approachContent = {
     {
       number: "03",
       title: "Target",
+      /*
+        COMPLIANCE. "Communication channels", not "channels", and "relevant
+        investors", not "investors". A stage headed "Target" sitting next to a
+        bare list of investors reads as identifying people to raise money from;
+        what it describes is selecting an audience to communicate with. The
+        word the sentence turns on is the one that says so.
+      */
       description:
-        "Identify the investors, market participants and channels relevant to the mandate.",
+        "Identify relevant investors, market participants and communication channels appropriate to the mandate.",
     },
     {
       number: "04",
       title: "Engage",
-      description: "Execute coordinated investor, media and digital outreach.",
+      /*
+        COMPLIANCE. "Communications", not "outreach". This firm is not
+        licensed to solicit, and "execute outreach" to investors is the phrase
+        that most easily reads as solicitation. The activity is communication
+        and structured meetings, and the noun now says which.
+      */
+      description: "Execute coordinated investor, media and digital communications.",
     },
     {
       number: "05",
@@ -282,18 +295,59 @@ export const whyContent = {
   ],
 } as const;
 
+/**
+ * Who the practice is built for.
+ *
+ * Every entry has to be traceable to copy the client has already approved -
+ * this is a claim about who the firm serves, and an unsupported category here
+ * invents an audience.
+ *
+ * Three of the originals were dropped for exactly that reason. "Private
+ * Companies" and "Pre-IPO Businesses" contradict the launch positioning, which
+ * is international LISTED small and mid-cap companies; "Growth Companies"
+ * appears nowhere in the approved material and means whatever a reader wants
+ * it to. They are replaced by the three sectors the brief names, so the panel
+ * count and the mosaic layout are unchanged.
+ *
+ * Sources, entry by entry:
+ * - Listed small and mid-cap: `home.whyGulfNow`, "International small and
+ *   mid-cap companies working in exactly those sectors".
+ * - The three sectors: `home.homeHero.lead` and `whyGulfNow.sectors`.
+ * - International companies entering the Gulf: `whyGulfNow`, "too far away to
+ *   build the relationships themselves".
+ * - Leadership and IR teams: `about.aboutHowWeWork`, "Working alongside
+ *   existing IR, finance and communications teams".
+ *
+ * CONTENT INTEGRITY: `note` stays visible in every layout. These are the
+ * audiences the practice is built for, and the section must never be readable
+ * as a list of companies the firm has worked with.
+ */
 export const audienceContent = {
   label: "Who We Work With",
   heading: "Selected Markets",
-  /** TODO: confirm final client segments. Categories only - implies no clients. */
-  note: "Indicative categories, to be confirmed.",
+  note: "The audiences and sectors this practice is built for. Not a client list.",
+  /*
+    ORDER IS PAIRING, not priority.
+
+    `Segments` takes its photograph from `segmentPhotos[index]`, so this array's
+    order decides which label sits on which frame. Listed alphabetically or by
+    importance it read badly the moment the labels changed: "Critical Minerals"
+    landed on two people at a desk and "Life Sciences" on the Riyadh skyline.
+
+    Sequenced against the frames instead - skyline, desk review, corridor,
+    Riyadh, Dubai at dusk, open office - each label now meets a picture that
+    does not contradict it. The site has no literal photography of a mine or a
+    laboratory and none should be bought: the imagery here is regional and
+    corporate by design, and the two sectors on neutral city frames are
+    carrying that register rather than failing to illustrate themselves.
+  */
   segments: [
-    "Listed Companies",
-    "Private Companies",
-    "Pre-IPO Businesses",
+    "Listed Small and Mid-Cap Companies",
+    "Leadership and IR Teams",
+    "AI and Data Infrastructure",
+    "Critical Minerals",
     "International Companies Entering the Gulf",
-    "Growth Companies",
-    "Leadership & IR Teams",
+    "Life Sciences",
   ],
 } as const;
 
