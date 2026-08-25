@@ -43,7 +43,35 @@ export function AboutPrincipals() {
         {aboutPrincipals.people.map((person, index) => (
           <li key={person.name}>
             <Reveal delay={index * 110}>
-              <div className="border-t border-(--color-border) pt-8">
+              {/*
+                A typographic monogram stands where a portrait would.
+
+                No approved photographs of either principal exist and none may
+                be generated, so the alternative to a picture is not a grey
+                placeholder silhouette - it is type. The initials are set at
+                display scale in the accent at low strength, which gives each
+                biography a visual anchor of the right weight without asserting
+                anything about a person's appearance.
+
+                `aria-hidden`: the name is the heading directly beside it, and
+                announcing "EK" before "Edward Karr" is noise.
+
+                Replace with a real portrait by dropping a `photo` onto the
+                person record and swapping this span for a `Figure` - the
+                surrounding grid already reserves the column for it.
+              */}
+              <div className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-6 border-t border-(--color-border) pt-8 sm:gap-x-8">
+                <span
+                  aria-hidden="true"
+                  className="num font-display leading-none text-(--color-accent)/30 text-[clamp(2.25rem,4vw,3.25rem)]"
+                >
+                  {person.name
+                    .split(" ")
+                    .map((part) => part[0])
+                    .join("")}
+                </span>
+
+                <div className="min-w-0">
                 <div className="flex items-baseline justify-between gap-6">
                   <h3 className="font-display text-h3 tracking-tight">{person.name}</h3>
                   <span className="shrink-0 text-label uppercase text-(--color-accent)">
@@ -54,6 +82,7 @@ export function AboutPrincipals() {
                 <p className="mt-6 max-w-[46ch] text-[1.0625rem] leading-relaxed text-(--color-foreground-muted)">
                   {person.bio}
                 </p>
+                </div>
               </div>
             </Reveal>
           </li>

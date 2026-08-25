@@ -1,3 +1,5 @@
+import NextImage from "next/image";
+
 import { CTASection } from "@/components/sections/CTASection";
 import { InvestorForm } from "@/components/sections/InvestorForm";
 import { PageHero } from "@/components/sections/PageHero";
@@ -8,10 +10,12 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { backdrops } from "@/data/imagery";
 import {
+  GENERAL_CONTENT_ONLY,
   forInvestorsHero,
   forInvestorsIntro,
   investorAssurance,
   investorBenefits,
+  investorCategories,
   upcomingBriefings,
 } from "@/data/for-investors";
 import { createMetadata } from "@/lib/seo";
@@ -97,6 +101,66 @@ export default function ForInvestorsPage() {
       />
 
       {/*
+        Who registers.
+
+        The five professional categories the registration form offers, set as
+        type on a rule. It is a different shape from everything around it - the
+        benefits above are a scroll-driven sequence and the form below is a
+        split - so the page reads as a sequence of distinct blocks rather than
+        one treatment repeated.
+
+        These are NOT claims about who has registered. They are the categories
+        the form asks a registrant to select, stated so a professional investor
+        can see the list is meant for them before reaching the field. The note
+        says exactly that.
+
+        "Other" is deliberately absent. It is not an audience - it is the
+        fallback that routes a registrant to general content only, per
+        `GENERAL_CONTENT_ONLY`, and listing it here as a peer of the five would
+        misrepresent what selecting it does.
+      */}
+      <Section spacing="md" aria-labelledby="investors-audience">
+        <div className="grid gap-x-16 gap-y-8 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-end">
+          <Reveal>
+            <SectionLabel>Who Registers</SectionLabel>
+            <Heading id="investors-audience" level={2} size="h2" className="mt-5 max-w-[14ch]">
+              A Professional List
+            </Heading>
+          </Reveal>
+
+          <Reveal delay={120}>
+            <p className="max-w-[58ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-subtle) lg:pb-2">
+              The categories the registration form asks you to select from. Registration is free,
+              and the category you choose determines what you are sent.
+            </p>
+          </Reveal>
+        </div>
+
+        <ul className="mt-[var(--space-heading)] flex flex-col border-t border-(--color-border) sm:flex-row sm:flex-wrap sm:border-t-0">
+          {investorCategories
+            .filter((category) => category.value !== GENERAL_CONTENT_ONLY)
+            .map((category, index) => (
+              <li
+                key={category.value}
+                className="border-b border-(--color-border) sm:border-b-0 sm:border-t sm:basis-1/2 lg:basis-1/5"
+              >
+                <Reveal delay={index * 90}>
+                  <div className="flex items-baseline gap-4 py-6 sm:flex-col sm:items-start sm:gap-3 sm:pr-6">
+                    <span
+                      aria-hidden="true"
+                      className="num font-display-sm text-[0.625rem] tracking-[0.14em] text-(--color-accent)"
+                    >
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className="text-[1.0625rem] leading-snug">{category.label}</span>
+                  </div>
+                </Reveal>
+              </li>
+            ))}
+        </ul>
+      </Section>
+
+      {/*
         Upcoming briefings.
 
         Renders only when there is something real to show. See the note above.
@@ -148,41 +212,89 @@ export default function ForInvestorsPage() {
       <Section spacing="lg" tone="muted" aria-labelledby="investors-register">
         <div
           id="register"
-          className="scroll-mt-[calc(var(--header-h)+2rem)] grid gap-x-20 gap-y-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]"
+          className="scroll-mt-[calc(var(--header-h)+2rem)] grid items-stretch gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,0.86fr)_minmax(0,1.14fr)]"
         >
-          <div>
-            <Reveal>
-              <SectionLabel>Register</SectionLabel>
-              <Heading
-                id="investors-register"
-                level={2}
-                size="display"
-                className="mt-5 max-w-[12ch]"
-              >
-                Join the List
-              </Heading>
-            </Reveal>
+          {/*
+            The left half is now a dark, image-backed panel rather than type on
+            the same cream ground as the form.
 
-            {/* Assurance. Short, and next to the form rather than after it. */}
-            <Reveal delay={140} className="mt-10">
-              <p className="text-label uppercase text-(--color-foreground-subtle)">
-                {investorAssurance.heading}
-              </p>
-              <ul className="mt-5 flex flex-col gap-3">
-                {investorAssurance.items.map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-start gap-3 text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="mt-2.5 h-px w-3 shrink-0 bg-(--color-accent)"
-                    />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
+            The registration is the point of the page and it previously read as
+            two columns of equal weight - a heading beside some fields. Setting
+            the argument on midnight over a photograph and leaving the form on
+            light makes the split legible as a split: one side asks, the other
+            answers.
+
+            `tokens-dark` rather than `surface-dark`: identical token inversion
+            for every child, but no painted background, so the photograph shows
+            through and the assurance list inverts without needing dark-specific
+            variants.
+
+            It bleeds one gutter to the left, matching the showcase panel's
+            bleed on What We Do, so the two pages share one idea of how a
+            feature panel meets the page edge.
+          */}
+          <div className="tokens-dark relative isolate overflow-hidden lg:-ml-(--gutter)">
+            <div aria-hidden="true" className="absolute inset-0 -z-20">
+              <NextImage
+                src={backdrops.investors.src}
+                alt=""
+                fill
+                sizes="(min-width: 1024px) 42vw, 100vw"
+                placeholder="blur"
+                className="photo-grade object-cover"
+                style={{ objectPosition: "50% 45%" }}
+              />
+            </div>
+            {/*
+              Heavy, and heaviest where the type sits. The assurance list is
+              body copy over a photograph, which is the hardest contrast case
+              on the site - this is the `heavy` scrim from `Figure` rather than
+              a lighter veil, for that reason.
+            */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 -z-10 bg-[linear-gradient(160deg,rgba(12,20,29,0.94)_18%,rgba(12,20,29,0.88)_58%,rgba(12,20,29,0.72)_100%)]"
+            />
+            <div aria-hidden="true" className="grain absolute inset-0 -z-10" />
+
+            <div className="px-8 py-12 sm:px-10 sm:py-14 lg:px-12 lg:py-16">
+              <Reveal>
+                <SectionLabel>Register</SectionLabel>
+                <Heading
+                  id="investors-register"
+                  level={2}
+                  size="display"
+                  className="mt-5 max-w-[12ch]"
+                >
+                  Join the List
+                </Heading>
+              </Reveal>
+
+              {/* Assurance. Short, and next to the form rather than after it. */}
+              <Reveal delay={140} className="mt-12">
+                <span
+                  aria-hidden="true"
+                  className="about-rule mb-7 block h-px w-14 bg-[linear-gradient(90deg,var(--color-accent),transparent)]"
+                />
+                <p className="text-label uppercase text-(--color-foreground-subtle)">
+                  {investorAssurance.heading}
+                </p>
+                <ul className="mt-6 flex flex-col gap-4">
+                  {investorAssurance.items.map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-start gap-4 text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="mt-2.5 h-px w-4 shrink-0 bg-(--color-accent)"
+                      />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
+            </div>
           </div>
 
           <Reveal delay={180} className="border-t border-(--color-border) pt-9 lg:border-0 lg:pt-0">

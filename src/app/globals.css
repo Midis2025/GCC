@@ -569,6 +569,117 @@ a[href^="tel:"] {
 }
 
 /* ==========================================================================
+   APPROACH
+   --------------------------------------------------------------------------
+   The five-stage rule.
+   ========================================================================== */
+
+/*
+ * The bronze fill on the connecting rule.
+ *
+ * Base state is FULL, not empty. If `view()` is unsupported, or the visitor
+ * has asked for reduced motion, the rule simply reads as a complete bronze
+ * measure - which is a legitimate design. Basing it at `scaleX(0)` would have
+ * left those visitors with an invisible line, the same trap `.about-rule`
+ * documents further down this file.
+ *
+ * The animation is layered on top, inside both guards, and only then does the
+ * base become empty and fill with scroll.
+ */
+.approach-progress {
+  transform: scaleX(1);
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .approach-progress {
+      animation: approach-fill linear both;
+      animation-timeline: view();
+      /*
+        Starts once the section is properly in frame and completes before it
+        leaves, so the fill tracks the reading of the stages rather than the
+        raw position of the section box.
+      */
+      animation-range: entry 60% cover 65%;
+    }
+  }
+}
+
+@keyframes approach-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/*
+ * Pointer state. The stage under the pointer takes its numeral to full bronze
+ * and brings its copy up to full strength; the rest are unchanged rather than
+ * dimmed, because dimming four of five on hover makes a calm row flicker as
+ * the pointer crosses it.
+ */
+.approach-stage:hover .approach-num,
+.approach-stage:focus-within .approach-num {
+  color: var(--color-accent);
+}
+
+.approach-num {
+  transition: color 500ms var(--ease-out-soft);
+}
+
+/* ==========================================================================
+   SHOWCASE
+   --------------------------------------------------------------------------
+   The number over the photograph and the title on the plate below it are
+   keyed by the active item, so React remounts them on every change - which is
+   what lets these animations replay rather than firing once on load.
+
+   Deliberately shorter than the 400ms crossfade behind them. The photograph is
+   the slower element and the type should have arrived by the time it settles,
+   not after it.
+   ========================================================================== */
+.showcase-index {
+  animation: showcase-index-in 420ms var(--ease-out-soft) both;
+}
+
+@keyframes showcase-index-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.showcase-title {
+  animation: showcase-title-in 380ms var(--ease-out-soft) both;
+}
+
+@keyframes showcase-title-in {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .showcase-index,
+  .showcase-title {
+    animation: none !important;
+    opacity: 1;
+    transform: none !important;
+  }
+}
+
+/* ==========================================================================
    THE ARABIC GAP
    --------------------------------------------------------------------------
    Section-specific state, kept here for the same reason `.about-stage` and

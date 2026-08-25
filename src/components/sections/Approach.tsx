@@ -53,10 +53,20 @@ export function Approach({ tone = "muted" }: { tone?: "muted" | "canvas" } = {})
         <span
           aria-hidden="true"
           className="absolute inset-x-0 top-[0.4375rem] hidden h-px bg-(--color-border) lg:block"
-        />
+        >
+          {/*
+            The bronze fill. Advances across the rule as the section passes
+            through the viewport, on a scroll-progress timeline in CSS - so it
+            is genuine scroll progression with no listener, no observer and no
+            client component. See `.approach-progress` in globals.css, which
+            also carries the fallback for browsers without `view()` and the
+            reduced-motion case.
+          */}
+          <span className="approach-progress absolute inset-0 block origin-left bg-(--color-accent)" />
+        </span>
 
         {approachContent.steps.map((step, index) => (
-          <li key={step.number} className="relative pl-8 sm:pl-0">
+          <li key={step.number} className="approach-stage group relative pl-8 sm:pl-0">
             {/*
               Station marker for the vertical spine. A DIRECT child of the <li>,
               never inside <Reveal>: the reveal animation applies a transform,
@@ -86,12 +96,20 @@ export function Approach({ tone = "muted" }: { tone?: "muted" | "canvas" } = {})
                 <span className="h-1.5 w-1.5 rounded-full bg-(--color-accent)" />
               </span>
 
-              <p className="num text-numeral leading-none text-(--color-accent)/25 sm:mt-5">
+              {/*
+                The numeral is set at display scale now rather than at the old
+                `text-numeral`. Five stages set at body-adjacent size read as a
+                caption row; at this size each stage has its own mass and the
+                row becomes a measure with five stations on it.
+              */}
+              <p className="approach-num num font-display leading-none text-(--color-accent)/25 text-[clamp(3rem,5vw,4.5rem)] sm:mt-5">
                 {step.number}
               </p>
 
-              <h3 className="mt-4 text-h4 font-medium tracking-tight">{step.title}</h3>
-              <p className="mt-3 max-w-[38ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
+              <h3 className="mt-5 text-h4 font-medium tracking-tight transition-colors duration-500">
+                {step.title}
+              </h3>
+              <p className="mt-3.5 max-w-[38ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted) transition-colors duration-500">
                 {step.description}
               </p>
             </Reveal>

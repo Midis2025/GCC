@@ -1,5 +1,6 @@
 import { Approach } from "@/components/sections/Approach";
 import { CTASection } from "@/components/sections/CTASection";
+import { EditorialStatement } from "@/components/sections/EditorialStatement";
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
 import { Showcase } from "@/components/sections/Showcase";
@@ -76,63 +77,110 @@ export default function WhatWeDoPage() {
         they are load-bearing. Do not soften, merge or move them into a
         footnote - see the header of `data/what-we-do.ts`.
       */}
+      {/*
+        Recomposed as a statement over three columns.
+
+        It was a 50/50 split with the argument on one side and the three
+        exclusions stacked on the other, which gave three categorical denials
+        the same shape as any other list on the site. They are the most
+        distinctive thing on the page and they now hold the full width as
+        columns, under the statement they qualify.
+
+        COMPLIANCE is untouched: same wording, same order, all three visible
+        without an interaction, and the label above them unchanged. See the
+        header of `data/what-we-do.ts`.
+      */}
       <Section spacing="lg" tone="muted" aria-labelledby="commercial-model">
-        <div className="grid gap-x-20 gap-y-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-          <div>
-            <Reveal>
-              <SectionLabel>{commercialModelContent.label}</SectionLabel>
-              <Heading
-                id="commercial-model"
-                level={2}
-                size="h2"
-                className="mt-5 max-w-[14ch]"
+        <div className="grid gap-x-20 gap-y-9 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end">
+          <Reveal>
+            <SectionLabel>{commercialModelContent.label}</SectionLabel>
+            <Heading
+              id="commercial-model"
+              level={2}
+              size="display"
+              className="mt-5 max-w-[13ch]"
+            >
+              {commercialModelContent.heading}
+            </Heading>
+          </Reveal>
+
+          <Reveal delay={120} className="flex flex-col gap-5 lg:pb-2">
+            {commercialModelContent.paragraphs.map((paragraph) => (
+              <p
+                key={paragraph}
+                className="max-w-[58ch] text-[1.0625rem] leading-relaxed text-(--color-foreground-muted)"
               >
-                {commercialModelContent.heading}
-              </Heading>
-            </Reveal>
-
-            <Reveal delay={120} className="mt-8 flex flex-col gap-5">
-              {commercialModelContent.paragraphs.map((paragraph) => (
-                <p
-                  key={paragraph}
-                  className="max-w-[56ch] text-[1.0625rem] leading-relaxed text-(--color-foreground-muted)"
-                >
-                  {paragraph}
-                </p>
-              ))}
-            </Reveal>
-          </div>
-
-          <div className="lg:pt-2">
-            <Reveal delay={160}>
-              <p className="text-label uppercase text-(--color-foreground-subtle)">
-                {commercialModelContent.exclusionsLabel}
+                {paragraph}
               </p>
-            </Reveal>
-
-            <dl className="mt-7 flex flex-col">
-              {commercialModelContent.exclusions.map((item, index) => (
-                <Reveal key={item.term} delay={200 + index * 90}>
-                  <div className="border-t border-(--color-border) py-6">
-                    <dt className="flex items-baseline gap-4 text-[1.0625rem] font-medium">
-                      <span
-                        aria-hidden="true"
-                        className="num font-display-sm text-[0.625rem] tracking-[0.14em] text-(--color-accent)"
-                      >
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                      {item.term}
-                    </dt>
-                    <dd className="mt-2.5 max-w-[46ch] pl-8 text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
-                      {item.description}
-                    </dd>
-                  </div>
-                </Reveal>
-              ))}
-            </dl>
-          </div>
+            ))}
+          </Reveal>
         </div>
+
+        <Reveal delay={200} className="mt-[var(--space-heading)]">
+          <p className="text-label uppercase text-(--color-foreground-subtle)">
+            {commercialModelContent.exclusionsLabel}
+          </p>
+        </Reveal>
+
+        {/*
+          Three columns, divided by vertical rules rather than boxed.
+
+          The gold rule sits on top of each column and draws itself in
+          sequence, so the row resolves left to right as the section arrives -
+          which is the reading order of the three denials and the reason they
+          are staggered rather than appearing together.
+        */}
+        <dl className="mt-8 grid border-t border-(--color-border) sm:grid-cols-3">
+          {commercialModelContent.exclusions.map((item, index) => (
+            <div
+              key={item.term}
+              className="relative border-b border-(--color-border) pt-9 pb-8 sm:border-b-0 sm:pr-10 sm:not-first:border-l sm:not-first:border-(--color-border) sm:not-first:pl-10 sm:not-last:pr-10"
+            >
+              <Reveal delay={index * 140}>
+                <span
+                  aria-hidden="true"
+                  className="about-rule absolute left-0 top-0 block h-px w-full bg-(--color-accent) sm:w-[calc(100%-2.5rem)]"
+                />
+
+                <span
+                  aria-hidden="true"
+                  className="num font-display leading-none text-(--color-accent)/22 text-[clamp(2.75rem,4.5vw,4rem)]"
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+
+                <dt className="mt-6 max-w-[18ch] font-display text-[1.375rem] leading-snug text-balance">
+                  {item.term}
+                </dt>
+                <dd className="mt-4 max-w-[38ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
+                  {item.description}
+                </dd>
+              </Reveal>
+            </div>
+          ))}
+        </dl>
       </Section>
+
+      {/*
+        A typographic pause between the commercial model and the process.
+
+        The page runs showcase, then a two-column argument, then a five-stage
+        rule - three dense blocks in succession with nothing between them. This
+        is a single line of type on a photograph, and its job is to be the one
+        place on the page where the eye is given nothing to read but one
+        sentence.
+
+        The statement is the page's own heading turned around: the commercial
+        model above it says fixed fees for defined scopes, and this states the
+        same position as a principle. It introduces no new claim - no figure, no
+        outcome, no promise - which is why it can be set at this size.
+      */}
+      <EditorialStatement
+        id="what-we-do-transition"
+        statement="One market. Four ways of working in it."
+        photo={backdrops.industriesTransition}
+        compact
+      />
 
       {/*
         Our Approach - the five-stage rule, reused from the homepage.
