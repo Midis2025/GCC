@@ -102,8 +102,51 @@ export const arabicGap = {
   label: "The Arabic Gap",
   statement:
     "Almost no international small or mid-cap company publishes or appears in Arabic. We do.",
+  /*
+   * The paragraph is the SECOND sentence of what used to be one block. The
+   * first sentence - "Certified financial translation, Arabic-language
+   * corporate communication and regional distribution" - is now set as the
+   * three concepts below, because that is what it always was: a list written
+   * out flat.
+   *
+   * Nothing was added and nothing was dropped. Keeping both would have printed
+   * the same three terms twice within a few centimetres of each other.
+   *
+   * COMPLIANCE: the sentence that remains here is the load-bearing one. "A
+   * general translation agency is not adequate for a listed company's
+   * disclosure" is the claim that justifies the service, and "terminology
+   * carries specific meaning in a regulatory context" is why. Do not trim
+   * either clause to balance the column.
+   */
   paragraph:
-    "Certified financial translation, Arabic-language corporate communication and regional distribution. A general translation agency is not adequate for a listed company's disclosure, and terminology carries specific meaning in a regulatory context.",
+    "A general translation agency is not adequate for a listed company's disclosure, and terminology carries specific meaning in a regulatory context.",
+  /*
+   * The three concepts, taken verbatim from the sentence above in the order it
+   * set them. Title case is the only change - they are headings now rather
+   * than items in a run of prose.
+   */
+  concepts: [
+    { number: "01", term: "Certified Financial Translation" },
+    { number: "02", term: "Arabic Corporate Communications" },
+    { number: "03", term: "Regional Distribution" },
+  ],
+  /*
+   * The route the work takes, set as a typographic detail rather than a
+   * sentence. It restates the three concepts as a sequence - which is the
+   * point the section is making - and gives the bridge graphic its labels.
+   */
+  route: ["English", "Arabic", "Regional Distribution"],
+  /*
+   * Decorative only. "العربية" is the Arabic word for "Arabic", set at very low
+   * opacity behind the visual as a regional mark.
+   *
+   * It is NOT translated content and must never be presented as such: the site
+   * publishes in English, `InsightItem.language` exists for a future Arabic
+   * edition that does not yet exist, and a visitor who reads Arabic must not be
+   * led to think this page has an Arabic version behind it. Hidden from
+   * assistive technology for the same reason.
+   */
+  arabicMark: "العربية",
   cta: { label: "Media & Arabic Communications", href: "/what-we-do/media-arabic-communications" },
 } as const;
 

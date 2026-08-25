@@ -568,6 +568,119 @@ a[href^="tel:"] {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.32'/%3E%3C/svg%3E");
 }
 
+/* ==========================================================================
+   THE ARABIC GAP
+   --------------------------------------------------------------------------
+   Section-specific state, kept here for the same reason `.about-stage` and
+   `.why-panel` are: the component owns structure and sets the hook, this owns
+   what the hook looks like. Everything below keys off `data-visible` on the
+   enclosing `Reveal`, so the section inherits the shared observer and needs no
+   scroll listener and no client JavaScript of its own.
+   ========================================================================== */
+
+/*
+ * The route line, English to Arabic to distribution.
+ *
+ * Drawn left to right on entry. 900ms is the top of the range this site uses
+ * and it is deliberate here - the line is the section's argument, and at the
+ * 400ms the smaller rules run at it was over before the eye reached it.
+ */
+.arabic-route-line {
+  transform: scaleX(0);
+}
+
+.reveal[data-visible="true"] .arabic-route-line {
+  animation: arabic-route-draw 900ms var(--ease-out-expo) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + 120ms);
+}
+
+@keyframes arabic-route-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/*
+ * The three stops. Each fades up as the line passes it, which is what makes
+ * the row read as a sequence rather than as three labels appearing at once.
+ * `--route-index` is set per item by the component.
+ */
+.arabic-route-step,
+.arabic-route-node {
+  opacity: 0;
+}
+
+.reveal[data-visible="true"] .arabic-route-step,
+.reveal[data-visible="true"] .arabic-route-node {
+  animation: arabic-route-stop 520ms var(--ease-out-soft) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + 220ms + var(--route-index, 0) * 260ms);
+}
+
+@keyframes arabic-route-stop {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/*
+ * The Arabic mark.
+ *
+ * Faintness lives in the COLOUR, not in an opacity the animation then
+ * overrides - the same trap the industries keywords fell into, where a
+ * fill-mode animation reset a declared `opacity: 0.035` back to 1. The
+ * keyframes here move only transform and a low opacity ceiling.
+ */
+.arabic-mark {
+  color: rgb(244 241 235 / 0.14);
+  opacity: 0;
+}
+
+.reveal[data-visible="true"] .arabic-mark {
+  animation: arabic-mark-in 1200ms var(--ease-out-expo) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + 260ms);
+}
+
+@keyframes arabic-mark-in {
+  from {
+    opacity: 0;
+    transform: translateX(10px) scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/*
+ * REDUCED MOTION.
+ *
+ * Every element above is based at `opacity: 0` or `scaleX(0)`, so switching
+ * the animation off alone would pin the whole composition invisible - the same
+ * trap `.about-rule` documents. Transform and opacity are both reset.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .arabic-route-line,
+  .arabic-route-step,
+  .arabic-route-node,
+  .arabic-mark {
+    animation: none !important;
+    opacity: 1;
+    transform: none !important;
+  }
+
+  .arabic-mark {
+    opacity: 1;
+  }
+}
+
 /*
  * ---------------------------------------------------------------------------
  * RESPONSIVE CROP
