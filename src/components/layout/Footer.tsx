@@ -129,7 +129,16 @@ export function Footer() {
           rather than one full-bleed line.
         */}
         <div className="mt-16 border-t border-(--color-border) pt-8">
-          <p className="max-w-[92ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
+          {/*
+            74ch, down from 92. The cap was only ever guarding against a
+            full-bleed line: 92ch at this size still runs past the width where
+            the eye reliably finds the start of the next line, and this is the
+            paragraph a reader is least motivated to fight for. It was also the
+            widest measure on the site - every other body column sits between
+            46ch and 62ch - so the disclosure was the one block that did not
+            match the page it closes.
+          */}
+          <p className="max-w-[74ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
             {footerDisclosure}
           </p>
         </div>

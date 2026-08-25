@@ -49,11 +49,11 @@ export function Segments() {
       */}
       <ul className="mt-[var(--space-heading)] grid gap-3 sm:grid-cols-2 lg:grid-cols-12 lg:grid-rows-[repeat(2,clamp(13rem,14vw,18rem))] lg:gap-4">
         {audienceContent.segments.map((segment, index) => {
-          const photo = segmentPhotos[index % segmentPhotos.length];
+          const photo = segmentPhotos[segment.photo];
           const layout = PANEL_LAYOUT[index] ?? "lg:col-span-4";
 
           return (
-            <li key={segment} className={cn("relative", layout)}>
+            <li key={segment.label} className={cn("relative", layout)}>
               <Reveal
                 variant="media"
                 delay={index * 70}
@@ -74,7 +74,7 @@ export function Segments() {
                     className="block h-px w-9 bg-(--color-accent) transition-[width] duration-500 ease-out group-hover/panel:w-16"
                   />
                   <h3 className="mt-4 max-w-[16ch] font-display text-[1.25rem] leading-snug text-[#f4f1eb] text-balance sm:text-[1.375rem]">
-                    {segment}
+                    {segment.label}
                   </h3>
                 </div>
               </Reveal>

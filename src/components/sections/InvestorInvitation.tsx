@@ -41,6 +41,28 @@ export function InvestorInvitation() {
               {investorInvitation.statement}
             </Heading>
           </Reveal>
+
+          {/*
+            A gold rule that draws itself as the band arrives.
+
+            This section was the plainest on the homepage - a label, one line
+            and a button on a flat muted ground, with nothing to mark it as the
+            turn toward the other audience. It sits between the Arabic gap and
+            the call to action, both of which carry weight, and read as a gap
+            between them rather than as a section.
+
+            `.about-rule` is the site's existing expanding rule, already used to
+            close the media page, and it keys off `data-visible` on the
+            enclosing `Reveal` - so this introduces no new mechanism, no new
+            timing and no new colour, and it inherits the reduced-motion
+            handling that primitive already has.
+          */}
+          <Reveal delay={200} className="mt-9">
+            <span
+              aria-hidden="true"
+              className="about-rule block h-px w-full max-w-[13rem] bg-[linear-gradient(90deg,var(--color-accent),transparent)]"
+            />
+          </Reveal>
         </div>
 
         <Reveal delay={200} className="lg:justify-self-end">

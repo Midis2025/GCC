@@ -24,6 +24,31 @@ import type { NextConfig } from "next";
  *     What We Do.
  */
 const nextConfig: NextConfig = {
+  /*
+   * Image delivery.
+   *
+   * The source frames are 1800-2000px JPEGs, which is the right size for a
+   * full-bleed band on a 1440-1920px display and sharp enough not to soften on
+   * a retina panel at the widths they are actually rendered. The job here is
+   * to stop shipping them as JPEG.
+   *
+   * `formats` was unset, so Next served WebP alone. AVIF is listed first
+   * because it is materially smaller than WebP on exactly this kind of
+   * material - large, dark, low-frequency architectural photography, where
+   * WebP spends bits on gradient noise that AVIF does not. Browsers that do
+   * not accept AVIF fall back to WebP, and anything older falls back to the
+   * original JPEG, so there is no floor to raise.
+   *
+   * `deviceSizes` drops the 3840 bucket. Nothing on the site is a full-width
+   * image on a 4K display, the sources top out at 2000px, and leaving the
+   * bucket in only invites `sizes` mistakes to request an upscale.
+   */
+  images: {
+    formats: ["image/avif", "image/webp"],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1440, 1920, 2048],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+  },
+
   async redirects() {
     return [
       /* --- Services -> What We Do ---------------------------------------- */

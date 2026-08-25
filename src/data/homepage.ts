@@ -327,27 +327,27 @@ export const audienceContent = {
   heading: "Selected Markets",
   note: "The audiences and sectors this practice is built for. Not a client list.",
   /*
-    ORDER IS PAIRING, not priority.
+    Each label names its own photograph.
 
-    `Segments` takes its photograph from `segmentPhotos[index]`, so this array's
-    order decides which label sits on which frame. Listed alphabetically or by
-    importance it read badly the moment the labels changed: "Critical Minerals"
-    landed on two people at a desk and "Life Sciences" on the Riyadh skyline.
+    Order used to decide the pairing, because `Segments` read
+    `segmentPhotos[index]`. That made the two things impossible to edit
+    independently: re-cutting the labels to the launch positioning put
+    "Critical Minerals" over a desk meeting and "Life Sciences" over the Riyadh
+    skyline, and correcting it meant sequencing the labels against the pictures
+    rather than against the argument.
 
-    Sequenced against the frames instead - skyline, desk review, corridor,
-    Riyadh, Dubai at dusk, open office - each label now meets a picture that
-    does not contradict it. The site has no literal photography of a mine or a
-    laboratory and none should be bought: the imagery here is regional and
-    corporate by design, and the two sectors on neutral city frames are
-    carrying that register rather than failing to illustrate themselves.
+    Naming the frame ends that. The order below is now free to be editorial -
+    the primary audience first, the three sectors together, the two remaining
+    audiences after - and `international` sits last because the mosaic's final
+    cell is a full-width letterbox that only a skyline survives.
   */
   segments: [
-    "Listed Small and Mid-Cap Companies",
-    "Leadership and IR Teams",
-    "AI and Data Infrastructure",
-    "Critical Minerals",
-    "International Companies Entering the Gulf",
-    "Life Sciences",
+    { label: "Listed Small and Mid-Cap Companies", photo: "listed" },
+    { label: "Leadership and IR Teams", photo: "leadership" },
+    { label: "AI and Data Infrastructure", photo: "aiInfrastructure" },
+    { label: "Critical Minerals", photo: "criticalMinerals" },
+    { label: "Life Sciences", photo: "lifeSciences" },
+    { label: "International Companies Entering the Gulf", photo: "international" },
   ],
 } as const;
 

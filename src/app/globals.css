@@ -538,9 +538,24 @@ a[href^="tel:"] {
    ========================================================================== */
 
 /*
- * Film grain. A tiny inline SVG turbulence tile, scaled up and held at very
- * low opacity. It stops large flat gradients from banding on wide screens and
- * gives dark photographic sections a printed rather than digital quality.
+ * Gradient dither. Formerly film grain.
+ *
+ * This tile used to sit at 0.4 and was doing two jobs: dithering the large
+ * dark gradients so they do not band on a wide screen, and giving photographs
+ * a printed texture. The second job was a mistake. At 0.4 over a 2000px
+ * photograph the noise is visible as grain at any normal viewing distance,
+ * which reads as a low-quality source rather than as an art direction - the
+ * frames underneath are sharp, and this was the thing making them look like
+ * they were not.
+ *
+ * It is now 0.09, which is below the threshold where the texture reads on a
+ * photograph but still enough to break up 8-bit banding in the radial
+ * gradients behind the dark sections. Removing it outright brought the banding
+ * back on the wide hero and CTA bands, which is why it is reduced rather than
+ * deleted.
+ *
+ * Do not raise this back toward 0.4. If a section needs more texture, that is
+ * a job for the photograph, not for an overlay.
  */
 .grain::after {
   content: "";
@@ -548,9 +563,34 @@ a[href^="tel:"] {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  opacity: 0.4;
+  opacity: 0.09;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.32'/%3E%3C/svg%3E");
+}
+
+/*
+ * ---------------------------------------------------------------------------
+ * RESPONSIVE CROP
+ * ---------------------------------------------------------------------------
+ * `Figure` sets `--obj-pos` and `--obj-pos-sm` from the photograph.
+ *
+ * A frame that is wide on a desktop and nearly square on a phone is cropped on
+ * a different AXIS at each width - a landscape source in a wide frame is
+ * governed by its Y value and the same source in a tall frame by its X value -
+ * so one `object-position` cannot serve both. This lets a photograph declare
+ * the phone crop separately.
+ *
+ * A photograph with no `positionMobile` resolves both properties to the same
+ * value, so nothing changes for the frames that were already correct.
+ */
+.object-pos {
+  object-position: var(--obj-pos-sm, var(--obj-pos, 50% 50%));
+}
+
+@media (min-width: 640px) {
+  .object-pos {
+    object-position: var(--obj-pos, 50% 50%);
+  }
 }
 
 /*
@@ -561,16 +601,38 @@ a[href^="tel:"] {
  *
  * The source imagery ranges from warm golden-hour concrete to bright cyan sky,
  * and dropped in ungraded it reads as a stock library rather than as one art
- * direction. Pulling the saturation back and adding a trace of sepia walks the
- * cool blues and teals toward the warm neutral the bronze accent lives in,
- * while the contrast bump stops the result going flat.
+ * direction. A light hand holds them together.
+ *
+ * It used to be a heavy hand: `saturate(0.66) sepia(0.16) contrast(1.06)
+ * brightness(0.97)`. That removed a third of the colour from every photograph
+ * on the site and pushed what was left toward brown. Night skylines went
+ * grey-sepia, the blue hour stopped being blue, and the whole library read as
+ * washed out rather than as considered - the exact "muddy stock" quality the
+ * grade was introduced to avoid.
+ *
+ * Now: a touch of saturation off so nothing screams against the bronze, and a
+ * whisper of contrast so it does not go flat. Sepia is gone entirely, and so
+ * is the brightness cut - the frames are properly exposed already and dimming
+ * them was costing shadow detail that the dark scrims then buried completely.
  *
  * This is an image treatment, not a palette change: no brand colour is
- * altered, and the photographs simply stop competing with the palette they sit
- * inside. Remove the class from `Figure` to see the difference.
+ * altered. Keep it subtle. If a photograph clashes, regrade that photograph -
+ * do not push this filter to compensate for one frame.
+ */
+/*
+ * The three values are custom properties so a single frame can be pulled into
+ * the collection without a second filter class fighting this one - two classes
+ * both setting `filter` do not compose, the winner just replaces the loser.
+ *
+ * Overriding is for a photograph that is objectively out of step with the set,
+ * not for taste. There is exactly one at present: the automated production
+ * line on Selected Markets is a bright, saturated, daylit frame sitting in a
+ * row of dark night ones, and without a pull it reads as a stock image dropped
+ * into an art-directed grid.
  */
 .photo-grade {
-  filter: saturate(0.66) sepia(0.16) contrast(1.06) brightness(0.97);
+  filter: saturate(var(--grade-sat, 0.94)) contrast(var(--grade-con, 1.03))
+    brightness(var(--grade-bri, 1));
 }
 
 /*

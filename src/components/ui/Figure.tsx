@@ -1,4 +1,5 @@
 import NextImage from "next/image";
+import type { CSSProperties } from "react";
 
 import { cn } from "@/lib/utils";
 import type { Photo } from "@/data/imagery";
@@ -97,6 +98,13 @@ export function Figure({
         className,
       )}
     >
+      {/*
+        The crop is set through custom properties rather than `objectPosition`
+        directly, so a photograph can carry a different crop on a phone. The
+        `.object-pos` rule in globals.css reads `--obj-pos-sm` below 640px and
+        `--obj-pos` above it; a photo with no `positionMobile` resolves both to
+        the same value and behaves exactly as it did before.
+      */}
       <NextImage
         src={photo.src}
         alt={photo.alt}
@@ -104,8 +112,23 @@ export function Figure({
         sizes={sizes}
         placeholder="blur"
         preload={preload || undefined}
-        style={photo.position ? { objectPosition: photo.position } : undefined}
-        className={cn("object-cover", grade && "photo-grade", imageClassName)}
+        style={
+          {
+            ...(photo.position && {
+              "--obj-pos": photo.position,
+              "--obj-pos-sm": photo.positionMobile ?? photo.position,
+            }),
+            ...(photo.grade?.saturate !== undefined && { "--grade-sat": photo.grade.saturate }),
+            ...(photo.grade?.contrast !== undefined && { "--grade-con": photo.grade.contrast }),
+            ...(photo.grade?.brightness !== undefined && { "--grade-bri": photo.grade.brightness }),
+          } as CSSProperties
+        }
+        className={cn(
+          "object-cover",
+          photo.position && "object-pos",
+          grade && "photo-grade",
+          imageClassName,
+        )}
       />
 
       {overlay !== "none" && (

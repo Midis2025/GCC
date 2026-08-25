@@ -16,7 +16,6 @@ import investorBriefingRoom from "../../public/images/investor-briefing-room.jpg
 import irBoardroomWindow from "../../public/images/ir-boardroom-window.jpg";
 import leadershipReviewNight from "../../public/images/leadership-review-night.jpg";
 import mediaBroadcastCamera from "../../public/images/media-broadcast-camera.jpg";
-import officeNightWindows from "../../public/images/office-night-windows.jpg";
 import outreachConferenceHall from "../../public/images/outreach-conference-hall.jpg";
 import riyadhNightAerial from "../../public/images/riyadh-night-aerial.jpg";
 import sectorDevelopmentCranes from "../../public/images/sector-development-cranes.jpg";
@@ -81,6 +80,27 @@ export interface Photo {
    * deliberate value on both axes.
    */
   position?: string;
+  /**
+   * A different crop below 640px, where the frame is usually far narrower and
+   * taller in proportion than the same frame on a desktop.
+   *
+   * One `object-position` cannot serve both. A wide skyline cropped to a
+   * near-square phone frame loses whichever side the centre crop discards -
+   * on a landscape source the desktop crop is governed by the Y value and the
+   * phone crop by the X value, so the same string is doing two unrelated jobs
+   * at the two widths. Setting this only where the mobile crop actually loses
+   * the subject; left undefined, `position` applies at every width.
+   */
+  positionMobile?: string;
+  /**
+   * Per-frame override of the sitewide grade, for a photograph that is
+   * objectively out of step with the collection around it.
+   *
+   * Use sparingly and for tone only. If a frame needs this to be usable at
+   * all, the frame is wrong - replace the photograph rather than filtering it
+   * into submission.
+   */
+  grade?: { saturate?: number; contrast?: number; brightness?: number };
 }
 
 /** Full-bleed frames that sit behind type. Decorative by design. */
@@ -522,15 +542,58 @@ export const insightPhotos: Photo[] = [
  * band and the insight cards are all on the same scroll, and a panel repeating
  * one of them would read as a mistake rather than as a motif.
  */
-export const segmentPhotos: Photo[] = [
+export const segmentPhotos = {
   /*
-   * Index 0 is the tall anchor panel, so it needs the frame with the most
-   * weight. Pale frames read as holes at that size and are kept out of it.
+   * Keyed, not indexed.
+   *
+   * This was a plain array read as `segmentPhotos[index]`, which meant the
+   * ORDER of the labels in `audienceContent` silently decided which picture
+   * each one got. Re-cutting those labels to the launch positioning promptly
+   * put "Critical Minerals" over a desk meeting and "Life Sciences" over the
+   * Riyadh skyline, and the fix at the time was to reorder the labels against
+   * the pictures - which works until the next edit reorders them back.
+   *
+   * Keys make the pairing explicit and survive reordering. The mosaic's shape
+   * still constrains two of them, and that constraint is real:
+   *
+   * - `listed` fills the tall anchor (5 cols x 2 rows), so it needs the frame
+   *   with the most weight. Pale frames read as holes at that size.
+   * - `international` runs the full-width letterbox, which resolves to roughly
+   *   2.66:1. Only a frame whose subject survives losing its top and bottom
+   *   belongs there - a skyline does, a robotic arm does not.
    */
-  { src: businessBayReflection, alt: "", position: "50% 45%" },
-  { src: leadershipReviewNight, alt: "", position: "50% 45%" },
-  { src: corporateLobbyDark, alt: "", position: "45% 50%" },
-  { src: riyadhNightAerial, alt: "", position: "50% 50%" },
-  { src: downtownDubaiDusk, alt: "", position: "50% 45%" },
-  { src: officeNightWindows, alt: "", position: "50% 50%" },
-];
+  listed: { src: businessBayReflection, alt: "", position: "50% 45%" },
+  leadership: { src: leadershipReviewNight, alt: "", position: "50% 45%" },
+
+  /*
+   * The three sector frames. These already existed in the library for the
+   * retired industries page and were sitting unused while the sector labels
+   * on the homepage ran over generic office and skyline stock - server racks
+   * for data infrastructure and a container terminal for minerals say what
+   * those categories are; a dark lobby says nothing.
+   *
+   * `lifeSciences` is the compromise in the set. There is no laboratory or
+   * research photograph in the library and none may be invented, so it carries
+   * the automated production line - precision manufacturing, which is at least
+   * adjacent. It is the one frame here worth replacing when real photography
+   * is commissioned.
+   */
+  aiInfrastructure: { src: sectorTechnologyRacks, alt: "", position: "50% 50%" },
+  criticalMinerals: { src: sectorLogisticsPort, alt: "", position: "50% 50%" },
+  /*
+    Graded down to join the row. Every other frame in this mosaic is a dark
+    night photograph; this one is daylit, blue and saturated, and at the
+    sitewide grade it read as a stock image dropped into an art-directed grid
+    rather than as the fifth panel of one.
+  */
+  lifeSciences: {
+    src: sectorManufacturingRobotics,
+    alt: "",
+    position: "50% 45%",
+    grade: { saturate: 0.34, brightness: 0.72, contrast: 1.08 },
+  },
+
+  international: { src: downtownDubaiDusk, alt: "", position: "50% 42%" },
+} as const satisfies Record<string, Photo>;
+
+export type SegmentPhotoKey = keyof typeof segmentPhotos;
