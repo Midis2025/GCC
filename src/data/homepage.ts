@@ -5,25 +5,47 @@
  * counts, years of experience, offices, awards, regulatory status or results.
  */
 
+/**
+ * The hero.
+ *
+ * Two paths, visible together. The site serves companies who pay and investors
+ * who are the asset being built, and the brief's single most important
+ * structural point is that it fails if it only serves one - so neither button
+ * is subordinate to the other beyond the primary/outline distinction the
+ * design system already draws.
+ *
+ * COMPLIANCE: the headline is the compliant formulation - we CONNECT companies
+ * with capital, partners and media. It does not say we raise capital, find
+ * investors who will invest, or secure coverage, and it must not be rewritten
+ * into anything that does.
+ *
+ * The subline names the three sectors and the three cities. Specifics rather
+ * than adjectives is the register the whole site is written in.
+ */
 export const heroContent = {
-  eyebrow: "Gulf Capital Markets / Investor Relations / Strategic Communications",
-  headline: "Connecting Companies, Capital and Opportunity Across the Gulf.",
+  eyebrow: "Gulf Capital / Gulf Partners / Gulf Media",
+  headline: "We Connect International Companies With Gulf Capital, Partners and Media.",
   /**
    * The same headline, broken for the line-by-line reveal in the hero.
    * Presentation only - the phrasing must stay identical to `headline`, which
    * remains the single source for metadata and any non-animated rendering.
    */
-  headlineLines: ["Connecting Companies,", "Capital and Opportunity", "Across the Gulf."],
+  headlineLines: [
+    "We Connect International",
+    "Companies With Gulf Capital,",
+    "Partners and Media.",
+  ],
   /**
    * The one word of the headline set in bronze. Presentation only - it is a
    * suffix of the last authored line, so `headline` remains the single source
    * for metadata and the H1 stays one uninterrupted string.
    */
-  headlineAccent: "Gulf.",
+  headlineAccent: "Media.",
   supporting:
-    "GCC advises companies on investor visibility, capital-markets communication and engagement with the investor audiences most relevant to their strategy, across Gulf and international markets.",
-  primaryCta: { label: "Explore Our Capabilities", href: "/services" },
-  secondaryCta: { label: "Start a Conversation", href: "/contact" },
+    "Critical minerals, AI and data infrastructure, and life sciences - convened across Dubai, Abu Dhabi and Riyadh.",
+  /** One path per audience. Companies first; investors are not an afterthought. */
+  primaryCta: { label: "For companies", href: "/what-we-do" },
+  secondaryCta: { label: "For investors", href: "/for-investors" },
 } as const;
 
 /**
@@ -61,7 +83,7 @@ export const orientationContent = {
 } as const;
 
 export const introContent = {
-  label: "Dubai / GCC / Global Markets",
+  label: "Dubai / Gulf / Global Markets",
   heading: "Regional Perspective. Global Market Standards.",
   paragraphs: [
     "Effective capital-market communication is not a question of visibility alone. Companies are assessed on the clarity of their strategy, the consistency of their disclosure and the relevance of the audiences they reach.",
@@ -126,7 +148,7 @@ export const marketOrientationNote = "Market orientation only. Not offices or re
  * NOT rendered that way. A network-size figure is exactly the class of claim
  * this site is built to avoid - it is unverifiable, none has been supplied, and
  * in a hero standing bar it reads as a track record. `Global` states the same
- * reach without asserting a quantity. If GCC supplies a substantiated figure,
+ * reach without asserting a quantity. If Gulf Connect supplies a substantiated figure,
  * this is the one line to change.
  */
 export const heroStats = [
@@ -230,7 +252,7 @@ export const approachContent = {
 } as const;
 
 export const whyContent = {
-  label: "Why GCC",
+  label: "Why Gulf Connect",
   heading: "Built for the Way Gulf Markets Work",
   pillars: [
     {
@@ -250,7 +272,7 @@ export const whyContent = {
     {
       /**
        * TODO: the brief proposes a "Senior-Level Thinking" pillar. Held back
-       * until GCC confirms the operating model supports that claim. Neutral,
+       * until Gulf Connect confirms the operating model supports that claim. Neutral,
        * verifiable label used in the meantime.
        */
       title: "Disciplined Execution",
@@ -279,5 +301,5 @@ export const ctaContent = {
   heading: "Start a Conversation",
   supporting:
     "For companies seeking stronger investor visibility and strategic communications across Gulf and international markets.",
-  cta: { label: "Contact GCC", href: "/contact" },
+  cta: { label: "Contact Gulf Connect", href: "/contact" },
 } as const;

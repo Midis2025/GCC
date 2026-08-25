@@ -1,6 +1,7 @@
 import NextImage from "next/image";
+import { Suspense } from "react";
 
-import { ContactForm } from "@/components/sections/ContactForm";
+import { ContactRouter } from "@/components/sections/ContactRouter";
 import { PageHero } from "@/components/sections/PageHero";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
@@ -16,7 +17,7 @@ export const metadata = createMetadata({
   title: "Contact",
   path: "/contact",
   description:
-    "Contact GCC about investor relations, investor outreach, media relations or digital communications in Gulf and international markets.",
+    "Contact Gulf Connect about investor relations, investor outreach, media relations or digital communications in Gulf and international markets.",
 });
 
 /**
@@ -268,7 +269,18 @@ export default function ContactPage() {
                 className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(to_right,transparent,rgba(184,148,95,0.7)_45%,transparent)]"
               />
 
-              <ContactForm />
+              {/*
+                Two routed forms behind a toggle - company and investor.
+
+                Wrapped in Suspense because ContactRouter reads the query
+                string to honour the ?enquiry= deep link from the service
+                pages, and useSearchParams suspends during prerender. Without
+                the boundary the whole route would opt out of static
+                generation.
+              */}
+              <Suspense fallback={null}>
+                <ContactRouter />
+              </Suspense>
             </div>
           </Reveal>
         </div>

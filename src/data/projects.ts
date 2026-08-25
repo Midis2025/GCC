@@ -20,7 +20,7 @@
  * TO PUBLISH REAL WORK
  * ---------------------------------------------------------------------------
  * Replace these entries and set `isPlaceholder: false`. Two constraints apply
- * whatever GCC supplies:
+ * whatever Gulf Connect supplies:
  *
  *   1. CONFIDENTIALITY. IR and communications mandates are rarely nameable.
  *      The shape below is deliberately anonymised - sector, market, situation

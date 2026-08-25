@@ -44,7 +44,7 @@ export function PendingPolicy({ eyebrow, title, scope }: PendingPolicyProps) {
             {scope}
           </p>
           <p className="mt-5 max-w-[62ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-subtle)">
-            This wording must be provided or approved by GCC and its advisers. It has deliberately
+            This wording must be provided or approved by Gulf Connect and its advisers. It has deliberately
             not been drafted here. This page is excluded from search indexing until the approved
             text is in place.
           </p>

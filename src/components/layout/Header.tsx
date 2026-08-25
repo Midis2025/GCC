@@ -7,7 +7,7 @@ import { MobileMenu } from "@/components/layout/MobileMenu";
 import { NavLink } from "@/components/layout/NavLink";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import { headerCta, mainNav } from "@/data/navigation";
+import { headerCta, headerSecondaryCta, mainNav } from "@/data/navigation";
 import { cn } from "@/lib/utils";
 
 /**
@@ -100,6 +100,27 @@ export function Header() {
             resolve Tailwind conflicts, so the Button base `inline-flex` would
             win over `hidden` depending on stylesheet order.
           */}
+          {/*
+            Two actions, one per audience: companies enquire, investors join
+            the list. The site serves both and fails if it only serves one, so
+            each gets a permanent control in the same place on every page.
+
+            Both appear from `xl`, where the inline bar itself appears. Five
+            nav items and two buttons fit from 1280px with room to spare; below
+            that the whole bar collapses into the off-canvas menu, where the
+            two actions reappear stacked.
+          */}
+          <div className="hidden xl:block">
+            <Button
+              href={headerSecondaryCta.href}
+              size="sm"
+              variant="outline"
+              className="whitespace-nowrap"
+            >
+              {headerSecondaryCta.label}
+            </Button>
+          </div>
+
           <div className="hidden xl:block">
             <Button
               href={headerCta.href}
@@ -111,7 +132,7 @@ export function Header() {
             </Button>
           </div>
 
-          <MobileMenu items={mainNav} cta={headerCta} />
+          <MobileMenu items={mainNav} cta={headerCta} secondaryCta={headerSecondaryCta} />
         </div>
       </Container>
 

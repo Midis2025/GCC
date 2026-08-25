@@ -3,6 +3,7 @@ import type { StaticImageData } from "next/image";
 import abuDhabiNight from "../../public/images/abu-dhabi-night.jpg";
 import businessBayReflection from "../../public/images/business-bay-reflection.jpg";
 import capitalMarketsDesk from "../../public/images/capital-markets-desk.jpg";
+import corporateCorridorNight from "../../public/images/corporate-corridor-night.jpg";
 import corporateLobbyDark from "../../public/images/corporate-lobby-dark.jpg";
 import digitalMarketData from "../../public/images/digital-market-data.jpg";
 import downtownDubaiBlueHour from "../../public/images/downtown-dubai-blue-hour.jpg";
@@ -49,7 +50,7 @@ import strategySessionNight from "../../public/images/strategy-session-night.jpg
  *
  * PROVENANCE: these are Unsplash photographs, licensed for commercial use
  * without attribution. They are art direction, NOT client assets, and none of
- * them depicts GCC, its offices, its people or its work. See
+ * them depicts Gulf Connect, its offices, its people or its work. See
  * `public/images/CREDITS.md` for the source of each file.
  *
  * To replace with commissioned photography: drop the new file into
@@ -357,6 +358,38 @@ export const capabilityPhotos: Record<string, Photo> = {
     position: "50% 50%",
   },
 };
+
+/**
+ * One photograph per service line, for the showcase panel on What We Do.
+ *
+ * Drawn entirely from frames already in the library rather than sourced anew:
+ * the brief rules out introducing stock photography for the rebuilt pages, and
+ * these four are the existing frames whose subjects match the four lines - a
+ * conference hall, an evening working session, a broadcast camera and an
+ * interior.
+ */
+export const serviceLinePhotos = {
+  roadshows: {
+    src: outreachConferenceHall,
+    alt: "Delegates seated in a darkened conference hall beneath a wall of soft lights.",
+    position: "50% 58%",
+  },
+  programme: {
+    src: strategySessionNight,
+    alt: "An office floor at night, seen through glass, with a working session under way.",
+    position: "50% 45%",
+  },
+  media: {
+    src: mediaBroadcastCamera,
+    alt: "A broadcast camera on a tripod at the back of a hall, facing a lit stage.",
+    position: "64% 50%",
+  },
+  advisory: {
+    src: corporateCorridorNight,
+    alt: "A lift lobby at night, lit low, its polished stone floor reflecting the ceiling.",
+    position: "50% 50%",
+  },
+} as const satisfies Record<string, Photo>;
 
 /**
  * One photograph per sector, keyed by the slug in `data/industries.ts`.

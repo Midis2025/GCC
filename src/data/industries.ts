@@ -6,7 +6,7 @@
  *
  * These entries describe SECTORS and the communication demands each one
  * carries in Gulf capital markets. They are not a client list, a track record,
- * or a claim that GCC has advised a company in any of them.
+ * or a claim that Gulf Connect has advised a company in any of them.
  *
  * That distinction drives the wording: every `challenge` and `focus` line is
  * written about the sector, never about the firm. Nothing here says "we have",
@@ -14,11 +14,11 @@
  *
  * `industriesContent.note` is rendered prominently on the page and marks the
  * coverage as indicative pending confirmation, exactly as
- * `audienceContent.note` does for client segments. Do not remove it until GCC
+ * `audienceContent.note` does for client segments. Do not remove it until Gulf Connect
  * confirms which sectors it actually covers.
  *
  * Do NOT add: named clients, mandate counts, sector league tables, market
- * shares, or any figure describing GCC's activity in a sector.
+ * shares, or any figure describing Gulf Connect's activity in a sector.
  */
 
 export interface Industry {
@@ -30,7 +30,7 @@ export interface Industry {
   summary: string;
   /**
    * The communication problem characteristic of the sector. Descriptive of
-   * the sector's conditions - never a claim about work GCC has done.
+   * the sector's conditions - never a claim about work Gulf Connect has done.
    */
   challenge: string;
   /** Where communication effort concentrates for companies in this sector. */

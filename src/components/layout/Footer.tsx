@@ -2,7 +2,7 @@ import { Logo } from "@/components/layout/Logo";
 import { NavLink } from "@/components/layout/NavLink";
 import { Container } from "@/components/ui/Container";
 import { footerNav, legalNav, socialLinks } from "@/data/navigation";
-import { complianceConfig, contactConfig, siteConfig } from "@/data/site";
+import { contactConfig, footerDisclosure, siteConfig } from "@/data/site";
 import { gulfMarkets } from "@/data/homepage";
 
 /**
@@ -114,15 +114,25 @@ export function Footer() {
           )}
         </div>
 
-        {/* Client-approved compliance wording only. Omitted while unsupplied. */}
-        {(complianceConfig.disclaimer || complianceConfig.regulatoryStatement) && (
-          <div className="mt-16 max-w-3xl border-t border-(--color-border) pt-8 text-sm leading-relaxed text-(--color-foreground-subtle)">
-            {complianceConfig.disclaimer && <p>{complianceConfig.disclaimer}</p>}
-            {complianceConfig.regulatoryStatement && (
-              <p className="mt-3">{complianceConfig.regulatoryStatement}</p>
-            )}
-          </div>
-        )}
+        {/*
+          STANDING DISCLOSURE - every page, no exceptions.
+
+          Client-approved wording, reproduced verbatim from `data/site.ts`. It
+          is not conditional and it is not collapsible: the brief requires it on
+          every page and it is the line that keeps the site on the right side of
+          an unlicensed-activity question.
+
+          Set at 15px on the muted foreground - the same size as the contact
+          details above it, not the 9px this kind of paragraph usually gets. The
+          brief says so explicitly, and a disclosure nobody can read is not a
+          disclosure. The measure is capped so it sets as readable paragraphs
+          rather than one full-bleed line.
+        */}
+        <div className="mt-16 border-t border-(--color-border) pt-8">
+          <p className="max-w-[92ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
+            {footerDisclosure}
+          </p>
+        </div>
 
         <div className="mt-16 flex flex-col gap-5 border-t border-(--color-border) pt-8 sm:flex-row-reverse sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-x-7 gap-y-3">

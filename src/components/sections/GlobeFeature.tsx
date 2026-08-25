@@ -7,10 +7,22 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { GlobeExperience } from "@/components/visuals/GlobeExperience";
 import { backdrops } from "@/data/imagery";
-import { outreachContent } from "@/data/homepage";
+
+export interface GlobeFeatureProps {
+  id: string;
+  label: string;
+  heading: string;
+  paragraphs: readonly string[];
+  /** The short list set against the globe. Named things, never counts. */
+  categories: readonly string[];
+  /** The heading above that list. */
+  categoriesLabel?: string;
+  /** Optional. Omitted where the section is an argument rather than an offer. */
+  cta?: { label: string; href: string };
+}
 
 /**
- * Gulf investor outreach feature - the strongest section on the page.
+ * Globe feature - the strongest section on the page.
  *
  * Full-bleed photography rather than a flat dark band, which is what
  * distinguishes it from the capability section above and the approach timeline
@@ -24,13 +36,21 @@ import { outreachContent } from "@/data/homepage";
  * rendered as real text beside it, and the caption states explicitly that it
  * implies no offices, registrations or investor relationships.
  */
-export function GulfOutreach() {
+export function GlobeFeature({
+  id,
+  label,
+  heading,
+  paragraphs,
+  categories,
+  categoriesLabel,
+  cta,
+}: GlobeFeatureProps) {
   const photo = backdrops.outreach;
 
   return (
     <section
       className="tokens-dark relative isolate overflow-hidden bg-(--midnight) py-[var(--space-section-lg)]"
-      aria-labelledby="outreach-heading"
+      aria-labelledby={id}
     >
       <div aria-hidden="true" className="absolute inset-0 -z-20">
         <NextImage
@@ -64,14 +84,14 @@ export function GulfOutreach() {
         <div className="grid gap-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center lg:gap-20">
           <div>
             <Reveal>
-              <SectionLabel>{outreachContent.label}</SectionLabel>
-              <Heading id="outreach-heading" level={2} size="display" className="mt-5 max-w-[14ch]">
-                {outreachContent.heading}
+              <SectionLabel>{label}</SectionLabel>
+              <Heading id={id} level={2} size="display" className="mt-5 max-w-[14ch]">
+                {heading}
               </Heading>
             </Reveal>
 
             <Reveal delay={120} className="mt-8 flex max-w-[56ch] flex-col gap-5">
-              {outreachContent.paragraphs.map((paragraph) => (
+              {paragraphs.map((paragraph) => (
                 <p
                   key={paragraph}
                   className="text-[1.0625rem] leading-relaxed text-(--color-foreground-muted)"
@@ -81,8 +101,18 @@ export function GulfOutreach() {
               ))}
             </Reveal>
 
-            <ul className="mt-11 grid gap-x-8 sm:grid-cols-2">
-              {outreachContent.categories.map((category, index) => (
+            {categoriesLabel && (
+              <Reveal delay={180} className="mt-11">
+                <p className="text-label uppercase text-(--color-foreground-subtle)">
+                  {categoriesLabel}
+                </p>
+              </Reveal>
+            )}
+
+            <ul
+              className={categoriesLabel ? "mt-6 grid gap-x-8 sm:grid-cols-2" : "mt-11 grid gap-x-8 sm:grid-cols-2"}
+            >
+              {categories.map((category, index) => (
                 <li key={category}>
                   <Reveal
                     delay={200 + index * 60}
@@ -95,11 +125,19 @@ export function GulfOutreach() {
               ))}
             </ul>
 
-            <Reveal delay={260} className="mt-11">
-              <Button href={outreachContent.cta.href} size="lg" withArrow>
-                {outreachContent.cta.label}
-              </Button>
-            </Reveal>
+            {/*
+              Optional, and omitted where this band is making an argument
+              rather than asking for something. A section that closes on a
+              control implies the reader is being routed somewhere; "here is a
+              gap in the market" is not that section.
+            */}
+            {cta && (
+              <Reveal delay={260} className="mt-11">
+                <Button href={cta.href} size="lg" withArrow>
+                  {cta.label}
+                </Button>
+              </Reveal>
+            )}
           </div>
 
           {/*

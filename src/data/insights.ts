@@ -6,7 +6,7 @@ export interface Insight {
   title: string;
   excerpt: string;
   /**
-   * True while the entry is a layout placeholder rather than published GCC
+   * True while the entry is a layout placeholder rather than published Gulf Connect
    * research. The UI labels these and they are excluded from the sitemap.
    */
   isPlaceholder: boolean;
@@ -16,7 +16,7 @@ export interface Insight {
  * ============================================================================
  * INSIGHTS
  * ============================================================================
- * These entries are LAYOUT PLACEHOLDERS. They are titled as subject areas GCC
+ * These entries are LAYOUT PLACEHOLDERS. They are titled as subject areas Gulf Connect
  * may choose to write about - they are not published research and are not
  * presented as such. The UI marks them accordingly.
  *

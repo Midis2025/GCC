@@ -1,18 +1,19 @@
-import { PendingPolicy } from "@/components/sections/PendingPolicy";
+import { LegalPageLayout } from "@/components/sections/LegalPageLayout";
+import { termsOfUse } from "@/data/legal";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({
-  title: "Terms",
+  title: termsOfUse.title,
   path: "/terms",
-  noIndex: true,
+  description: termsOfUse.lead,
 });
 
-export default function TermsPage() {
-  return (
-    <PendingPolicy
-      eyebrow="Legal"
-      title="Terms of Use"
-      scope="This page will set out the terms governing use of this website, including permitted use, intellectual property, limitations of liability, and any notices required in connection with the services described."
-    />
-  );
+/**
+ * Terms of Use.
+ *
+ * Structure only while counsel-approved wording is outstanding - see the
+ * header of `data/legal.ts` for why nothing here is drafted.
+ */
+export default function Page() {
+  return <LegalPageLayout page={termsOfUse} />;
 }

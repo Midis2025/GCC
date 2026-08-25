@@ -27,6 +27,8 @@ const subscribeNever = () => () => {};
 export interface MobileMenuProps {
   items: NavItem[];
   cta?: NavItem | null;
+  /** The investor action. Rendered as an outline button under the primary. */
+  secondaryCta?: NavItem | null;
   className?: string;
 }
 
@@ -43,7 +45,7 @@ export interface MobileMenuProps {
  * a labelled modal dialog, focus is trapped while open and restored on close,
  * Escape closes it, and background scroll is locked. Touch targets are 44px+.
  */
-export function MobileMenu({ items, cta, className }: MobileMenuProps) {
+export function MobileMenu({ items, cta, secondaryCta, className }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
@@ -227,10 +229,30 @@ export function MobileMenu({ items, cta, className }: MobileMenuProps) {
             open ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
           )}
         >
+          {/*
+            Both audiences get their action here, stacked and full width. The
+            header drops the secondary as the bar narrows; this is where it
+            comes back, so an investor on a phone never has to find the list
+            through the body of a page.
+          */}
           {cta && (
             <Button href={cta.href} fullWidth size="lg" withArrow onClick={close}>
               {cta.label}
             </Button>
+          )}
+
+          {secondaryCta && (
+            <div className="mt-3">
+              <Button
+                href={secondaryCta.href}
+                fullWidth
+                size="lg"
+                variant="outline"
+                onClick={close}
+              >
+                {secondaryCta.label}
+              </Button>
+            </div>
           )}
 
           {contactConfig.email && (

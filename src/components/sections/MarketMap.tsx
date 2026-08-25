@@ -6,9 +6,28 @@ import { Section } from "@/components/sections/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { aboutRegion } from "@/data/about";
 import { gulfMarkets } from "@/data/homepage";
 import { globeMarkets } from "@/data/outreach-globe";
+
+export interface MarketMapProps {
+  id: string;
+  label: string;
+  heading: string;
+  paragraphs: readonly string[];
+  /**
+   * CONTENT INTEGRITY. Required, not optional, and deliberately has no default.
+   *
+   * A located dot is the single easiest element on this site to misread as a
+   * presence, and what has to be denied changes with the context - the About
+   * page denies investor relationships, the media page denies media
+   * relationships and guaranteed coverage. A default would be the wrong denial
+   * somewhere, so every caller states its own.
+   */
+  disclaimer: string;
+  /** Heading above the market selector. */
+  selectorLabel?: string;
+  tone?: "canvas" | "muted";
+}
 
 /**
  * ============================================================================
@@ -89,10 +108,14 @@ const placed: PlacedMarket[] = gulfMarkets.map((market) => {
 });
 
 /**
- * Regional understanding.
- *
+ * MARKET MAP
+ * ============================================================================
  * The six Gulf markets on an abstract map instead of in a row of bordered
- * chips. Selecting one - by pointer, by keyboard or by touch - lights its
+ * chips.
+ *
+ * Built for the About page and then generalised. The geography is fixed - the
+ * six markets and their coordinates are the same wherever this appears - so
+ * only the copy and the disclaimer are props. Selecting one - by pointer, by keyboard or by touch - lights its
  * position in bronze, draws connecting lines out to the other five and reveals
  * its financial centre beside the node.
  *
@@ -114,32 +137,41 @@ const placed: PlacedMarket[] = gulfMarkets.map((market) => {
  * Content integrity
  * ---------------------------------------------------------------------------
  * A dot on a map is the single easiest element on this site to misread as an
- * office. `aboutRegion.disclaimer` sits under the frame at every breakpoint,
- * is never behind an interaction, and says exactly what the map is: market
- * orientation, not offices, registrations or investor relationships. The
- * connecting lines are orientation too - they say these six are considered
+ * office. The `disclaimer` prop sits under the frame at every breakpoint and is
+ * never behind an interaction, and it says exactly what the map is: market
+ * orientation, not offices or registrations. What else it has to deny depends
+ * on the page, which is why the caller supplies it rather than the component.
+ * The connecting lines are orientation too - they say these six are considered
  * together, which is what the copy beside them already says.
  */
-export function AboutMarkets() {
+export function MarketMap({
+  id,
+  label,
+  heading,
+  paragraphs,
+  disclaimer,
+  selectorLabel = "Markets",
+  tone = "canvas",
+}: MarketMapProps) {
   const [active, setActive] = useState(0);
   const current = placed[active];
 
   return (
-    <Section spacing="lg" aria-labelledby="about-region">
+    <Section spacing="lg" tone={tone} aria-labelledby={id}>
       <div className="grid gap-x-16 gap-y-14 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-center lg:gap-x-20">
         {/* ------------------------------------------------------------------
             Copy and the selector.
             ------------------------------------------------------------------ */}
         <div>
           <Reveal>
-            <SectionLabel>{aboutRegion.label}</SectionLabel>
-            <Heading id="about-region" level={2} size="h2" className="mt-5 max-w-[15ch]">
-              {aboutRegion.heading}
+            <SectionLabel>{label}</SectionLabel>
+            <Heading id={id} level={2} size="h2" className="mt-5 max-w-[15ch]">
+              {heading}
             </Heading>
           </Reveal>
 
           <Reveal delay={120} className="mt-8 flex flex-col gap-5">
-            {aboutRegion.paragraphs.map((paragraph) => (
+            {paragraphs.map((paragraph) => (
               <p
                 key={paragraph}
                 className="max-w-[56ch] text-[1.0625rem] leading-relaxed text-(--color-foreground-muted)"
@@ -150,7 +182,9 @@ export function AboutMarkets() {
           </Reveal>
 
           <Reveal delay={180} className="mt-10">
-            <p className="text-label uppercase text-(--color-foreground-subtle)">Markets</p>
+            <p className="text-label uppercase text-(--color-foreground-subtle)">
+              {selectorLabel}
+            </p>
 
             {/*
               Wraps rather than scrolls. A horizontal scroller hides options
@@ -202,7 +236,12 @@ export function AboutMarkets() {
             >
               <defs>
                 {/* Soft lift behind the selected market. */}
-                <radialGradient id="about-market-glow">
+                {/*
+                  Scoped to the section id. Two maps on one page would otherwise
+                  declare the same gradient id twice, and the second definition
+                  wins for both - so one of them would light the wrong colour.
+                */}
+                <radialGradient id={`market-glow-${id}`}>
                   <stop offset="0%" stopColor="#b8945f" stopOpacity="0.32" />
                   <stop offset="55%" stopColor="#b8945f" stopOpacity="0.08" />
                   <stop offset="100%" stopColor="#b8945f" stopOpacity="0" />
@@ -286,7 +325,7 @@ export function AboutMarkets() {
                 cx={current.x}
                 cy={current.y}
                 r="86"
-                fill="url(#about-market-glow)"
+                fill={`url(#market-glow-${id})`}
               />
 
               {/* Nodes. */}
@@ -325,11 +364,11 @@ export function AboutMarkets() {
             </svg>
 
             {/*
-              CONTENT INTEGRITY. Not decoration, and not collapsible. See the
-              note on `aboutRegion.disclaimer`.
+              CONTENT INTEGRITY. Not decoration, not collapsible, and never
+              behind an interaction. See the note on the `disclaimer` prop.
             */}
             <p className="mt-6 max-w-[48ch] text-sm leading-relaxed text-(--color-foreground-subtle)">
-              {aboutRegion.disclaimer}
+              {disclaimer}
             </p>
           </div>
         </Reveal>

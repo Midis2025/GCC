@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { siteConfig } from "@/data/site";
+import { siteConfig, siteIsLive } from "@/data/site";
 import type { SeoOverrides } from "@/types";
 import { trimTrailingSlash } from "@/lib/utils";
 
@@ -72,8 +72,25 @@ export function createMetadata(overrides: SeoOverrides = {}): Metadata {
     },
   };
 
-  if (noIndex) {
-    metadata.robots = { index: false, follow: false };
+  /*
+   * Pre-launch, EVERY page is noindex - not just pages that ask for it.
+   *
+   * The per-page `noIndex` override still works and still wins, but it cannot
+   * be used to opt a page back in: the site-wide gate is a launch condition,
+   * not a per-page preference. It lifts when `NEXT_PUBLIC_SITE_LIVE` is set to
+   * "true" in the deployment environment and at no other time.
+   *
+   * `nocache` and the Google-specific directives are included because a page
+   * that was indexed before the flag flipped should also drop its cached copy
+   * and its snippet, not merely stop being re-crawled.
+   */
+  if (noIndex || !siteIsLive) {
+    metadata.robots = {
+      index: false,
+      follow: false,
+      nocache: true,
+      googleBot: { index: false, follow: false },
+    };
   }
 
   return metadata;

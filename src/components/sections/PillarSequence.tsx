@@ -7,64 +7,120 @@ import { Figure } from "@/components/ui/Figure";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { photos } from "@/data/imagery";
-import { whyContent } from "@/data/homepage";
+import type { Photo } from "@/data/imagery";
 
 /**
- * Line marks, one per pillar.
+ * Line marks.
  *
- * Drawn rather than illustrated: four constructions in a single stroke weight,
- * each one a diagram of what its pillar says. They carry no label and are
- * hidden from assistive tech - the heading beside each is already the content,
- * and a mark that needed describing would be a mark that failed.
+ * Drawn rather than illustrated: constructions in a single stroke weight, each
+ * one a diagram of what its pillar says. They carry no label and are hidden
+ * from assistive tech - the heading beside each is already the content, and a
+ * mark that needed describing would be a mark that failed.
  *
  * Deliberately NOT icons in the product sense. No rounded container, no fill,
  * no glyph borrowed from an icon set; at 28px on a dark ground they read as
  * technical drawing, which is the register the rest of the page is in.
+ *
+ * Keyed by name rather than indexed by position. Indexing tied each drawing to
+ * a slot in one particular list, so reordering that list silently handed a
+ * pillar the wrong picture and a list of a different length ran off the end.
  */
-function PillarMark({ index }: { index: number }) {
-  const marks = [
-    /* Gulf Perspective - a dome on a horizon. Regional, architectural. */
+const PILLAR_MARKS = {
+  /* A dome on a horizon. Regional, architectural. */
+  region: (
     <>
       <path d="M2 20.5h24" />
       <path d="M7 20.5a7 7 0 0 1 14 0" />
       <path d="M14 6.5v2" />
-    </>,
-    /* Integrated Communications - three strands resolving into one node. */
+    </>
+  ),
+  /* Strands resolving into one node - separate parties brought together. */
+  convene: (
     <>
       <path d="M2.5 7.5h6c3.2 0 4.4 3 7.5 5.4" />
       <path d="M2.5 14h13.5" />
       <path d="M2.5 20.5h6c3.2 0 4.4-3 7.5-5.4" />
       <circle cx="20.5" cy="14" r="2.6" />
-    </>,
-    /* Focused Outreach - concentric rings closing on a single point. */
+    </>
+  ),
+  /*
+   * The convene mark reversed: one node, and strands leaving it. A story is
+   * pitched outward to a named list of outlets, so the drawing that says
+   * "many into one" run backwards is exactly the right one for placement.
+   */
+  place: (
+    <>
+      <path d="M25.5 7.5h-6c-3.2 0-4.4 3-7.5 5.4" />
+      <path d="M25.5 14H12" />
+      <path d="M25.5 20.5h-6c-3.2 0-4.4-3-7.5-5.4" />
+      <circle cx="7.5" cy="14" r="2.6" />
+    </>
+  ),
+  /*
+   * Registration marks around a centre - the corners a printer or an editor
+   * frames material inside. Content produced and handed over, rather than a
+   * placement rented, which is the distinction the pillar turns on.
+   */
+  produce: (
+    <>
+      <path d="M9.5 5.5H5.5V9.5" />
+      <path d="M18.5 5.5H22.5V9.5" />
+      <path d="M9.5 22.5H5.5V18.5" />
+      <path d="M18.5 22.5H22.5V18.5" />
+      <circle cx="14" cy="14" r="2.6" />
+    </>
+  ),
+  /* Concentric rings closing on a single point. Selection, not volume. */
+  focus: (
     <>
       <circle cx="14" cy="14" r="10.5" />
       <circle cx="14" cy="14" r="5.75" />
       <circle cx="14" cy="14" r="1.15" />
-    </>,
-    /*
-     * Disciplined Execution - a graduated rule.
-     *
-     * A rising staircase was the obvious drawing and the wrong one: this site
-     * makes no claim about outcomes anywhere, and a line stepping upward
-     * behind "programmes run to a defined standard" would be the section
-     * quietly promising growth. A measure states the standard instead.
-     *
-     * Graduations hang below the rule rather than crossing it - centred, they
-     * rendered as three plus signs at 28px. Three of roughly equal length then
-     * read as tally marks, so the middle one is now nearly four times the
-     * outer two: one major division against two minor ones is what makes a
-     * row of ticks resolve into a scale.
-     */
+    </>
+  ),
+  /*
+   * A graduated rule.
+   *
+   * A rising staircase was the obvious drawing and the wrong one: this site
+   * makes no claim about outcomes anywhere, and a line stepping upward behind
+   * "programmes run to a defined standard" would be the section quietly
+   * promising growth. A measure states the standard instead.
+   *
+   * Graduations hang below the rule rather than crossing it - centred, they
+   * rendered as three plus signs at 28px. Three of roughly equal length then
+   * read as tally marks, so the middle one is now nearly four times the outer
+   * two: one major division against two minor ones is what makes a row of
+   * ticks resolve into a scale.
+   */
+  standard: (
     <>
       <path d="M2 10h24" />
       <path d="M6.5 10v2.5" />
       <path d="M14 10v9" />
       <path d="M21.5 10v2.5" />
-    </>,
-  ];
+    </>
+  ),
+} as const;
 
+export type PillarMarkName = keyof typeof PILLAR_MARKS;
+
+export interface Pillar {
+  title: string;
+  description: string;
+  mark: PillarMarkName;
+}
+
+export interface PillarSequenceProps {
+  id: string;
+  label: string;
+  heading: string;
+  /** The line under the heading, in the sticky column. */
+  intro: string;
+  pillars: readonly Pillar[];
+  photo: Photo;
+}
+
+function PillarMark({ mark }: { mark: PillarMarkName }) {
   return (
     <svg
       width="28"
@@ -78,20 +134,20 @@ function PillarMark({ index }: { index: number }) {
       focusable="false"
       className="why-mark shrink-0 text-(--color-accent)"
     >
-      {marks[index]}
+      {PILLAR_MARKS[mark]}
     </svg>
   );
 }
 
 /**
- * Progress indicator, 01 through 04.
+ * Progress indicator, 01 through n.
  *
  * One object at every width. It was briefly two - a vertical rail beside the
  * sticky statement on desktop, a horizontal one above the panels on a phone -
  * on the reasoning that a rotated instrument is a different instrument. In
  * practice it just meant the section explained its own sequence two different
  * ways depending on the window, and the horizontal reading is the clearer of
- * the two anyway: four numbers spaced along a rule state "four of these, you
+ * the two anyway: the numbers spaced along a rule state "this many of these, you
  * are here" without needing to be scanned downward first.
  *
  * `aria-hidden`. What it communicates is a reading position - a visual fact
@@ -112,7 +168,7 @@ function Progress({ count, active }: { count: number; active: number | null }) {
       {/*
         `justify-between` rather than an even grid: it puts 01 hard against the
         left edge, in line with the label rule, the headline and the paragraph
-        above it, and 04 flush with the end of the rule. A grid would inset
+        above it, and the last flush with the end of the rule. A grid would inset
         both ends by half a cell and break the column's one shared edge.
       */}
       <ol className="flex w-full justify-between num font-display-sm text-[0.6875rem] tracking-[0.14em]">
@@ -144,12 +200,17 @@ function Progress({ count, active }: { count: number; active: number | null }) {
 }
 
 /**
- * Differentiation pillars, as a scroll-driven sequence.
+ * Pillars, as a scroll-driven sequence.
  *
- * A statement holds the left column while four panels pass the reading
- * position on the right, one at a time. Whichever panel is crossing the middle
- * of the viewport takes the bronze rail, the glow and the lift; the others go
- * quiet. The progress indicator beside the statement tracks the same index.
+ * A statement holds the left column while the panels pass the reading position
+ * on the right, one at a time. Whichever panel is crossing the middle of the
+ * viewport takes the bronze rail, the glow and the lift; the others go quiet.
+ * The progress indicator beside the statement tracks the same index.
+ *
+ * Built for one section and then generalised. Nothing in the mechanism was
+ * ever specific to the differentiation pillars it started as - the geometry,
+ * the observer and the indicator all work off `pillars.length` - so the
+ * content is a prop and the section is reusable.
  *
  * The panels are NOT cards and are deliberately not built like them: no box,
  * no corner radius, no shadow. Each one is a top hairline, a vertical rail and
@@ -176,8 +237,14 @@ function Progress({ count, active }: { count: number; active: number | null }) {
  * transaction values or years of experience, since none have been supplied and
  * none would be verifiable. The four indices are ordinals, not quantities.
  */
-export function WhyGCC() {
-  const pillars = whyContent.pillars;
+export function PillarSequence({
+  id,
+  label,
+  heading,
+  intro,
+  pillars,
+  photo,
+}: PillarSequenceProps) {
 
   /*
    * `null` until a panel actually reaches the reading position. That is the
@@ -244,7 +311,7 @@ export function WhyGCC() {
     <Section
       spacing="lg"
       tone="dark"
-      aria-labelledby="why-heading"
+      aria-labelledby={id}
       /*
         No `overflow-hidden` here, deliberately.
 
@@ -321,12 +388,12 @@ export function WhyGCC() {
           */}
           <div className="lg:sticky lg:top-[calc(var(--header-h)+4.5rem)] lg:flex lg:h-[calc(100svh-var(--header-h)-7.5rem)] lg:min-h-[26rem] lg:flex-col">
             <Reveal>
-              <SectionLabel>{whyContent.label}</SectionLabel>
-              <Heading id="why-heading" level={2} size="display" className="mt-5 max-w-[12ch]">
-                {whyContent.heading}
+              <SectionLabel>{label}</SectionLabel>
+              <Heading id={id} level={2} size="display" className="mt-5 max-w-[12ch]">
+                {heading}
               </Heading>
               <p className="mt-8 max-w-[40ch] text-[1.0625rem] leading-relaxed text-(--color-foreground-muted)">
-                Four things shape how every engagement is run, whatever its scope.
+                {intro}
               </p>
             </Reveal>
 
@@ -365,7 +432,7 @@ export function WhyGCC() {
               className="mt-9 lg:mt-8 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col"
             >
               <Figure
-                photo={photos.whyMarket}
+                photo={photo}
                 ratio="auto"
                 overlay="veil"
                 className="aspect-[16/10] w-full lg:aspect-auto lg:min-h-[9rem] lg:flex-1"
@@ -449,7 +516,7 @@ export function WhyGCC() {
                       {String(index + 1).padStart(2, "0")}
                     </p>
                     <span aria-hidden="true" className="h-px w-6 bg-(--color-accent)/35" />
-                    <PillarMark index={index} />
+                    <PillarMark mark={pillar.mark} />
                   </div>
                 </Reveal>
 

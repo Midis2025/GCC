@@ -14,11 +14,24 @@ export const contactFormConfig = {
   endpoint: "",
 } as const;
 
+/**
+ * Area of interest - the four current service lines, plus a general option.
+ *
+ * These are the names in `data/service-lines.ts` and the values are the page
+ * slugs, so an enquiry routes to something that exists. The previous list named
+ * Investor Relations, Media Relations and Digital Communications: services the
+ * restructure replaced, on pages that now redirect elsewhere.
+ *
+ * That mattered more here than anywhere else on the site. This field is written
+ * into the CRM record, so a stale option is not just a wrong label on a form -
+ * it is a wrong value stored against a real enquiry, and every one of those has
+ * to be reinterpreted by hand later.
+ */
 export const areaOfInterestOptions: SelectOption[] = [
-  { label: "Investor Relations", value: "investor-relations" },
-  { label: "Investor Outreach", value: "investor-outreach" },
-  { label: "Media Relations", value: "media-relations" },
-  { label: "Digital Communications", value: "digital-communications" },
+  { label: "Investor Roadshows", value: "investor-roadshows" },
+  { label: "The Gulf Programme", value: "gulf-programme" },
+  { label: "Media & Arabic Communications", value: "media-arabic-communications" },
+  { label: "Advisory", value: "advisory" },
   { label: "General Enquiry", value: "general" },
 ];
 

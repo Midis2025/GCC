@@ -4,71 +4,88 @@ import { contactConfig } from "@/data/site";
 /**
  * Primary header navigation.
  *
- * Home is deliberately absent. The wordmark is the home link and carries the
- * accessible name "GCC - home", so a Home item would be a second control for
- * the same destination - and with seven entries the desktop bar has no room to
- * spare. `getStaticRoutes()` seeds "/" explicitly, so the sitemap is unaffected.
+ * Five items, matching the sitemap in the build brief: What We Do, For
+ * Investors, Insight, About, Contact.
+ *
+ * Home is deliberately absent. The wordmark is the home link and carries its
+ * own accessible name, so a Home item would be a second control for the same
+ * destination.
+ *
+ * There is no Services dropdown, and that is a decision rather than an
+ * omission: the four service lines are the architecture of the business, a
+ * dropdown hides them behind a hover, and the offer is easier to understand
+ * when all four are seen together on one page. They live on What We Do.
  */
 export const mainNav: NavItem[] = [
+  { label: "What We Do", href: "/what-we-do" },
+  { label: "For Investors", href: "/for-investors" },
+  { label: "Insight", href: "/insight" },
   { label: "About", href: "/about" },
-  { label: "Services", href: "/services" },
-  { label: "Industries", href: "/industries" },
-  { label: "Investor Outreach", href: "/investor-outreach" },
-  { label: "Selected Work", href: "/projects" },
-  { label: "Insights", href: "/insights" },
   { label: "Contact", href: "/contact" },
 ];
 
-/** Header / mobile-menu primary action. */
-export const headerCta: NavItem = { label: "Start a Conversation", href: "/contact" };
+/**
+ * The two header actions, one per audience.
+ *
+ * The site serves two audiences and fails if it only serves one: companies who
+ * pay, and investors who are the asset being built. One button each, in the
+ * same place on every page, is the clearest structural expression of that.
+ *
+ * `Enquire` is the primary (companies, routed to Contact); `Join the list` is
+ * the outline secondary (investors, routed to For Investors).
+ */
+export const headerCta: NavItem = { label: "Enquire", href: "/contact" };
+export const headerSecondaryCta: NavItem = { label: "Join the list", href: "/for-investors" };
+
+/** The four service lines. One source, used by the nav, the footer and the overview page. */
+export const serviceNav: NavItem[] = [
+  { label: "Investor Roadshows", href: "/what-we-do/investor-roadshows" },
+  { label: "The Gulf Programme", href: "/what-we-do/gulf-programme" },
+  { label: "Media & Arabic Communications", href: "/what-we-do/media-arabic-communications" },
+  { label: "Advisory", href: "/what-we-do/advisory" },
+];
 
 /** Footer link columns. */
 export const footerNav: NavGroup[] = [
   {
+    label: "What We Do",
+    items: serviceNav,
+  },
+  {
     label: "Company",
     items: [
+      { label: "What We Do", href: "/what-we-do" },
       { label: "About", href: "/about" },
-      { label: "Selected Work", href: "/projects" },
-      { label: "Insights", href: "/insights" },
+      { label: "Insight", href: "/insight" },
       { label: "Contact", href: "/contact" },
     ],
   },
   {
-    label: "Industries",
+    label: "For Investors",
     items: [
-      { label: "Financial Services", href: "/industries#financial-services" },
-      { label: "Energy & Utilities", href: "/industries#energy-and-utilities" },
-      { label: "Real Estate & Development", href: "/industries#real-estate-and-development" },
-      { label: "All Sectors", href: "/industries" },
-    ],
-  },
-  {
-    label: "Capabilities",
-    items: [
-      { label: "Investor Relations", href: "/services/investor-relations" },
-      { label: "Investor Targeting & Outreach", href: "/investor-outreach" },
-      { label: "Media Relations", href: "/services/media-relations" },
-      { label: "Digital Communications", href: "/services/digital-communications" },
-    ],
-  },
-  {
-    label: "Markets",
-    items: [
-      { label: "Gulf / GCC", href: "/investor-outreach" },
-      { label: "International", href: "/investor-outreach" },
+      { label: "For Investors", href: "/for-investors" },
+      { label: "Join the list", href: "/for-investors#register" },
     ],
   },
 ];
 
-/** Legal / utility links in the footer bottom bar. */
+/**
+ * Legal links.
+ *
+ * Four pages, per the brief. Their copy is structural until counsel-approved
+ * text arrives - see the note on each page.
+ */
 export const legalNav: NavItem[] = [
   { label: "Privacy Policy", href: "/privacy" },
-  { label: "Terms", href: "/terms" },
+  { label: "Disclaimer", href: "/disclaimer" },
+  { label: "Terms of Use", href: "/terms" },
+  { label: "Cookie Notice", href: "/cookies" },
 ];
 
 /**
  * Social profiles. Derived from the central contact config, so nothing renders
- * until a real LinkedIn URL is supplied.
+ * until a real LinkedIn URL is supplied - the brief puts LinkedIn presence at
+ * soft launch, not at build.
  */
 export const socialLinks: SocialLink[] = contactConfig.linkedin
   ? [{ label: "LinkedIn", href: contactConfig.linkedin, icon: "linkedin" }]
@@ -80,12 +97,15 @@ export function getStaticRoutes(): string[] {
 
   const walk = (items: NavItem[]) => {
     for (const item of items) {
-      if (item.href.startsWith("/")) routes.add(item.href);
+      // Fragment links point at a section of a page already in the set.
+      if (item.href.startsWith("/") && !item.href.includes("#")) routes.add(item.href);
       if (item.children) walk(item.children);
     }
   };
 
   walk(mainNav);
+  walk(serviceNav);
+  walk(legalNav);
   footerNav.forEach((group) => walk(group.items));
 
   return [...routes];

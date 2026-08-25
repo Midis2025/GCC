@@ -1,7 +1,8 @@
 import { AboutEngagements } from "@/components/sections/AboutEngagements";
+import { AboutHowWeWork } from "@/components/sections/AboutHowWeWork";
+import { AboutPrincipals } from "@/components/sections/AboutPrincipals";
 import { AboutHero } from "@/components/sections/AboutHero";
-import { AboutMarkets } from "@/components/sections/AboutMarkets";
-import { AboutNarrative } from "@/components/sections/AboutNarrative";
+import { MarketMap } from "@/components/sections/MarketMap";
 import { AboutPositioning } from "@/components/sections/AboutPositioning";
 import { AboutPrinciples } from "@/components/sections/AboutPrinciples";
 import { AboutPurpose } from "@/components/sections/AboutPurpose";
@@ -13,7 +14,7 @@ import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { backdrops } from "@/data/imagery";
-import { aboutPhilosophy, aboutTransition } from "@/data/about";
+import { aboutCommunication, aboutPhilosophy, aboutRegion, aboutTransition } from "@/data/about";
 import { hasTeam, team } from "@/data/team";
 import { createMetadata } from "@/lib/seo";
 
@@ -21,7 +22,7 @@ export const metadata = createMetadata({
   title: "About",
   path: "/about",
   description:
-    "GCC advises companies on investor relations, investor targeting and strategic communications across Gulf and international capital markets.",
+    "Gulf Connect advises companies on investor relations, investor targeting and strategic communications across Gulf and international capital markets.",
 });
 
 /**
@@ -32,11 +33,19 @@ export const metadata = createMetadata({
  * and how they differ, how engagements are shaped, how one narrative stays one
  * narrative, what holds it all to a standard, and then the ask.
  *
- * Eleven blocks, and no two built the same way: an asymmetric hero, an
- * editorial split with an oversized pull-quote, a dark band with a measured
- * criteria column, an interactive map, a full-bleed statement, a scroll-driven
- * four-stage sequence, a drawn diagram, a full-bleed photograph, a 2x2
- * principles grid, a closing statement, and the sitewide call to action.
+ * Eleven blocks: an asymmetric hero, an editorial split with an oversized
+ * pull-quote, a dark band with a measured criteria column, an interactive map,
+ * a full-bleed statement, a scroll-driven four-stage sequence, a SECOND
+ * interactive map, a full-bleed photograph, a 2x2 principles grid, a closing
+ * statement, and the sitewide call to action.
+ *
+ * Sections 4 and 9 are the same component rendering the same six markets from
+ * the same coordinates, requested in place of the drawn hub-and-branch diagram
+ * that used to sit at 9. They are five sections apart, they carry different
+ * copy and they are toned differently - canvas and muted - but the page no
+ * longer holds to the rule that no two of its blocks are built alike. If it
+ * ever reads repetitive, this is the reason, and the fix is to give one of the
+ * two a different treatment rather than to restyle either in place.
  *
  * ---------------------------------------------------------------------------
  * What this page does NOT do
@@ -55,7 +64,7 @@ export const metadata = createMetadata({
  * ---------------------------------------------------------------------------
  * Client JavaScript
  * ---------------------------------------------------------------------------
- * Two components: `AboutMarkets`, which needs selection state, and
+ * Two components: `MarketMap`, which needs selection state, and
  * `AboutEngagements`, whose active stage is a function of scroll position.
  * Between them that is one IntersectionObserver and one `useState`. There is
  * no scroll listener on this page - the parallax runs on CSS scroll-progress
@@ -73,7 +82,7 @@ export const metadata = createMetadata({
 export default function AboutPage() {
   return (
     <>
-      {/* 1 - Who GCC is. */}
+      {/* 1 - Who Gulf Connect is. */}
       <AboutHero />
 
       {/* 2 - The firm, stated. Ends on the quote the next section argues. */}
@@ -83,7 +92,13 @@ export default function AboutPage() {
       <AboutPurpose />
 
       {/* 4 - Which markets, and how they differ. */}
-      <AboutMarkets />
+      <MarketMap
+        id="about-region"
+        label={aboutRegion.label}
+        heading={aboutRegion.heading}
+        paragraphs={aboutRegion.paragraphs}
+        disclaimer={aboutRegion.disclaimer}
+      />
 
       {/* 5 - The turn from the region to the work. */}
       <EditorialStatement
@@ -93,19 +108,45 @@ export default function AboutPage() {
         compact
       />
 
-      {/* 6 - How engagements are shaped. */}
+      {/* 6 - How we are paid, and who this is for. */}
+      <AboutHowWeWork />
+
+      {/* 7 - Two principals. Not a team page. */}
+      <AboutPrincipals />
+
+      {/* 8 - How engagements are shaped. */}
       <AboutEngagements />
 
-      {/* 7 - How one narrative stays one narrative. */}
-      <AboutNarrative />
+      {/*
+        9 - How one narrative stays one narrative.
 
-      {/* 8 - The page's one photographic moment. */}
+        A drawn hub-and-branch diagram stood here - one centre, three lines
+        out to investors, media and a company's own channels. It is now the
+        market map, which is what was asked for.
+
+        Worth stating plainly for whoever reads this next: this is the SECOND
+        map on the page. Section 4 renders the same six markets from the same
+        coordinates. The two are five sections apart and carry different copy,
+        but they are the same object, and if the page ever reads repetitive
+        this is why - see the note at the top of this file.
+      */}
+      <MarketMap
+        id="about-narrative"
+        label={aboutCommunication.label}
+        heading={aboutCommunication.heading}
+        paragraphs={aboutCommunication.paragraphs}
+        selectorLabel={aboutCommunication.selectorLabel}
+        disclaimer={aboutCommunication.disclaimer}
+        tone="muted"
+      />
+
+      {/* 10 - The page's one photographic moment. */}
       <AboutRiyadh />
 
-      {/* 9 - What holds the work to a standard. */}
+      {/* 11 - What holds the work to a standard. */}
       <AboutPrinciples />
 
-      {/* 10 - The closing thought, before the ask. */}
+      {/* 12 - The closing thought, before the ask. */}
       <EditorialStatement
         id="about-philosophy"
         label={aboutPhilosophy.label}

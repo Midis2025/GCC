@@ -37,7 +37,7 @@ function Meta({ insight, tone = "subtle" }: { insight: Insight; tone?: "subtle" 
  * hit target is large on touch and reaches the same destination by keyboard.
  *
  * Content integrity: the entries in `data/insights.ts` are layout
- * placeholders, not published GCC research. While any entry is flagged the
+ * placeholders, not published Gulf Connect research. While any entry is flagged the
  * section carries a visible notice and every card is labelled "Sample".
  * Emptying the data array hides the section entirely rather than rendering an
  * empty grid.
@@ -71,7 +71,7 @@ export function InsightsPreview() {
         {showPlaceholderNotice && (
           <p className="mt-5 max-w-[60ch] border-l-2 border-(--color-accent) pl-5 text-sm leading-relaxed text-(--color-foreground-muted)">
             Sample topics shown to establish the layout. Editorial content is pending and none of
-            the entries below are published GCC research.
+            the entries below are published Gulf Connect research.
           </p>
         )}
       </Reveal>

@@ -5,7 +5,7 @@ import { gulfMarkets } from "@/data/homepage";
 /**
  * Abstract Gulf market orientation diagram.
  *
- * Deliberately NOT a glowing world map. Six GCC market nodes sit on an arc
+ * Deliberately NOT a glowing world map. Six Gulf market nodes sit on an arc
  * around a central hub, with a single dashed connection out to international
  * capital. Geometry is schematic, not geographic - it communicates market
  * orientation only, and the caption in `GulfOutreach` states that it implies

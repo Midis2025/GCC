@@ -10,32 +10,73 @@
  *
  * DO NOT populate these with invented values.
  */
+
+/**
+ * ----------------------------------------------------------------------------
+ * NAMING - read before writing any copy
+ * ----------------------------------------------------------------------------
+ * The company is "Gulf Connect". It is NEVER abbreviated to "GCC".
+ *
+ * In this region GCC means the Gulf Cooperation Council, and the collision is
+ * not fixable in context: a sentence containing both the company and the
+ * region reads as nonsense however it is punctuated. Where both appear, the
+ * sentence gets rewritten.
+ *
+ * - "Gulf Connect Consultancy FZCO" - legal and formal use only. Footer
+ *   disclosure, legal pages, structured data.
+ * - "Gulf Connect" - everywhere else. Page copy, navigation, buttons, meta
+ *   descriptions, alt text, email, file names.
+ * - "GCC states" or "the Gulf" - the region, and only the region.
+ *
+ * British English throughout, consistent with regional business media
+ * conventions.
+ */
 export const siteConfig = {
-  name: "GCC",
+  name: "Gulf Connect",
+  /** Legal entity, confirmed by the client. Formal and legal use only. */
+  legalName: "Gulf Connect Consultancy FZCO",
   /**
    * The name set in the supplied logo artwork, read off `/images/logo.svg`.
    *
-   * Not invented and not a legal entity name - it is the wordmark the client
-   * drew, and it exists so the logo's accessible name matches the words a
-   * sighted visitor can see in it. `legalName` below is still outstanding.
+   * It exists so the logo's accessible name matches the words a sighted
+   * visitor can see in it.
    */
   wordmark: "Gulf Connect Consultancy",
-  /** TODO: confirm the registered legal entity name. */
-  legalName: "",
   /** Used as the <title> suffix and in the footer wordmark. */
   shortDescription:
-    "Investor relations, investor outreach and strategic communications for Gulf capital markets.",
+    "Investor communications, events and media services for Gulf capital markets.",
   description:
-    "GCC advises companies on investor relations, investor targeting and strategic communications across Gulf and international capital markets.",
+    "Gulf Connect introduces international companies to Gulf investors and partners, convenes qualified investors for structured meetings, and places company stories with regional business media in English and Arabic.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   /** TODO: awaiting Open Graph image (1200x630) under /public. */
   ogImage: "",
-  locale: "en",
+  locale: "en-GB",
 } as const;
 
 /**
- * Contact details. All TODO - awaiting client confirmation.
- * The footer and contact page render only the fields that are non-empty.
+ * ----------------------------------------------------------------------------
+ * LAUNCH STATE
+ * ----------------------------------------------------------------------------
+ * The site is `noindex` until the client approves launch.
+ *
+ * The brief is explicit about why: the content library launches near-empty,
+ * and a discoverable site with one item in its Insight section actively
+ * damages the business. Build completes, the site sits quietly, and indexing
+ * is turned on only once six content pieces are published.
+ *
+ * Default is NOT live. Turning it on is a deliberate act: set
+ * `NEXT_PUBLIC_SITE_LIVE=true` in the deployment environment. Nothing in the
+ * code removes `noindex` automatically, and nothing should.
+ */
+export const siteIsLive = process.env.NEXT_PUBLIC_SITE_LIVE === "true";
+
+/**
+ * Contact details.
+ *
+ * `locality` is supplied by the brief. Email and phone are NOT - the brief
+ * lists them as outstanding from the client. They stay empty, and every
+ * component that renders them checks first, so the site shows a city and
+ * nothing else rather than an invented address.
  */
 export interface ContactConfig {
   email: string;
@@ -46,50 +87,77 @@ export interface ContactConfig {
 }
 
 export const contactConfig: ContactConfig = {
-  /** TODO */
+  /** TODO: single contact address, on a gulfconnectconsultancy.com domain. */
   email: "",
-  /** TODO */
+  /** TODO: single contact number. */
   phone: "",
-  /** TODO: office address. Do not infer a location from market coverage. */
+  /** TODO: registered office address, if it is to be published at all. */
   address: "",
-  /** TODO: city/country line, e.g. shown under the footer wordmark. */
-  locality: "",
-  /** TODO: full LinkedIn company URL. */
+  /** Supplied: the brief states Dubai, UAE. */
+  locality: "Dubai, UAE",
+  /** TODO: full LinkedIn company URL. Presence begins at soft launch. */
   linkedin: "",
 };
 
 /**
- * Regulatory / disclaimer wording.
- * TODO: must be supplied and approved by the client. Never draft financial
- * services disclaimers on their behalf - the footer omits this block while empty.
+ * ----------------------------------------------------------------------------
+ * STANDING DISCLOSURE
+ * ----------------------------------------------------------------------------
+ * Client-approved wording, reproduced VERBATIM. Do not edit, shorten,
+ * paraphrase or split it.
+ *
+ * It appears in the footer of every page and again at the foot of every
+ * content item in the Insight library. The brief is explicit that it is not
+ * small print to be hidden at 9px - it is set legibly, at body-adjacent size,
+ * in the footer's normal muted foreground.
+ *
+ * If a future change makes this text inconvenient to lay out, the layout
+ * changes. This does not.
  */
-export interface ComplianceConfig {
-  disclaimer: string;
-  regulatoryStatement: string;
-}
+export const footerDisclosure =
+  "Gulf Connect Consultancy FZCO provides investor communications, events and media services for fixed professional fees. Nothing on this site is an offer, solicitation, recommendation or investment advice, and it should not be relied upon in making any investment decision. Gulf Connect is not licensed to conduct financial services activity in the UAE and does not solicit investment, hold client funds or receive compensation linked to capital raised, share price or trading volume. Where content relates to a company that has engaged Gulf Connect, the commercial relationship is disclosed on that content.";
 
-export const complianceConfig: ComplianceConfig = {
-  disclaimer: "",
-  regulatoryStatement: "",
-};
+/**
+ * The disclosure shown at the TOP of an Insight item whose subject has engaged
+ * Gulf Connect.
+ *
+ * The brief requires it above the content, not below it: a disclosure a reader
+ * meets after forming a view is not a disclosure. `{company}` is replaced with
+ * the client name held on the item.
+ */
+export const clientDisclosureTemplate =
+  "{company} is a client of Gulf Connect Consultancy and has paid Gulf Connect a fixed professional fee for communications services.";
+
+/**
+ * ----------------------------------------------------------------------------
+ * COMMERCIAL MODEL
+ * ----------------------------------------------------------------------------
+ * Stated plainly wherever the service architecture is described, because the
+ * brief treats it as a differentiator rather than a caveat.
+ *
+ * These are negative statements about compensation and they are load-bearing
+ * compliance copy. Do not soften them into marketing lines.
+ */
+export const commercialModel = {
+  basis: "Fixed professional fees for defined scopes of work.",
+  exclusions: [
+    "No success fees",
+    "No compensation linked to capital raised",
+    "No compensation linked to share price or trading volume",
+  ],
+} as const;
 
 /**
  * Client photography overrides.
  *
- * The site now ships with its own art direction - see `src/data/imagery.ts`
- * and `public/images/CREDITS.md`. That imagery is licensed stock chosen to fit
- * the design, NOT client material, and it depicts nothing belonging to GCC.
+ * The brief rules out stock photography of skylines, handshakes and generic
+ * boardrooms for NEW pages: launch with typography and restrained colour
+ * rather than with stock, and real images arrive from the November programme.
+ * Existing sections keep the art direction they already ship with.
  *
  * These slots exist so a supplied photograph can take precedence without
- * touching `imagery.ts`: set `src` to a path under /public (e.g.
- * "/images/client-hero.jpg") with accurate `alt`, and that section switches to
- * the client asset. Leave empty to keep the shipped art direction, and clear
- * `imagery.ts` as well to fall back to the authored geometric treatment.
- *
- * Direction for commissioned work: Gulf financial architecture (DIFC, Abu
- * Dhabi, Riyadh business districts), architectural geometry or executive
- * environments. Dark, atmospheric, typography-led. No handshakes, dunes or
- * tourist landmarks.
+ * touching `imagery.ts`: set `src` to a path under /public with accurate
+ * `alt`, and that section switches to the client asset.
  */
 export interface ImageSlot {
   src: string;

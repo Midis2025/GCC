@@ -6,16 +6,90 @@
  */
 
 export const aboutHero = {
-  eyebrow: "About GCC",
+  eyebrow: "About Gulf Connect",
   title: "Built Around the Gulf. Connected to Global Capital.",
-  lead: "GCC works at the point where regional capital markets meet international investment audiences, advising companies on how they are understood by both.",
+  lead: "A Dubai-based investor communications firm working across the GCC states, introducing international companies to Gulf investors, partners and media.",
+} as const;
+
+/**
+ * ----------------------------------------------------------------------------
+ * PRINCIPALS
+ * ----------------------------------------------------------------------------
+ * CONTENT INTEGRITY - read before editing, and do not extend.
+ *
+ * Every line below comes from the client's own factual direction and nothing
+ * else. No awards, no former employers, no company names, no years of
+ * experience, no deal history, no qualifications. If a fact is not here it was
+ * not supplied, and it may not be inferred, researched or improved upon.
+ *
+ * The register is set deliberately too: two principals should read as two
+ * capable people. No "all-star team", no "global powerhouse", no cumulative
+ * years of experience, and nothing that implies a larger firm standing behind
+ * them. The brief is explicit that overstating the size of the team is the
+ * failure mode of the predecessor material.
+ *
+ * Photographs are outstanding. The list renders without them rather than with
+ * silhouettes or initials.
+ */
+export const aboutPrincipals = {
+  label: "Principals",
+  heading: "Two Principals",
+  intro:
+    "Gulf Connect is run by two principals, working between Geneva and Dubai.",
+  people: [
+    {
+      name: "Edward Karr",
+      /** Supplied: Swiss national, Geneva-based. */
+      location: "Geneva",
+      bio: "A Swiss national with a background in capital markets and corporate finance, and experience building cross-border investor communications businesses in Europe.",
+    },
+    {
+      name: "Peter Lee",
+      /** Supplied: Dubai-based. */
+      location: "Dubai",
+      bio: "Based in Dubai, with a background across financial services, technology and international business development, and operating experience in UAE market entry and licensing.",
+    },
+  ],
+} as const;
+
+/**
+ * Who we work with.
+ *
+ * The three sectors, named. This is a statement about who the firm is set up
+ * to serve, not a claim about who it has served - there are no clients to name
+ * and none may be implied.
+ */
+export const aboutClients = {
+  label: "Who We Work With",
+  heading: "International Listed Small and Mid-Caps",
+  paragraphs: [
+    "Gulf Connect works with international listed small and mid-cap companies - the size of business for which a structured route into Gulf markets does not otherwise exist.",
+    "Three sectors, because they are the ones regional capital is actively looking at and the ones where the firm's own preparation is deepest.",
+  ],
+  sectors: [
+    {
+      term: "Critical minerals",
+      description:
+        "Producers and developers whose asset base and offtake position need explaining to an audience that reads mining differently.",
+    },
+    {
+      term: "AI and data infrastructure",
+      description:
+        "The compute, connectivity and data-centre businesses behind regional digital investment.",
+    },
+    {
+      term: "Life sciences",
+      description:
+        "Companies assessed on pipeline and milestones rather than on current earnings.",
+    },
+  ],
 } as const;
 
 export const aboutPositioning = {
   label: "Positioning",
   heading: "A Communications Firm Built for Capital Markets",
   paragraphs: [
-    "GCC advises companies on investor relations, investor targeting, media relations and digital communications. The work is organised around a single question: does the market understand this business the way its leadership intends?",
+    "Gulf Connect advises companies on investor relations, investor targeting, media relations and digital communications. The work is organised around a single question: does the market understand this business the way its leadership intends?",
     "That question rarely has a purely promotional answer. It is settled by the quality of a company's investment narrative, the consistency of its disclosure and the relevance of the audiences it engages.",
   ],
 } as const;
@@ -126,20 +200,17 @@ export const aboutCommunication = {
     "Investor relations, media and digital communication are frequently run as separate exercises, which is how companies end up describing themselves differently depending on the audience.",
     "We work from a single corporate narrative and adapt its expression rather than its substance. What an investor reads in a results presentation, a journalist hears in a briefing and a stakeholder sees on a company's own channels should be recognisably the same account of the business.",
   ],
+  selectorLabel: "Markets",
   /**
-   * The three expressions of the one narrative, for the diagram beside the
-   * copy. Each `of` line is the audience the paragraph above already names -
-   * an investor reading a presentation, a journalist in a briefing, a
-   * stakeholder on the company's own channels.
+   * CONTENT INTEGRITY. The same wording as `aboutRegion.disclaimer`, and
+   * referenced rather than retyped.
+   *
+   * This section renders the same six markets on the same map, so it has to
+   * carry the same denial - offices, registrations, investor relationships.
+   * Two hand-written copies of a compliance line on one page is two chances
+   * for an edit to change one and leave the other standing.
    */
-  narrative: {
-    centre: "Corporate Narrative",
-    channels: [
-      { term: "Investor Relations", of: "What an investor reads" },
-      { term: "Media", of: "What a journalist hears" },
-      { term: "Digital Communications", of: "What a stakeholder sees" },
-    ],
-  },
+  disclaimer: aboutRegion.disclaimer,
   principles: [
     {
       term: "Accuracy before emphasis",

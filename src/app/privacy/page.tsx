@@ -1,18 +1,19 @@
-import { PendingPolicy } from "@/components/sections/PendingPolicy";
+import { LegalPageLayout } from "@/components/sections/LegalPageLayout";
+import { privacyPolicy } from "@/data/legal";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({
-  title: "Privacy Policy",
+  title: privacyPolicy.title,
   path: "/privacy",
-  noIndex: true,
+  description: privacyPolicy.lead,
 });
 
-export default function PrivacyPage() {
-  return (
-    <PendingPolicy
-      eyebrow="Legal"
-      title="Privacy Policy"
-      scope="This page will set out how GCC collects, uses, stores and protects personal information submitted through this website or provided in the course of an engagement, together with the rights available to individuals and the contact route for exercising them."
-    />
-  );
+/**
+ * Privacy Policy.
+ *
+ * Structure only while counsel-approved wording is outstanding - see the
+ * header of `data/legal.ts` for why nothing here is drafted.
+ */
+export default function Page() {
+  return <LegalPageLayout page={privacyPolicy} />;
 }

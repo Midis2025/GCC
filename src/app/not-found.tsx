@@ -23,7 +23,7 @@ export default function NotFound() {
               Return home
             </Button>
             <Button href="/contact" size="lg" variant="outline">
-              Contact GCC
+              Contact Gulf Connect
             </Button>
           </>
         }

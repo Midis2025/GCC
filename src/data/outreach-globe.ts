@@ -153,35 +153,28 @@ export const globePanelContent = {
  * taken from `globeMarkets` below, so the two globes can never disagree about
  * where a market is or which one is which.
  */
-const heroCopy: Record<string, { description: string; focus: readonly string[] }> = {
+const heroCopy: Record<string, { description: string }> = {
   AE: {
     description:
       "Regional gateway for Gulf capital markets and international investor engagement.",
-    focus: ["Investor Relations", "Market Outreach", "Capital Communication"],
   },
   SA: {
     description: "Major regional market with growing institutional participation.",
-    focus: ["Investor Relations", "Investor Targeting", "Capital Communication"],
   },
   QA: {
     description: "Important Gulf financial centre.",
-    focus: ["Investor Relations", "Market Outreach", "Digital Communications"],
   },
   KW: {
     description: "Established private capital ecosystem.",
-    focus: ["Investor Targeting", "Market Outreach", "Capital Communication"],
   },
   BH: {
     description: "Regional financial services hub.",
-    focus: ["Investor Relations", "Market Outreach", "Media Relations"],
   },
   OM: {
     description: "Part of the wider Gulf investment landscape.",
-    focus: ["Investor Targeting", "Capital Communication", "Digital Communications"],
   },
   INT: {
     description: "Global investors and institutional networks worldwide.",
-    focus: ["Cross-Border Engagement", "Market Outreach", "Investor Relations"],
   },
 };
 
@@ -189,7 +182,6 @@ const heroCopy: Record<string, { description: string; focus: readonly string[] }
 export const heroMarkets: readonly GlobeMarket[] = globeMarkets.map((market) => ({
   ...market,
   description: heroCopy[market.code]?.description ?? market.description,
-  focus: heroCopy[market.code]?.focus ?? market.focus,
 }));
 
 /**
