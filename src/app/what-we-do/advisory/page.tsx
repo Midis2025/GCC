@@ -7,7 +7,7 @@ import { DefinitionList } from "@/components/ui/DefinitionList";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { photos } from "@/data/imagery";
+import { backdrops } from "@/data/imagery";
 import { advisory as page } from "@/data/service-lines";
 import { createMetadata } from "@/lib/seo";
 
@@ -37,7 +37,7 @@ export default function AdvisoryPage() {
     <>
       <PageHero
         variant="feature"
-        photo={photos.aboutPortrait}
+        photo={backdrops.advisory}
         eyebrow={page.eyebrow}
         index={page.number}
         title={page.title}

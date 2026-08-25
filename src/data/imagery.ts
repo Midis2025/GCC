@@ -2,19 +2,25 @@ import type { StaticImageData } from "next/image";
 
 import abuDhabiNight from "../../public/images/abu-dhabi-night.jpg";
 import businessBayReflection from "../../public/images/business-bay-reflection.jpg";
+import businessBayCanal from "../../public/images/uae/business-bay-dubai-canal.jpg";
 import capitalMarketsDesk from "../../public/images/capital-markets-desk.jpg";
 import corporateCorridorNight from "../../public/images/corporate-corridor-night.jpg";
 import corporateLobbyDark from "../../public/images/corporate-lobby-dark.jpg";
 import digitalMarketData from "../../public/images/digital-market-data.jpg";
 import downtownDubaiBlueHour from "../../public/images/downtown-dubai-blue-hour.jpg";
 import downtownDubaiDusk from "../../public/images/downtown-dubai-dusk.jpg";
+import dubaiMuseumFutureTowers from "../../public/images/dubai-museum-future-towers.jpg";
+import dubaiTradeCentreTowers from "../../public/images/uae/dubai-trade-centre-towers.jpg";
+import editorialBroadcastGallery from "../../public/images/uae/editorial-broadcast-gallery.jpg";
+import etihadTowersAbuDhabi from "../../public/images/uae/etihad-towers-abu-dhabi.jpg";
+import sheikhZayedRoadDusk from "../../public/images/uae/sheikh-zayed-road-dusk.jpg";
 import dohaSkylineDay from "../../public/images/doha-skyline-day.jpg";
-import etihadTowersGoldenHour from "../../public/images/etihad-towers-golden-hour.jpg";
 import executivesSkylineDusk from "../../public/images/executives-skyline-dusk.jpg";
 import gulfFinancialDistrictNight from "../../public/images/gulf-financial-district-night.jpg";
 import investorBriefingRoom from "../../public/images/investor-briefing-room.jpg";
 import irBoardroomWindow from "../../public/images/ir-boardroom-window.jpg";
 import leadershipReviewNight from "../../public/images/leadership-review-night.jpg";
+import louvreAbuDhabiDome from "../../public/images/louvre-abu-dhabi-dome.jpg";
 import mediaBroadcastCamera from "../../public/images/media-broadcast-camera.jpg";
 import outreachConferenceHall from "../../public/images/outreach-conference-hall.jpg";
 import riyadhNightAerial from "../../public/images/riyadh-night-aerial.jpg";
@@ -27,6 +33,7 @@ import sectorManufacturingRobotics from "../../public/images/sector-manufacturin
 import sectorTechnologyRacks from "../../public/images/sector-technology-racks.jpg";
 import skylineTwilight from "../../public/images/skyline-twilight.jpg";
 import strategySessionNight from "../../public/images/strategy-session-night.jpg";
+import uaeLifeSciencesLab from "../../public/images/uae-life-sciences-lab.jpg";
 
 /**
  * ============================================================================
@@ -136,6 +143,43 @@ export const backdrops = {
     position: "50% 62%",
   },
   /**
+   * For Investors hero. Abu Dhabi's financial district after dark.
+   *
+   * That page opened on the boardroom-window frame borrowed from the homepage
+   * capability panel - the same photograph in two of the most prominent slots
+   * on the site, on two different pages. A reader who scrolled the homepage
+   * and then followed "For investors" met the identical picture twice inside a
+   * minute.
+   *
+   * Abu Dhabi rather than Dubai, deliberately: the page names Dubai, Abu Dhabi
+   * and Riyadh, the homepage is already carrying Dubai twice over, and the
+   * investor institutions this page addresses are disproportionately Abu Dhabi
+   * ones. Shot at night, so it sits with the rest of the set.
+   */
+  investors: {
+    src: abuDhabiNight,
+    alt: "",
+    position: "50% 62%",
+    /* On a phone the frame is far taller; the skyline needs to sit lower still. */
+    positionMobile: "50% 70%",
+  },
+
+  /**
+   * Advisory hero. The Louvre Abu Dhabi dome, from beneath.
+   *
+   * Advisory is the least literal of the four service lines - judgement and
+   * structure rather than a room full of people - and it was opening on the
+   * same Downtown Dubai frame the About page uses for its portrait. A piece of
+   * precise, repeating geometry says "considered structure" without pretending
+   * to depict a meeting that has not happened.
+   */
+  advisory: {
+    src: louvreAbuDhabiDome,
+    alt: "",
+    position: "50% 58%",
+  },
+
+  /**
    * Investor outreach feature, and the investor outreach page hero.
    *
    * Executives in silhouette at a high window over a business district at
@@ -160,9 +204,19 @@ export const backdrops = {
    * services are in service of.
    */
   services: {
-    src: capitalMarketsDesk,
+    /*
+      Dubai's World Trade Centre district. It replaces a market-data desk -
+      a legitimate capital-markets interior, but one that could have been shot
+      in any city on earth, opening the page that describes what the firm sells
+      in the Gulf.
+
+      A 3:2 source, chosen for this slot on purpose: a full-bleed hero band is
+      the widest frame on the site, and the two portrait frames downloaded in
+      the same pass would have been reduced to a narrow horizontal strip here.
+    */
+    src: dubaiTradeCentreTowers,
     alt: "",
-    position: "50% 45%",
+    position: "50% 42%",
   },
   /** Contact hero. A Gulf skyline at twilight. */
   contact: {
@@ -199,9 +253,14 @@ export const backdrops = {
    * sit.
    */
   insights: {
-    src: strategySessionNight,
+    /*
+      Business Bay and the Dubai canal from above. The Insight library is
+      written about Gulf markets, and its header now says so before a word is
+      read; the strategy-session interior it replaces said "a meeting".
+    */
+    src: businessBayCanal,
     alt: "",
-    position: "50% 45%",
+    position: "50% 55%",
   },
   /**
    * Utility routes - 404, privacy, terms. One frame shared across all three:
@@ -296,9 +355,24 @@ export const photos = {
     position: "58% 50%",
   },
   introTowers: {
-    src: etihadTowersGoldenHour,
-    alt: "Glass office towers on a Gulf waterfront at sunset.",
-    position: "50% 40%",
+    /*
+      Sheikh Zayed Road at dusk - the business spine of Dubai, dense with
+      towers, read from above.
+
+      A 9:16 source in a square frame, which is the right way round: the crop
+      keeps the middle vertical band, and on a skyline that severe crop still
+      contains the subject. It would have been the wrong choice in any of the
+      wide hero bands, where it would have survived as a letterbox sliver.
+
+      The Etihad Towers frame it replaces is superseded rather than moved: the
+      tall anchor on Selected Markets now carries a sharper 2400px Etihad
+      composition downloaded in the same pass, so Abu Dhabi keeps its place on
+      the homepage and the older 2000px frame is left unplaced. It stays in
+      /public/images and in CREDITS.md, one import away from being restored.
+    */
+    src: sheikhZayedRoadDusk,
+    alt: "Sheikh Zayed Road in Dubai at dusk, its office towers lit against a fading sky.",
+    position: "50% 45%",
   },
   /**
    * The regional frame, on the about and investor outreach pages. Riyadh at
@@ -330,10 +404,50 @@ export const photos = {
    * centred crop in a wide slot returns mostly empty violet - dropping to 58%
    * takes the towers and the lit streets instead.
    */
+  /**
+   * The Arabic gap panel. A broadcast gallery, shot dark.
+   *
+   * An editorial environment rather than a landmark: the section is about
+   * publishing and appearing in a second language, and a skyline says nothing
+   * about that. A wall of monitors in a darkened gallery says "this is where
+   * coverage is made", which is the register the section is arguing in.
+   *
+   * It also has to work as a GROUND, not just a picture - the Arabic mark sits
+   * over it at low opacity, and a busy or bright frame would leave that mark
+   * either invisible or fighting the detail underneath. This one is dark
+   * across most of its area with the light confined to the screens.
+   *
+   * Deliberately not `mediaBroadcastCamera`, which is the obvious choice and
+   * the wrong one: that frame is already on this page in the capability panel,
+   * and again on the media service page. Two pictures of the same subject on
+   * one scroll reads as an accident.
+   */
+  arabicGap: {
+    src: editorialBroadcastGallery,
+    alt: "",
+    position: "50% 45%",
+    /* The screens sit centre-left; a phone crop holds them rather than the desk. */
+    positionMobile: "42% 45%",
+  },
   whyMarket: {
-    src: skylineTwilight,
-    alt: "Downtown Dubai at twilight, its towers and streets lit under a violet sky.",
-    position: "50% 58%",
+    /*
+      The Museum of the Future, with Emirates Towers behind it.
+
+      It replaces a Downtown Dubai twilight frame that the contact hero also
+      used - the same photograph in the two most prominent slots on two
+      different pages. This one is unmistakably Dubai to anyone who has been
+      there and reads as contemporary institutional architecture to anyone who
+      has not, which is the balance the whole set is trying to strike: regional
+      identity without tourist framing.
+    */
+    src: dubaiMuseumFutureTowers,
+    alt: "The Museum of the Future in Dubai, its calligraphic facade lit by low sun, with the Emirates Towers behind it.",
+    /*
+      Slightly below centre. The torus sits low in the frame with sky above it,
+      and a centred crop in the tall sticky column fills the top third with
+      empty sky while cutting the flyover the building stands on.
+    */
+    position: "50% 56%",
   },
 } as const satisfies Record<string, Photo>;
 
@@ -562,7 +676,13 @@ export const segmentPhotos = {
    *   2.66:1. Only a frame whose subject survives losing its top and bottom
    *   belongs there - a skyline does, a robotic arm does not.
    */
-  listed: { src: businessBayReflection, alt: "", position: "50% 45%" },
+  /*
+    Etihad Towers, Abu Dhabi. A 3:4 source in the mosaic's tall anchor - the
+    one panel on the page whose proportions suit a portrait frame - and the
+    only Abu Dhabi landmark on the homepage now that Regional Perspective has
+    moved to Dubai.
+  */
+  listed: { src: etihadTowersAbuDhabi, alt: "", position: "50% 40%" },
   leadership: { src: leadershipReviewNight, alt: "", position: "50% 45%" },
 
   /*
@@ -581,17 +701,20 @@ export const segmentPhotos = {
   aiInfrastructure: { src: sectorTechnologyRacks, alt: "", position: "50% 50%" },
   criticalMinerals: { src: sectorLogisticsPort, alt: "", position: "50% 50%" },
   /*
-    Graded down to join the row. Every other frame in this mosaic is a dark
-    night photograph; this one is daylit, blue and saturated, and at the
-    sitewide grade it read as a stock image dropped into an art-directed grid
-    rather than as the fifth panel of one.
+    A laboratory, at last.
+
+    This panel carried an automated production line - precision manufacturing,
+    adjacent to life sciences at best - because the library held no laboratory
+    frame. It needed a heavy per-frame grade to stop a bright daylit picture
+    shouting in a row of dark night ones, and a photograph that has to be
+    filtered into submission is the wrong photograph.
+
+    Gloved hands drawing from a vial inside a fume hood: dark on its own terms,
+    so it needs no override, unmistakably life sciences, and no identifiable
+    face - which is a requirement of every frame here, not a preference. See
+    public/images/CREDITS.md.
   */
-  lifeSciences: {
-    src: sectorManufacturingRobotics,
-    alt: "",
-    position: "50% 45%",
-    grade: { saturate: 0.34, brightness: 0.72, contrast: 1.08 },
-  },
+  lifeSciences: { src: uaeLifeSciencesLab, alt: "", position: "50% 50%" },
 
   international: { src: downtownDubaiDusk, alt: "", position: "50% 42%" },
 } as const satisfies Record<string, Photo>;

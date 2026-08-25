@@ -6,7 +6,7 @@ import { StageSequence } from "@/components/sections/StageSequence";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { capabilityPhotos } from "@/data/imagery";
+import { backdrops } from "@/data/imagery";
 import {
   forInvestorsHero,
   forInvestorsIntro,
@@ -48,7 +48,7 @@ export default function ForInvestorsPage() {
     <>
       <PageHero
         variant="feature"
-        photo={capabilityPhotos["investor-relations"]}
+        photo={backdrops.investors}
         eyebrow={forInvestorsHero.eyebrow}
         title={forInvestorsHero.title}
         lead={forInvestorsHero.lead}

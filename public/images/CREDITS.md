@@ -51,6 +51,40 @@ download time; for the second set they were not captured, and are left blank rat
 than filled in with an unverified guess. The Unsplash Licence does not require
 crediting them on the site.
 
+### UAE photography — added in the UAE identity pass
+
+Sourced to fill three specific gaps rather than to refresh the set wholesale: the
+library had no laboratory frame at all, and two pages were opening on photographs
+already carrying a prominent slot elsewhere on the site.
+
+All three are free Unsplash photographs (`images.unsplash.com/photo-…`), downloaded at
+2400px — wider than any frame in the earlier sets, which top out at 2000px. None shows
+an identifiable face and none carries legible third-party branding.
+
+`abu-dhabi-night.jpg` is **not** new. It was already in the set at 2000px and was
+re-downloaded at 2400px, in place, when the For Investors hero needed it — the same
+photograph, higher resolution, so every existing use benefits and no duplicate file
+was added. Its row stays in the table below.
+
+Landmark frames live in `uae/`. The aspect ratio decided the placement of each one as
+much as the subject did — two of these are portrait sources and would have survived a
+full-bleed hero band only as a letterbox sliver, so they went to the square and tall
+frames instead:
+
+| File | Used for | Aspect | Source |
+| --- | --- | --- | --- |
+| `uae/sheikh-zayed-road-dusk.jpg` | Regional Perspective (homepage) | 9:16 | https://images.unsplash.com/photo-1543579596-2c11997c7706 |
+| `uae/etihad-towers-abu-dhabi.jpg` | Selected Markets — tall anchor panel | 3:4 | https://images.unsplash.com/photo-1735163968182-a7da197d71ab |
+| `uae/dubai-trade-centre-towers.jpg` | What We Do hero | 3:2 | https://images.unsplash.com/photo-1597171149529-7a8f69abe77b |
+| `uae/business-bay-dubai-canal.jpg` | Insight hero | ~7:6 | https://images.unsplash.com/photo-1564005991505-41c5fd1cdb71 |
+| `uae/editorial-broadcast-gallery.jpg` | The Arabic Gap panel (homepage) | 3:2 | https://images.unsplash.com/photo-1550615511-c317ce7f1d03 |
+
+| File | Used for | Source |
+| --- | --- | --- |
+| `uae-life-sciences-lab.jpg` | Selected Markets — Life Sciences | https://images.unsplash.com/photo-1581594549595-35f6edc7b762 |
+| `dubai-museum-future-towers.jpg` | Homepage pillar sequence (Convene, Place, Produce) | https://images.unsplash.com/photo-1643228307101-eaf8a15abbba |
+| `louvre-abu-dhabi-dome.jpg` | Advisory page hero | https://images.unsplash.com/photo-1552252415-5eb87e0fc788 |
+
 ### Subject photography — added in the imagery pass
 
 | File | Used for | Source |
@@ -59,11 +93,11 @@ crediting them on the site.
 | `outreach-conference-hall.jpg` | Investor Targeting & Market Outreach capability | https://images.unsplash.com/photo-1540575467063-178a50c2df87 |
 | `media-broadcast-camera.jpg` | Media Relations capability | https://images.unsplash.com/photo-1567506476376-1282584643ca |
 | `digital-market-data.jpg` | Digital Communications capability | https://images.unsplash.com/photo-1649003515353-c58a239cf662 |
-| `capital-markets-desk.jpg` | Services index hero, insight card | https://images.unsplash.com/photo-1639428530618-e70b1ff28da2 |
+| `capital-markets-desk.jpg` | Insight card (services hero moved to uae/dubai-trade-centre-towers.jpg) | https://images.unsplash.com/photo-1639428530618-e70b1ff28da2 |
 | `executives-skyline-dusk.jpg` | Investor outreach band and page hero | https://images.unsplash.com/photo-1560142249-f8718fd9cd88 |
 | `strategy-session-night.jpg` | Insights index and article headers | https://images.unsplash.com/photo-1758520145408-dedb359d1c49 |
 | `corporate-corridor-night.jpg` | Not currently placed — see note below | https://images.unsplash.com/photo-1768396747960-ae6ba3c855bc |
-| `abu-dhabi-night.jpg` | Lead insight card | https://images.unsplash.com/photo-1624317937315-0ced8736c9e9 |
+| `abu-dhabi-night.jpg` | For Investors hero, lead insight card (re-downloaded at 2400px) | https://images.unsplash.com/photo-1624317937315-0ced8736c9e9 |
 | `investor-briefing-room.jpg` | Insight card | https://images.unsplash.com/photo-1627931539006-d5c4677e05ea |
 | `leadership-review-night.jpg` | Segment panel — Private Companies | https://images.unsplash.com/photo-1758520145132-b0ecdb967295 |
 | `corporate-lobby-dark.jpg` | Contact enquiry band, segment panel | https://images.unsplash.com/photo-1782834293617-4161d0b7344e |
@@ -97,7 +131,7 @@ entirely.
 | `gulf-financial-district-night.jpg` | Sitewide final CTA | Kevin Lee | https://unsplash.com/photos/sx0cAH8TEYk |
 | `business-bay-reflection.jpg` | Financial Services sector, engagement card, segment panel | Darcey Beau | https://unsplash.com/photos/cV4qkkorDFY |
 | `skyline-twilight.jpg` | Contact page hero | Ahmed Aldaie | https://unsplash.com/photos/WyfXOHgI49s |
-| `etihad-towers-golden-hour.jpg` | Homepage introduction | Saeed Alsoomehi | https://unsplash.com/photos/ytrAZCINPM4 |
+| `etihad-towers-golden-hour.jpg` | Not currently placed — superseded by uae/etihad-towers-abu-dhabi.jpg | Saeed Alsoomehi | https://unsplash.com/photos/ytrAZCINPM4 |
 | `doha-skyline-day.jpg` | Utility routes (404, privacy, terms) | Em Kwan | https://unsplash.com/photos/qReCgLOaNew |
 | `sector-energy-dusk.jpg` | Energy & Utilities sector | Andrey Sharpilo | https://unsplash.com/photos/-kKIqAizsgs |
 | `sector-logistics-port.jpg` | Transport & Logistics sector, Industries hero | Venti Views | https://unsplash.com/photos/sWOvgOOFk1g |
