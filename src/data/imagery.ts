@@ -9,13 +9,13 @@ import corporateLobbyDark from "../../public/images/corporate-lobby-dark.jpg";
 import digitalMarketData from "../../public/images/digital-market-data.jpg";
 import downtownDubaiBlueHour from "../../public/images/downtown-dubai-blue-hour.jpg";
 import downtownDubaiDusk from "../../public/images/downtown-dubai-dusk.jpg";
+import downtownDubaiNight from "../../public/images/downtown-dubai-night.jpg";
 import dubaiMuseumFutureTowers from "../../public/images/dubai-museum-future-towers.jpg";
 import dubaiTradeCentreTowers from "../../public/images/uae/dubai-trade-centre-towers.jpg";
 import editorialBroadcastGallery from "../../public/images/uae/editorial-broadcast-gallery.jpg";
 import etihadTowersAbuDhabi from "../../public/images/uae/etihad-towers-abu-dhabi.jpg";
 import sheikhZayedRoadDusk from "../../public/images/uae/sheikh-zayed-road-dusk.jpg";
 import dohaSkylineDay from "../../public/images/doha-skyline-day.jpg";
-import executivesSkylineDusk from "../../public/images/executives-skyline-dusk.jpg";
 import gulfFinancialDistrictNight from "../../public/images/gulf-financial-district-night.jpg";
 import investorBriefingRoom from "../../public/images/investor-briefing-room.jpg";
 import irBoardroomWindow from "../../public/images/ir-boardroom-window.jpg";
@@ -198,20 +198,31 @@ export const backdrops = {
   },
 
   /**
-   * Investor outreach feature, and the investor outreach page hero.
+   * The globe band on the homepage - "Why the Gulf now".
    *
-   * Executives in silhouette at a high window over a business district at
-   * dusk. Outreach is people meeting people, and the frame this replaces (a
-   * still-water reflection of a business district) said only "Gulf". It also
-   * survives the treatment this section applies: the band scrims the
-   * photograph back to 97% at the left edge, so a frame built from a legible
-   * subject on a dark ground holds its shape where a detailed cityscape turned
-   * to mud.
+   * Downtown Dubai and Business Bay at true night, long lens from across the
+   * creek. It replaces executives in silhouette at a high window: a legible
+   * human subject competed with the globe beside it, and the section is an
+   * argument about a market rather than a picture of a meeting.
+   *
+   * Chosen for its top two thirds, which are almost black. The band scrims the
+   * photograph back to 97% at the left edge and 62% at the right, and a frame
+   * with that much empty sky survives it as architecture instead of turning to
+   * mud - the towers read where the globe is, the headline sits over sky.
+   *
+   * No legible third-party branding, per the art direction above: this frame is
+   * shot far enough back that the towers are a skyline, not signage.
    */
   outreach: {
-    src: executivesSkylineDusk,
+    src: downtownDubaiNight,
     alt: "",
-    position: "50% 45%",
+    /*
+      Lower than the middle, deliberately. The skyline sits across the lower
+      third of the frame and a centred crop pushes it under the fold of the
+      band; this keeps the towers behind the globe and the empty sky behind the
+      headline.
+    */
+    position: "50% 62%",
   },
   /**
    * Services index hero. Market data on screens in a darkened room.

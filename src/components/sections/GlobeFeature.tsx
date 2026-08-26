@@ -68,6 +68,22 @@ export function GlobeFeature({
         aria-hidden="true"
         className="absolute inset-0 -z-10 bg-[linear-gradient(102deg,rgba(12,20,29,0.97)_10%,rgba(12,20,29,0.88)_46%,rgba(12,20,29,0.62)_100%)]"
       />
+      {/*
+        Second scrim, weighted to the foot of the band.
+
+        The diagonal above is what keeps the headline column readable, and it
+        deliberately opens up towards the right so the photograph is actually
+        visible behind the globe. What it cannot do is hold the bottom edge:
+        the frame's brightest strip runs along its lower third, and that is
+        exactly where the market rail and the integrity caption sit once the
+        layout stacks. This lays the same midnight over that strip and nothing
+        else - transparent until 45% of the height, so the skyline behind the
+        globe is untouched.
+      */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,transparent_45%,rgba(12,20,29,0.55)_100%)]"
+      />
       <div aria-hidden="true" className="grain absolute inset-0 -z-10" />
 
       {/* Hairline top and bottom edges, so the band reads as a deliberate cut. */}

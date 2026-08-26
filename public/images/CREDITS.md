@@ -109,7 +109,8 @@ frames instead:
 | `media-broadcast-camera.jpg` | Media Relations capability | https://images.unsplash.com/photo-1567506476376-1282584643ca |
 | `digital-market-data.jpg` | Digital Communications capability | https://images.unsplash.com/photo-1649003515353-c58a239cf662 |
 | `capital-markets-desk.jpg` | Insight card (services hero moved to uae/dubai-trade-centre-towers.jpg) | https://images.unsplash.com/photo-1639428530618-e70b1ff28da2 |
-| `executives-skyline-dusk.jpg` | Investor outreach band and page hero | https://images.unsplash.com/photo-1560142249-f8718fd9cd88 |
+| `downtown-dubai-night.jpg` | Homepage globe band — "Why the Gulf now" (Ahmed Galal) | https://images.unsplash.com/photo-1623638498061-2fcab5587cb0 |
+| `executives-skyline-dusk.jpg` | Not currently placed — superseded by `downtown-dubai-night.jpg` on the globe band | https://images.unsplash.com/photo-1560142249-f8718fd9cd88 |
 | `strategy-session-night.jpg` | Insights index and article headers | https://images.unsplash.com/photo-1758520145408-dedb359d1c49 |
 | `corporate-corridor-night.jpg` | Not currently placed — see note below | https://images.unsplash.com/photo-1768396747960-ae6ba3c855bc |
 | `abu-dhabi-night.jpg` | For Investors hero, lead insight card (re-downloaded at 2400px) | https://images.unsplash.com/photo-1624317937315-0ced8736c9e9 |
