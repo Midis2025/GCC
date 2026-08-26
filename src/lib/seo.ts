@@ -50,6 +50,25 @@ export function createMetadata(overrides: SeoOverrides = {}): Metadata {
   const resolvedImage = image || siteConfig.ogImage || undefined;
   const canonical = path;
 
+  /*
+   * Dimensions are declared only for the site's own card, whose size is known.
+   * A page-supplied override gets the URL alone rather than a claim about its
+   * shape that nothing here can verify - unfurlers read the file for that.
+   */
+  const ogImages = resolvedImage
+    ? [
+        resolvedImage === siteConfig.ogImage
+          ? {
+              url: resolvedImage,
+              width: 1200,
+              height: 630,
+              type: "image/png",
+              alt: `${siteConfig.wordmark} - ${siteConfig.shortDescription}`,
+            }
+          : { url: resolvedImage },
+      ]
+    : undefined;
+
   const metadata: Metadata = {
     metadataBase: new URL(siteUrl),
     title: title ? { absolute: `${title} | ${siteConfig.name}` } : siteConfig.name,
@@ -62,7 +81,7 @@ export function createMetadata(overrides: SeoOverrides = {}): Metadata {
       description: resolvedDescription,
       url: absoluteUrl(canonical),
       locale: siteConfig.locale,
-      images: resolvedImage ? [{ url: resolvedImage }] : undefined,
+      images: ogImages,
     },
     twitter: {
       card: resolvedImage ? "summary_large_image" : "summary",
@@ -103,6 +122,24 @@ export function createRootMetadata(): Metadata {
     title: {
       default: siteConfig.name,
       template: `%s | ${siteConfig.name}`,
+    },
+    /*
+     * Tab icon.
+     *
+     * `/favicon.png` is the supplied mark, served from /public so the path is
+     * literal and stable. `app/favicon.ico` sits alongside it as a file
+     * convention and Next emits it too: the .ico is what crawlers, feed
+     * readers and older browsers request by name, the .png is what a current
+     * browser will pick for a retina tab.
+     *
+     * The Apple touch icon is a SEPARATE file, not this one: iOS fills
+     * transparency with black, and the mark's inner ring is black, so the home
+     * screen icon carries a white ground and the padding iOS's corner radius
+     * needs.
+     */
+    icons: {
+      icon: [{ url: "/favicon.png", type: "image/png", sizes: "512x512" }],
+      apple: [{ url: "/apple-icon.png", type: "image/png", sizes: "180x180" }],
     },
   };
 }

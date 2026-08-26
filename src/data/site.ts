@@ -48,8 +48,15 @@ export const siteConfig = {
   description:
     "Gulf Connect introduces international companies to Gulf investors and partners, convenes qualified investors for structured meetings, and places company stories with regional business media in English and Arabic.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-  /** TODO: awaiting Open Graph image (1200x630) under /public. */
-  ogImage: "",
+  /**
+   * Link-preview card, 1200x630, built from the supplied logo artwork and this
+   * file's own `shortDescription` - see `/public/images/og-default.png`.
+   *
+   * Route-relative on purpose: `createMetadata` resolves it against
+   * `metadataBase`, so it comes out absolute on every deployment without the
+   * domain being written down twice.
+   */
+  ogImage: "/images/og-default.png",
   locale: "en-GB",
 } as const;
 

@@ -10,6 +10,21 @@ frame is recorded below anyway, so any of them can be verified.
 Only free Unsplash photographs are used. Nothing here comes from Unsplash+
 (`plus.unsplash.com/premium_photo-…`), which is a separate paid licence.
 
+## Brand assets (not photography)
+
+Some files in this directory are client artwork, or built from it, and the Unsplash
+note above does not apply to them:
+
+- `logo.svg` — supplied by the client.
+- `favicon.png` — supplied by the client. The squared copies actually served are
+  `/public/favicon.png`, `/public/apple-icon.png` and `/src/app/favicon.ico`.
+- `og-default.png` — the 1200×630 link-preview card. Built from `logo.svg`'s mark
+  paths, the palette in `globals.css` and `shortDescription` from `data/site.ts`,
+  set in Plus Jakarta Sans. Regenerate it if the logo, the palette or that line
+  changes; it is a static file and nothing renders it at runtime.
+- `heropic.png`, and its byte-identical copy `ChatGPT Image Aug 20, 2026, 11_53_53
+  AM.png` — an early layout mockup. Neither is referenced by any page.
+
 ## Content integrity
 
 **None of these images depicts GCC, its offices, its people, its clients or its work.**
