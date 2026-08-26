@@ -7,6 +7,7 @@ import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { backdrops } from "@/data/imagery";
+import { cn } from "@/lib/utils";
 import {
   bilingualIntent,
   editorialPrinciples,
@@ -271,7 +272,11 @@ export function EditorialPrinciplesSection() {
           <li
             key={principle.number}
             style={{ "--step": index } as React.CSSProperties}
-            className="border-t border-(--color-border) lg:[margin-left:calc(var(--step)*3.5rem)]"
+            className={cn(
+              "border-t border-(--color-border) lg:[margin-left:calc(var(--step)*3.5rem)]",
+              /* Last principle: the section's padding already provides the air. */
+              index === editorialPrinciples.principles.length - 1 && "[&>div>div]:pb-0",
+            )}
           >
             <Reveal delay={index * 120}>
               <div className="relative grid grid-cols-[3rem_minmax(0,1fr)] items-baseline gap-x-5 overflow-hidden py-9 sm:grid-cols-[6rem_minmax(0,1fr)] sm:gap-x-10">

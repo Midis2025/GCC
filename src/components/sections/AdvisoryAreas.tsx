@@ -3,6 +3,7 @@ import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { advisoryAreas } from "@/data/services-depth";
+import { cn } from "@/lib/utils";
 
 /**
  * ============================================================================
@@ -58,7 +59,14 @@ export function AdvisoryAreas() {
 
       <ol className="mt-[var(--space-heading)] flex flex-col">
         {advisoryAreas.areas.map((area, index) => (
-          <li key={area.key} className="border-t border-(--color-border)">
+          <li
+            key={area.key}
+            className={cn(
+              "border-t border-(--color-border)",
+              /* Last row: the section's padding already provides the air. */
+              index === advisoryAreas.areas.length - 1 && "[&>div>div]:pb-0 lg:[&>div>div]:pb-0",
+            )}
+          >
             <Reveal delay={index * 90}>
               <div className="grid gap-x-10 gap-y-7 py-10 lg:grid-cols-[4rem_minmax(0,1fr)_minmax(0,1fr)] lg:gap-x-14 lg:py-12">
                 <span

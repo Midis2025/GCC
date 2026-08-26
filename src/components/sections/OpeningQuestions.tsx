@@ -3,6 +3,7 @@ import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { openingQuestions } from "@/data/home-depth";
+import { cn } from "@/lib/utils";
 
 /**
  * ============================================================================
@@ -75,7 +76,12 @@ export function OpeningQuestions() {
           <li
             key={entry.number}
             style={{ "--step": index } as React.CSSProperties}
-            className="border-t border-white/12 lg:[margin-left:calc(var(--step)*4rem)]"
+            className={cn(
+              "border-t border-white/12 lg:[margin-left:calc(var(--step)*4rem)]",
+              /* Last question: no bottom padding on top of the section's. */
+              index === openingQuestions.questions.length - 1 &&
+                "[&>div>div]:pb-0 sm:[&>div>div]:pb-0",
+            )}
           >
             <Reveal delay={index * 130}>
               <div className="relative overflow-hidden py-10 sm:py-12">

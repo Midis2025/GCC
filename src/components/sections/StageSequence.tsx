@@ -7,6 +7,7 @@ import { Section } from "@/components/sections/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
+import { cn } from "@/lib/utils";
 
 export interface StageItem {
   term: string;
@@ -165,7 +166,15 @@ export function StageSequence({
               and the one above, so the column reads as a continuous measure
               rather than as separate plates.
             */
-            className="about-stage group relative isolate scroll-mt-[calc(var(--header-h)+2rem)]"
+            className={cn(
+              "about-stage group relative isolate scroll-mt-[calc(var(--header-h)+2rem)]",
+              /*
+                The last stage drops its own bottom padding. This list is the
+                final element in the section, so that padding sat directly on
+                top of the section's own and the join paid twice.
+              */
+              index === stages.length - 1 && "[&>div]:pb-0 sm:[&>div]:pb-0",
+            )}
           >
             <span aria-hidden="true" className="about-stage-edge absolute inset-x-0 top-0 h-px" />
             <span

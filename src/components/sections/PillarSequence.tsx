@@ -8,6 +8,7 @@ import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import type { Photo } from "@/data/imagery";
+import { cn } from "@/lib/utils";
 
 /**
  * Line marks.
@@ -494,7 +495,22 @@ export function PillarSequence({
                 `min-h` and not `h`: the description wraps to three lines on a
                 narrow desktop column, and a fixed height would clip it.
               */}
-              <div className="relative flex flex-col justify-center overflow-hidden py-9 pl-7 pr-5 sm:py-11 sm:pl-10 sm:pr-8 lg:min-h-[42svh]">
+              <div
+                className={cn(
+                  "relative flex flex-col justify-center overflow-hidden py-9 pl-7 pr-5 sm:py-11 sm:pl-10 sm:pr-8",
+                  /*
+                    The last panel gets a shorter floor.
+
+                    42svh is what gives the sequence somewhere to happen - four
+                    panels at content height all fit one screen and the second
+                    is active before the first has been read. But the sequence
+                    has finished by the time the last panel is active, and its
+                    centred content was leaving 120px of dead space at the
+                    bottom of the section. Measured, not guessed.
+                  */
+                  index === pillars.length - 1 ? "lg:min-h-[30svh]" : "lg:min-h-[42svh]",
+                )}
+              >
                 {/* Glow, keyed to the rail's corner. */}
                 <span aria-hidden="true" className="why-glow absolute inset-0 -z-10" />
 
