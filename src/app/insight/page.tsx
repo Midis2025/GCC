@@ -13,13 +13,14 @@ import {
   GulfBriefSection,
   SectorNotesSection,
 } from "@/components/sections/insight/InsightFormats";
+import { PageHero } from "@/components/sections/PageHero";
 import {
-  InsightHero,
   InsightPosition,
   InsightSectors,
 } from "@/components/sections/insight/InsightOpening";
 import { Reveal } from "@/components/ui/Reveal";
-import { insightFormats } from "@/data/insight";
+import { backdrops } from "@/data/imagery";
+import { insightContent, insightFormats } from "@/data/insight";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({
@@ -53,7 +54,7 @@ export const metadata = createMetadata({
  * ---------------------------------------------------------------------------
  * No two neighbours share a ground, and no two share a composition:
  *
- *   Hero            dark      asymmetric, photograph bleeding right
+ *   Hero            dark      the shared PageHero, as every other route
  *   Position        canvas    statement | rule | two paragraphs
  *   What We Follow  muted     three staggered sector panels
  *   Navigation      canvas    four-column masthead
@@ -93,7 +94,27 @@ export const metadata = createMetadata({
 export default function InsightPage() {
   return (
     <>
-      <InsightHero />
+      {/*
+        The shared page hero, as every other route uses.
+
+        This page briefly had a bespoke asymmetric opening - copy in a narrow
+        column beside a photograph bleeding to the page edge. It was a better
+        composition in isolation and the wrong decision for the site: a visitor
+        moving between What We Do, For Investors, About and Insight met a
+        different masthead on one of them, which reads as a page from a
+        different site rather than as a page with its own character.
+
+        The page's character comes from the fourteen sections below it. The
+        entrance should be the one every route shares.
+      */}
+      <PageHero
+        variant="feature"
+        photo={backdrops.insights}
+        eyebrow={insightContent.eyebrow}
+        title={insightContent.title}
+        lead={insightContent.lead}
+      />
+
       <InsightPosition />
       <InsightSectors />
 
