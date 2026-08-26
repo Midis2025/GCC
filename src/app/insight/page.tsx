@@ -1,11 +1,25 @@
-import { CTASection } from "@/components/sections/CTASection";
-import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
+import {
+  BilingualSection,
+  EditorialPrinciplesSection,
+  InsightCtaSection,
+  InsightSystemSection,
+} from "@/components/sections/insight/InsightClosing";
+import {
+  EditorialThemesSection,
+  FiveQuestionsSection,
+  FixedFormatStatement,
+  FromTheRoomSection,
+  GulfBriefSection,
+  SectorNotesSection,
+} from "@/components/sections/insight/InsightFormats";
+import {
+  InsightHero,
+  InsightPosition,
+  InsightSectors,
+} from "@/components/sections/insight/InsightOpening";
 import { Reveal } from "@/components/ui/Reveal";
-import { StageSequence } from "@/components/sections/StageSequence";
-import { backdrops } from "@/data/imagery";
-import { insightContent, insightFormats, itemsByFormat } from "@/data/insight";
-import { formatDate } from "@/lib/utils";
+import { insightFormats } from "@/data/insight";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({
@@ -16,81 +30,96 @@ export const metadata = createMetadata({
 });
 
 /**
- * Insight - the content library.
+ * ============================================================================
+ * INSIGHT
+ * ============================================================================
+ * An editorial product rather than a content listing.
  *
- * Organised by format, not by date. Each of the four gets a standing block
- * with its name, cadence and description, and its own items listed beneath it.
+ * ---------------------------------------------------------------------------
+ * The organising decision
+ * ---------------------------------------------------------------------------
+ * Each of the four formats gets its OWN section with its own composition,
+ * rather than four entries in one sequence. That is what lets the page say
+ * something true about them: The Gulf Brief is a written column, Five Questions
+ * is a film, Sector Notes is a document and From the Room is a room. Four rows
+ * of one component said only that there are four of them.
  *
- * While the library is empty, the formats still render - that is the point of
- * organising this way. A reader learns what The Gulf Brief is and when it
- * arrives before a single one has been published, which is exactly what a
- * chronological feed cannot do from a standing start.
+ * Each format section keeps the id the old sequence carried - `#gulf-brief`,
+ * `#five-questions`, `#sector-notes`, `#from-the-room` - so the navigation
+ * below and the deep links from individual article pages both keep working.
  *
- * What does NOT render is a placeholder item. No skeleton cards, no "coming
- * soon" tiles, no sample posts. One honest sentence, then the formats.
+ * ---------------------------------------------------------------------------
+ * Rhythm
+ * ---------------------------------------------------------------------------
+ * No two neighbours share a ground, and no two share a composition:
+ *
+ *   Hero            dark      asymmetric, photograph bleeding right
+ *   Position        canvas    statement | rule | two paragraphs
+ *   What We Follow  muted     three staggered sector panels
+ *   Navigation      canvas    four-column masthead
+ *   Gulf Brief      canvas    editorial split, photograph left
+ *   Topics          dark      numbered headline list
+ *   Five Questions  dark*     cinematic still over a five-station measure
+ *   Fixed Format    muted     typography only, no image
+ *   Sector Notes    canvas    research document on a rule field
+ *   From the Room   dark      full-bleed photographic
+ *   System          dark*     drawn diagram
+ *   EN / AR         muted     two words either side of a connector
+ *   Principles      canvas    staggered, oversized numerals
+ *   CTA             dark      image-backed
+ *
+ * (*) Topics into Five Questions, and From the Room into System, are the two
+ * dark-on-dark joins. Both are deliberate: the pairs are one argument each -
+ * what the library may write about and the format it writes in; what a film
+ * shows and where the library sits - and separating either with a light band
+ * would have broken the argument to satisfy a rule about alternation.
+ *
+ * ---------------------------------------------------------------------------
+ * Empty-state logic
+ * ---------------------------------------------------------------------------
+ * There are no published items and the page never pretends otherwise. Every
+ * format section renders its own `PublishedItems`, which returns null when the
+ * format has none - no skeletons, no "coming soon", no sample entries with
+ * invented dates or authors.
+ *
+ * `editorialThemes` are the one thing that could be mistaken for a contents
+ * page, and they are handled carefully: no dates, no authors, no links, and a
+ * standing label above the list rather than under it. See the note on
+ * `EditorialThemesSection`.
+ *
+ * The page carries no `CTASection`. The sitewide band routes to Contact, and a
+ * reader who has come this far down Insight wants the investor list instead.
  */
 export default function InsightPage() {
   return (
     <>
-      <PageHero
-        variant="feature"
-        photo={backdrops.insights}
-        eyebrow={insightContent.eyebrow}
-        title={insightContent.title}
-        lead={insightContent.lead}
-      />
+      <InsightHero />
+      <InsightPosition />
+      <InsightSectors />
 
       {/*
         Format navigation.
 
-        It is NAVIGATION, not a filter, and the distinction is the whole reason
-        it can exist on a page with an empty library. A filter row implies a
-        body of work to sift; these are anchors onto the four standing format
-        descriptions below, so following one lands on a real explanation of what
-        that series is and when it arrives rather than on an empty result set.
+        NAVIGATION, not a filter, and the distinction is what lets it exist on
+        a page with an empty library: a filter implies a body of work to sift
+        and would return nothing, where these anchor onto four standing format
+        sections that each explain themselves.
 
-        Every target is an id already carried by the sequence below - the same
-        ids the article pages deep-link back to - so this adds a route through
-        the page and no new state, no client JavaScript and nothing that can
-        fall out of step with the content.
-
-        Scrolls horizontally on a phone rather than wrapping to three ragged
-        rows. `-mx-(--gutter)` with matching padding lets it bleed to the screen
-        edge as a scroller should, while the first item still lines up with the
-        heading above it.
+        A four-column masthead from `sm` up and a horizontal scroller below it.
+        Verified that it scrolls, that the last item is reachable and that
+        every anchor resolves.
       */}
       <Section spacing="md" aria-label="Insight formats">
         <nav>
-          {/*
-            A masthead rather than a row of links.
-
-            Each format is a column: index, name, cadence and its own gold rule
-            that draws on hover. A publication's contents page states what runs
-            and how often before it lists anything, and with the library empty
-            that is the only honest thing this page can put above the fold -
-            four standing series and their schedule.
-
-            Below `sm` it becomes a horizontal scroller: four columns at 375px
-            would be four ragged single-word stacks, and the columns each hold
-            their width and scroll instead. Verified reachable - the last item
-            can be scrolled to and every anchor resolves.
-          */}
           <ul className="-mx-(--gutter) flex snap-x snap-mandatory gap-x-6 overflow-x-auto px-(--gutter) pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-x-10 sm:gap-y-8 sm:overflow-visible sm:px-0 lg:grid-cols-4">
             {insightFormats.map((format, index) => (
-              <li
-                key={format.id}
-                className="w-[13rem] shrink-0 snap-start sm:w-auto"
-              >
+              <li key={format.id} className="w-[13rem] shrink-0 snap-start sm:w-auto">
                 <Reveal delay={index * 90}>
                   <a
                     href={`#${format.id}`}
                     className="group block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
                   >
                     <span className="relative block h-px w-full bg-(--color-border)">
-                      {/*
-                        Transform rather than width, so the rule animates on the
-                        compositor and cannot reflow the column beside it.
-                      */}
                       <span
                         aria-hidden="true"
                         className="absolute inset-0 block origin-left scale-x-0 bg-(--color-accent) transition-transform duration-[600ms] ease-[var(--ease-out-expo)] group-hover:scale-x-100 group-focus-visible:scale-x-100"
@@ -119,46 +148,19 @@ export default function InsightPage() {
         </nav>
       </Section>
 
-      {/*
-        The four formats, as the site's scroll-driven sequence.
+      <GulfBriefSection />
+      <EditorialThemesSection />
 
-        Each format holds the reading position in turn, its index turning
-        bronze as it does. That treatment does real work on a page whose
-        library is empty: with nothing published, a static list of four
-        headings reads as four things that have not happened, and a sequence
-        reads as a standing schedule.
+      <FiveQuestionsSection />
+      <FixedFormatStatement />
 
-        Published pieces are passed as `links`, so a format with items lists
-        them under its description and a format without renders nothing extra.
-      */}
-      <StageSequence
-        id="insight-formats"
-        label="Formats"
-        heading="Four Recurring Series"
-        /*
-          The empty note is the sequence's intro line while nothing is
-          published, and disappears the moment anything is - phrased as a
-          statement of fact rather than a promise with a date on it.
-        */
-        intro={
-          insightFormats.every((format) => itemsByFormat(format.id).length === 0)
-            ? insightContent.emptyNote
-            : undefined
-        }
-        stages={insightFormats.map((format) => ({
-          anchor: format.id,
-          term: format.name,
-          meta: format.cadence,
-          description: format.description,
-          links: itemsByFormat(format.id).map((item) => ({
-            href: `/insight/${item.slug}`,
-            label: item.title,
-            meta: formatDate(item.date),
-          })),
-        }))}
-      />
+      <SectorNotesSection />
+      <FromTheRoomSection />
 
-      <CTASection />
+      <InsightSystemSection />
+      <BilingualSection />
+      <EditorialPrinciplesSection />
+      <InsightCtaSection />
     </>
   );
 }

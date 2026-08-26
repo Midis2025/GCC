@@ -569,6 +569,173 @@ a[href^="tel:"] {
 }
 
 /* ==========================================================================
+   INSIGHT
+   --------------------------------------------------------------------------
+   Page-specific state. Everything keys off `data-visible` on an enclosing
+   `Reveal`, so the page inherits the shared observer and adds no scroll
+   listener and no client component of its own.
+   ========================================================================== */
+
+/*
+ * Hero frame: a slow settle from 1.03 to 1.00 behind the clip reveal.
+ *
+ * On the FRAME rather than the image, so it composes with the hover zoom that
+ * `Figure` applies to the image itself elsewhere; two transforms on one
+ * element would fight.
+ */
+.insight-hero-scale {
+  transform: scale(1.03);
+}
+
+.reveal[data-visible="true"] .insight-hero-scale {
+  animation: insight-settle 1400ms var(--ease-out-expo) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + 80ms);
+}
+
+@keyframes insight-settle {
+  from {
+    transform: scale(1.03);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/*
+ * The four hero words. Faintness is in the COLOUR, never in an opacity a
+ * fill-mode animation could reset to 1 - the trap the industries keywords fell
+ * into. The keyframes move opacity only between 0 and 1 of that already-faint
+ * colour.
+ */
+.insight-hero-word {
+  color: rgb(244 241 235 / 0.16);
+  opacity: 0;
+}
+
+.reveal[data-visible="true"] .insight-hero-word {
+  animation: insight-word-in 700ms var(--ease-out-soft) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + 420ms + var(--word-index, 0) * 110ms);
+}
+
+@keyframes insight-word-in {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* The vertical rule between the two columns of the position statement. */
+.insight-divider {
+  transform: scaleY(0);
+  transform-origin: top;
+}
+
+.reveal[data-visible="true"] .insight-divider {
+  animation: insight-divider-in 900ms var(--ease-out-expo) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + 120ms);
+}
+
+@keyframes insight-divider-in {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+/* The connector between EN and the Arabic word. */
+.insight-connector {
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.reveal[data-visible="true"] .insight-connector {
+  animation: insight-connector-in 900ms var(--ease-out-expo) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + 160ms);
+}
+
+@keyframes insight-connector-in {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/*
+ * Editorial theme rows.
+ *
+ * The gold rule expands across the row and the title shifts a few pixels on
+ * hover and on keyboard focus. Transform only - nothing here reflows, so
+ * running down six rows costs no layout work.
+ *
+ * `:focus-within` matters even though the rows are not links: the tag inside
+ * is revealed on the same state, and a keyboard user tabbing past should see
+ * what a pointer user sees.
+ */
+.theme-rule {
+  transform: scaleX(0);
+  transition: transform 600ms var(--ease-out-expo);
+}
+
+.theme-row:hover .theme-rule,
+.theme-row:focus-within .theme-rule {
+  transform: scaleX(1);
+}
+
+.theme-title {
+  transition: transform 500ms var(--ease-out-soft), color 500ms var(--ease-out-soft);
+}
+
+.theme-row:hover .theme-title,
+.theme-row:focus-within .theme-title {
+  transform: translateX(6px);
+  color: var(--color-accent);
+}
+
+.theme-tag {
+  opacity: 0;
+  transition: opacity 500ms var(--ease-out-soft);
+}
+
+.theme-row:hover .theme-tag,
+.theme-row:focus-within .theme-tag {
+  opacity: 1;
+}
+
+/*
+ * REDUCED MOTION.
+ *
+ * The hero frame, the words, both rules and the theme rule are all based at a
+ * zero transform or zero opacity, so disabling the animation alone would pin
+ * them invisible or off-scale. Every base is reset, not just the animation.
+ *
+ * The theme tag is the exception that has to go the other way: with no hover
+ * transition it must be visible from the start, or a reduced-motion visitor
+ * never sees it at all.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .insight-hero-scale,
+  .insight-hero-word,
+  .insight-divider,
+  .insight-connector,
+  .theme-rule,
+  .theme-title,
+  .theme-tag {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1;
+    transform: none !important;
+  }
+}
+
+/* ==========================================================================
    APPROACH
    --------------------------------------------------------------------------
    The five-stage rule.
