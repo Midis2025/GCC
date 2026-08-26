@@ -1,12 +1,14 @@
 import NextImage from "next/image";
 
 import { CoverageSectors } from "@/components/sections/CoverageSectors";
+import { GlobalConnection } from "@/components/sections/GlobalConnection";
 import { CTASection } from "@/components/sections/CTASection";
 import { InvestorForm } from "@/components/sections/InvestorForm";
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
 import { StageSequence } from "@/components/sections/StageSequence";
 import { briefingProcess } from "@/data/investors-depth";
+import { investorsMap } from "@/data/world-connections";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
@@ -113,6 +115,28 @@ export default function ForInvestorsPage() {
         research and not a recommendation. See `CoverageSectors`.
       */}
       <CoverageSectors />
+
+      {/*
+        Where the companies come from.
+
+        The same geography as What We Do, read from the other side: this page
+        addresses the audience, so the captions name the professional
+        categories rather than the services.
+
+        COMPLIANCE: the third caption states plainly that the firm is not paid
+        by investors and makes no recommendations, and the standing denial
+        under the map is shared with every other map surface.
+      */}
+      <GlobalConnection
+        id="investors-reach"
+        label="Reach"
+        heading="Where the Companies Come From"
+        paragraphs={[
+          "The companies convened for briefings are international - listed small and mid-cap businesses working in critical minerals, AI and data infrastructure, and life sciences, based well outside the region.",
+          "Bringing them into a room with Gulf audiences is the whole of the exercise. Registration is what puts a professional investor on the list for those sessions.",
+        ]}
+        map={investorsMap}
+      />
 
       {/*
         Who registers.

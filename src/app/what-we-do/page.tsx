@@ -1,6 +1,7 @@
 import { Approach } from "@/components/sections/Approach";
 import { CTASection } from "@/components/sections/CTASection";
 import { EditorialStatement } from "@/components/sections/EditorialStatement";
+import { GlobalConnection } from "@/components/sections/GlobalConnection";
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
 import { Showcase } from "@/components/sections/Showcase";
@@ -9,6 +10,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { backdrops, serviceLinePhotos } from "@/data/imagery";
 import { commercialModelContent, serviceLines, whatWeDoHero } from "@/data/what-we-do";
+import { whatWeDoMap } from "@/data/world-connections";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({
@@ -180,6 +182,25 @@ export default function WhatWeDoPage() {
         statement="One market. Four ways of working in it."
         photo={backdrops.industriesTransition}
         compact
+      />
+
+      {/*
+        Where the work reaches.
+
+        The map variant for this page leans regional: fewer international
+        origins than the Insight one and more weight on the three markets
+        programmes actually run in, because this page is about the work rather
+        than about the subject matter.
+      */}
+      <GlobalConnection
+        id="what-we-do-reach"
+        label="Global Connection"
+        heading="International Companies. Gulf Markets."
+        paragraphs={[
+          "Every programme runs between two places: where a company is, and where the audiences relevant to it are. The work is the route between them - meetings prepared and convened, a story developed and pitched, content produced and handed over.",
+          "Dubai and Abu Dhabi carry most of it, with Riyadh where a company's sector makes it relevant.",
+        ]}
+        map={whatWeDoMap}
       />
 
       {/*

@@ -6,7 +6,10 @@ import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
+import { MAP_DENIAL } from "@/components/sections/GlobalConnection";
+import { ConnectedWorldMap } from "@/components/visuals/ConnectedWorldMap";
 import { backdrops } from "@/data/imagery";
+import { insightMap } from "@/data/world-connections";
 import { cn } from "@/lib/utils";
 import {
   bilingualIntent,
@@ -19,111 +22,23 @@ import {
  * ============================================================================
  * INSIGHT IS PART OF THE COMMUNICATION SYSTEM
  * ============================================================================
- * Insight at the centre, the four services it connects to around it, joined by
- * hairlines that draw themselves as the section arrives.
+ * A connected world map, replacing the four-line cross diagram that stood here.
  *
- * Drawn rather than illustrated, and reusing the site's existing `.net-link` /
- * `.net-node` mechanism - the same one behind the Gulf orientation diagram, so
- * this introduces no new animation system. Each connector draws outward from
- * the centre and its endpoint fades in behind it, sequenced by index and keyed
- * off `data-visible` on the enclosing `Reveal`.
+ * The X said nothing. Four lines from a circle to four corners is the visual
+ * language of a generic technology network, and it could have illustrated any
+ * business on earth. The one thing this section needs a picture to say is where
+ * the work happens - international companies on one side, the Gulf on the other
+ * - and that is a map, not a graph.
  *
- * The SVG is decorative and hidden from assistive technology; the four
- * services are rendered as real links beneath it, so a keyboard or screen
- * reader gets the connections as navigation rather than as geometry.
+ * The map itself lives in `components/visuals/ConnectedWorldMap` and is shared;
+ * this page passes it the connections that suit an Insight reader, which are
+ * the sector-context ones. Other pages pass their own.
  *
- * Dash lengths come from the real line geometry, so a short connector and a
- * long one draw at the same apparent speed rather than the short one finishing
- * first.
+ * COMPLIANCE: the lines represent cross-border company and market connectivity.
+ * They do NOT represent offices, registrations, licences or relationships, and
+ * the caption under the map says so in standing text. Do not add an origin that
+ * would read as a place the firm operates from.
  */
-const CANVAS = { w: 640, h: 380 };
-const CENTRE = { x: 320, y: 190 };
-
-/** Four endpoints: two up, two down, spread either side of the centre. */
-const ENDPOINTS = [
-  { x: 96, y: 62 },
-  { x: 544, y: 62 },
-  { x: 96, y: 318 },
-  { x: 544, y: 318 },
-] as const;
-
-function SystemDiagram() {
-  return (
-    <svg
-      viewBox={`0 0 ${CANVAS.w} ${CANVAS.h}`}
-      className="h-auto w-full"
-      role="presentation"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <defs>
-        <radialGradient id="insight-system-glow">
-          <stop offset="0%" stopColor="#b8945f" stopOpacity="0.3" />
-          <stop offset="60%" stopColor="#b8945f" stopOpacity="0.07" />
-          <stop offset="100%" stopColor="#b8945f" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-
-      <circle cx={CENTRE.x} cy={CENTRE.y} r="120" fill="url(#insight-system-glow)" />
-
-      {ENDPOINTS.map((point, index) => {
-        const length = Math.hypot(point.x - CENTRE.x, point.y - CENTRE.y);
-        return (
-          <g key={`${point.x}-${point.y}`}>
-            <line
-              className="net-link"
-              style={
-                {
-                  "--dash-length": length,
-                  "--net-delay": `${index * 140}ms`,
-                } as React.CSSProperties
-              }
-              x1={CENTRE.x}
-              y1={CENTRE.y}
-              x2={point.x}
-              y2={point.y}
-              stroke="#b8945f"
-              strokeOpacity="0.5"
-              strokeWidth="1"
-            />
-            <circle
-              className="net-node"
-              style={{ "--net-delay": `${index * 140 + 260}ms` } as React.CSSProperties}
-              cx={point.x}
-              cy={point.y}
-              r="3.5"
-              fill="#b8945f"
-            />
-          </g>
-        );
-      })}
-
-      <circle cx={CENTRE.x} cy={CENTRE.y} r="5" fill="#b8945f" />
-      <circle
-        cx={CENTRE.x}
-        cy={CENTRE.y}
-        r="15"
-        fill="none"
-        stroke="#b8945f"
-        strokeOpacity="0.4"
-      />
-
-      <text
-        x={CENTRE.x}
-        y={CENTRE.y + 44}
-        textAnchor="middle"
-        className="num font-display-sm"
-        fill="#f4f1eb"
-        fillOpacity="0.85"
-        fontSize="13"
-        letterSpacing="3"
-      >
-        INSIGHT
-      </text>
-    </svg>
-  );
-}
-
 export function InsightSystemSection() {
   return (
     <Section
@@ -180,9 +95,24 @@ export function InsightSystemSection() {
         </div>
 
         <Reveal delay={200}>
-          <SystemDiagram />
+          <ConnectedWorldMap
+            nodes={insightMap.nodes}
+            connections={insightMap.connections}
+            captions={insightMap.captions}
+          />
         </Reveal>
       </div>
+
+      {/*
+        COMPLIANCE. The same standing denial every map surface carries, shared
+        from `GlobalConnection` so the three cannot drift apart. Not optional,
+        not collapsible, not a footnote.
+      */}
+      <Reveal delay={600}>
+        <p className="mt-12 max-w-[76ch] border-t border-white/12 pt-8 text-sm leading-relaxed text-(--color-foreground-subtle)">
+          {MAP_DENIAL}
+        </p>
+      </Reveal>
     </Section>
   );
 }

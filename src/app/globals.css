@@ -579,6 +579,150 @@ a[href^="tel:"] {
 }
 
 /* ==========================================================================
+   CONNECTED WORLD MAP
+   --------------------------------------------------------------------------
+   Keyed off `data-visible` on the enclosing `Reveal`, like everything else on
+   the site, so the map needs no observer of its own.
+
+   The sequence is deliberate and matches the order the section argues in:
+   land, then the halo over the Gulf, then the connections drawing inward, then
+   the nodes, then the labels.
+   ========================================================================== */
+
+.worldmap-land {
+  opacity: 0;
+}
+
+.reveal[data-visible="true"] .worldmap-land {
+  animation: worldmap-land-in 800ms var(--ease-out-soft) both;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+
+@keyframes worldmap-land-in {
+  from { opacity: 0; transform: scale(1.012); }
+  to { opacity: 1; transform: none; }
+}
+
+/* The Gulf halo, second. */
+.worldmap-halo {
+  opacity: 0;
+  transform-origin: center;
+}
+
+.reveal[data-visible="true"] .worldmap-halo {
+  animation: worldmap-halo-in 900ms var(--ease-out-expo) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + 500ms);
+}
+
+@keyframes worldmap-halo-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/*
+ * Connections draw from the origin toward the Gulf.
+ *
+ * `--link-length` is the real path length passed by the component, so a
+ * transatlantic arc and a short regional one draw at the same apparent speed
+ * rather than the short one finishing first. Same technique as `.net-link`.
+ */
+.worldmap-link {
+  stroke-dasharray: var(--link-length);
+  stroke-dashoffset: var(--link-length);
+  stroke-opacity: 0.5;
+  transition: stroke-opacity 400ms var(--ease-out-soft);
+}
+
+.reveal[data-visible="true"] .worldmap-link {
+  animation: worldmap-draw 1100ms var(--ease-out-expo) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + 700ms + var(--link-delay, 0ms));
+}
+
+@keyframes worldmap-draw {
+  from { stroke-dashoffset: var(--link-length); }
+  to { stroke-dashoffset: 0; }
+}
+
+.worldmap-link-on { stroke-opacity: 0.95; }
+.worldmap-link-dim { stroke-opacity: 0.16; }
+
+/* Nodes, then labels. */
+.worldmap-node,
+.worldmap-label {
+  opacity: 0;
+}
+
+.reveal[data-visible="true"] .worldmap-node {
+  animation: worldmap-pop 520ms var(--ease-out-soft) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + 1000ms + var(--node-delay, 0ms));
+}
+
+.reveal[data-visible="true"] .worldmap-label {
+  animation: worldmap-pop 520ms var(--ease-out-soft) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + 1150ms + var(--node-delay, 0ms));
+}
+
+@keyframes worldmap-pop {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: none; }
+}
+
+.worldmap-node,
+.worldmap-label {
+  transition: opacity 400ms var(--ease-out-soft);
+}
+
+.worldmap-node-dim { opacity: 0.3; }
+.worldmap-label-dim { opacity: 0.25; }
+
+/* The hub ring breathes, slowly, and only this one element. */
+.reveal[data-visible="true"] .worldmap-ring {
+  animation: worldmap-ring 5200ms var(--ease-out-soft) infinite;
+  animation-delay: calc(var(--reveal-delay, 0ms) + 1400ms);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes worldmap-ring {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.16; transform: scale(1.28); }
+}
+
+/* Nodes that would collide on a phone are hidden below `sm`. */
+@media (max-width: 639px) {
+  .worldmap-node-compact { display: none; }
+}
+
+/*
+ * REDUCED MOTION.
+ *
+ * Every element above is based at opacity 0, and the links additionally at a
+ * full dash offset - so switching the animation off alone would leave the map
+ * blank and the connections invisible. Dash state is reset too, not just
+ * opacity, and the hub ring stops breathing entirely.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .worldmap-land,
+  .worldmap-halo,
+  .worldmap-link,
+  .worldmap-node,
+  .worldmap-label,
+  .worldmap-ring {
+    animation: none !important;
+    opacity: 1;
+    transform: none !important;
+  }
+
+  .worldmap-link {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+  }
+
+  .worldmap-node-dim { opacity: 0.45; }
+  .worldmap-label-dim { opacity: 0.4; }
+}
+
+/* ==========================================================================
    INSIGHT
    --------------------------------------------------------------------------
    Page-specific state. Everything keys off `data-visible` on an enclosing
