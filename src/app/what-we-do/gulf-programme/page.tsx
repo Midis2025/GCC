@@ -95,7 +95,7 @@ export default function GulfProgrammePage() {
             already numbers its own entries.
           */
           meta: month.span,
-          description: "",
+          description: month.detail,
           items: month.items,
         }))}
       />

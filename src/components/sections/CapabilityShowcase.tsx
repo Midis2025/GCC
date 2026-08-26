@@ -121,6 +121,41 @@ export function CapabilityShowcase() {
                             {capability.summary}
                           </p>
 
+                          {/*
+                            The areas of work, at last.
+
+                            `capabilities[].areas` has held seven to eleven
+                            concrete entries per discipline since the file was
+                            written and nothing has ever rendered them - the
+                            homepage said what each capability was and never
+                            what it contained.
+
+                            Four of them, not all. Eleven short phrases under
+                            each of four rows is a wall; four is enough to make
+                            the discipline concrete and short enough to stay a
+                            row rather than becoming a list. The full set is
+                            still in the data for a service page to use.
+
+                            Real text, not a hover reveal: this is the
+                            accessible content of the row, and the panel beside
+                            it is `aria-hidden`. Substance belongs on the side
+                            a screen reader can reach.
+                          */}
+                          <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2">
+                            {capability.areas.slice(0, 4).map((area) => (
+                              <li
+                                key={area}
+                                className="flex items-center gap-2.5 text-[0.8125rem] text-(--color-foreground-subtle)"
+                              >
+                                <span
+                                  aria-hidden="true"
+                                  className="h-1 w-1 shrink-0 rounded-full bg-(--color-accent)"
+                                />
+                                {area}
+                              </li>
+                            ))}
+                          </ul>
+
                           {/* Inline photography, small viewports only. */}
                           <div className="mt-6 lg:hidden">
                             <Figure

@@ -191,6 +191,8 @@ export const gulfProgramme = {
     months: [
       {
         span: "Month 1",
+        detail:
+          "The month that decides the other five. Nothing is pitched or scheduled until the story, the audience and the calendar are settled.",
         focus: "Foundation",
         items: [
           "Corporate story and sector positioning set down",
@@ -200,6 +202,8 @@ export const gulfProgramme = {
       },
       {
         span: "Month 2",
+        detail:
+          "The programme opens on both fronts at once, so the first meetings and the first published material reach the market in the same window rather than months apart.",
         focus: "First cycle",
         items: [
           "First investor meetings",
@@ -209,6 +213,8 @@ export const gulfProgramme = {
       },
       {
         span: "Month 3",
+        detail:
+          "Arabic enters the programme once the English materials have settled, because translating a story that is still moving produces two versions of it.",
         focus: "Arabic",
         items: [
           "Certified translation of core materials",
@@ -218,6 +224,8 @@ export const gulfProgramme = {
       },
       {
         span: "Month 4",
+        detail:
+          "The heaviest month for contact: a hosted session alongside an extended schedule, with a second media cycle running against materials that now exist in both languages.",
         focus: "Programme",
         items: [
           "Hosted group session",
@@ -227,6 +235,8 @@ export const gulfProgramme = {
       },
       {
         span: "Month 5",
+        detail:
+          "Follow-up rather than fresh introductions. The month works the relationships the programme has already opened and keeps the content cadence running.",
         focus: "Consolidation",
         items: [
           "Follow-up with participants",
@@ -236,6 +246,8 @@ export const gulfProgramme = {
       },
       {
         span: "Month 6",
+        detail:
+          "The programme reports on itself in writing and the company decides what happens next, with a record of what was asked and where attention settled.",
         focus: "Review",
         items: [
           "Final meetings",
