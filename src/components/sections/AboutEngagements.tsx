@@ -72,7 +72,7 @@ export function AboutEngagements() {
     <Section
       spacing="lg"
       tone="dark"
-      aria-labelledby="about-how-we-work"
+      aria-labelledby="about-engagements"
       className="relative isolate"
     >
       <div
@@ -88,7 +88,7 @@ export function AboutEngagements() {
       <div className="grid gap-x-16 gap-y-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end lg:gap-x-20">
         <Reveal>
           <SectionLabel>{aboutHowWeWork.label}</SectionLabel>
-          <Heading id="about-how-we-work" level={2} size="display" className="mt-5 max-w-[15ch]">
+          <Heading id="about-engagements" level={2} size="display" className="mt-5 max-w-[15ch]">
             {aboutHowWeWork.heading}
           </Heading>
         </Reveal>

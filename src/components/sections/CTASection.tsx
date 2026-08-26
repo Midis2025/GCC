@@ -77,7 +77,12 @@ export function CTASection() {
             <Button href={ctaContent.cta.href} size="lg" withArrow>
               {ctaContent.cta.label}
             </Button>
-            <Button href="/services" size="lg" variant="outline">
+            {/*
+              Was `/services`, a route retired by the restructure that now only
+              308s. This band renders on every page, so every page carried a
+              button through a redirect.
+            */}
+            <Button href="/what-we-do" size="lg" variant="outline">
               Explore Our Capabilities
             </Button>
           </Reveal>

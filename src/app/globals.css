@@ -86,15 +86,25 @@
    * These are PER EDGE, so consecutive sections contribute twice the value
    * between them - `lg` at its old 10rem maximum put 320px of empty canvas
    * between two blocks of content on a large screen, which is what made the
-   * page read as disconnected rather than spacious. The maxima are now sized
-   * so the gap between two sections lands near 224px at the top end, and the
-   * vw term is gentler so the growth from tablet to desktop is less steep.
+   * page read as disconnected rather than spacious. The vw term is gentle so
+   * the growth from tablet to desktop is not steep.
+   *
+   * Tightened again after measuring. Sweeping every page for runs of painted
+   * nothing showed the dominant void across the whole site sitting at 202-250px
+   * - which is precisely two `lg` sections meeting, 112 + 112 at the top of the
+   * old clamp. Nothing was wrong with any individual page; the system was
+   * simply paying for air twice at every join.
+   *
+   * `lg` now tops out at 88px, so a join lands near 176px instead of 224px.
+   * That is a fifth off the largest gap on the site while keeping the sections
+   * clearly separated - the pages read as continuous rather than as a stack of
+   * slides, which is what the extra 48px was costing.
    */
-  --space-section-sm: clamp(2.75rem, 4.5vw, 3.75rem);
-  --space-section-md: clamp(3.5rem, 6vw, 5.5rem);
-  --space-section-lg: clamp(4.25rem, 7vw, 7rem);
+  --space-section-sm: clamp(2.5rem, 4vw, 3.25rem);
+  --space-section-md: clamp(3rem, 5vw, 4.5rem);
+  --space-section-lg: clamp(3.75rem, 5.5vw, 5.5rem);
   /* Reserved for the few full-bleed editorial moments that need real air. */
-  --space-section-xl: clamp(5.5rem, 9vw, 9rem);
+  --space-section-xl: clamp(4.75rem, 7.5vw, 7rem);
 
   /*
    * Gap between a section's heading block and the content it introduces.
