@@ -123,7 +123,12 @@ export function ContactRouter() {
         {audience === "company" ? (
           <CompanyForm source="/contact" />
         ) : (
-          <InvestorForm source="/contact" />
+          /*
+            The Contact page asks when to meet; the For Investors page, which
+            renders this same form, asks only to be added to a list. So the
+            preferred date and time are switched on here and nowhere else.
+          */
+          <InvestorForm source="/contact" meetingPreference />
         )}
       </div>
     </div>

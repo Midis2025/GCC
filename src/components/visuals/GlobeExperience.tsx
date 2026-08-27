@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { GlobeMarket } from "@/data/outreach-globe";
 import { globeMarkets, globePanelContent } from "@/data/outreach-globe";
 import { outreachContent } from "@/data/homepage";
-import { GLOW_REACH, glowBox } from "@/lib/globe";
+import { GLOW_REACH, ZOOM_MAX, ZOOM_MIN, glowBox } from "@/lib/globe";
 import { cn } from "@/lib/utils";
 
 /**
@@ -29,6 +29,16 @@ const GlobeCanvas = dynamic(
 
 /** How long a deliberate selection outranks the scroll position. */
 const SELECTION_HOLD_MS = 7000;
+
+/**
+ * Flat at both ends, steepest in the middle.
+ *
+ * A linear map from scroll to camera starts and stops with a kick, because the
+ * reader's scroll velocity is not zero at either end of the stretch. This makes
+ * the departure and the arrival the slowest parts of the move, which is what
+ * gives it the feeling of a camera being flown rather than a value being set.
+ */
+const smoothstep = (t: number) => t * t * (3 - 2 * t);
 
 interface Tooltip {
   market: GlobeMarket | null;
@@ -63,6 +73,19 @@ export function GlobeExperience({ className }: { className?: string }) {
   const wrapper = useRef<HTMLDivElement>(null);
   const tooltipElement = useRef<HTMLDivElement>(null);
   const heldUntil = useRef(0);
+  /**
+   * How close the camera should be. Written from the scroll handler and read by
+   * the renderer's draw loop; deliberately never state, because a camera that
+   * moves with the scrollbar would otherwise re-render this whole subtree -
+   * panel, rail and caption - sixty times a second.
+   */
+  const camera = useRef(ZOOM_MIN);
+  /**
+   * `reducedMotion` again, in a ref. The scroll handler needs to read it, and
+   * it is the one input to that handler that must not be allowed to rebuild the
+   * listeners it installs.
+   */
+  const motionless = useRef(false);
 
   /* --- Environment ------------------------------------------------------ */
   useEffect(() => {
@@ -73,6 +96,7 @@ export function GlobeExperience({ className }: { className?: string }) {
     const wide = window.matchMedia("(min-width: 1024px)");
 
     const sync = () => {
+      motionless.current = motion.matches;
       setReducedMotion(motion.matches);
       setCompact(small.matches);
       setPanelFloats(wide.matches);
@@ -97,8 +121,6 @@ export function GlobeExperience({ className }: { className?: string }) {
     const measure = () => {
       queued = false;
 
-      if (performance.now() < heldUntil.current) return;
-
       const element = wrapper.current;
       if (!element) return;
 
@@ -112,6 +134,30 @@ export function GlobeExperience({ className }: { className?: string }) {
       // The approach and the departure are dead time; the markets step through
       // the middle stretch, where the section is actually being looked at.
       const staged = (progress - 0.22) / 0.56;
+      const travelled = Math.max(0, Math.min(1, staged));
+
+      /*
+        The camera flies over exactly the stretch the markets step through: it
+        leaves the approved view as the first market is named, arrives as the
+        last one is, and holds while the section departs. Because the globe is
+        already turned so that the active market faces the viewer, closing on
+        the centre of the disc IS closing on the marked region - no second
+        target, and nothing moved to make one.
+
+        A pure function of scroll position. No velocity term, no easing of its
+        own, nothing accumulated between frames - which is the whole reason the
+        journey is reversible: scrolling back up retraces the descent value for
+        value, and the top of the stretch is ZOOM_MIN exactly rather than
+        somewhere near it.
+      */
+      camera.current = motionless.current
+        ? ZOOM_MIN
+        : ZOOM_MIN + (ZOOM_MAX - ZOOM_MIN) * smoothstep(travelled);
+
+      // A deliberate selection outranks the scroll position for a while - but
+      // only over which market is named. The camera belongs to the page.
+      if (performance.now() < heldUntil.current) return;
+
       const index = Math.floor(staged * globeMarkets.length);
 
       setActiveIndex(Math.max(0, Math.min(globeMarkets.length - 1, index)));
@@ -205,6 +251,12 @@ export function GlobeExperience({ className }: { className?: string }) {
               reducedMotion={reducedMotion}
               compact={compact}
               frame={frame}
+              /*
+                The camera, driven by this section's own scroll progress. At
+                the top of the stretch it holds the placement above exactly, so
+                the section arrives looking the way it always has.
+              */
+              zoom={camera}
               className="h-full w-full"
             />
 

@@ -35,6 +35,35 @@ export const areaOfInterestOptions: SelectOption[] = [
   { label: "General Enquiry", value: "general" },
 ];
 
+/**
+ * Preferred meeting times offered on the company enquiry form.
+ *
+ * A fixed list of whole hours rather than a free time field. Nothing behind
+ * these is checked, held or reserved - an enquiry says which hour would suit
+ * and a person replies to arrange it - so the list is deliberately shaped like
+ * a preference and not like a calendar.
+ *
+ * Value and label are the same string. It is what the visitor picked, what the
+ * notification email reads, and what is stored against the record, so there is
+ * no mapping to keep in step and nothing that can be stored as a code whose
+ * meaning has to be looked up later.
+ *
+ * Stated as Gulf Standard Time because `contactConfig.locality` is Dubai. That
+ * is the only claim here: no working hours are asserted beyond the fact that
+ * these are the hours the form offers.
+ */
+export const preferredTimeOptions: SelectOption[] = [
+  "09:00 AM",
+  "10:00 AM",
+  "11:00 AM",
+  "12:00 PM",
+  "01:00 PM",
+  "02:00 PM",
+  "03:00 PM",
+  "04:00 PM",
+  "05:00 PM",
+].map((time) => ({ label: time, value: time }));
+
 /** Country / market options. Factual place names only. */
 export const marketOptions: SelectOption[] = [
   { label: "United Arab Emirates", value: "ae" },

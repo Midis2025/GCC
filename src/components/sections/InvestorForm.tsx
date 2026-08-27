@@ -1,17 +1,19 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useCallback, useRef, useState, type FormEvent } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { FormField } from "@/components/ui/FormField";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
+import { preferredTimeOptions } from "@/data/contact";
 import {
   investorCategories,
   investorConsent,
   investorSectors,
 } from "@/data/for-investors";
+import { todayAsInputValue } from "@/lib/utils";
 
 type Errors = Partial<Record<string, string>>;
 
@@ -51,12 +53,41 @@ interface SubmitResult {
  *
  * Validation here is a convenience. The server validates independently.
  */
-export function InvestorForm({ source }: { source: string }) {
+export function InvestorForm({
+  source,
+  meetingPreference = false,
+}: {
+  source: string;
+  /**
+   * Adds the preferred date and time pair.
+   *
+   * Opt-in, and off by default, because this is ONE component rendered in two
+   * places. On the Contact page it is an enquiry and asking when to meet is the
+   * point of the page; on For Investors it is a registration for a mailing
+   * list, and making someone pick a meeting slot to receive The Gulf Brief
+   * would be a different form with a different purpose.
+   */
+  meetingPreference?: boolean;
+}) {
   const [errors, setErrors] = useState<Errors>({});
   const [result, setResult] = useState<SubmitResult | null>(null);
   const [pending, setPending] = useState(false);
   const [failure, setFailure] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
+
+  /*
+    The floor on the date field, written onto the element rather than rendered.
+
+    Both pages that carry this form are statically prerendered, so a `min`
+    computed during render would be the BUILD date and stale the next morning.
+    It cannot come from the server at request time either - the browser and the
+    server are routinely in different timezones. So it is set from the
+    visitor's own clock on mount, which makes it an affordance; `validate`
+    below is what actually refuses a date that has passed.
+  */
+  const boundToToday = useCallback((node: HTMLInputElement | null) => {
+    if (node) node.min = todayAsInputValue();
+  }, []);
 
   function validate(data: FormData): Errors {
     const next: Errors = {};
@@ -73,6 +104,19 @@ export function InvestorForm({ source }: { source: string }) {
     if (!value("country")) next.country = "Please enter your country.";
     if (!value("investorCategory")) {
       next.investorCategory = "Please select an investor category.";
+    }
+
+    // Only where the pair is shown. Validating a field that is not on the form
+    // would make it unsubmittable and give nothing to focus.
+    if (meetingPreference) {
+      const preferredDate = value("preferredDate");
+      if (!preferredDate) next.preferredDate = "Please choose a preferred date.";
+      else if (preferredDate < todayAsInputValue()) {
+        // Both sides are `YYYY-MM-DD`, which compares correctly as a string.
+        next.preferredDate = "Please choose a date that has not already passed.";
+      }
+
+      if (!value("preferredTime")) next.preferredTime = "Please choose a preferred time.";
     }
 
     if (data.get("consent") !== "on") {
@@ -112,6 +156,10 @@ export function InvestorForm({ source }: { source: string }) {
           email: data.get("email"),
           country: data.get("country"),
           investorCategory: data.get("investorCategory"),
+          // Read from this form's own FormData, so the two forms on the
+          // Contact page can never see each other's answers.
+          preferredDate: data.get("preferredDate"),
+          preferredTime: data.get("preferredTime"),
           sectorsOfInterest: data.getAll("sectorsOfInterest"),
           consent: data.get("consent") === "on",
         }),
@@ -234,6 +282,44 @@ export function InvestorForm({ source }: { source: string }) {
             placeholder="Select a category"
           />
         </FormField>
+
+        {/*
+          When a conversation would suit.
+
+          Two more cells in the grid this form already uses, so they sit side
+          by side from `sm` up and stack below it without a layout of their
+          own, and they take the same controls - and therefore the same height,
+          border, focus treatment and label styling - as every field above.
+
+          A preference, not a booking: nothing is checked against a calendar
+          and nothing is held.
+        */}
+        {meetingPreference && (
+          <>
+            {/*
+              `type="date"` rather than a calendar of our own: it brings the
+              desktop popover, the iOS and Android wheels, the visitor's own
+              locale format and keyboard entry. The ref puts today's floor on
+              it - see `boundToToday` above.
+            */}
+            <FormField label="Preferred date" error={errors.preferredDate} required>
+              <Input name="preferredDate" type="date" ref={boundToToday} />
+            </FormField>
+
+            <FormField
+              label="Preferred time"
+              error={errors.preferredTime}
+              description="Gulf Standard Time"
+              required
+            >
+              <Select
+                name="preferredTime"
+                options={preferredTimeOptions}
+                placeholder="Choose a time…"
+              />
+            </FormField>
+          </>
+        )}
       </div>
 
       <fieldset>

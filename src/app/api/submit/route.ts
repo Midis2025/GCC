@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { preferredTimeOptions } from "@/data/contact";
 import {
   GENERAL_CONTENT_ONLY,
   investorCategories,
@@ -44,6 +45,8 @@ export const runtime = "nodejs";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const MAX_FIELD = 2000;
+/** `YYYY-MM-DD`, the value an `<input type="date">` produces. */
+const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 type Payload = Record<string, unknown>;
 
@@ -61,6 +64,51 @@ function strArray(payload: Payload, key: string): string[] {
 interface Validation {
   ok: boolean;
   errors: Record<string, string>;
+}
+
+/**
+ * Preferred meeting date and time, checked identically for both forms.
+ *
+ * Two deliberate limits on what this can enforce.
+ *
+ * The date is checked for shape and for being a real day, and NOT for being in
+ * the future. The browser and this process are routinely in different
+ * timezones and occasionally on different dates, so a strict server-side "not
+ * in the past" would reject days a Gulf visitor can see are still ahead of
+ * them. Today belongs to the field, where the visitor's own clock is the one
+ * being read; here it could only ever be enforced against the wrong clock.
+ *
+ * `required` differs by caller because the FIELD differs by caller: the
+ * company enquiry always shows the pair, the investor form shows it on the
+ * Contact page and not on For Investors. A registration arriving without it is
+ * therefore legitimate, and `source` is client-supplied so it cannot be used
+ * to tell the two apart. So presence is enforced where the field lives, and
+ * this enforces what it can be certain of - that anything it stores is a value
+ * the form could actually have produced.
+ */
+function checkMeetingPreference(
+  payload: Payload,
+  errors: Record<string, string>,
+  required: boolean,
+): void {
+  const preferredDate = str(payload, "preferredDate");
+  if (!preferredDate) {
+    if (required) errors.preferredDate = "Please choose a preferred date.";
+  } else if (!ISO_DATE_PATTERN.test(preferredDate) || Number.isNaN(Date.parse(preferredDate))) {
+    errors.preferredDate = "Please choose a preferred date.";
+  }
+
+  /*
+   * Checked against the fixed list, the same way the investor category is: a
+   * value the form never offered has no meaning to whoever reads the record,
+   * so it is rejected rather than stored.
+   */
+  const preferredTime = str(payload, "preferredTime");
+  if (!preferredTime) {
+    if (required) errors.preferredTime = "Please choose a preferred time.";
+  } else if (!preferredTimeOptions.some((option) => option.value === preferredTime)) {
+    errors.preferredTime = "Please choose a preferred time.";
+  }
 }
 
 function validate(type: string, payload: Payload): Validation {
@@ -97,6 +145,10 @@ function validate(type: string, payload: Payload): Validation {
     } else if (!investorCategories.some((option) => option.value === category)) {
       errors.investorCategory = "Please select an investor category.";
     }
+
+    // Present from the Contact page, absent from For Investors - so checked
+    // whenever it is there, and never demanded.
+    checkMeetingPreference(payload, errors, false);
   }
 
   if (type === "company-enquiry") {
@@ -104,9 +156,27 @@ function validate(type: string, payload: Payload): Validation {
     const message = str(payload, "message");
     if (!message) errors.message = "Please tell us briefly what you are looking for.";
     else if (message.length < 20) errors.message = "Please add a little more detail.";
+
+    /*
+     * The company enquiry always carries the meeting preference, so here it is
+     * required as well as checked.
+     */
+    checkMeetingPreference(payload, errors, true);
   }
 
   return { ok: Object.keys(errors).length === 0, errors };
+}
+
+function toMarketCode(countryStr: string): string {
+  if (!countryStr) return "intl";
+  const lower = countryStr.toLowerCase().trim();
+  if (lower.includes("uae") || lower.includes("emirates") || lower === "ae") return "ae";
+  if (lower.includes("saudi") || lower === "sa") return "sa";
+  if (lower.includes("qatar") || lower === "qa") return "qa";
+  if (lower.includes("kuwait") || lower === "kw") return "kw";
+  if (lower.includes("bahrain") || lower === "bh") return "bh";
+  if (lower.includes("oman") || lower === "om") return "om";
+  return "intl";
 }
 
 export async function POST(request: Request) {
@@ -146,6 +216,8 @@ export async function POST(request: Request) {
     listingVenue: str(payload, "listingVenue") || undefined,
     ticker: str(payload, "ticker") || undefined,
     sector: str(payload, "sector") || undefined,
+    preferredDate: str(payload, "preferredDate") || undefined,
+    preferredTime: str(payload, "preferredTime") || undefined,
     message: str(payload, "message") || undefined,
 
     firm: str(payload, "firm") || undefined,
@@ -168,16 +240,71 @@ export async function POST(request: Request) {
     optInStatus: type === "investor-registration" ? "pending" : "not-applicable",
   };
 
-  /* --- CRM ---------------------------------------------------------------- */
-  let crm: CrmResult = { stored: false, reason: "CRM not configured." };
+  /* --- Backend Connection ------------------------------------------------ */
+  let crm: CrmResult = { stored: false, reason: "Backend not reachable." };
+  const backendUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL || "https://gcc-backend-two.vercel.app";
 
-  if (isCrmConfigured()) {
-    try {
-      crm = await deliverToCrm(submission);
-    } catch (error) {
+  try {
+    const isCompany = type === "company-enquiry";
+    const endpoint = isCompany ? `${backendUrl}/api/contact/company` : `${backendUrl}/api/contact/investor`;
+    const marketCode = toMarketCode(str(payload, "country"));
+    
+    const backendBody = isCompany
+      ? {
+          name: str(payload, "name"),
+          company: str(payload, "companyName") || str(payload, "company"),
+          email: str(payload, "email"),
+          phone: str(payload, "phone") || undefined,
+          market: marketCode,
+          area: str(payload, "sector") || "general",
+          message: str(payload, "message"),
+          preferredDate: str(payload, "preferredDate") || undefined,
+          preferredTime: str(payload, "preferredTime") || undefined,
+          formType: "company",
+        }
+      : {
+          name: str(payload, "name"),
+          company: str(payload, "firm") || str(payload, "company"),
+          email: str(payload, "email"),
+          phone: str(payload, "phone") || undefined,
+          market: marketCode,
+          area: str(payload, "investorCategory") || "investor-relations",
+          message: `Investor Registration from ${str(payload, "firm")} (${str(payload, "role")}). Category: ${str(payload, "investorCategory")}. Sectors: ${strArray(payload, "sectorsOfInterest").join(", ") || "General"}.`,
+          preferredDate: str(payload, "preferredDate") || undefined,
+          preferredTime: str(payload, "preferredTime") || undefined,
+          formType: "investor",
+        };
+
+    const backendRes = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(backendBody),
+    });
+
+    if (backendRes.ok) {
+      const backendData = await backendRes.json();
+      crm = {
+        stored: true,
+        recordId: backendData?.data?.trackingId || backendData?.data?.enquiry?.id,
+      };
+    } else {
+      const errorText = await backendRes.text();
+      crm = { stored: false, reason: `Backend returned status ${backendRes.status}: ${errorText}` };
+    }
+  } catch (backendErr) {
+    if (isCrmConfigured()) {
+      try {
+        crm = await deliverToCrm(submission);
+      } catch (error) {
+        crm = {
+          stored: false,
+          reason: error instanceof Error ? error.message : "CRM write failed.",
+        };
+      }
+    } else {
       crm = {
         stored: false,
-        reason: error instanceof Error ? error.message : "CRM write failed.",
+        reason: backendErr instanceof Error ? backendErr.message : "Failed to connect to backend service.",
       };
     }
   }

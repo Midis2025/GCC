@@ -58,6 +58,25 @@ export function isExternalHref(href: string): boolean {
 }
 
 /**
+ * Today, as an `<input type="date">` value, in the CALLER'S timezone.
+ *
+ * `toISOString` would be wrong for this: it converts to UTC first, so for
+ * anyone east of Greenwich - which includes every Gulf market these forms exist
+ * for - it returns yesterday for most of the evening, and a date field floored
+ * with it would refuse a day the visitor can see is still ahead of them.
+ *
+ * Because it reads the clock it must only ever be called in the browser. This
+ * site's form pages are statically prerendered, so a value computed during
+ * render would be the BUILD date and stale by the following morning.
+ */
+export function todayAsInputValue(): string {
+  const now = new Date();
+  const month = `${now.getMonth() + 1}`.padStart(2, "0");
+  const day = `${now.getDate()}`.padStart(2, "0");
+  return `${now.getFullYear()}-${month}-${day}`;
+}
+
+/**
  * Formats an ISO date for display, e.g. "12 March 2026".
  * Locale is pinned so server and client render identically (no hydration drift).
  */

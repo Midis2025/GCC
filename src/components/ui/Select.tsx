@@ -41,6 +41,31 @@ export function Select({ options, placeholder, className, ...props }: SelectProp
           controlClasses,
           // Room for the mark, and no platform arrow behind it.
           "appearance-none pr-12",
+          /*
+            The OPEN menu.
+
+            The list is drawn by the browser, outside the page, so none of the
+            styling above reaches it. `globals.css` declares `color-scheme:
+            light` at the root and `.tokens-dark` re-points every colour token
+            but not that - which is the whole bug: on the enquiry panel the
+            browser drew a LIGHT popup while the options inherited the panel's
+            ivory text, so the list came out ivory on white and could not be
+            read. Telling the browser the control is dark where it actually is
+            dark makes it draw the list, its scrollbar and its highlight from
+            the dark palette instead.
+          */
+          "[.tokens-dark_&]:[color-scheme:dark]",
+          /*
+            And the options themselves, stated rather than inherited. Tokens,
+            not hex, so this is midnight-and-ivory on the enquiry panel and
+            correct by construction anywhere a select sits on a light surface.
+
+            Deliberately not styling `option:checked`: the highlight is the
+            browser's to draw, several of them reuse a checked option's
+            background for the CLOSED control, and a gold-filled field is a
+            worse regression than a native-coloured highlight.
+          */
+          "[&>option]:bg-(--color-surface) [&>option]:text-(--color-foreground)",
           // While the placeholder is selected the control is showing prompt
           // text, not an answer, so it takes the quieter foreground.
           "[&:has(option[value='']:checked)]:text-(--color-foreground-subtle)",

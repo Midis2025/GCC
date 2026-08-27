@@ -180,6 +180,27 @@ export function approach(current: number, target: number, smoothing: number, dt:
  */
 export const GLOW_REACH = 1.32;
 
+/**
+ * How close the camera is allowed to come, as a multiple of the disc's radius.
+ *
+ * `ZOOM_MIN` is 1 and is the approved view, so a section nobody has scrolled
+ * into is exactly as it was drawn.
+ *
+ * The ceiling is set by the canvas, not by taste. `glowBox` sizes the element
+ * to the glow, which puts its sides at `GLOW_REACH` radii from the centre - so
+ * at a zoom of 1.32 the limb reaches the edge of the element, and past that the
+ * disc would be cut off square. 1.3 stops just short of it: the sphere itself
+ * is never cropped at any point in the travel, and only the outer, near
+ * transparent part of the halo tightens as the camera closes in, which is what
+ * approaching an atmosphere looks like anyway.
+ *
+ * Lives here beside `GLOW_REACH` because that is the number it is derived from,
+ * and because the section that drives the camera must not have to import
+ * anything from the renderer - the renderer is a lazily loaded chunk.
+ */
+export const ZOOM_MIN = 1;
+export const ZOOM_MAX = 1.3;
+
 /** Where a disc sits inside a box, as fractions of that box. */
 export interface Disc {
   cx: number;

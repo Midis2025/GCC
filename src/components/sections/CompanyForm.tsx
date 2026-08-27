@@ -1,12 +1,15 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useCallback, useRef, useState, type FormEvent } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { FormField } from "@/components/ui/FormField";
 import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
+import { preferredTimeOptions } from "@/data/contact";
+import { todayAsInputValue } from "@/lib/utils";
 
 type Errors = Partial<Record<string, string>>;
 
@@ -41,6 +44,23 @@ export function CompanyForm({ source }: { source: string }) {
   const [failure, setFailure] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
+  /*
+    The floor on the date field, written onto the element rather than rendered.
+
+    This page is statically prerendered, so anything computed during render is
+    computed at BUILD time - a `min` rendered that way would freeze on the day
+    the site was deployed and go stale the next morning. It cannot come from
+    the server at request time either: the browser and the server are routinely
+    in different timezones and occasionally on different dates.
+
+    So it is set from the visitor's own clock when the field mounts. That makes
+    it an affordance and not a control, which is the right division anyway -
+    `validate` below is what actually refuses a date that has passed.
+  */
+  const boundToToday = useCallback((node: HTMLInputElement | null) => {
+    if (node) node.min = todayAsInputValue();
+  }, []);
+
   function validate(data: FormData): Errors {
     const next: Errors = {};
     const value = (key: string) => String(data.get(key) ?? "").trim();
@@ -51,6 +71,15 @@ export function CompanyForm({ source }: { source: string }) {
     const email = value("email");
     if (!email) next.email = "Please enter your work email address.";
     else if (!EMAIL_PATTERN.test(email)) next.email = "Please enter a valid email address.";
+
+    const preferredDate = value("preferredDate");
+    if (!preferredDate) next.preferredDate = "Please choose a preferred date.";
+    else if (preferredDate < todayAsInputValue()) {
+      // Both sides are `YYYY-MM-DD`, which compares correctly as a string.
+      next.preferredDate = "Please choose a date that has not already passed.";
+    }
+
+    if (!value("preferredTime")) next.preferredTime = "Please choose a preferred time.";
 
     const message = value("message");
     if (!message) next.message = "Please tell us briefly what you are looking for.";
@@ -96,6 +125,8 @@ export function CompanyForm({ source }: { source: string }) {
           email: data.get("email"),
           phone: data.get("phone"),
           country: data.get("country"),
+          preferredDate: data.get("preferredDate"),
+          preferredTime: data.get("preferredTime"),
           message: data.get("message"),
           consent: data.get("consent") === "on",
         }),
@@ -199,6 +230,40 @@ export function CompanyForm({ source }: { source: string }) {
 
         <FormField label="Country" description="Optional" className="sm:col-span-2">
           <Input name="country" autoComplete="country-name" />
+        </FormField>
+
+        {/*
+          When a conversation would suit.
+
+          Two more cells in the grid the form already uses, so they sit side by
+          side from `sm` up and stack below it without a layout of their own.
+
+          A preference, not a booking: nothing is checked against a calendar and
+          nothing is held. The wording says "preferred" for that reason, and the
+          reply arranges the meeting.
+        */}
+        {/*
+          `type="date"` rather than a calendar of our own: it brings the
+          desktop popover, the iOS and Android wheels, the visitor's own locale
+          format and keyboard entry, none of which a hand-built one would get
+          right for the price of a field that says which day suits. The ref is
+          what puts today's floor on it - see `boundToToday` above.
+        */}
+        <FormField label="Preferred date" error={errors.preferredDate} required>
+          <Input name="preferredDate" type="date" ref={boundToToday} />
+        </FormField>
+
+        <FormField
+          label="Preferred time"
+          error={errors.preferredTime}
+          description="Gulf Standard Time"
+          required
+        >
+          <Select
+            name="preferredTime"
+            options={preferredTimeOptions}
+            placeholder="Choose a time…"
+          />
         </FormField>
       </div>
 

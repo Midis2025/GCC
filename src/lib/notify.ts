@@ -101,6 +101,10 @@ export function buildConfirmationMail(
         submission.listingVenue ? `Listing venue: ${submission.listingVenue}` : "",
         submission.ticker ? `Ticker: ${submission.ticker}` : "",
         submission.sector ? `Sector: ${submission.sector}` : "",
+        submission.preferredDate ? `Preferred date: ${submission.preferredDate}` : "",
+        submission.preferredTime
+          ? `Preferred time: ${submission.preferredTime} (Gulf Standard Time)`
+          : "",
         "",
         `${siteConfig.legalName}`,
         siteConfig.url,
@@ -145,6 +149,12 @@ export function buildAdminMail(
     ["Listing venue", submission.listingVenue],
     ["Ticker", submission.ticker],
     ["Sector", submission.sector],
+    // A preference the enquirer stated, not a slot anything has reserved.
+    ["Preferred date", submission.preferredDate],
+    [
+      "Preferred time",
+      submission.preferredTime && `${submission.preferredTime} (Gulf Standard Time)`,
+    ],
     ["Country", submission.country],
     ["Phone", submission.phone],
     ["Investor category", submission.investorCategory],

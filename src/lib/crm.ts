@@ -57,6 +57,16 @@ export interface CrmSubmission {
   listingVenue?: string;
   ticker?: string;
   sector?: string;
+  /**
+   * When the enquirer would prefer to meet. `YYYY-MM-DD` and one of the hours
+   * the form offers, in Gulf Standard Time.
+   *
+   * A stated preference, not an appointment. Nothing was checked for
+   * availability and nothing is held, so whoever works this record still has
+   * to reply and arrange it.
+   */
+  preferredDate?: string;
+  preferredTime?: string;
   message?: string;
 
   /* Investor registrations. */

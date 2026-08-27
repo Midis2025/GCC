@@ -3,7 +3,16 @@
 import { useCallback, useEffect, useRef } from "react";
 
 import { globeMarkets, internationalArcs } from "@/data/outreach-globe";
-import { DEG, GLOW_REACH, approach, greatCircle, project, shortestAngle } from "@/lib/globe";
+import {
+  DEG,
+  GLOW_REACH,
+  ZOOM_MAX,
+  ZOOM_MIN,
+  approach,
+  greatCircle,
+  project,
+  shortestAngle,
+} from "@/lib/globe";
 import type { Projected, Rotation } from "@/lib/globe";
 
 /* --------------------------------------------------------------------------
@@ -28,6 +37,16 @@ const DRAG_THRESHOLD = 4;
 const HIT_RADIUS = 18;
 
 const MAX_PITCH = 62 * DEG;
+
+/**
+ * Fraction of the remaining zoom distance still left after one second.
+ *
+ * The camera is driven directly by scroll position, so this is not the
+ * animation - it is a ~130ms smoothing over it, which takes the stepping out of
+ * a coarse trackpad or a wheel notch without putting any perceptible lag
+ * between the page and the globe.
+ */
+const ZOOM_EASE = 0.0005;
 
 export interface GlobeCanvasProps {
   activeIndex: number;
@@ -74,6 +93,16 @@ export interface GlobeCanvasProps {
    * what keeps the markets named on a phone.
    */
   markerLabels?: boolean;
+  /**
+   * How close the camera is, as a multiple of `frame.radius`. Sampled once a
+   * frame; `ZOOM_MIN` - or omitting it entirely - is the untouched view.
+   *
+   * A REF rather than a value, because the thing that moves it is scroll
+   * position. Passing it as a prop would mean a React render for every scroll
+   * frame, of a subtree carrying the whole information panel, to move one
+   * number that only the draw loop ever reads.
+   */
+  zoom?: React.RefObject<number>;
   className?: string;
 }
 
@@ -121,6 +150,7 @@ export function GlobeCanvas({
   variant = "panel",
   labelAnchors,
   markerLabels,
+  zoom,
   className,
 }: GlobeCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -134,6 +164,12 @@ export function GlobeCanvas({
   const manualUntil = useRef(0);
   const inView = useRef(false);
   const pointer = useRef({ dragging: false, moved: 0, x: 0, y: 0 });
+  /**
+   * Where the camera actually is. The caller's ref says where it should be -
+   * this is what chases it, so the section can write a raw scroll reading and
+   * still get a smooth arrival.
+   */
+  const zoomLevel = useRef(ZOOM_MIN);
   /** Screen positions of every market, refreshed each frame for hit testing. */
   const hits = useRef<{ index: number; x: number; y: number }[]>([]);
   /**
@@ -142,6 +178,8 @@ export function GlobeCanvas({
    * a frame - on every one of its own renders.
    */
   const layout = useRef(frame);
+  /** The caller's camera ref, held the same way and for the same reason. */
+  const camera = useRef(zoom);
   const anchors = useRef(labelAnchors);
   const anchorLeft = useRef(Number.POSITIVE_INFINITY);
   /**
@@ -179,6 +217,10 @@ export function GlobeCanvas({
   useEffect(() => {
     layout.current = frame;
   }, [frame]);
+
+  useEffect(() => {
+    camera.current = zoom;
+  }, [zoom]);
 
   useEffect(() => {
     anchors.current = labelAnchors;
@@ -295,11 +337,42 @@ export function GlobeCanvas({
         linkProgress.current = Math.min(1, linkProgress.current + dt * 0.85);
       }
 
+      /* --- Camera ------------------------------------------------------ */
+      /*
+        Where the caller says the camera should be, clamped here rather than
+        trusted, so no mistake at the other end of the ref can put the globe
+        somewhere the canvas cannot hold it.
+      */
+      const target = Math.max(
+        ZOOM_MIN,
+        Math.min(ZOOM_MAX, camera.current?.current ?? ZOOM_MIN),
+      );
+
+      if (zoomLevel.current !== target) {
+        zoomLevel.current = approach(zoomLevel.current, target, ZOOM_EASE, dt);
+
+        // Settle exactly rather than asymptotically, so a globe that is back at
+        // the top of the section compares equal to 1 and takes the untouched
+        // path below - which is what makes the return exact rather than close.
+        if (Math.abs(zoomLevel.current - target) < 0.0004) {
+          zoomLevel.current = target;
+        }
+      }
+
+      const scale = zoomLevel.current;
+
       /* --- Frame ------------------------------------------------------- */
       const { cx: fx, cy: fy, radius: fr } = layout.current;
       const cx = width * fx;
       const cy = height * fy;
-      const radius = Math.min(width, height) * fr;
+      /*
+        `baseRadius` is the placement the caller asked for; `radius` is what the
+        viewer is actually looking at. They are the same number until someone
+        zooms, so nothing about the default view is computed any differently
+        from the way it was before.
+      */
+      const baseRadius = Math.min(width, height) * fr;
+      const radius = baseRadius * scale;
 
       geometry.current.cx = cx;
       geometry.current.cy = cy;
@@ -338,18 +411,24 @@ export function GlobeCanvas({
         frame. So they are rendered once into two offscreen layers and blitted
         thereafter, and only the parts that actually turn are redrawn. Rebuilt
         only when the geometry itself changes.
+
+        Built for the PLACEMENT radius, not the zoomed one. Everything in them
+        scales linearly with the radius about the same centre, so a zoomed globe
+        blits the layer it already has at a larger size rather than re-rendering
+        those four gradients on every frame of a zoom - which is the one thing
+        that would have made this expensive.
       */
       if (
         !layers ||
         layers.cx !== cx ||
         layers.cy !== cy ||
-        layers.radius !== radius ||
+        layers.radius !== baseRadius ||
         layers.dpr !== backingRatio
       ) {
-        layers = buildLayers(backingRatio, cx, cy, radius, compact, hero);
+        layers = buildLayers(backingRatio, cx, cy, baseRadius, compact, hero);
       }
 
-      ctx.drawImage(layers.base, layers.originX, layers.originY, layers.size, layers.size);
+      blitLayer(ctx, layers.base, layers, cx, cy, scale);
 
       ctx.save();
       ctx.beginPath();
@@ -377,7 +456,7 @@ export function GlobeCanvas({
       ctx.restore();
 
       // Terminator and rim, pre-rendered together.
-      ctx.drawImage(layers.overlay, layers.originX, layers.originY, layers.size, layers.size);
+      blitLayer(ctx, layers.overlay, layers, cx, cy, scale);
 
       if (hero) {
         // Left boundary for the arcs, as a fraction of the layer. The layer
@@ -615,6 +694,37 @@ interface GlobeLayers {
   originX: number;
   originY: number;
   size: number;
+}
+
+/**
+ * Blits a pre-rendered layer, scaled about the centre of the disc.
+ *
+ * At rest this is the drawImage call it replaced, argument for argument - the
+ * default view must not go anywhere near the arithmetic. Once zoomed, the same
+ * layer is drawn larger about the same centre, which is exact: every gradient
+ * in it is a function of the radius and the centre alone, so scaling the blit
+ * and rebuilding at the new radius produce the same picture.
+ */
+function blitLayer(
+  ctx: CanvasRenderingContext2D,
+  layer: HTMLCanvasElement,
+  layers: GlobeLayers,
+  cx: number,
+  cy: number,
+  scale: number,
+) {
+  if (scale === 1) {
+    ctx.drawImage(layer, layers.originX, layers.originY, layers.size, layers.size);
+    return;
+  }
+
+  ctx.drawImage(
+    layer,
+    cx + (layers.originX - cx) * scale,
+    cy + (layers.originY - cy) * scale,
+    layers.size * scale,
+    layers.size * scale,
+  );
 }
 
 function buildLayers(
