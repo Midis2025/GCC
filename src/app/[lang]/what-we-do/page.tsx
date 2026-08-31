@@ -136,12 +136,12 @@ export default function WhatWeDoPage() {
           {commercialModelContent.exclusions.map((item, index) => (
             <div
               key={item.term}
-              className="relative border-b border-(--color-border) pt-9 pb-8 sm:border-b-0 sm:pr-10 sm:not-first:border-l sm:not-first:border-(--color-border) sm:not-first:pl-10 sm:not-last:pr-10"
+              className="relative border-b border-(--color-border) pt-9 pb-8 sm:border-b-0 sm:pe-10 sm:not-first:border-s sm:not-first:border-(--color-border) sm:not-first:ps-10 sm:not-last:pe-10"
             >
               <Reveal delay={index * 140}>
                 <span
                   aria-hidden="true"
-                  className="about-rule absolute left-0 top-0 block h-px w-full bg-(--color-accent) sm:w-[calc(100%-2.5rem)]"
+                  className="about-rule absolute start-0 top-0 block h-px w-full bg-(--color-accent) sm:w-[calc(100%-2.5rem)]"
                 />
 
                 <span

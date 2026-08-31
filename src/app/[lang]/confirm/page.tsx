@@ -122,7 +122,7 @@ export default async function ConfirmPage({ searchParams }: PageProps<"/[lang]/c
       {detail && (
         <Section spacing="md" aria-label="Status">
           <Reveal>
-            <p className="max-w-[62ch] border-l-2 border-(--color-accent)/50 pl-5 text-[0.9375rem] leading-relaxed text-(--color-foreground-subtle)">
+            <p className="max-w-[62ch] border-s-2 border-(--color-accent)/50 ps-5 text-[0.9375rem] leading-relaxed text-(--color-foreground-subtle)">
               {detail}
             </p>
           </Reveal>

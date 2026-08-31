@@ -66,7 +66,7 @@ export default async function InsightItemPage({ params }: PageProps<"/[lang]/ins
           />
           <div
             aria-hidden="true"
-            className="rule-field absolute inset-y-0 right-0 -z-10 w-[38%] opacity-40 [--rule-gap:6rem]"
+            className="rule-field absolute inset-y-0 end-0 -z-10 w-[38%] opacity-40 [--rule-gap:6rem]"
           />
 
           <Container className="relative z-10">
@@ -106,7 +106,7 @@ export default async function InsightItemPage({ params }: PageProps<"/[lang]/ins
             the only thing that decides whether a reader sees the line.
           */}
           {item.clientDisclosure && (
-            <div className="mb-12 border-l-2 border-(--color-accent) bg-(--color-surface-muted) px-6 py-5">
+            <div className="mb-12 border-s-2 border-(--color-accent) bg-(--color-surface-muted) px-6 py-5">
               <p className="text-label uppercase text-(--color-accent)">Disclosure</p>
               <p className="mt-3 text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
                 {clientDisclosureTemplate.replace("{company}", item.clientName ?? "This company")}

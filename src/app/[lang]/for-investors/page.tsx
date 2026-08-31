@@ -185,7 +185,7 @@ export default function ForInvestorsPage() {
                 className="border-b border-(--color-border) sm:border-b-0 sm:border-t sm:basis-1/2 lg:basis-1/5"
               >
                 <Reveal delay={index * 90}>
-                  <div className="flex items-baseline gap-4 py-6 sm:flex-col sm:items-start sm:gap-3 sm:pr-6">
+                  <div className="flex items-baseline gap-4 py-6 sm:flex-col sm:items-start sm:gap-3 sm:pe-6">
                     <span
                       aria-hidden="true"
                       className="num font-display-sm text-[0.625rem] tracking-[0.14em] text-(--color-accent)"
@@ -326,7 +326,7 @@ export default function ForInvestorsPage() {
             bleed on What We Do, so the two pages share one idea of how a
             feature panel meets the page edge.
           */}
-          <div className="tokens-dark relative isolate overflow-hidden lg:-ml-(--gutter)">
+          <div className="tokens-dark relative isolate overflow-hidden lg:-ms-(--gutter)">
             <div aria-hidden="true" className="absolute inset-0 -z-20">
               <NextImage
                 src={backdrops.register.src}

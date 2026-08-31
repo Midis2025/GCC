@@ -60,7 +60,7 @@ export function Intro() {
           photograph goes inside the clip; the plate is positioned against this
           wrapper instead.
         */}
-        <div className="relative lg:-mr-(--gutter)">
+        <div className="relative lg:-me-(--gutter)">
           <Reveal variant="media" delay={200}>
             {/*
               Square rather than 4:5. The taller crop stood ~300px clear of the
@@ -82,7 +82,7 @@ export function Intro() {
             />
           </Reveal>
 
-          <div className="absolute -bottom-6 left-4 z-10 max-w-[19rem] border-l-2 border-(--color-accent) bg-(--color-canvas) py-5 pl-6 pr-5 shadow-[var(--shadow-lg)] sm:-bottom-8 sm:left-6 lg:-left-14">
+          <div className="absolute -bottom-6 start-4 z-10 max-w-[19rem] border-s-2 border-(--color-accent) bg-(--color-canvas) py-5 ps-6 pe-5 shadow-[var(--shadow-lg)] sm:-bottom-8 sm:start-6 lg:-start-14">
             <p className="text-label uppercase text-(--color-foreground-subtle)">
               The question behind the work
             </p>
@@ -99,7 +99,7 @@ export function Intro() {
             <li key={principle.title}>
               <Reveal
                 delay={index * 70}
-                className="flex h-full gap-5 border-b border-(--color-border) py-8 sm:py-9 lg:border-b-0 lg:pr-10"
+                className="flex h-full gap-5 border-b border-(--color-border) py-8 sm:py-9 lg:border-b-0 lg:pe-10"
               >
                 <span
                   aria-hidden="true"

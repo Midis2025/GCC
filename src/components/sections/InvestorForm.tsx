@@ -212,7 +212,7 @@ export function InvestorForm({
         </p>
 
         {!result.stored && (
-          <p className="mt-6 border-l-2 border-(--color-accent)/50 pl-4 text-sm leading-relaxed text-(--color-foreground-subtle)">
+          <p className="mt-6 border-s-2 border-(--color-accent)/50 ps-4 text-sm leading-relaxed text-(--color-foreground-subtle)">
             Note for review: the CRM is not yet connected, so this registration was not stored.
             This state exists so the completed journey can be assessed. Configure the CRM before
             the site is used with real registrants.
@@ -349,7 +349,7 @@ export function InvestorForm({
       </div>
 
       {failure && (
-        <p role="alert" className="border-l-2 border-(--color-danger) pl-4 text-sm text-(--color-danger)">
+        <p role="alert" className="border-s-2 border-(--color-danger) ps-4 text-sm text-(--color-danger)">
           {failure}
         </p>
       )}

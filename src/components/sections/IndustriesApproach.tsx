@@ -56,7 +56,7 @@ export function IndustriesApproach() {
           */}
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute -top-4 -left-1 -z-10 hidden select-none font-display leading-[0.86] tracking-tight text-(--color-foreground)/[0.04] text-[clamp(3rem,7vw,6rem)] sm:block"
+            className="pointer-events-none absolute -top-4 -start-1 -z-10 hidden select-none font-display leading-[0.86] tracking-tight text-(--color-foreground)/[0.04] text-[clamp(3rem,7vw,6rem)] sm:block"
           >
             Not a
             <br />

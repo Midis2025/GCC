@@ -113,7 +113,7 @@ export function OpeningQuestions() {
                 */}
                 <span
                   aria-hidden="true"
-                  className="pointer-events-none absolute -top-[0.05em] right-0 -z-10 num font-display leading-none text-(--color-foreground)/[0.06] text-[clamp(5rem,12vw,10rem)]"
+                  className="pointer-events-none absolute -top-[0.05em] end-0 -z-10 num font-display leading-none text-(--color-foreground)/[0.06] text-[clamp(5rem,12vw,10rem)]"
                 >
                   {entry.number}
                 </span>

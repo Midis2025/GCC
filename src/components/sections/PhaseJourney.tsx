@@ -52,7 +52,7 @@ export function PhaseJourney() {
         */}
         <span
           aria-hidden="true"
-          className="absolute left-[0.4375rem] top-2 bottom-2 w-px bg-(--color-border) sm:hidden"
+          className="absolute start-[0.4375rem] top-2 bottom-2 w-px bg-(--color-border) sm:hidden"
         />
         <span
           aria-hidden="true"
@@ -60,7 +60,7 @@ export function PhaseJourney() {
         />
 
         {roadshowPhases.phases.map((phase, index) => (
-          <li key={phase.key} className="relative pl-8 sm:pl-0">
+          <li key={phase.key} className="relative ps-8 sm:ps-0">
             {/*
               Station marker for the vertical spine. A DIRECT child of the
               <li>, never inside <Reveal>: the reveal applies a transform, and
@@ -70,7 +70,7 @@ export function PhaseJourney() {
             */}
             <span
               aria-hidden="true"
-              className="absolute left-0 top-0 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-(--color-surface-muted) sm:hidden"
+              className="absolute start-0 top-0 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-(--color-surface-muted) sm:hidden"
             >
               <span className="h-1.5 w-1.5 rounded-full bg-(--color-accent)" />
             </span>

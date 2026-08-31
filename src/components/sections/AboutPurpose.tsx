@@ -101,7 +101,7 @@ export function AboutPurpose() {
                     */}
                     <span
                       aria-hidden="true"
-                      className="about-criterion-rule ml-auto hidden h-px flex-1 bg-(--color-accent)/45 sm:block"
+                      className="about-criterion-rule ms-auto hidden h-px flex-1 bg-(--color-accent)/45 sm:block"
                     />
                   </div>
                 </Reveal>

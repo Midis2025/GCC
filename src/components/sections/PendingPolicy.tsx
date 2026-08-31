@@ -36,7 +36,7 @@ export function PendingPolicy({ eyebrow, title, scope }: PendingPolicyProps) {
         every other section, and the reading width is carried by the block.
       */}
       <Section spacing="lg">
-        <div className="max-w-[var(--page-max-narrow)] border-l-2 border-(--color-accent) pl-6">
+        <div className="max-w-[var(--page-max-narrow)] border-s-2 border-(--color-accent) ps-6">
           <h2 className="text-label uppercase text-(--color-foreground-subtle)">
             Document pending
           </h2>

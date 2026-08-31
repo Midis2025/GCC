@@ -63,8 +63,8 @@ export function ContinuityCompare() {
                     disappears with them when they stack.
                   */
                   isProgramme
-                    ? "sm:border-l sm:border-(--color-border) sm:pl-10 lg:pl-14"
-                    : "sm:pr-10 lg:pr-14",
+                    ? "sm:border-s sm:border-(--color-border) sm:ps-10 lg:ps-14"
+                    : "sm:pe-10 lg:pe-14",
                 )}
               >
                 <span

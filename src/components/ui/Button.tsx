@@ -66,7 +66,12 @@ function ArrowGlyph() {
       strokeLinejoin="round"
       aria-hidden="true"
       focusable="false"
-      className="transition-transform duration-300 ease-out group-hover:translate-x-1"
+      /*
+        `btn-arrow` is the hook that flips this in Arabic - see globals.css.
+        The arrow points the way the reader is going, and in RTL that is the
+        other way. Nothing else in the button is mirrored.
+      */
+      className="btn-arrow transition-transform duration-300 ease-out group-hover:translate-x-1"
     >
       <path d="M2 7h10" />
       <path d="M8 3l4 4-4 4" />

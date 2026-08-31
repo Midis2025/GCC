@@ -44,7 +44,7 @@ export function LegalPageLayout({ page }: { page: LegalPage }) {
         <Container width="narrow" className="px-0">
           {/* Status. First, and unmissable. */}
           <Reveal>
-            <div className="border-l-2 border-(--color-accent) bg-(--color-surface-muted) px-6 py-6">
+            <div className="border-s-2 border-(--color-accent) bg-(--color-surface-muted) px-6 py-6">
               <p className="text-label uppercase text-(--color-accent)">
                 {pendingCounselNotice.label}
               </p>
@@ -81,7 +81,7 @@ export function LegalPageLayout({ page }: { page: LegalPage }) {
                       {section.heading}
                     </Heading>
                   </div>
-                  <p className="mt-3 pl-8 text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
+                  <p className="mt-3 ps-8 text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
                     {section.scope}
                   </p>
                 </li>

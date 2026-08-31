@@ -110,7 +110,7 @@ export function CapabilityShowcase() {
                             className={cn(
                               "origin-left transition-[color,transform] duration-500 ease-out",
                               isActive
-                                ? "translate-x-1.5 text-(--color-accent)"
+                                ? "ltr:translate-x-1.5 rtl:-translate-x-1.5 text-(--color-accent)"
                                 : "translate-x-0 text-(--color-foreground)",
                             )}
                           >
@@ -173,7 +173,7 @@ export function CapabilityShowcase() {
                           className={cn(
                             "mt-2 hidden shrink-0 transition-[transform,color] duration-500 ease-out sm:block",
                             isActive
-                              ? "translate-x-1.5 text-(--color-accent)"
+                              ? "ltr:translate-x-1.5 rtl:-translate-x-1.5 text-(--color-accent)"
                               : "translate-x-0 text-(--color-foreground-subtle)",
                           )}
                         >

@@ -177,7 +177,7 @@ export function CompanyForm({ source }: { source: string }) {
         </p>
 
         {!result.stored && (
-          <p className="mt-6 border-l-2 border-(--color-accent)/50 pl-4 text-sm leading-relaxed text-(--color-foreground-subtle)">
+          <p className="mt-6 border-s-2 border-(--color-accent)/50 ps-4 text-sm leading-relaxed text-(--color-foreground-subtle)">
             Note for review: the CRM is not yet connected, so this enquiry was not stored. This
             state exists so the completed journey can be assessed.
           </p>
@@ -323,7 +323,7 @@ export function CompanyForm({ source }: { source: string }) {
       {failure && (
         <p
           role="alert"
-          className="border-l-2 border-(--color-danger) pl-4 text-sm text-(--color-danger)"
+          className="border-s-2 border-(--color-danger) ps-4 text-sm text-(--color-danger)"
         >
           {failure}
         </p>

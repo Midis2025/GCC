@@ -77,9 +77,9 @@ export function HeroStats() {
               // Hairlines between cells only - never on the panel's own edges,
               // which the border already draws.
               index > 0 ? "border-t border-white/10 xs:border-t-0" : "",
-              index % 2 === 1 ? "xs:border-l xs:border-white/10" : "",
+              index % 2 === 1 ? "xs:border-s xs:border-white/10" : "",
               index >= 2 ? "xs:border-t xs:border-white/10 lg:border-t-0" : "",
-              "lg:[&:not(:first-child)]:border-l lg:[&:not(:first-child)]:border-white/10",
+              "lg:[&:not(:first-child)]:border-s lg:[&:not(:first-child)]:border-white/10",
             ].join(" ")}
           >
             <svg

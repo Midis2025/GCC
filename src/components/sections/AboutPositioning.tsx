@@ -66,7 +66,7 @@ export function AboutPositioning() {
             */}
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute -top-5 -left-1 -z-10 select-none font-display leading-[0.8] tracking-tight text-(--color-foreground)/[0.05] text-[clamp(3.5rem,8vw,7rem)]"
+              className="pointer-events-none absolute -top-5 -start-1 -z-10 select-none font-display leading-[0.8] tracking-tight text-(--color-foreground)/[0.05] text-[clamp(3.5rem,8vw,7rem)]"
             >
               Clarity
             </span>
@@ -80,7 +80,7 @@ export function AboutPositioning() {
               */}
               <span
                 aria-hidden="true"
-                className="absolute -top-1 left-0 font-display text-[3.5rem] leading-none text-(--color-accent)/70"
+                className="absolute -top-1 start-0 font-display text-[3.5rem] leading-none text-(--color-accent)/70"
               >
                 &ldquo;
               </span>

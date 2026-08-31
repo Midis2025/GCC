@@ -269,6 +269,61 @@
   line-height: 1.25;
 }
 
+/*
+ * ============================================================================
+ * RTL - the things logical properties cannot reach
+ * ============================================================================
+ * Margins, padding, borders, insets and text alignment are all handled by
+ * logical utilities (`ms-`, `pe-`, `border-s`, `start-`, `text-start`), which
+ * resolve against `dir` on their own. Grid and flex do too: a two-column grid
+ * reverses its columns in RTL with no help, which is how the globe ends up
+ * opposite its text.
+ *
+ * `transform-origin` does not. It takes physical keywords only - there is no
+ * `transform-origin: start` - so every rule that GROWS FROM ITS LEADING EDGE
+ * has to be told where that edge is. Left in place, each of these would draw
+ * itself backwards in Arabic: a rule that should sweep out from under the
+ * heading would instead retract towards it.
+ *
+ * These are the site's expanding rules, progress fills and hover sweeps. The
+ * animations themselves are untouched - same duration, same easing, same
+ * trigger - only the end they start from.
+ */
+[dir="rtl"] .insight-connector,
+[dir="rtl"] .why-progress-x,
+[dir="rtl"] .about-rule,
+[dir="rtl"] .about-stage-rule,
+[dir="rtl"] .about-principle-rule,
+[dir="rtl"] .ind-nav-edge,
+[dir="rtl"] .ind-focus-rule,
+[dir="rtl"] .ind-market-rule,
+[dir="rtl"] .approach-progress,
+[dir="rtl"] .origin-left {
+  transform-origin: right;
+}
+
+[dir="rtl"] .btn-sweep {
+  transform-origin: right center;
+}
+
+/*
+ * The arrow on a button, and every chevron that means "onward".
+ *
+ * Onward is leftward in Arabic, so the glyph is flipped. This mirrors the
+ * ARROW only - it sits inside `.group` alongside text and never contains any,
+ * so nothing legible is reversed by it. Logos, the globe, photographs, maps
+ * and the Arabic wordmark are all deliberately absent from this rule: mirroring
+ * a map would move the Gulf to the wrong side of the world.
+ *
+ * The hover nudge travels with it. `group-hover:translate-x-1` pushes the arrow
+ * along the reading direction, and under a flipped parent that is already the
+ * correct way, because the translate is applied in the flipped coordinate
+ * space.
+ */
+[dir="rtl"] .btn-arrow {
+  transform: scaleX(-1);
+}
+
 @theme {
   /* Breakpoints. Mirrored in src/lib/breakpoints.ts - keep in sync. */
   --breakpoint-xs: 30rem;

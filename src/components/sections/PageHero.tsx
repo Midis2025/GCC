@@ -93,7 +93,7 @@ export function PageHero({
         a client-side breakpoint check.
       */}
       {isSplit && (
-        <div aria-hidden="true" className="absolute inset-y-0 right-0 -z-20 hidden w-[54%] lg:block">
+        <div aria-hidden="true" className="absolute inset-y-0 end-0 -z-20 hidden w-[54%] lg:block">
           <NextImage
             src={photo.src}
             alt=""

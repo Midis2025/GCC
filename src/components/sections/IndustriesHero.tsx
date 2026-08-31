@@ -61,7 +61,7 @@ export function IndustriesHero() {
         wider than the 45% it visually occupies so its left edge sits under the
         opaque part of the wash rather than showing as a seam.
       */}
-      <div aria-hidden="true" className="absolute inset-y-0 right-0 -z-20 w-full lg:w-[62%]">
+      <div aria-hidden="true" className="absolute inset-y-0 end-0 -z-20 w-full lg:w-[62%]">
         <div className="about-parallax absolute inset-0">
           <NextImage
             src={photo.src}
@@ -109,7 +109,7 @@ export function IndustriesHero() {
 
       <div
         aria-hidden="true"
-        className="rule-field absolute inset-y-0 left-0 -z-10 hidden w-[38%] opacity-40 [--rule-gap:6rem] [mask-image:linear-gradient(90deg,transparent,black_22%,black_58%,transparent_100%)] lg:block"
+        className="rule-field absolute inset-y-0 start-0 -z-10 hidden w-[38%] opacity-40 [--rule-gap:6rem] [mask-image:linear-gradient(90deg,transparent,black_22%,black_58%,transparent_100%)] lg:block"
       />
 
       <div

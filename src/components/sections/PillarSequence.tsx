@@ -472,7 +472,7 @@ export function PillarSequence({
               {/* Bronze rail, growing down out of the hairline. */}
               <span
                 aria-hidden="true"
-                className="why-rail absolute left-0 top-0 h-20 w-[2px] bg-(--color-accent)"
+                className="why-rail absolute start-0 top-0 h-20 w-[2px] bg-(--color-accent)"
               />
 
               {/*
@@ -497,7 +497,7 @@ export function PillarSequence({
               */}
               <div
                 className={cn(
-                  "relative flex flex-col justify-center overflow-hidden py-9 pl-7 pr-5 sm:py-11 sm:pl-10 sm:pr-8",
+                  "relative flex flex-col justify-center overflow-hidden py-9 ps-7 pe-5 sm:py-11 sm:ps-10 sm:pe-8",
                   /*
                     The last panel gets a shorter floor.
 
@@ -556,7 +556,7 @@ export function PillarSequence({
                 */}
                 <span
                   aria-hidden="true"
-                  className="why-numeral pointer-events-none absolute top-[0.1em] right-2 -z-10 num font-display leading-none text-(--color-foreground) text-[clamp(5rem,11vw,9.5rem)] sm:right-4"
+                  className="why-numeral pointer-events-none absolute top-[0.1em] end-2 -z-10 num font-display leading-none text-(--color-foreground) text-[clamp(5rem,11vw,9.5rem)] sm:end-4"
                 >
                   {String(index + 1).padStart(2, "0")}
                 </span>

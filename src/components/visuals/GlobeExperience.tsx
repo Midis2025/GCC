@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { GlobeMarket } from "@/data/outreach-globe";
 import { globeMarkets, globePanelContent } from "@/data/outreach-globe";
 import { outreachContent } from "@/data/homepage";
+import { useIsRtl } from "@/components/layout/LocaleProvider";
 import { GLOW_REACH, ZOOM_MIN, glowBox } from "@/lib/globe";
 import { cn } from "@/lib/utils";
 
@@ -49,6 +50,7 @@ interface Tooltip {
  * market is announced rather than silently redrawn.
  */
 export function GlobeExperience({ className }: { className?: string }) {
+  const rtl = useIsRtl();
   const [activeIndex, setActiveIndex] = useState(0);
   const [tooltip, setTooltip] = useState<Tooltip>({ market: null, visible: false });
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -150,14 +152,33 @@ export function GlobeExperience({ className }: { className?: string }) {
     globe keeps exactly this size and position and the light gets somewhere to
     fade out.
   */
+  /*
+    In Arabic the disc moves to the other side of its stage.
+
+    The section is a two-column grid, and CSS Grid reverses its columns under
+    `dir="rtl"` on its own - so the copy that sits left in English sits right in
+    Arabic, and the globe swaps with it. What grid cannot do is move the disc
+    WITHIN its own stage: `cx: 0.55` pushes it right to clear the information
+    panel floating over the lower left, and in Arabic that panel floats over
+    the lower right instead. Left at 0.55 the disc would be pushed towards the
+    panel rather than away from it, and the two would overlap.
+
+    Mirrored about the centre: 0.55 becomes 0.45. `cy` and `radius` are
+    unchanged, so the globe is the same size in the same vertical position.
+
+    The GLOBE ITSELF IS NOT MIRRORED. This moves where the disc sits; nothing
+    reverses the map on it. The coastlines, the market nodes and the Gulf keep
+    the geography they had - a mirrored map would put the Gulf on the wrong
+    side of the world, which is the one thing an RTL layout must never do.
+  */
   const { inset, frame } = useMemo(
     () =>
       glowBox({
-        cx: panelFloats ? 0.55 : 0.5,
+        cx: panelFloats ? (rtl ? 0.45 : 0.55) : 0.5,
         cy: panelFloats ? 0.44 : 0.5,
         radius: compact ? 0.38 : 0.44,
       }),
-    [panelFloats, compact],
+    [panelFloats, compact, rtl],
   );
 
   return (
@@ -198,7 +219,7 @@ export function GlobeExperience({ className }: { className?: string }) {
               ref={tooltipElement}
               aria-hidden="true"
               className={cn(
-                "pointer-events-none absolute left-0 top-0 z-20 transition-opacity duration-200",
+                "pointer-events-none absolute start-0 top-0 z-20 transition-opacity duration-200",
                 tooltip.visible ? "opacity-100" : "opacity-0",
               )}
             >
@@ -233,7 +254,7 @@ export function GlobeExperience({ className }: { className?: string }) {
             "relative z-10 mt-6 border border-white/12 p-6 backdrop-blur-[14px] sm:p-7",
             "bg-[linear-gradient(152deg,rgba(21,32,44,0.84)_0%,rgba(12,19,28,0.74)_52%,rgba(9,15,22,0.82)_100%)]",
             "shadow-[0_32px_70px_-38px_rgba(0,0,0,0.85)]",
-            "lg:absolute lg:bottom-1 lg:-left-6 lg:mt-0 lg:w-[17.5rem] lg:p-6",
+            "lg:absolute lg:bottom-1 lg:-start-6 lg:mt-0 lg:w-[17.5rem] lg:p-6",
           )}
         >
           <span

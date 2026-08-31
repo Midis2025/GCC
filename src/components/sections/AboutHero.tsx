@@ -58,7 +58,7 @@ export function AboutHero() {
       */}
       <div
         aria-hidden="true"
-        className="absolute inset-y-0 right-0 -z-20 w-full lg:w-[62%]"
+        className="absolute inset-y-0 end-0 -z-20 w-full lg:w-[62%]"
       >
         <div className="about-parallax absolute inset-0">
           <NextImage
@@ -88,7 +88,7 @@ export function AboutHero() {
       {/* Architectural field behind the type, at a whisper. */}
       <div
         aria-hidden="true"
-        className="rule-field absolute inset-y-0 left-0 -z-10 hidden w-[38%] opacity-40 [--rule-gap:6rem] [mask-image:linear-gradient(90deg,transparent,black_22%,black_58%,transparent_100%)] lg:block"
+        className="rule-field absolute inset-y-0 start-0 -z-10 hidden w-[38%] opacity-40 [--rule-gap:6rem] [mask-image:linear-gradient(90deg,transparent,black_22%,black_58%,transparent_100%)] lg:block"
       />
 
       {/* Closing hairline, so the hero cuts rather than fades into the page. */}

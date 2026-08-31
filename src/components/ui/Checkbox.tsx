@@ -82,7 +82,7 @@ export function Checkbox({ label, description, error, className, id, ...props }:
       </label>
 
       {description && (
-        <p id={descriptionId} className="pl-[2.125rem] text-sm text-(--color-foreground-subtle)">
+        <p id={descriptionId} className="ps-[2.125rem] text-sm text-(--color-foreground-subtle)">
           {description}
         </p>
       )}
@@ -91,7 +91,7 @@ export function Checkbox({ label, description, error, className, id, ...props }:
         <p
           id={errorId}
           role="alert"
-          className="pl-[2.125rem] text-sm text-(--color-danger)"
+          className="ps-[2.125rem] text-sm text-(--color-danger)"
         >
           {error}
         </p>

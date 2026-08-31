@@ -131,7 +131,7 @@ export function AboutEngagements() {
               */}
               <span
                 aria-hidden="true"
-                className="about-stage-ghost pointer-events-none absolute right-0 -top-4 -z-10 num font-display leading-none text-(--color-foreground) text-[clamp(4.5rem,10vw,9rem)]"
+                className="about-stage-ghost pointer-events-none absolute end-0 -top-4 -z-10 num font-display leading-none text-(--color-foreground) text-[clamp(4.5rem,10vw,9rem)]"
               >
                 {String(index + 1).padStart(2, "0")}
               </span>

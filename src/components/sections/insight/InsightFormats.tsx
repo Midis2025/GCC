@@ -345,7 +345,7 @@ export function EditorialThemesSection() {
                   information rather than content - the theme is the content -
                   so it is allowed to be revealed rather than always present.
                 */}
-                <span className="theme-tag col-start-2 mt-3 text-label uppercase text-(--color-foreground-subtle) sm:col-start-3 sm:mt-0 sm:text-right">
+                <span className="theme-tag col-start-2 mt-3 text-label uppercase text-(--color-foreground-subtle) sm:col-start-3 sm:mt-0 sm:text-end">
                   {theme.tag}
                 </span>
               </div>

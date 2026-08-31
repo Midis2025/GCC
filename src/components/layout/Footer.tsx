@@ -32,7 +32,7 @@ export async function Footer() {
     <footer className="surface-dark relative isolate overflow-hidden">
       <div
         aria-hidden="true"
-        className="rule-field absolute inset-y-0 right-0 -z-10 w-[40%] opacity-70 [--rule-gap:6.5rem]"
+        className="rule-field absolute inset-y-0 end-0 -z-10 w-[40%] opacity-70 [--rule-gap:6.5rem]"
       />
 
       <Container className="pb-10 pt-[var(--space-section-md)]">
@@ -45,7 +45,7 @@ export async function Footer() {
             </p>
           </div>
 
-          <div className="lg:text-right">
+          <div className="lg:text-end">
             <p className="text-label uppercase text-(--color-foreground-subtle)">
               Markets
             </p>
@@ -161,7 +161,7 @@ export async function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={link.label}
-                className="-ml-3 inline-flex h-11 w-11 items-center justify-center text-(--color-foreground-muted) transition-colors hover:text-(--color-foreground) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
+                className="-ms-3 inline-flex h-11 w-11 items-center justify-center text-(--color-foreground-muted) transition-colors hover:text-(--color-foreground) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
               >
                 <LinkedInGlyph />
               </a>

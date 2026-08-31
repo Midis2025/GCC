@@ -59,7 +59,7 @@ export function IndustriesIntro() {
             {industries.map((industry, index) => (
               <li
                 key={industry.slug}
-                className="ind-contents-index num font-display-sm bg-(--color-canvas) px-2 text-[0.6875rem] tracking-[0.14em] text-(--color-foreground-subtle) first:pl-0 last:pr-0"
+                className="ind-contents-index num font-display-sm bg-(--color-canvas) px-2 text-[0.6875rem] tracking-[0.14em] text-(--color-foreground-subtle) first:ps-0 last:pe-0"
                 style={{ "--reveal-delay": `${360 + index * 90}ms` } as React.CSSProperties}
               >
                 <span className="sr-only">{industry.title}, </span>

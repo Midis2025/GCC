@@ -40,7 +40,7 @@ export function Select({ options, placeholder, className, ...props }: SelectProp
         className={cn(
           controlClasses,
           // Room for the mark, and no platform arrow behind it.
-          "appearance-none pr-12",
+          "appearance-none pe-12",
           /*
             The OPEN menu.
 
@@ -91,7 +91,7 @@ export function Select({ options, placeholder, className, ...props }: SelectProp
       */}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-(--color-accent)"
+        className="pointer-events-none absolute inset-y-0 end-4 flex items-center text-(--color-accent)"
       >
         <svg width="11" height="7" viewBox="0 0 11 7" fill="none" focusable="false">
           <path

@@ -169,14 +169,14 @@ export function MobileMenu({ items, cta, secondaryCta, className }: MobileMenuPr
         inert={!open}
         data-open={open ? "true" : "false"}
         className={cn(
-          "surface-dark fixed inset-y-0 right-0 z-50 flex w-full max-w-[27rem] flex-col overflow-y-auto px-6 pb-8 pt-5 sm:px-8",
+          "surface-dark fixed inset-y-0 end-0 z-50 flex w-full max-w-[27rem] flex-col overflow-y-auto px-6 pb-8 pt-5 sm:px-8",
           "transition-transform duration-500 ease-[var(--ease-out-expo)] motion-reduce:transition-none",
-          open ? "translate-x-0" : "translate-x-full",
+          open ? "translate-x-0" : "ltr:translate-x-full rtl:-translate-x-full",
         )}
       >
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 left-0 w-px bg-[linear-gradient(to_bottom,transparent,rgba(184,148,95,0.45),transparent)]"
+          className="pointer-events-none absolute inset-y-0 start-0 w-px bg-[linear-gradient(to_bottom,transparent,rgba(184,148,95,0.45),transparent)]"
         />
 
         <div className="flex items-center justify-between">
@@ -187,7 +187,7 @@ export function MobileMenu({ items, cta, secondaryCta, className }: MobileMenuPr
             type="button"
             onClick={close}
             aria-label={t.nav.closeMenu}
-            className="-mr-2 inline-flex h-11 w-11 items-center justify-center text-(--color-foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+            className="-me-2 inline-flex h-11 w-11 items-center justify-center text-(--color-foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
           >
             <CloseGlyph />
           </button>
@@ -206,7 +206,7 @@ export function MobileMenu({ items, cta, secondaryCta, className }: MobileMenuPr
                 style={{ transitionDelay: open ? `${120 + index * 45}ms` : "0ms" } as CSSProperties}
                 className={cn(
                   "border-b border-(--color-border-subtle) transition-[opacity,transform] duration-500 ease-out motion-reduce:transition-none",
-                  open ? "translate-x-0 opacity-100" : "translate-x-6 opacity-0",
+                  open ? "translate-x-0 opacity-100" : "ltr:translate-x-6 rtl:-translate-x-6 opacity-0",
                 )}
               >
                 <NavLink
@@ -295,7 +295,7 @@ export function MobileMenu({ items, cta, secondaryCta, className }: MobileMenuPr
         aria-expanded={open}
         aria-controls={panelId}
         aria-label={t.nav.openMenu}
-        className="-mr-2 inline-flex h-11 w-11 items-center justify-center text-(--color-foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+        className="-me-2 inline-flex h-11 w-11 items-center justify-center text-(--color-foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
       >
         <MenuGlyph />
       </button>

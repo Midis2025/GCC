@@ -164,7 +164,7 @@ export function ArabicGap() {
               aria-hidden="true"
               lang="ar"
               dir="rtl"
-              className="arabic-mark pointer-events-none absolute bottom-5 left-6 select-none font-[system-ui,'Segoe_UI','Noto_Naskh_Arabic','Geeza_Pro',serif] text-[clamp(3rem,7vw,5.5rem)] leading-none text-[#f4f1eb]"
+              className="arabic-mark pointer-events-none absolute bottom-5 start-6 select-none font-[system-ui,'Segoe_UI','Noto_Naskh_Arabic','Geeza_Pro',serif] text-[clamp(3rem,7vw,5.5rem)] leading-none text-[#f4f1eb]"
             >
               {arabicGap.arabicMark}
             </span>
@@ -200,7 +200,7 @@ export function ArabicGap() {
                     style={{ "--route-index": index } as React.CSSProperties}
                     className="arabic-route-step relative flex flex-col items-start"
                   >
-                    <span className="arabic-route-node absolute -top-[1.3125rem] left-0 block h-1.5 w-1.5 rounded-full bg-(--color-accent)" />
+                    <span className="arabic-route-node absolute -top-[1.3125rem] start-0 block h-1.5 w-1.5 rounded-full bg-(--color-accent)" />
                     <span className="num font-display-sm text-[0.625rem] uppercase tracking-[0.16em] text-(--color-foreground)">
                       {step}
                     </span>

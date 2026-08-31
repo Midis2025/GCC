@@ -184,7 +184,7 @@ export function ContactForm() {
       {!contactFormConfig.deliveryConfigured && (
         <p
           id={statusId}
-          className="border-l-2 border-(--color-accent)/50 pl-4 text-sm leading-relaxed text-(--color-foreground-subtle)"
+          className="border-s-2 border-(--color-accent)/50 ps-4 text-sm leading-relaxed text-(--color-foreground-subtle)"
         >
           Form delivery is not yet connected. Submissions are not sent or stored.
         </p>

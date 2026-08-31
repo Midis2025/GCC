@@ -215,7 +215,7 @@ export function SectorExplorer() {
                         onClick={() => setActive(index)}
                         onMouseEnter={() => setActive(index)}
                         onFocus={() => setActive(index)}
-                        className="ind-nav group relative block w-full border-t border-(--color-foreground)/12 py-5 text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring) xl:py-6"
+                        className="ind-nav group relative block w-full border-t border-(--color-foreground)/12 py-5 text-start focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring) xl:py-6"
                       >
                         <span
                           aria-hidden="true"
@@ -232,7 +232,7 @@ export function SectorExplorer() {
                           {/* The gold line that extends on selection. */}
                           <span
                             aria-hidden="true"
-                            className="ind-nav-rule ml-auto hidden h-px w-14 bg-(--color-accent) xl:block"
+                            className="ind-nav-rule ms-auto hidden h-px w-14 bg-(--color-accent) xl:block"
                           />
                         </span>
                       </button>
@@ -326,7 +326,7 @@ export function SectorExplorer() {
                   */}
                   <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute -top-2 right-0 -z-10 select-none text-right"
+                    className="pointer-events-none absolute -top-2 end-0 -z-10 select-none text-end"
                   >
                     {current.keywords.map((word, index) => (
                       <span
@@ -373,7 +373,7 @@ export function SectorExplorer() {
                   aria-controls={`sector-panel-${industry.slug}`}
                   onClick={() => setOpen(isOpen ? null : index)}
                   data-open={isOpen ? "true" : "false"}
-                  className="ind-acc group flex w-full items-center gap-5 py-6 text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
+                  className="ind-acc group flex w-full items-center gap-5 py-6 text-start focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
                 >
                   <span className="ind-nav-index num font-display-sm text-[0.75rem] tracking-[0.14em]">
                     {industry.number}
@@ -388,7 +388,7 @@ export function SectorExplorer() {
                     changing rather than as an icon spinning.
                   */}
                   <span aria-hidden="true" className="relative block h-3.5 w-3.5 shrink-0">
-                    <span className="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-(--color-accent)" />
+                    <span className="absolute start-0 top-1/2 h-px w-full -translate-y-1/2 bg-(--color-accent)" />
                     <span className="ind-acc-bar absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-(--color-accent)" />
                   </span>
                 </button>

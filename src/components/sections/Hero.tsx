@@ -79,7 +79,7 @@ export function Hero() {
       */}
       <div
         aria-hidden="true"
-        className="rule-field absolute inset-y-0 left-0 -z-20 hidden w-[46%] opacity-30 [--rule-gap:5.5rem] [mask-image:linear-gradient(90deg,transparent,black_18%,black_52%,transparent_100%)] lg:block"
+        className="rule-field absolute inset-y-0 start-0 -z-20 hidden w-[46%] opacity-30 [--rule-gap:5.5rem] [mask-image:linear-gradient(90deg,transparent,black_18%,black_52%,transparent_100%)] lg:block"
       />
 
       {/*
@@ -340,7 +340,7 @@ export function Hero() {
         {/* Same treatment as the copy column: the caption is one line of text
             near the foot of the disc, so the box around it gives its pointer
             events back to the globe and the words keep theirs. */}
-        <p className="pointer-events-auto text-[0.6875rem] leading-relaxed text-(--color-foreground-subtle) lg:text-right">
+        <p className="pointer-events-auto text-[0.6875rem] leading-relaxed text-(--color-foreground-subtle) lg:text-end">
           {marketOrientationNote}
         </p>
       </Container>

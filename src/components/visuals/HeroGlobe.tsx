@@ -3,8 +3,8 @@
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
+import { useIsRtl } from "@/components/layout/LocaleProvider";
 import { globePanelContent, heroLabelSlots, heroMarkets } from "@/data/outreach-globe";
-
 import { cn } from "@/lib/utils";
 
 /**
@@ -94,6 +94,7 @@ type CardMode = "pointer" | "anchored";
  * pointer and the card is real text either way.
  */
 export function HeroGlobe({ className }: { className?: string }) {
+  const rtl = useIsRtl();
   const [activeIndex, setActiveIndex] = useState(0);
   const [card, setCard] = useState<{ index: number; mode: CardMode } | null>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -300,22 +301,42 @@ export function HeroGlobe({ className }: { className?: string }) {
 
     Below `lg` the globe is a stacked block under the copy and is centred.
   */
+  /*
+    In Arabic the disc sits on the other side of the hero.
+
+    The headline occupies the reading edge - left in English, right in Arabic -
+    and the globe sits opposite it. Unlike the outreach section this cannot be
+    left to the grid: the hero's canvas is absolutely positioned across the
+    whole section and the disc is placed inside it by `cx`, so the placement
+    has to be mirrored explicitly.
+
+    0.8 becomes 0.2, which is the same distance from the opposite edge. Only
+    the horizontal centre moves; `cy` and the radius are untouched, so the
+    globe is identical in size and vertical position.
+
+    Again: the disc MOVES, the map does not. Nothing here reverses the sphere,
+    the coastlines or where the Gulf sits on it.
+
+    Below `lg` the globe is a centred block under the copy, so there is no side
+    to swap and 0.5 stands in both languages.
+  */
   const frame = useMemo(() => {
     if (!wide) return { cx: 0.5, cy: 0.5, radius: compact ? 0.4 : 0.42 };
 
+    const cx = rtl ? 0.2 : 0.8;
     const { width, height } = box;
-    if (width === 0 || height === 0) return { cx: 0.8, cy: 0.46, radius: 0.28 };
+    if (width === 0 || height === 0) return { cx, cy: 0.46, radius: 0.28 };
 
     const radiusPx = 0.5 * Math.min(width * 0.56, height);
 
     return {
-      cx: 0.8,
+      cx,
       // Lifted slightly so the disc's lower edge falls behind the standing bar
       // rather than being cut by it.
       cy: 0.46,
       radius: radiusPx / Math.min(width, height),
     };
-  }, [wide, compact, box]);
+  }, [wide, compact, box, rtl]);
 
   const shown = card ? heroMarkets[card.index] : null;
 
@@ -470,7 +491,7 @@ export function HeroGlobe({ className }: { className?: string }) {
         ref={cardElement}
         aria-hidden="true"
         className={cn(
-          "pointer-events-none absolute left-0 top-0 z-20",
+          "pointer-events-none absolute start-0 top-0 z-20",
           "transition-opacity duration-300 ease-[var(--ease-out-soft)]",
           shown ? "opacity-100" : "opacity-0",
           // Anchored mode is keyboard territory: the pointer transform is

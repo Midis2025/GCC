@@ -135,7 +135,7 @@ export function Showcase({ id, label, heading, items, note }: ShowcaseProps) {
           <div className="relative mt-[var(--space-heading)]">
             <div
               aria-hidden="true"
-              className="absolute left-0 top-0 hidden h-full w-px bg-(--color-border) lg:block"
+              className="absolute start-0 top-0 hidden h-full w-px bg-(--color-border) lg:block"
             >
               <span
                 style={{
@@ -146,7 +146,7 @@ export function Showcase({ id, label, heading, items, note }: ShowcaseProps) {
               />
             </div>
 
-            <ul className="border-t border-(--color-border) lg:border-t-0 lg:pl-10">
+            <ul className="border-t border-(--color-border) lg:border-t-0 lg:ps-10">
               {items.map((item, index) => {
                 const isActive = active === index;
 
@@ -195,7 +195,7 @@ export function Showcase({ id, label, heading, items, note }: ShowcaseProps) {
                                 className={cn(
                                   "origin-left transition-[color,opacity,transform] duration-500 ease-out lg:absolute lg:inset-x-0 lg:top-0",
                                   isActive
-                                    ? "translate-x-1.5 text-(--color-accent) lg:pointer-events-none lg:opacity-0"
+                                    ? "ltr:translate-x-1.5 rtl:-translate-x-1.5 text-(--color-accent) lg:pointer-events-none lg:opacity-0"
                                     : "translate-x-0 text-(--color-foreground) lg:opacity-100",
                                 )}
                               >
@@ -209,7 +209,7 @@ export function Showcase({ id, label, heading, items, note }: ShowcaseProps) {
                                 className={cn(
                                   "hidden origin-left text-(--color-accent) transition-[opacity,transform] duration-500 ease-out lg:block",
                                   isActive
-                                    ? "translate-x-1.5 opacity-100"
+                                    ? "ltr:translate-x-1.5 rtl:-translate-x-1.5 opacity-100"
                                     : "pointer-events-none absolute inset-x-0 top-0 translate-x-0 opacity-0",
                                 )}
                               >
@@ -257,7 +257,7 @@ export function Showcase({ id, label, heading, items, note }: ShowcaseProps) {
                             className={cn(
                               "mt-3 hidden shrink-0 transition-[transform,color] duration-500 ease-out sm:block",
                               isActive
-                                ? "translate-x-1.5 text-(--color-accent)"
+                                ? "ltr:translate-x-1.5 rtl:-translate-x-1.5 text-(--color-accent)"
                                 : "translate-x-0 text-(--color-foreground-subtle)",
                             )}
                           >
@@ -288,7 +288,7 @@ export function Showcase({ id, label, heading, items, note }: ShowcaseProps) {
           what makes the section read as a showcase rather than as a picture
           that follows you down the page.
         */}
-        <div aria-hidden="true" className="hidden lg:block lg:-mr-(--gutter)">
+        <div aria-hidden="true" className="hidden lg:block lg:-me-(--gutter)">
           <div>
             <div className="relative aspect-[3/4] overflow-hidden">
               {items.map((item, index) => (
@@ -327,7 +327,7 @@ export function Showcase({ id, label, heading, items, note }: ShowcaseProps) {
               */}
               <span
                 key={`n-${items[active].key}`}
-                className="showcase-index pointer-events-none absolute left-7 top-6 z-10 num font-display leading-none text-[#f4f1eb]/85 text-[clamp(3.5rem,6vw,5.5rem)]"
+                className="showcase-index pointer-events-none absolute start-7 top-6 z-10 num font-display leading-none text-[#f4f1eb]/85 text-[clamp(3.5rem,6vw,5.5rem)]"
               >
                 {items[active].number}
               </span>
@@ -342,7 +342,7 @@ export function Showcase({ id, label, heading, items, note }: ShowcaseProps) {
               relative block rather than absolute positioning, so the note
               below still flows after it and nothing has to be measured.
             */}
-            <div className="relative z-10 -mt-9 ml-7 mr-14 bg-(--color-canvas) py-6 pl-7 pr-8 shadow-[var(--shadow-lg)]">
+            <div className="relative z-10 -mt-9 ms-7 me-14 bg-(--color-canvas) py-6 ps-7 pe-8 shadow-[var(--shadow-lg)]">
               <span
                 key={`t-${items[active].key}`}
                 className="showcase-title block font-display text-[1.625rem] leading-snug text-balance"
@@ -352,7 +352,7 @@ export function Showcase({ id, label, heading, items, note }: ShowcaseProps) {
             </div>
 
             {note && (
-              <p className="mt-8 ml-7 max-w-[42ch] text-sm leading-relaxed text-(--color-foreground-subtle)">
+              <p className="mt-8 ms-7 max-w-[42ch] text-sm leading-relaxed text-(--color-foreground-subtle)">
                 {note}
               </p>
             )}
