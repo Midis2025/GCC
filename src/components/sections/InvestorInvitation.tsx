@@ -3,7 +3,9 @@ import { Button } from "@/components/ui/Button";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { investorInvitation } from "@/data/home";
+import { pick } from "@/content";
+import { investorInvitationAr } from "@/content/ar/home";
+import { investorInvitation as investorInvitationEn } from "@/data/home";
 
 /**
  * The investor invitation.
@@ -22,7 +24,9 @@ import { investorInvitation } from "@/data/home";
  * being arranged, not investments being sought, and it must not be rewritten
  * into anything that implies the latter.
  */
-export function InvestorInvitation() {
+export async function InvestorInvitation() {
+  const investorInvitation = await pick({ en: investorInvitationEn, ar: investorInvitationAr });
+
   return (
     <Section spacing="md" tone="muted" aria-labelledby="home-investor-invitation">
       <div className="grid gap-x-16 gap-y-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-center">

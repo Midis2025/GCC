@@ -4,7 +4,9 @@ import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { photos } from "@/data/imagery";
-import { introContent } from "@/data/homepage";
+import { getDictionary, pick } from "@/content";
+import { introContentAr } from "@/content/ar/homepage";
+import { introContent as introContentEn } from "@/data/homepage";
 
 /**
  * Positioning statement.
@@ -19,7 +21,10 @@ import { introContent } from "@/data/homepage";
  * cards, no boxes, just rules and numerals, which is a different rhythm from
  * anything above it on the page.
  */
-export function Intro() {
+export async function Intro() {
+  const introContent = await pick({ en: introContentEn, ar: introContentAr });
+  const t = await getDictionary();
+
   return (
     <Section spacing="lg" aria-labelledby="intro-heading" className="relative overflow-hidden">
       <div className="grid gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] lg:items-start">
@@ -84,7 +89,7 @@ export function Intro() {
 
           <div className="absolute -bottom-6 start-4 z-10 max-w-[19rem] border-s-2 border-(--color-accent) bg-(--color-canvas) py-5 ps-6 pe-5 shadow-[var(--shadow-lg)] sm:-bottom-8 sm:start-6 lg:-start-14">
             <p className="text-label uppercase text-(--color-foreground-subtle)">
-              The question behind the work
+              {t.sections.questionBehindTheWork}
             </p>
             <p className="mt-3 font-display text-[1.0625rem] leading-snug text-balance">
               Does the market understand this business the way its leadership intends?

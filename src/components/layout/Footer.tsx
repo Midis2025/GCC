@@ -1,11 +1,12 @@
 import { Logo } from "@/components/layout/Logo";
 import { NavLink } from "@/components/layout/NavLink";
 import { Container } from "@/components/ui/Container";
-import { getDictionary } from "@/content";
+import { getDictionary, pick } from "@/content";
 import { footerNav, legalNav, socialLinks } from "@/data/navigation";
 import { localiseNavGroups, localiseNavItems } from "@/lib/nav-i18n";
 import { contactConfig, siteConfig } from "@/data/site";
-import { gulfMarkets } from "@/data/homepage";
+import { gulfMarkets as gulfMarketsEn } from "@/data/homepage";
+import { gulfMarketsAr } from "@/content/ar/homepage";
 
 /**
  * Institutional footer.
@@ -21,6 +22,7 @@ import { gulfMarkets } from "@/data/homepage";
  */
 export async function Footer() {
   const t = await getDictionary();
+  const gulfMarkets = await pick({ en: gulfMarketsEn, ar: gulfMarketsAr });
   const groups = localiseNavGroups(footerNav, t);
   const legal = localiseNavItems(legalNav, t);
   const year = new Date().getFullYear();
@@ -60,7 +62,7 @@ export async function Footer() {
 
             {contactConfig.locality && (
               <p className="mt-5 text-label uppercase text-(--color-foreground-subtle)">
-                {contactConfig.locality}
+                {t.footer.locality}
               </p>
             )}
           </div>

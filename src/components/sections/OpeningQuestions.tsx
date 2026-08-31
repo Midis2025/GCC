@@ -2,7 +2,9 @@ import { Section } from "@/components/sections/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { openingQuestions } from "@/data/home-depth";
+import { pick } from "@/content";
+import { openingQuestionsAr } from "@/content/ar/home-depth";
+import { openingQuestions as openingQuestionsEn } from "@/data/home-depth";
 import { cn } from "@/lib/utils";
 
 /**
@@ -24,7 +26,9 @@ import { cn } from "@/lib/utils";
  * finds on returning. Numerals are oversized and quiet, behind rather than
  * beside.
  */
-export function OpeningQuestions() {
+export async function OpeningQuestions() {
+  const openingQuestions = await pick({ en: openingQuestionsEn, ar: openingQuestionsAr });
+
   return (
     <Section
       spacing="lg"

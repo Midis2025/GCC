@@ -4,9 +4,10 @@ import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import type { GlobeMarket } from "@/data/outreach-globe";
-import { globeMarkets, globePanelContent } from "@/data/outreach-globe";
+import { globeMarkets as globeMarketsEn, globePanelContent as globePanelContentEn } from "@/data/outreach-globe";
+import { globeMarketsAr, globePanelContentAr } from "@/content/ar/outreach-globe";
 import { outreachContent } from "@/data/homepage";
-import { useIsRtl } from "@/components/layout/LocaleProvider";
+import { useIsRtl, useLocale } from "@/components/layout/LocaleProvider";
 import { GLOW_REACH, ZOOM_MIN, glowBox } from "@/lib/globe";
 import { cn } from "@/lib/utils";
 
@@ -51,6 +52,15 @@ interface Tooltip {
  */
 export function GlobeExperience({ className }: { className?: string }) {
   const rtl = useIsRtl();
+  const { locale } = useLocale();
+  /*
+    Client component, so the locale is read rather than injected: page copy
+    reaches a client component only through a server parent, and threading two
+    market arrays through GlobeFeature would be more machinery than choosing
+    between them here. Both sets are small.
+  */
+  const globeMarkets = locale === "ar" ? globeMarketsAr : globeMarketsEn;
+  const globePanelContent = locale === "ar" ? globePanelContentAr : globePanelContentEn;
   const [activeIndex, setActiveIndex] = useState(0);
   const [tooltip, setTooltip] = useState<Tooltip>({ market: null, visible: false });
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -134,7 +144,12 @@ export function GlobeExperience({ className }: { className?: string }) {
     if (node) node.style.transform = `translate3d(${x}px, ${y}px, 0)`;
 
     setTooltip({ market: globeMarkets[index], visible: true });
-  }, []);
+    /*
+      The market list is in the deps because it now varies with the language.
+      It is constant for the life of a page - the locale is fixed by the route -
+      so this rebuilds the callback once per render and never mid-interaction.
+    */
+  }, [globeMarkets]);
 
   const market = globeMarkets[activeIndex];
 

@@ -2,7 +2,9 @@ import { Container } from "@/components/ui/Container";
 import { CountUp } from "@/components/ui/CountUp";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
-import { orientationContent } from "@/data/homepage";
+import { pick } from "@/content";
+import { orientationContentAr } from "@/content/ar/homepage";
+import { orientationContent as orientationContentEn } from "@/data/homepage";
 
 /**
  * Orientation strip.
@@ -18,7 +20,9 @@ import { orientationContent } from "@/data/homepage";
  * Because it follows a full-bleed photographic hero and precedes a light
  * editorial section, it also carries the dark-to-light transition.
  */
-export function Orientation() {
+export async function Orientation() {
+  const orientationContent = await pick({ en: orientationContentEn, ar: orientationContentAr });
+
   return (
     <section className="surface-dark relative isolate" aria-labelledby="orientation-heading">
       <Container>

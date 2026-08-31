@@ -93,6 +93,7 @@ export interface Dictionary {
     };
     cta: string;
     secondaryCta: string;
+    exploreCapabilities: string;
   };
 
   footer: {
@@ -103,6 +104,8 @@ export interface Dictionary {
     office: string;
     international: string;
     contact: string;
+    /** The city the firm is in. A place name, so it is translated. */
+    locality: string;
     /**
      * The standing disclosure, on every page.
      *
@@ -201,6 +204,18 @@ export interface Dictionary {
       generic: string;
       unreachable: string;
     };
+  };
+
+  sections: {
+    /**
+     * Standing labels written into components rather than into a content
+     * module. Small enough that moving them into  would have been
+     * ceremony, but they are still visible copy and still have to translate.
+     */
+    ourCapabilities: string;
+    questionBehindTheWork: string;
+    whereAppetiteSits: string;
+    gulfMarketCoverage: string;
   };
 
   insight: {

@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { useState } from "react";
 
+import { useLocale } from "@/components/layout/LocaleProvider";
 import { Section } from "@/components/sections/Section";
 import { Figure } from "@/components/ui/Figure";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { capabilities } from "@/data/capabilities";
+import type { Localised } from "@/content";
+import type { capabilities as CapabilitiesEn } from "@/data/capabilities";
 import { capabilityPhotos } from "@/data/imagery";
 import { cn } from "@/lib/utils";
 
@@ -56,7 +58,19 @@ function Arrow({ className }: { className?: string }) {
  *   carries its own photograph inline, so every capability shows its own image
  *   without an interaction being needed to reveal it.
  */
-export function CapabilityShowcase() {
+/**
+ * The four capabilities.
+ *
+ * Takes its copy as a PROP rather than importing it, because this is a client
+ * component and page copy reaches the client only through a server parent.
+ *  resolves the language and hands the right set down.
+ */
+export function CapabilityShowcase({
+  capabilities,
+}: {
+  capabilities: Localised<typeof CapabilitiesEn>;
+}) {
+  const { t } = useLocale();
   const [active, setActive] = useState(0);
 
   return (
@@ -64,9 +78,9 @@ export function CapabilityShowcase() {
       <div className="grid gap-x-16 gap-y-9 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.85fr)]">
         <div>
           <Reveal>
-            <SectionLabel>What We Do</SectionLabel>
+            <SectionLabel>{t.nav.items.whatWeDo}</SectionLabel>
             <Heading id="capabilities-heading" level={2} size="display" className="mt-5 max-w-[11ch]">
-              Our Capabilities
+              {t.sections.ourCapabilities}
             </Heading>
           </Reveal>
 

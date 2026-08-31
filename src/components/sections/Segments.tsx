@@ -4,7 +4,9 @@ import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { segmentPhotos } from "@/data/imagery";
-import { audienceContent } from "@/data/homepage";
+import { pick } from "@/content";
+import { audienceContentAr } from "@/content/ar/homepage";
+import { audienceContent as audienceContentEn } from "@/data/homepage";
 import { cn } from "@/lib/utils";
 
 /**
@@ -23,7 +25,9 @@ import { cn } from "@/lib/utils";
  * categories pending confirmation. It stays visible - the section must never
  * read as a client list.
  */
-export function Segments() {
+export async function Segments() {
+  const audienceContent = await pick({ en: audienceContentEn, ar: audienceContentAr });
+
   return (
     <Section spacing="lg" aria-labelledby="segments-heading" width="wide">
       <Reveal>
@@ -49,7 +53,12 @@ export function Segments() {
       */}
       <ul className="mt-[var(--space-heading)] grid gap-3 sm:grid-cols-2 lg:grid-cols-12 lg:grid-rows-[repeat(2,clamp(13rem,14vw,18rem))] lg:gap-4">
         {audienceContent.segments.map((segment, index) => {
-          const photo = segmentPhotos[segment.photo];
+          /*
+            `photo` is an identifier, not copy. `Localised` widens it to
+            `string` along with the labels, so it is narrowed back here; the
+            Arabic module repeats the same six keys verbatim.
+          */
+          const photo = segmentPhotos[segment.photo as keyof typeof segmentPhotos];
           const layout = PANEL_LAYOUT[index] ?? "lg:col-span-4";
 
           return (

@@ -5,7 +5,9 @@ import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { backdrops } from "@/data/imagery";
-import { ctaContent } from "@/data/homepage";
+import { getDictionary, pick } from "@/content";
+import { ctaContentAr } from "@/content/ar/homepage";
+import { ctaContent as ctaContentEn } from "@/data/homepage";
 
 /**
  * Final call to action.
@@ -18,7 +20,10 @@ import { ctaContent } from "@/data/homepage";
  * A secondary action sits beside the primary one so the section offers a route
  * for visitors not yet ready to make contact.
  */
-export function CTASection() {
+export async function CTASection() {
+  const ctaContent = await pick({ en: ctaContentEn, ar: ctaContentAr });
+  const t = await getDictionary();
+
   const photo = backdrops.cta;
 
   return (
@@ -83,7 +88,7 @@ export function CTASection() {
               button through a redirect.
             */}
             <Button href="/what-we-do" size="lg" variant="outline">
-              Explore Our Capabilities
+              {t.nav.exploreCapabilities}
             </Button>
           </Reveal>
         </div>

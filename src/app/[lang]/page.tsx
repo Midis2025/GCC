@@ -14,8 +14,13 @@ import { InvestorInvitation } from "@/components/sections/InvestorInvitation";
 import { Orientation } from "@/components/sections/Orientation";
 import { PillarSequence } from "@/components/sections/PillarSequence";
 import { Segments } from "@/components/sections/Segments";
+import { getDictionary, pick } from "@/content";
+import { propositionAr, whyGulfNowAr } from "@/content/ar/home";
+import { capabilitiesAr } from "@/content/ar/capabilities";
+import { capabilities as capabilitiesEn } from "@/data/capabilities";
 import { photos } from "@/data/imagery";
-import { proposition, whyGulfNow } from "@/data/home";
+import { proposition as propositionEn, whyGulfNow as whyGulfNowEn } from "@/data/home";
+import type { PillarMarkName } from "@/components/sections/PillarSequence";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({
@@ -83,7 +88,12 @@ export const metadata = createMetadata({
  *
  * - No client logo wall. Two or three logos advertise how new a firm is.
  */
-export default function HomePage() {
+export default async function HomePage() {
+  const proposition = await pick({ en: propositionEn, ar: propositionAr });
+  const whyGulfNow = await pick({ en: whyGulfNowEn, ar: whyGulfNowAr });
+  const capabilities = await pick({ en: capabilitiesEn, ar: capabilitiesAr });
+  const t = await getDictionary();
+
   return (
     <>
       {/* Two paths, above the fold. */}
@@ -108,7 +118,14 @@ export default function HomePage() {
         pillars={proposition.items.map((item) => ({
           title: item.term,
           description: item.description,
-          mark: item.mark,
+          /*
+            `mark` is an identifier, not copy - it selects the line drawing
+            beside each pillar. `Localised` widens every string, this one
+            included, so it is narrowed back here. The Arabic module repeats
+            the same three values verbatim; a translated one would select the
+            wrong drawing rather than fail.
+          */
+          mark: item.mark as PillarMarkName,
         }))}
         photo={photos.whyMarket}
       />
@@ -140,7 +157,7 @@ export default function HomePage() {
         label={whyGulfNow.label}
         heading={whyGulfNow.heading}
         paragraphs={whyGulfNow.paragraphs}
-        categoriesLabel="Where the appetite sits"
+        categoriesLabel={t.sections.whereAppetiteSits}
         categories={whyGulfNow.sectors}
       />
 
@@ -182,7 +199,7 @@ export default function HomePage() {
         changed, from the retired `/services/*` routes to the service pages
         that now sell the work. See the header of `data/capabilities.ts`.
       */}
-      <CapabilityShowcase />
+      <CapabilityShowcase capabilities={capabilities} />
 
       {/*
         One visit against a running programme.

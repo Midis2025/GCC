@@ -60,6 +60,7 @@ export const ui: Dictionary = {
     },
     cta: "قدّم استفسارًا",
     secondaryCta: "انضم إلى القائمة",
+    exploreCapabilities: "استكشف قدراتنا",
   },
 
   footer: {
@@ -74,6 +75,7 @@ export const ui: Dictionary = {
     office: "المكتب",
     international: "الأسواق الدولية",
     contact: "تواصل معنا",
+    locality: "دبي، الإمارات العربية المتحدة",
     /*
       AWAITING LEGAL REVIEW.
 
@@ -186,6 +188,13 @@ export const ui: Dictionary = {
       generic: "حدث خطأ ما. يُرجى المحاولة مرة أخرى.",
       unreachable: "تعذّر الوصول إلى الخادم. يُرجى المحاولة مرة أخرى.",
     },
+  },
+
+  sections: {
+    ourCapabilities: "قدراتنا",
+    questionBehindTheWork: "السؤال الذي يقوم عليه العمل",
+    whereAppetiteSits: "أين يتركّز الإقبال",
+    gulfMarketCoverage: "التغطية في أسواق الخليج",
   },
 
   insight: {

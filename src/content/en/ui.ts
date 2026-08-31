@@ -39,6 +39,7 @@ export const ui: Dictionary = {
     },
     cta: "Enquire",
     secondaryCta: "Join the list",
+    exploreCapabilities: "Explore Our Capabilities",
   },
 
   footer: {
@@ -53,6 +54,7 @@ export const ui: Dictionary = {
     office: "Office",
     international: "International",
     contact: "Contact",
+    locality: "Dubai, UAE",
     /* Verbatim from `footerDisclosure` in data/site.ts. Do not edit. */
     disclosure:
       "Gulf Connect Consultancy FZCO provides investor communications, events and media services for fixed professional fees. Nothing on this site is an offer, solicitation, recommendation or investment advice, and it should not be relied upon in making any investment decision. Gulf Connect is not licensed to conduct financial services activity in the UAE and does not solicit investment, hold client funds or receive compensation linked to capital raised, share price or trading volume. Where content relates to a company that has engaged Gulf Connect, the commercial relationship is disclosed on that content.",
@@ -152,6 +154,13 @@ export const ui: Dictionary = {
       generic: "Something went wrong. Please try again.",
       unreachable: "We could not reach the server. Please try again.",
     },
+  },
+
+  sections: {
+    ourCapabilities: "Our Capabilities",
+    questionBehindTheWork: "The question behind the work",
+    whereAppetiteSits: "Where the appetite sits",
+    gulfMarketCoverage: "Gulf market coverage",
   },
 
   insight: {

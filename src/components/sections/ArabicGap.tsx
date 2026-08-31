@@ -5,7 +5,9 @@ import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { photos } from "@/data/imagery";
-import { arabicGap } from "@/data/home";
+import { pick } from "@/content";
+import { arabicGapAr } from "@/content/ar/home";
+import { arabicGap as arabicGapEn } from "@/data/home";
 
 /**
  * ============================================================================
@@ -45,7 +47,9 @@ import { arabicGap } from "@/data/home";
  * The route line and the Arabic mark have their own rules in globals.css,
  * keyed the same way, and both are covered by the reduced-motion block there.
  */
-export function ArabicGap() {
+export async function ArabicGap() {
+  const arabicGap = await pick({ en: arabicGapEn, ar: arabicGapAr });
+
   return (
     <Section
       spacing="lg"

@@ -2,8 +2,10 @@ import { Section } from "@/components/sections/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { continuity } from "@/data/home-depth";
+import { continuity as continuityEn } from "@/data/home-depth";
 import { cn } from "@/lib/utils";
+import { pick } from "@/content";
+import { continuityAr } from "@/content/ar/home-depth";
 
 /**
  * ============================================================================
@@ -29,7 +31,9 @@ import { cn } from "@/lib/utils";
  * the programme column is lit and taller, because one genuinely contains more
  * than the other. The reader draws the conclusion; the page does not state it.
  */
-export function ContinuityCompare() {
+export async function ContinuityCompare() {
+  const continuity = await pick({ en: continuityEn, ar: continuityAr });
+
   return (
     <Section spacing="lg" aria-labelledby="home-continuity">
       <div className="grid gap-x-16 gap-y-9 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end lg:gap-x-24">

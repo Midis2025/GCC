@@ -1,5 +1,7 @@
 import { Container } from "@/components/ui/Container";
-import { heroStats } from "@/data/homepage";
+import { pick } from "@/content";
+import { heroStatsAr } from "@/content/ar/homepage";
+import { heroStats as heroStatsEn } from "@/data/homepage";
 
 /**
  * Hero standing bar.
@@ -60,7 +62,9 @@ const marks: Record<string, React.ReactNode> = {
   ),
 };
 
-export function HeroStats() {
+export async function HeroStats() {
+  const heroStats = await pick({ en: heroStatsEn, ar: heroStatsAr });
+
   return (
     <Container className="relative z-10 pb-[clamp(0.5rem,1.5svh,1.75rem)]">
       <dl

@@ -4,7 +4,9 @@ import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { cityPhotos } from "@/data/imagery";
-import { marketContexts } from "@/data/home-depth";
+import { pick } from "@/content";
+import { marketContextsAr } from "@/content/ar/home-depth";
+import { marketContexts as marketContextsEn } from "@/data/home-depth";
 
 /**
  * ============================================================================
@@ -30,7 +32,9 @@ import { marketContexts } from "@/data/home-depth";
  * logo, over photographs of those cities, is the single easiest arrangement on
  * this site to misread as a footprint. It stays visible at every width.
  */
-export function MarketContexts() {
+export async function MarketContexts() {
+  const marketContexts = await pick({ en: marketContextsEn, ar: marketContextsAr });
+
   return (
     <Section spacing="lg" aria-labelledby="home-market-contexts" width="wide">
       <div className="grid gap-x-16 gap-y-9 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-end lg:gap-x-24">
@@ -67,7 +71,14 @@ export function MarketContexts() {
           >
             <Reveal variant="media" delay={index * 140}>
               <Figure
-                photo={cityPhotos[city.key]}
+                /*
+                  `key` is an identifier, not copy - it selects the city's
+                  photograph. `Localised` widens every string, this one
+                  included, so it is narrowed back here. The Arabic module
+                  repeats `dubai`, `abu-dhabi` and `riyadh` verbatim; a
+                  translated key would pick the wrong city's image.
+                */
+                photo={cityPhotos[city.key as keyof typeof cityPhotos]}
                 ratio="tall"
                 overlay="soft"
                 zoom

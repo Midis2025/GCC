@@ -5,7 +5,12 @@ import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { HeroGlobe } from "@/components/visuals/HeroGlobe";
 import { HeroStats } from "@/components/sections/HeroStats";
-import { heroContent, marketOrientationNote } from "@/data/homepage";
+import {
+  heroContent as heroContentEn,
+  marketOrientationNote as marketOrientationNoteEn,
+} from "@/data/homepage";
+import { pick } from "@/content";
+import { heroContentAr, marketOrientationNoteAr } from "@/content/ar/homepage";
 
 /** Animation delay as an inline custom property, for the on-mount reveals. */
 const at = (ms: number) => ({ "--reveal-delay": `${ms}ms` }) as CSSProperties;
@@ -27,7 +32,10 @@ const at = (ms: number) => ({ "--reveal-delay": `${ms}ms` }) as CSSProperties;
  * staggered delays. The whole sequence resolves inside ~1.5s and then stops -
  * nothing loops except the globe's own drift.
  */
-export function Hero() {
+export async function Hero() {
+  const heroContent = await pick({ en: heroContentEn, ar: heroContentAr });
+  const marketOrientationNote = await pick({ en: marketOrientationNoteEn, ar: marketOrientationNoteAr });
+
   return (
     // Full viewport, not "most of it".
     //

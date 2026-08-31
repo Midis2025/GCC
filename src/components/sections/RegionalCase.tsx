@@ -2,7 +2,9 @@ import { Section } from "@/components/sections/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { gulfDifference } from "@/data/home-depth";
+import { pick } from "@/content";
+import { gulfDifferenceAr } from "@/content/ar/home-depth";
+import { gulfDifference as gulfDifferenceEn } from "@/data/home-depth";
 
 /**
  * ============================================================================
@@ -28,7 +30,9 @@ import { gulfDifference } from "@/data/home-depth";
  * a forecast, a measurement or a claim about outcome. See the header of
  * `data/home-depth.ts`.
  */
-export function RegionalCase() {
+export async function RegionalCase() {
+  const gulfDifference = await pick({ en: gulfDifferenceEn, ar: gulfDifferenceAr });
+
   return (
     <Section spacing="lg" aria-labelledby="home-regional-case" className="relative isolate">
       {/*

@@ -64,10 +64,42 @@ export async function getDictionary(): Promise<Dictionary> {
  * unpublished, because a locale is not switched on until its content is
  * complete.
  */
-export async function pick<T>(pair: { en: T; ar?: T }): Promise<T> {
+export async function pick<T>(pair: { en: T; ar?: Localised<T> }): Promise<Localised<T>> {
   const locale = await currentLocale();
   if (locale === "ar" && pair.ar !== undefined) return pair.ar;
-  return pair.en;
+  return pair.en as Localised<T>;
 }
+
+/**
+ * The English shape with its string literals widened.
+ *
+ * Every content module is declared `as const`, so `homeHero.title` is not
+ * typed `string` - it is typed as the exact English sentence. A translation
+ * cannot satisfy that, and without this the Arabic modules would fail to
+ * compile against their own English counterparts.
+ *
+ * So strings widen to `string` while the STRUCTURE stays exact: same keys,
+ * same nesting, same array shapes, same non-string literals. That is the
+ * property worth keeping - it means a translation with a missing key, a
+ * renamed field or an array of the wrong shape is a compile error rather than
+ * a hole that shows up on the page in Arabic.
+ *
+ * ONE CONSEQUENCE TO KNOW ABOUT. A few string fields are identifiers rather
+ * than copy - `mark: "convene"` selects a line drawing, `key: "dubai"` selects
+ * a photograph - and this widens those to `string` along with everything else,
+ * because a type cannot tell an identifier from a sentence. Those call sites
+ * narrow the value back explicitly.
+ *
+ * The identifiers themselves are of course never translated: the Arabic
+ * modules repeat them verbatim, and a translated one would select the wrong
+ * drawing rather than fail.
+ */
+export type Localised<T> = T extends string
+  ? string
+  : T extends readonly (infer U)[]
+    ? readonly Localised<U>[]
+    : T extends object
+      ? { readonly [K in keyof T]: Localised<T[K]> }
+      : T;
 
 export type { Dictionary };

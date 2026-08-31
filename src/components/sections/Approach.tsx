@@ -2,7 +2,9 @@ import { Section } from "@/components/sections/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { approachContent } from "@/data/homepage";
+import { pick } from "@/content";
+import { approachContentAr } from "@/content/ar/homepage";
+import { approachContent as approachContentEn } from "@/data/homepage";
 
 /**
  * Process timeline.
@@ -22,7 +24,9 @@ import { approachContent } from "@/data/homepage";
  * which is already muted, and two muted bands in succession read as one long
  * section with a heading dropped into the middle of it.
  */
-export function Approach({ tone = "muted" }: { tone?: "muted" | "canvas" } = {}) {
+export async function Approach({ tone = "muted" }: { tone?: "muted" | "canvas" } = {}) {
+  const approachContent = await pick({ en: approachContentEn, ar: approachContentAr });
+
   return (
     <Section spacing="lg" tone={tone} aria-labelledby="approach-heading">
       <div className="grid gap-y-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end lg:gap-x-20">

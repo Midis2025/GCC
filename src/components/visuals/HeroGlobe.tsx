@@ -3,8 +3,13 @@
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
-import { useIsRtl } from "@/components/layout/LocaleProvider";
-import { globePanelContent, heroLabelSlots, heroMarkets } from "@/data/outreach-globe";
+import { useIsRtl, useLocale } from "@/components/layout/LocaleProvider";
+import {
+  globePanelContent as globePanelContentEn,
+  heroLabelSlots,
+  heroMarkets as heroMarketsEn,
+} from "@/data/outreach-globe";
+import { globePanelContentAr, heroMarketsAr } from "@/content/ar/outreach-globe";
 import { cn } from "@/lib/utils";
 
 /**
@@ -95,6 +100,9 @@ type CardMode = "pointer" | "anchored";
  */
 export function HeroGlobe({ className }: { className?: string }) {
   const rtl = useIsRtl();
+  const { t, locale } = useLocale();
+  const heroMarkets = locale === "ar" ? heroMarketsAr : heroMarketsEn;
+  const globePanelContent = locale === "ar" ? globePanelContentAr : globePanelContentEn;
   const [activeIndex, setActiveIndex] = useState(0);
   const [card, setCard] = useState<{ index: number; mode: CardMode } | null>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -145,7 +153,7 @@ export function HeroGlobe({ className }: { className?: string }) {
     }, TOUR_STEP_MS);
 
     return () => window.clearInterval(timer);
-  }, [reducedMotion]);
+  }, [reducedMotion, heroMarkets.length]);
 
   /* --- Scroll storytelling ---------------------------------------------- */
   useEffect(() => {
@@ -180,7 +188,7 @@ export function HeroGlobe({ className }: { className?: string }) {
 
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [heroMarkets.length]);
 
   /* --- Interaction ------------------------------------------------------ */
   const hold = () => {
@@ -371,7 +379,7 @@ export function HeroGlobe({ className }: { className?: string }) {
         ];
       }),
     );
-  }, [box, wide]);
+  }, [box, wide, heroMarkets]);
 
   return (
     <div
@@ -553,7 +561,7 @@ export function HeroGlobe({ className }: { className?: string }) {
         the full text of every market whether or not the canvas ever loads.
       */}
       <div className="sr-only">
-        <h2>Gulf market coverage</h2>
+        <h2>{t.sections.gulfMarketCoverage}</h2>
         <ul>
           {heroMarkets.map((market, index) => (
             <li key={market.code}>
