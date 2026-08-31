@@ -73,6 +73,23 @@ export const ui: Dictionary = {
     telephone: "الهاتف",
     office: "المكتب",
     international: "الأسواق الدولية",
+    contact: "تواصل معنا",
+    /*
+      AWAITING LEGAL REVIEW.
+
+      The four statements of the English are preserved in the same order and
+      with the same force: the services and the fixed-fee basis; the denial
+      that anything here is an offer, solicitation, recommendation or advice;
+      the absence of a UAE financial-services licence together with the three
+      things the firm does not do; and the disclosure of a commercial
+      relationship where one exists.
+
+      "غير مرخّصة لممارسة أنشطة الخدمات المالية في دولة الإمارات" is the
+      load-bearing clause. It states the absence of a licence and must not be
+      softened into a statement about what the firm chooses not to do.
+    */
+    disclosure:
+      "تقدّم شركة Gulf Connect Consultancy FZCO خدمات التواصل مع المستثمرين وتنظيم الفعاليات والخدمات الإعلامية مقابل أتعاب مهنية ثابتة. ولا يشكّل أي محتوى في هذا الموقع عرضًا أو استقطابًا أو توصية أو مشورة استثمارية، ولا يجوز الاعتماد عليه في اتخاذ أي قرار استثماري. وشركة Gulf Connect غير مرخّصة لممارسة أنشطة الخدمات المالية في دولة الإمارات العربية المتحدة، ولا تستقطب استثمارات، ولا تحتفظ بأموال العملاء، ولا تتقاضى أي مقابل مرتبط برأس المال المُجمَّع أو بسعر السهم أو بحجم التداول. وحيثما اتصل المحتوى بشركة تعاقدت مع Gulf Connect، يُفصح عن العلاقة التجارية ضمن ذلك المحتوى.",
     legal: {
       privacy: "سياسة الخصوصية",
       disclaimer: "إخلاء المسؤولية",

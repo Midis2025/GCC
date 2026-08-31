@@ -52,6 +52,10 @@ export const ui: Dictionary = {
     telephone: "Telephone",
     office: "Office",
     international: "International",
+    contact: "Contact",
+    /* Verbatim from `footerDisclosure` in data/site.ts. Do not edit. */
+    disclosure:
+      "Gulf Connect Consultancy FZCO provides investor communications, events and media services for fixed professional fees. Nothing on this site is an offer, solicitation, recommendation or investment advice, and it should not be relied upon in making any investment decision. Gulf Connect is not licensed to conduct financial services activity in the UAE and does not solicit investment, hold client funds or receive compensation linked to capital raised, share price or trading volume. Where content relates to a company that has engaged Gulf Connect, the commercial relationship is disclosed on that content.",
     legal: {
       privacy: "Privacy Policy",
       disclaimer: "Disclaimer",

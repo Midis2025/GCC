@@ -1,6 +1,6 @@
-import Link from "next/link";
 import type { ComponentPropsWithRef } from "react";
 
+import { LocaleLink } from "@/components/layout/LocaleLink";
 import { cn, isExternalHref } from "@/lib/utils";
 
 const base =
@@ -117,10 +117,16 @@ export function Button({
       );
     }
 
+    /*
+      `LocaleLink` rather than `next/link`, so every call-to-action on the site
+      keeps its language without a single one of them having to know that the
+      site has two. It is a Client Component, which is what lets `Button` stay
+      usable from Server Components while still reading the locale.
+    */
     return (
-      <Link href={href} className={classes} {...anchorProps}>
+      <LocaleLink href={href} className={classes} {...anchorProps}>
         {content}
-      </Link>
+      </LocaleLink>
     );
   }
 

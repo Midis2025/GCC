@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
+import { useLocalePath } from "@/components/layout/LocaleProvider";
+import { splitLocale } from "@/lib/i18n";
 import { cn, isActivePath, isExternalHref } from "@/lib/utils";
 import type { NavItem } from "@/types";
 
@@ -35,8 +37,19 @@ export function NavLink({
   onNavigate,
 }: NavLinkProps) {
   const pathname = usePathname();
+  const href = useLocalePath();
   const external = item.external ?? isExternalHref(item.href);
-  const active = !external && isActivePath(pathname, item.href);
+
+  /*
+    Active state is decided on the UNPREFIXED path.
+
+    `usePathname` returns `/ar/about` in Arabic while `item.href` is `/about`,
+    so comparing them directly marks nothing as current the moment a reader
+    switches language. Stripping the locale first means the nav data stays in
+    one language-neutral form and the comparison keeps working in both.
+  */
+  const { path } = splitLocale(pathname);
+  const active = !external && isActivePath(path, item.href);
 
   const classes = cn(
     /*
@@ -78,7 +91,12 @@ export function NavLink({
 
   return (
     <Link
-      href={item.href}
+      /*
+        Prefixed here, once, rather than in the nav data. `data/navigation.ts`
+        stays language-neutral - one list of routes, not two - and every
+        consumer of it gets correct hrefs in whichever language is rendering.
+      */
+      href={href(item.href)}
       className={classes}
       data-active={active ? "true" : undefined}
       aria-current={active ? "page" : undefined}

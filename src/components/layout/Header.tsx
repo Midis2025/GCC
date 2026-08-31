@@ -2,12 +2,15 @@
 
 import { useEffect, useState } from "react";
 
+import { LanguageToggle } from "@/components/layout/LanguageToggle";
+import { useLocale } from "@/components/layout/LocaleProvider";
 import { Logo } from "@/components/layout/Logo";
 import { MobileMenu } from "@/components/layout/MobileMenu";
 import { NavLink } from "@/components/layout/NavLink";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { headerCta, headerSecondaryCta, mainNav } from "@/data/navigation";
+import { localiseNavItems } from "@/lib/nav-i18n";
 import { cn } from "@/lib/utils";
 
 /**
@@ -32,6 +35,8 @@ import { cn } from "@/lib/utils";
  * changes nothing anywhere except that the band is gone.
  */
 export function Header() {
+  const { t } = useLocale();
+  const navItems = localiseNavItems(mainNav, t);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -75,9 +80,9 @@ export function Header() {
           lines. Between 1024 and 1280 the off-canvas menu handles it, which is
           the correct trade for a nav this size.
         */}
-        <nav aria-label="Primary" className="hidden xl:block">
+        <nav aria-label={t.nav.primary} className="hidden xl:block">
           <ul className="flex items-center gap-7">
-            {mainNav.map((item) => (
+            {navItems.map((item) => (
               <li key={item.href}>
                 {/*
                   The pseudo-element enlarges the pointer target to ~39px
@@ -110,6 +115,15 @@ export function Header() {
             that the whole bar collapses into the off-canvas menu, where the
             two actions reappear stacked.
           */}
+          {/*
+            The language toggle sits before the actions and after the nav -
+            the position a bilingual Gulf site conventionally puts it, and far
+            enough from the primary button that neither is mistaken for the
+            other. It renders nothing at all until Arabic is published, so the
+            header is unchanged in the meantime.
+          */}
+          <LanguageToggle className="hidden xl:flex" />
+
           <div className="hidden xl:block">
             <Button
               href={headerSecondaryCta.href}
@@ -117,7 +131,7 @@ export function Header() {
               variant="outline"
               className="whitespace-nowrap"
             >
-              {headerSecondaryCta.label}
+              {t.nav.secondaryCta}
             </Button>
           </div>
 
@@ -128,11 +142,15 @@ export function Header() {
               variant="primary"
               className="whitespace-nowrap"
             >
-              {headerCta.label}
+              {t.nav.cta}
             </Button>
           </div>
 
-          <MobileMenu items={mainNav} cta={headerCta} secondaryCta={headerSecondaryCta} />
+          <MobileMenu
+            items={navItems}
+            cta={{ ...headerCta, label: t.nav.cta }}
+            secondaryCta={{ ...headerSecondaryCta, label: t.nav.secondaryCta }}
+          />
         </div>
       </Container>
 

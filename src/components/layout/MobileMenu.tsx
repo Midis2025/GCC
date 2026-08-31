@@ -12,6 +12,8 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 
+import { LanguageToggle } from "@/components/layout/LanguageToggle";
+import { useLocale } from "@/components/layout/LocaleProvider";
 import { NavLink } from "@/components/layout/NavLink";
 import { Button } from "@/components/ui/Button";
 import { contactConfig } from "@/data/site";
@@ -46,6 +48,7 @@ export interface MobileMenuProps {
  * Escape closes it, and background scroll is locked. Touch targets are 44px+.
  */
 export function MobileMenu({ items, cta, secondaryCta, className }: MobileMenuProps) {
+  const { t } = useLocale();
   const [open, setOpen] = useState(false);
   const panelId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
@@ -162,7 +165,7 @@ export function MobileMenu({ items, cta, secondaryCta, className }: MobileMenuPr
         ref={panelRef}
         role="dialog"
         aria-modal="true"
-        aria-label="Site menu"
+        aria-label={t.nav.siteMenu}
         inert={!open}
         data-open={open ? "true" : "false"}
         className={cn(
@@ -183,14 +186,14 @@ export function MobileMenu({ items, cta, secondaryCta, className }: MobileMenuPr
           <button
             type="button"
             onClick={close}
-            aria-label="Close menu"
+            aria-label={t.nav.closeMenu}
             className="-mr-2 inline-flex h-11 w-11 items-center justify-center text-(--color-foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
           >
             <CloseGlyph />
           </button>
         </div>
 
-        <nav aria-label="Mobile" className="mt-10">
+        <nav aria-label={t.nav.mobile} className="mt-10">
           <ul className="flex flex-col">
             {items.map((item, index) => (
               <li
@@ -255,6 +258,21 @@ export function MobileMenu({ items, cta, secondaryCta, className }: MobileMenuPr
             </div>
           )}
 
+          {/*
+            The language toggle, on the panel rather than on the closed header
+            bar.
+
+            Below `xl` the bar holds the wordmark and the menu control and
+            nothing else, and adding a third element to it is what makes a
+            mobile header start to feel crowded. In here it sits under the two
+            actions, above the contact line, with a rule of its own - the same
+            treatment every other group in this panel gets.
+
+            Renders nothing until Arabic is published, so the panel is
+            unchanged in the meantime.
+          */}
+          <LanguageToggle className="mt-8 border-t border-(--color-border) pt-7" />
+
           {contactConfig.email && (
             <a
               href={`mailto:${contactConfig.email}`}
@@ -276,7 +294,7 @@ export function MobileMenu({ items, cta, secondaryCta, className }: MobileMenuPr
         onClick={() => setOpen(true)}
         aria-expanded={open}
         aria-controls={panelId}
-        aria-label="Open menu"
+        aria-label={t.nav.openMenu}
         className="-mr-2 inline-flex h-11 w-11 items-center justify-center text-(--color-foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
       >
         <MenuGlyph />

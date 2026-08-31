@@ -102,6 +102,15 @@ export interface Dictionary {
     telephone: string;
     office: string;
     international: string;
+    contact: string;
+    /**
+     * The standing disclosure, on every page.
+     *
+     * Chrome rather than page copy because it appears in the footer of every
+     * route and again at the foot of every Insight item. AWAITING LEGAL
+     * REVIEW - see `legalReviewRequired`.
+     */
+    disclosure: string;
     legal: {
       privacy: string;
       disclaimer: string;

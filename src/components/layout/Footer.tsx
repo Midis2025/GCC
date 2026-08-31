@@ -1,8 +1,10 @@
 import { Logo } from "@/components/layout/Logo";
 import { NavLink } from "@/components/layout/NavLink";
 import { Container } from "@/components/ui/Container";
+import { getDictionary } from "@/content";
 import { footerNav, legalNav, socialLinks } from "@/data/navigation";
-import { contactConfig, footerDisclosure, siteConfig } from "@/data/site";
+import { localiseNavGroups, localiseNavItems } from "@/lib/nav-i18n";
+import { contactConfig, siteConfig } from "@/data/site";
 import { gulfMarkets } from "@/data/homepage";
 
 /**
@@ -17,7 +19,10 @@ import { gulfMarkets } from "@/data/homepage";
  * field carries the same drawn language as the heroes. It never carries a call
  * to action, because `CTASection` already precedes it on every route.
  */
-export function Footer() {
+export async function Footer() {
+  const t = await getDictionary();
+  const groups = localiseNavGroups(footerNav, t);
+  const legal = localiseNavItems(legalNav, t);
   const year = new Date().getFullYear();
   const hasContactDetails = Boolean(
     contactConfig.email || contactConfig.phone || contactConfig.address,
@@ -50,7 +55,7 @@ export function Footer() {
                   {market.label}
                 </li>
               ))}
-              <li className="text-[0.9375rem] text-(--color-accent)">International</li>
+              <li className="text-[0.9375rem] text-(--color-accent)">{t.footer.international}</li>
             </ul>
 
             {contactConfig.locality && (
@@ -63,7 +68,7 @@ export function Footer() {
 
         {/* Link columns. */}
         <div className="grid grid-cols-2 gap-x-8 gap-y-10 pt-12 sm:grid-cols-3 lg:grid-cols-4">
-          {footerNav.map((group) => (
+          {groups.map((group) => (
             <nav key={group.label} aria-label={group.label}>
               <h2 className="text-label uppercase text-(--color-foreground-subtle)">
                 {group.label}
@@ -81,7 +86,7 @@ export function Footer() {
           {hasContactDetails && (
             <div>
               <h2 className="text-label uppercase text-(--color-foreground-subtle)">
-                Contact
+                {t.footer.contact}
               </h2>
               <ul className="mt-5 flex flex-col gap-3 text-[0.9375rem] text-(--color-foreground-muted)">
                 {contactConfig.email && (
@@ -139,13 +144,13 @@ export function Footer() {
             match the page it closes.
           */}
           <p className="max-w-[74ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
-            {footerDisclosure}
+            {t.footer.disclosure}
           </p>
         </div>
 
         <div className="mt-16 flex flex-col gap-5 border-t border-(--color-border) pt-8 sm:flex-row-reverse sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-x-7 gap-y-3">
-            {legalNav.map((item) => (
+            {legal.map((item) => (
               <NavLink key={item.href} item={item} className="py-1 text-sm" />
             ))}
 
@@ -164,7 +169,7 @@ export function Footer() {
           </div>
 
           <p className="text-sm text-(--color-foreground-subtle)">
-            &copy; {year} {siteConfig.legalName || siteConfig.name}. All rights reserved.
+            &copy; {year} {siteConfig.legalName || siteConfig.name}. {t.footer.rights}
           </p>
         </div>
       </Container>
