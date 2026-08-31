@@ -86,12 +86,34 @@ export function OpeningQuestions() {
             <Reveal delay={index * 130}>
               <div className="relative overflow-hidden py-10 sm:py-12">
                 {/*
-                  Oversized numeral, clipped by its own row and sized in vw so
-                  it stays proportional rather than dominating a narrow column.
+                  Oversized numeral, sized in vw so it stays proportional
+                  rather than dominating a narrow column.
+
+                  The offset is in `em` and not `rem`, which is the whole
+                  reason the digits are no longer cut off at the top.
+
+                  `leading-none` makes the line box 1em, but this font's
+                  content area is 1.26em (ascent 1038 + descent 222 over 1000
+                  upem). The half-leading is therefore -0.13em and the digits'
+                  cap tops land 0.163em below the top of the span - a distance
+                  that scales with the font size, which here is a clamp running
+                  from 5rem to 10rem.
+
+                  A fixed `-top-6` could not satisfy that. It cleared the edge
+                  only while the numeral was above ~9.2rem, so the tops were
+                  intact on a wide desktop and cut by 4px at 1024, 9px at 768
+                  and 11px on a phone. `em` makes the offset track the size it
+                  is compensating for: 0.05em leaves 0.113em of headroom at
+                  every viewport, so this cannot regress at a breakpoint nobody
+                  thought to check.
+
+                  The row keeps `overflow-hidden`. The numeral is still cropped
+                  at the right and bottom, which is what keeps it reading as a
+                  ghost behind the row rather than a graphic on it.
                 */}
                 <span
                   aria-hidden="true"
-                  className="pointer-events-none absolute -top-6 right-0 -z-10 num font-display leading-none text-(--color-foreground)/[0.06] text-[clamp(5rem,12vw,10rem)]"
+                  className="pointer-events-none absolute -top-[0.05em] right-0 -z-10 num font-display leading-none text-(--color-foreground)/[0.06] text-[clamp(5rem,12vw,10rem)]"
                 >
                   {entry.number}
                 </span>
