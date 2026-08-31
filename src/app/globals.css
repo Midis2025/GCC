@@ -221,6 +221,54 @@
   --font-sans: var(--font-primary);
 }
 
+/*
+ * ============================================================================
+ * ARABIC
+ * ============================================================================
+ * The Arabic face goes FIRST in the stack, and only on an Arabic document.
+ *
+ * A font stack is consulted per character, not per element, so this single
+ * declaration gives each script the face drawn for it: Arabic runs resolve in
+ * IBM Plex Sans Arabic, and the Latin runs that remain on an Arabic page - the
+ * legal entity name, tickers, listing venues, email addresses, URLs - fall
+ * through to Plus Jakarta Sans and stay in the brand face. No wrapper elements,
+ * no per-string classes.
+ *
+ * The English document is untouched: `--font-sans` above still resolves to
+ * Plus Jakarta Sans alone, so nothing about English typography changes.
+ */
+[lang="ar"] {
+  --font-sans: var(--font-arabic), var(--font-primary);
+}
+
+/*
+ * Arabic has no cased letters and no small-caps tradition, so the uppercase
+ * transform the eyebrow labels use does nothing to Arabic text - but the wide
+ * tracking that goes with it actively harms it, because Arabic is a connected
+ * script and letter-spacing breaks the joins between letters.
+ *
+ * Both are therefore neutralised for Arabic. The labels keep their size,
+ * weight and colour, so the hierarchy reads the same; only the two properties
+ * that are meaningless or damaging in this script are dropped.
+ */
+[lang="ar"] .text-label,
+[lang="ar"] .uppercase {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/*
+ * Arabic ascenders and descenders are taller than the Latin equivalents, so
+ * display type set at the English leading collides with itself. A small
+ * increase, applied only to the two tightest steps, keeps the same visual
+ * hierarchy without changing any font size.
+ */
+[lang="ar"] .text-display,
+[lang="ar"] .text-h1,
+[lang="ar"] .text-h2 {
+  line-height: 1.25;
+}
+
 @theme {
   /* Breakpoints. Mirrored in src/lib/breakpoints.ts - keep in sync. */
   --breakpoint-xs: 30rem;

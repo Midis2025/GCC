@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useSyncExternalStore } from "react";
 
+import { useLocale, useLocalePath } from "@/components/layout/LocaleProvider";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 
@@ -103,6 +105,8 @@ function getServerSnapshot(): "unknown" {
 }
 
 export function CookieConsent() {
+  const { t } = useLocale();
+  const href = useLocalePath();
   const decision = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   /*
@@ -140,15 +144,20 @@ export function CookieConsent() {
               id="cookie-consent-heading"
               className="text-label uppercase text-(--color-accent)"
             >
-              Cookies
+              {t.cookies.heading}
             </h2>
             <p className="mt-3 text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
-              We use a small number of cookies that are necessary for this site to work. We would
-              also like to measure how the site is used, but only if you agree. Analytics stay off
-              unless you accept.{" "}
-              <a href="/cookies" className="link-underline text-(--color-foreground)">
-                Cookie Notice
-              </a>
+              {t.cookies.body}{" "}
+              {/*
+                `Link`, and through `useLocalePath`, for two separate reasons:
+                the router prefetches an internal route where a bare anchor
+                forces a full document load, and the href has to carry the
+                language or a reader in Arabic is dropped onto the English
+                notice.
+              */}
+              <Link href={href("/cookies")} className="link-underline text-(--color-foreground)">
+                {t.cookies.noticeLink}
+              </Link>
             </p>
           </div>
 
@@ -158,10 +167,10 @@ export function CookieConsent() {
           */}
           <div className="flex shrink-0 flex-col gap-3 xs:flex-row">
             <Button onClick={() => decide("accepted")} size="sm">
-              Accept
+              {t.cookies.accept}
             </Button>
             <Button onClick={() => decide("rejected")} size="sm" variant="outline">
-              Reject non-essential
+              {t.cookies.reject}
             </Button>
           </div>
         </div>

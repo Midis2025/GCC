@@ -50,7 +50,7 @@ export const metadata = createMetadata({
  * The address is never rendered back to the page. It is in the signed token,
  * it goes to the CRM, and it does not appear in the markup.
  */
-export default async function ConfirmPage({ searchParams }: PageProps<"/confirm">) {
+export default async function ConfirmPage({ searchParams }: PageProps<"/[lang]/confirm">) {
   const params = await searchParams;
   const raw = params.token;
   const token = Array.isArray(raw) ? raw[0] : raw;

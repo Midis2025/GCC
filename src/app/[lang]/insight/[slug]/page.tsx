@@ -14,7 +14,7 @@ export function generateStaticParams() {
   return insightItems.map((item) => ({ slug: item.slug }));
 }
 
-export async function generateMetadata({ params }: PageProps<"/insight/[slug]">) {
+export async function generateMetadata({ params }: PageProps<"/[lang]/insight/[slug]">) {
   const { slug } = await params;
   const item = getInsightItem(slug);
   if (!item) return createMetadata({ title: "Insight", path: "/insight" });
@@ -48,7 +48,7 @@ export async function generateMetadata({ params }: PageProps<"/insight/[slug]">)
  * to know who is registered - so the field exists, the rendering does not, and
  * nothing pretends to enforce access it cannot check.
  */
-export default async function InsightItemPage({ params }: PageProps<"/insight/[slug]">) {
+export default async function InsightItemPage({ params }: PageProps<"/[lang]/insight/[slug]">) {
   const { slug } = await params;
   const item = getInsightItem(slug);
   if (!item) notFound();

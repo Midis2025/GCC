@@ -41,7 +41,7 @@ export const metadata = createMetadata({
  * they have been unsubscribed when nothing recorded it is the one failure that
  * would matter more than the send itself.
  */
-export default async function UnsubscribePage({ searchParams }: PageProps<"/unsubscribe">) {
+export default async function UnsubscribePage({ searchParams }: PageProps<"/[lang]/unsubscribe">) {
   const params = await searchParams;
   const raw = params.token;
   const token = Array.isArray(raw) ? raw[0] : raw;

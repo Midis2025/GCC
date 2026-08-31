@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { siteConfig, siteIsLive } from "@/data/site";
 import type { SeoOverrides } from "@/types";
+import { arabicEnabled, defaultLocale, localePath, type Locale } from "@/lib/i18n";
 import { trimTrailingSlash } from "@/lib/utils";
 
 /**
@@ -44,11 +45,41 @@ export function absoluteUrl(path = "/"): string {
  * export const metadata = createMetadata({ title: "About", path: "/about" });
  */
 export function createMetadata(overrides: SeoOverrides = {}): Metadata {
-  const { title, description, path = "/", image, noIndex } = overrides;
+  const { title, description, path = "/", image, noIndex, locale = defaultLocale } = overrides;
 
   const resolvedDescription = description || siteConfig.description || undefined;
   const resolvedImage = image || siteConfig.ogImage || undefined;
-  const canonical = path;
+
+  /*
+   * The canonical is the page's own URL IN ITS OWN LANGUAGE.
+   *
+   * `path` is always the unprefixed route - `/about` - because that is what
+   * every page passes and what the sitemap is built from. `localePath` puts the
+   * prefix back for Arabic, so `/about` and `/ar/about` each point at
+   * themselves rather than both claiming to be the English page.
+   */
+  const canonical = localePath(locale, path);
+
+  /*
+   * hreflang.
+   *
+   * Two reciprocal entries plus `x-default`, which names the version to serve
+   * a reader whose language matches neither - English, the site's own
+   * language. Without these the two editions are two pages with the same
+   * meaning and no stated relationship, which is the duplicate-content case
+   * rather than the multilingual one.
+   *
+   * Emitted ONLY once the Arabic edition is published. Advertising an
+   * alternate that redirects away is worse than advertising none: it invites
+   * crawlers to a URL that does not serve what the tag promised.
+   */
+  const languages = arabicEnabled
+    ? {
+        en: localePath("en", path),
+        ar: localePath("ar", path),
+        "x-default": localePath("en", path),
+      }
+    : undefined;
 
   /*
    * Dimensions are declared only for the site's own card, whose size is known.
@@ -73,14 +104,22 @@ export function createMetadata(overrides: SeoOverrides = {}): Metadata {
     metadataBase: new URL(siteUrl),
     title: title ? { absolute: `${title} | ${siteConfig.name}` } : siteConfig.name,
     description: resolvedDescription,
-    alternates: { canonical },
+    alternates: { canonical, languages },
     openGraph: {
       type: "website",
       siteName: siteConfig.name,
       title: title ?? siteConfig.name,
       description: resolvedDescription,
       url: absoluteUrl(canonical),
-      locale: siteConfig.locale,
+      /*
+       * The OG locale is the page's own, and it names the alternate so an
+       * unfurler knows the other edition exists. `ar_AE` rather than a bare
+       * `ar`: the audience is the Gulf, and the region is part of the locale.
+       */
+      locale: locale === "ar" ? "ar_AE" : siteConfig.locale,
+      alternateLocale: arabicEnabled
+        ? [locale === "ar" ? siteConfig.locale : "ar_AE"]
+        : undefined,
       images: ogImages,
     },
     twitter: {
@@ -116,9 +155,9 @@ export function createMetadata(overrides: SeoOverrides = {}): Metadata {
 }
 
 /** Root metadata: same as `createMetadata` but with the title template applied. */
-export function createRootMetadata(): Metadata {
+export function createRootMetadata(locale: Locale = defaultLocale): Metadata {
   return {
-    ...createMetadata(),
+    ...createMetadata({ locale }),
     title: {
       default: siteConfig.name,
       template: `%s | ${siteConfig.name}`,

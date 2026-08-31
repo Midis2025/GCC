@@ -19,4 +19,12 @@ export interface SeoOverrides {
   path?: string;
   image?: string;
   noIndex?: boolean;
+  /**
+   * The language this page is being rendered in.
+   *
+   * Decides the canonical, the `hreflang` set and the Open Graph locale.
+   * Defaults to English so any caller that has not been localised yet keeps
+   * producing exactly the metadata it produced before.
+   */
+  locale?: import("@/lib/i18n").Locale;
 }
