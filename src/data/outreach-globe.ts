@@ -199,6 +199,15 @@ export const heroMarkets: readonly GlobeMarket[] = globeMarkets.map((market) => 
  * that can be reasoned about. `x` is the label's left edge and is capped at
  * 0.66 so a ~10rem label cannot reach the right edge of the viewport.
  */
+/**
+ * `x` IS A DISTANCE FROM THE INLINE-START, NOT FROM THE LEFT.
+ *
+ * That distinction is what makes one table serve both languages. Inline-start
+ * is the left edge in English and the right edge in Arabic, so reading the
+ * same fraction from the opposite side mirrors the whole arrangement onto the
+ * side the disc moved to - see `cx` in `HeroGlobe`. Do not add a second table
+ * for Arabic, and do not mirror these values: doing both cancels out.
+ */
 export const heroLabelSlots: Record<string, { x: number; y: number }> = {
   // The reference's arrangement, as fractions of the globe layer - which is now
   // the whole hero section. `x` is the label's left edge, `y` its vertical

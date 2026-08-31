@@ -53,6 +53,7 @@ function clampCard(
   layer: HTMLDivElement | null,
   x: number,
   y: number,
+  rtl: boolean,
 ): { x: number; y: number } {
   const inner = node.firstElementChild as HTMLElement | null;
   if (!layer || !inner || inner.offsetWidth === 0) return { x, y };
@@ -64,8 +65,13 @@ function clampCard(
   const h = inner.offsetHeight;
 
   // Bounds on the translate, derived from where the card itself then lands.
-  const minX = CARD_EDGE - box.left + w + CARD_GAP;
-  const maxX = vw - CARD_EDGE - box.left + CARD_GAP;
+  /*
+    The card hangs off the reading side of the marker: to its left in English,
+    to its right in Arabic. So the room it needs is on the opposite side in
+    each language, and the bounds swap with it.
+  */
+  const minX = rtl ? CARD_EDGE - box.left + CARD_GAP : CARD_EDGE - box.left + w + CARD_GAP;
+  const maxX = rtl ? vw - CARD_EDGE - box.left - w - CARD_GAP : vw - CARD_EDGE - box.left + CARD_GAP;
   const minY = CARD_EDGE - box.top + h / 2;
   const maxY = vh - CARD_EDGE - box.top - h / 2;
 
@@ -207,14 +213,17 @@ export function HeroGlobe({ className }: { className?: string }) {
     lastPoint.current = { x, y };
     const node = cardElement.current;
     if (node) {
-      const point = clampCard(node, wrapper.current, x, y);
+      const point = clampCard(node, wrapper.current, x, y, rtl);
       node.style.transform = `translate3d(${point.x}px, ${point.y}px, 0)`;
     }
 
     hold();
     setActiveIndex(index);
     setCard({ index, mode: "pointer" });
-  }, []);
+    // Direction decides which side of the marker the card hangs off. It is
+    // constant for the life of a page, so this rebuilds once on mount and
+    // never mid-interaction.
+  }, [rtl]);
 
   /*
     Re-clamp once the card is carrying the market it is about.
@@ -229,9 +238,9 @@ export function HeroGlobe({ className }: { className?: string }) {
     if (card?.mode !== "pointer") return;
     const node = cardElement.current;
     if (!node) return;
-    const point = clampCard(node, wrapper.current, lastPoint.current.x, lastPoint.current.y);
+    const point = clampCard(node, wrapper.current, lastPoint.current.x, lastPoint.current.y, rtl);
     node.style.transform = `translate3d(${point.x}px, ${point.y}px, 0)`;
-  }, [card]);
+  }, [card, rtl]);
 
   const handleSelect = useCallback((index: number) => {
     hold();
@@ -252,7 +261,7 @@ export function HeroGlobe({ className }: { className?: string }) {
    * this one measurement, so the globe, the leaders and the labels can never
    * disagree about the geometry they are placed against.
    */
-  const [box, setBox] = useState({ width: 0, height: 0, overhang: 0, safeLeft: 0 });
+  const [box, setBox] = useState({ width: 0, height: 0, overhang: 0, safeStart: 0 });
 
   useEffect(() => {
     const element = wrapper.current;
@@ -275,17 +284,37 @@ export function HeroGlobe({ className }: { className?: string }) {
         precisely so that they can be measured here.
       */
       const lines = element.closest("section")?.querySelectorAll("h1 span.reveal");
-      const textRight = lines?.length
-        ? Math.max(...Array.from(lines, (line) => line.getBoundingClientRect().right))
+
+      /*
+        Measured on the INLINE axis, so the same arithmetic serves both
+        languages.
+
+        In English the headline sits at the left and the labels have to stay
+        clear of its right edge; in Arabic it sits at the right and they have
+        to stay clear of its left edge. Expressed as a distance from the
+        layer's own inline-start, those are the same statement, and everything
+        downstream - the clamp, the slots, the leaders - can stop caring which
+        language it is in.
+
+        `overhang` is likewise the amount the layer runs past the viewport on
+        its inline-END side: the right in English, the left in Arabic. The
+        layer deliberately overhangs so the globe can bleed off the edge.
+      */
+      const textEdge = lines?.length
+        ? rtl
+          ? Math.min(...Array.from(lines, (line) => line.getBoundingClientRect().left))
+          : Math.max(...Array.from(lines, (line) => line.getBoundingClientRect().right))
         : 0;
 
-      const safeLeft = Math.max(0, textRight + 32 - rect.left);
+      const safeStart = lines?.length
+        ? Math.max(0, rtl ? rect.right - (textEdge - 32) : textEdge + 32 - rect.left)
+        : 0;
 
       setBox({
         width: rect.width,
         height: rect.height,
-        overhang: Math.max(0, rect.right - viewport),
-        safeLeft,
+        overhang: Math.max(0, rtl ? -rect.left : rect.right - viewport),
+        safeStart,
       });
     };
 
@@ -294,7 +323,9 @@ export function HeroGlobe({ className }: { className?: string }) {
     measure();
 
     return () => observer.disconnect();
-  }, []);
+    // The measurement reads the headline edge on the reading side, so it has
+    // to re-run if the direction ever changes under it.
+  }, [rtl]);
 
   /* --- Placement --------------------------------------------------------- */
   /*
@@ -355,31 +386,59 @@ export function HeroGlobe({ className }: { className?: string }) {
     rendered here.
   */
   const anchors = useMemo(() => {
-    const { width, height, overhang, safeLeft } = box;
+    const { width, height, overhang, safeStart } = box;
     if (!wide || width === 0) return undefined;
 
-    // A label sits to the right of its anchor, so the anchor has to leave room
-    // for the whole box inside the visible part of the layer, and must clear
-    // the type column on the other side. Clamping here rather than tuning the
-    // slots per breakpoint is what makes one arrangement survive 1024 through
-    // 2560 without a table of exceptions.
+    // A label sits on the reading side of its anchor, so the anchor has to
+    // leave room for the whole box inside the visible part of the layer, and
+    // must clear the type column on the other side. Clamping here rather than
+    // tuning the slots per breakpoint is what makes one arrangement survive
+    // 1024 through 2560 without a table of exceptions.
     const labelWidth = width > 760 ? 168 : 148;
-    const maxX = Math.max(safeLeft, width - overhang - labelWidth);
+    const maxInline = Math.max(safeStart, width - overhang - labelWidth);
     const maxY = height - 70;
 
     return Object.fromEntries(
       heroMarkets.map((market) => {
         const slot = heroLabelSlots[market.code] ?? { x: 0.5, y: 0.5 };
+
+        /*
+          The fraction is NOT mirrored, and that is the whole trick.
+
+          It is a distance from the layer's inline-start, and inline-start is
+          already the left in English and the right in Arabic. Reading the same
+          0.531 from the opposite edge mirrors the arrangement on its own, and
+          lands it on the same side as the disc - which also moved, to `cx` 0.2.
+
+          Mirroring the fraction as well was the first attempt and it was
+          wrong twice over: it cancelled the flip, and because every mirrored
+          value then fell below `safeStart`, the clamp collapsed all seven
+          labels onto one position in a single stack.
+        */
+        const inline = Math.min(Math.max(width * slot.x, safeStart), maxInline);
+
         return [
           market.code,
           {
-            x: Math.min(Math.max(width * slot.x, safeLeft), maxX),
+            /*
+              Two coordinates for one position, because two different systems
+              consume it.
+
+              `inline` is the distance from the layer's inline-start, used with
+              `inset-inline-start` on the HTML label so it flips with `dir`.
+
+              `x` is a PHYSICAL canvas pixel, because the canvas draws the
+              leader lines and a 2D context has no notion of direction. In
+              Arabic that is measured back from the right edge.
+            */
+            inline,
+            x: rtl ? width - inline : inline,
             y: Math.min(Math.max(height * slot.y, 70), maxY),
           },
         ];
       }),
     );
-  }, [box, wide, heroMarkets]);
+  }, [box, wide, heroMarkets, rtl]);
 
   return (
     <div
@@ -458,9 +517,16 @@ export function HeroGlobe({ className }: { className?: string }) {
                 isActive ? "opacity-100" : "opacity-65",
               )}
               style={{
-                left: anchor.x,
+                /*
+                  `insetInlineStart`, not `left`: the label hangs off the
+                  reading side of its anchor, which is the right of it in
+                  English and the left of it in Arabic. The nudge is signed to
+                  match, because a CSS transform is physical even when the
+                  inset beside it is not.
+                */
+                insetInlineStart: anchor.inline,
                 top: anchor.y,
-                transform: "translate(0.75rem, -50%)",
+                transform: `translate(${rtl ? "-0.75rem" : "0.75rem"}, -50%)`,
               }}
             >
               {/*
@@ -506,7 +572,11 @@ export function HeroGlobe({ className }: { className?: string }) {
           // meaningless there, so it is parked at a readable spot instead.
           card?.mode === "anchored" && "!translate-x-0 !translate-y-0",
         )}
-        style={card?.mode === "anchored" ? { transform: "none", left: "8%", top: "16%" } : undefined}
+        style={
+          card?.mode === "anchored"
+            ? { transform: "none", insetInlineStart: "8%", top: "16%" }
+            : undefined
+        }
       >
         <div
           className={cn(
@@ -518,7 +588,8 @@ export function HeroGlobe({ className }: { className?: string }) {
             // a card above one covers the globe and a card below one runs out
             // of hero; to its left is the quiet band between the type and the
             // disc, which is the only place it costs nothing.
-            card?.mode === "pointer" && "-translate-x-[calc(100%+1.25rem)] -translate-y-1/2",
+            card?.mode === "pointer" &&
+              "ltr:-translate-x-[calc(100%+1.25rem)] rtl:translate-x-[calc(100%+1.25rem)] -translate-y-1/2",
           )}
         >
           <span
