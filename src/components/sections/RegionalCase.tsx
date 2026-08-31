@@ -43,10 +43,19 @@ export function RegionalCase() {
       <div className="grid gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-x-24">
         <div className="lg:sticky lg:top-[calc(var(--header-h)+4rem)] lg:self-start">
           <Reveal>
-            <span
-              aria-hidden="true"
-              className="about-rule mb-7 block h-px w-16 bg-[linear-gradient(90deg,var(--color-accent),transparent)]"
-            />
+            {/*
+              One rule, not two.
+
+              A standalone `about-rule` used to sit here - a 4rem bronze
+              gradient hairline on its own line above the eyebrow - and
+              `SectionLabel` draws its own short accent rule beside the text.
+              Stacked, they read as two decorative lines introducing one label.
+
+              The one that reads as the label's own is the one inside
+              `SectionLabel`, so the standalone rule is the one that goes. It is
+              removed here only: `.about-rule` is a shared class and several
+              other sections use it correctly, on their own.
+            */}
             <SectionLabel>{gulfDifference.label}</SectionLabel>
             <Heading
               id="home-regional-case"
