@@ -98,6 +98,56 @@ export const insightSectors = {
     "Coverage is contextual. It is not investment research, a recommendation, or advice on any security.",
 } as const;
 
+/**
+ * ============================================================================
+ * MENA'S DIGITAL NEWS
+ * ============================================================================
+ * The daily feed, and the one format that does not live on this site.
+ *
+ * ---------------------------------------------------------------------------
+ * AWAITING CLIENT CONFIRMATION
+ * ---------------------------------------------------------------------------
+ * The brief marks this item "Speak to Peter", so the wording and the
+ * destination are both still open. Everything a change would touch is in this
+ * one object - the description, the CTA label and the channel URL - and the
+ * section that renders it reads all three from here. Changing the link later
+ * is a one-line edit in this file and nothing else.
+ *
+ * `channelHref` is the WhatsApp group supplied with the brief. If it is
+ * cleared, `MenasDigitalNewsSection` renders the format without a call to
+ * action rather than a button that goes nowhere.
+ *
+ * ---------------------------------------------------------------------------
+ * COMPLIANCE. A news feed, and described as one. It carries developments and
+ * context; it does not carry recommendations, price views or forecasts, and
+ * the standing qualifier below says so in the same place every other format's
+ * does.
+ */
+export const menasDigitalNewsDetail = {
+  subline:
+    "A daily digital news feed covering relevant developments across Gulf markets and Gulf Connect's core sectors.",
+  paragraphs: [
+    "The shortest of the formats and the most frequent: a daily read for people who follow the region continuously rather than in quarters.",
+  ],
+  covers: [
+    "Gulf market developments",
+    "Critical minerals",
+    "AI and data infrastructure",
+    "Life sciences",
+    "Regional business news",
+    "International companies in Gulf conversations",
+  ],
+  /* COMPLIANCE. Standing qualifier, as every other format carries. */
+  note: "A news feed — not investment recommendations.",
+  cta: {
+    label: "Join MENA's Digital News",
+    /** TODO: confirm with the client before launch. WhatsApp channel. */
+    href: "https://chat.whatsapp.com/Im5OKXVMWDjAeFaO0xiDTG",
+    /** Set beside the button so nobody is surprised by where it goes. */
+    note: "The feed is distributed on WhatsApp. The link opens outside this site.",
+  },
+} as const;
+
 /** The Gulf Brief, in full. */
 export const gulfBriefDetail = {
   subline: "Fortnightly written context on Gulf capital markets and the sectors we follow.",

@@ -10,7 +10,7 @@ import { SectionLabel } from "@/components/ui/SectionLabel";
 import { backdrops } from "@/data/imagery";
 import { contactContent, areaOfInterestOptions } from "@/data/contact";
 import { gulfMarkets } from "@/data/homepage";
-import { contactConfig } from "@/data/site";
+import { contactConfig, siteConfig } from "@/data/site";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({
@@ -29,13 +29,24 @@ export const metadata = createMetadata({
  * fill the left rail so the page has substance even while
  * `contactConfig` is unpopulated.
  *
- * Content integrity: every contact detail is conditional on `data/site.ts`.
+ * Content integrity: the entity and the city are confirmed facts and are
+ * always shown; every other contact detail is conditional on `data/site.ts`.
  * Nothing is invented, and no empty rows are rendered.
  */
 export default function ContactPage() {
-  const hasDetails = Boolean(
-    contactConfig.email || contactConfig.phone || contactConfig.address,
-  );
+  /*
+    The details block.
+
+    Always rendered, because the entity and the city are both confirmed facts:
+    Gulf Connect Consultancy FZCO, Dubai, UAE. It used to appear only when an
+    email, a phone number or a street address existed, which meant a Contact
+    page that named the firm nowhere while all three were outstanding.
+
+    Email and phone remain conditional on `data/site.ts` and are still
+    outstanding from the client. They are not invented and no empty row is
+    rendered in their place - see the TODOs on `contactConfig`.
+  */
+  const hasDirectDetails = Boolean(contactConfig.email || contactConfig.phone);
 
   return (
     <>
@@ -138,59 +149,86 @@ export default function ContactPage() {
             </Reveal>
 
             {/*
-              Contact details render only when supplied in data/site.ts.
-              Nothing is invented, and no empty rows are shown.
+              Contact details.
+
+              The entity and the city are confirmed and always shown. Email and
+              phone render only when supplied in data/site.ts - nothing is
+              invented, and no empty rows are shown.
             */}
-            {hasDetails && (
-              <Reveal delay={100}>
-                <dl className="mt-12 flex flex-col gap-6 border-t border-(--color-border) pt-8">
-                  {contactConfig.email && (
-                    <div>
-                      <dt className="text-label uppercase text-(--color-foreground-subtle)">
-                        Email
-                      </dt>
-                      <dd className="mt-2">
-                        <a
-                          href={`mailto:${contactConfig.email}`}
-                          className="link-underline inline-block py-1 text-[1.0625rem]"
-                        >
-                          {contactConfig.email}
-                        </a>
-                      </dd>
-                    </div>
-                  )}
+            <Reveal delay={100}>
+              <dl className="mt-12 flex flex-col gap-6 border-t border-(--color-border) pt-8">
+                <div>
+                  <dt className="text-label uppercase text-(--color-foreground-subtle)">
+                    Office
+                  </dt>
+                  <dd className="mt-2">
+                    <address className="text-[1.0625rem] not-italic leading-relaxed">
+                      {siteConfig.legalName}
+                      <br />
+                      {/*
+                        The street address if the client publishes one, and
+                        the city otherwise. Never both - `locality` is the
+                        city the address would be in.
+                      */}
+                      {contactConfig.address || contactConfig.locality}
+                    </address>
+                  </dd>
+                </div>
 
-                  {contactConfig.phone && (
-                    <div>
-                      <dt className="text-label uppercase text-(--color-foreground-subtle)">
-                        Telephone
-                      </dt>
-                      <dd className="mt-2">
-                        <a
-                          href={`tel:${contactConfig.phone.replace(/\s+/g, "")}`}
-                          className="link-underline inline-block py-1 text-[1.0625rem]"
-                        >
-                          {contactConfig.phone}
-                        </a>
-                      </dd>
-                    </div>
-                  )}
+                {contactConfig.email && (
+                  <div>
+                    <dt className="text-label uppercase text-(--color-foreground-subtle)">
+                      Email
+                    </dt>
+                    <dd className="mt-2">
+                      <a
+                        href={`mailto:${contactConfig.email}`}
+                        className="link-underline inline-block py-1 text-[1.0625rem]"
+                      >
+                        {contactConfig.email}
+                      </a>
+                    </dd>
+                  </div>
+                )}
 
-                  {contactConfig.address && (
-                    <div>
-                      <dt className="text-label uppercase text-(--color-foreground-subtle)">
-                        Office
-                      </dt>
-                      <dd className="mt-2">
-                        <address className="text-[1.0625rem] not-italic leading-relaxed">
-                          {contactConfig.address}
-                        </address>
-                      </dd>
-                    </div>
-                  )}
-                </dl>
-              </Reveal>
-            )}
+                {contactConfig.phone && (
+                  <div>
+                    <dt className="text-label uppercase text-(--color-foreground-subtle)">
+                      Telephone
+                    </dt>
+                    <dd className="mt-2">
+                      <a
+                        href={`tel:${contactConfig.phone.replace(/\s+/g, "")}`}
+                        className="link-underline inline-block py-1 text-[1.0625rem]"
+                      >
+                        {contactConfig.phone}
+                      </a>
+                    </dd>
+                  </div>
+                )}
+
+                {/*
+                  AWAITING CLIENT INFORMATION.
+
+                  No approved Gulf Connect email address or telephone number
+                  has been supplied. Both are held as empty TODOs on
+                  `contactConfig` in `data/site.ts`; setting either one there
+                  makes its row appear here and in the footer, with no other
+                  change. Do not populate them with invented values.
+                */}
+                {!hasDirectDetails && (
+                  <div>
+                    <dt className="text-label uppercase text-(--color-foreground-subtle)">
+                      Email and telephone
+                    </dt>
+                    <dd className="mt-2 max-w-[46ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-subtle)">
+                      Please use the enquiry form. A direct address and number will be published
+                      here once confirmed.
+                    </dd>
+                  </div>
+                )}
+              </dl>
+            </Reveal>
 
             <Reveal delay={140}>
               <div className="mt-12 border-t border-(--color-border) pt-8">

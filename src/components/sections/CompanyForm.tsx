@@ -8,7 +8,7 @@ import { FormField } from "@/components/ui/FormField";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
-import { preferredTimeOptions } from "@/data/contact";
+import { areaOfInterestOptions, preferredTimeOptions } from "@/data/contact";
 import { todayAsInputValue } from "@/lib/utils";
 
 type Errors = Partial<Record<string, string>>;
@@ -66,6 +66,16 @@ export function CompanyForm({ source }: { source: string }) {
     const value = (key: string) => String(data.get(key) ?? "").trim();
 
     if (!value("companyName")) next.companyName = "Please enter your company name.";
+    /*
+     * Sector is required.
+     *
+     * It is the field that decides whether an enquiry is answerable at all -
+     * the firm covers three sectors - so an enquiry that does not say which
+     * one it concerns has to be chased before it can be read. Left as free
+     * text rather than a select on purpose: a company that sits between two
+     * of the three should be able to say so in its own words.
+     */
+    if (!value("sector")) next.sector = "Please tell us which sector you operate in.";
     if (!value("name")) next.name = "Please enter your full name.";
 
     const email = value("email");
@@ -125,6 +135,7 @@ export function CompanyForm({ source }: { source: string }) {
           email: data.get("email"),
           phone: data.get("phone"),
           country: data.get("country"),
+          areaOfInterest: data.get("areaOfInterest"),
           preferredDate: data.get("preferredDate"),
           preferredTime: data.get("preferredTime"),
           message: data.get("message"),
@@ -208,7 +219,7 @@ export function CompanyForm({ source }: { source: string }) {
           <Input name="ticker" />
         </FormField>
 
-        <FormField label="Sector" description="Optional">
+        <FormField label="Sector" error={errors.sector} required>
           <Input name="sector" />
         </FormField>
 
@@ -228,8 +239,33 @@ export function CompanyForm({ source }: { source: string }) {
           <Input name="phone" type="tel" inputMode="tel" autoComplete="tel" />
         </FormField>
 
-        <FormField label="Country" description="Optional" className="sm:col-span-2">
+        <FormField label="Country" description="Optional">
           <Input name="country" autoComplete="country-name" />
+        </FormField>
+
+        {/*
+          Area of interest.
+
+          The four service lines plus a general option, read from
+          `areaOfInterestOptions` - the same list the left rail of the Contact
+          page renders as tags and the same values the service pages deep-link
+          with. One source, so an enquiry can only ever be routed to a service
+          that exists.
+
+          Optional, and a select rather than free text: this is the field the
+          record is routed by, and a routing value written by hand is a value
+          somebody has to interpret later.
+
+          It takes the cell Country used to share with nothing. Country was
+          full-width and is now half, which is what lets the two sit as a pair
+          and keeps the grid on even rows.
+        */}
+        <FormField label="Area of interest" description="Optional">
+          <Select
+            name="areaOfInterest"
+            options={areaOfInterestOptions}
+            placeholder="Choose an area…"
+          />
         </FormField>
 
         {/*

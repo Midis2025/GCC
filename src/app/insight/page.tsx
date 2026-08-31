@@ -11,6 +11,7 @@ import {
   FixedFormatStatement,
   FromTheRoomSection,
   GulfBriefSection,
+  MenasDigitalNewsSection,
   SectorNotesSection,
 } from "@/components/sections/insight/InsightFormats";
 import { PageHero } from "@/components/sections/PageHero";
@@ -27,7 +28,7 @@ export const metadata = createMetadata({
   title: "Insight",
   path: "/insight",
   description:
-    "The Gulf Brief, Five Questions, Sector Notes and From the Room - four recurring formats covering Gulf capital markets and the sectors Gulf Connect works in.",
+    "MENA's Digital News, The Gulf Brief, Five Questions, Sector Notes and From the Room - five recurring formats covering Gulf capital markets and the sectors Gulf Connect works in.",
 });
 
 /**
@@ -39,15 +40,17 @@ export const metadata = createMetadata({
  * ---------------------------------------------------------------------------
  * The organising decision
  * ---------------------------------------------------------------------------
- * Each of the four formats gets its OWN section with its own composition,
- * rather than four entries in one sequence. That is what lets the page say
- * something true about them: The Gulf Brief is a written column, Five Questions
- * is a film, Sector Notes is a document and From the Room is a room. Four rows
- * of one component said only that there are four of them.
+ * Each of the five formats gets its OWN section with its own composition,
+ * rather than five entries in one sequence. That is what lets the page say
+ * something true about them: MENA's Digital News is a daily feed, The Gulf
+ * Brief is a written column, Five Questions is a film, Sector Notes is a
+ * document and From the Room is a room. Five rows of one component said only
+ * that there are five of them.
  *
- * Each format section keeps the id the old sequence carried - `#gulf-brief`,
- * `#five-questions`, `#sector-notes`, `#from-the-room` - so the navigation
- * below and the deep links from individual article pages both keep working.
+ * Each format section keeps the id the old sequence carried -
+ * `#menas-digital-news`, `#gulf-brief`, `#five-questions`, `#sector-notes`,
+ * `#from-the-room` - so the navigation below and the deep links from
+ * individual article pages both keep working.
  *
  * ---------------------------------------------------------------------------
  * Rhythm
@@ -57,7 +60,8 @@ export const metadata = createMetadata({
  *   Hero            dark      the shared PageHero, as every other route
  *   Position        canvas    statement | rule | two paragraphs
  *   What We Follow  muted     three staggered sector panels
- *   Navigation      canvas    four-column masthead
+ *   Navigation      canvas    five-column masthead
+ *   Digital News    muted     typographic, no image, external CTA
  *   Gulf Brief      canvas    editorial split, photograph left
  *   Topics          dark      numbered headline list
  *   Five Questions  dark*     cinematic still over a five-station measure
@@ -126,13 +130,17 @@ export default function InsightPage() {
         and would return nothing, where these anchor onto four standing format
         sections that each explain themselves.
 
-        A four-column masthead from `sm` up and a horizontal scroller below it.
-        Verified that it scrolls, that the last item is reachable and that
-        every anchor resolves.
+        A five-column masthead from `lg` up, two columns at `sm`, and a
+        horizontal scroller below that. Verified that it scrolls, that the last
+        item is reachable and that every anchor resolves.
+
+        Five rather than four since MENA's Digital News joined the taxonomy:
+        the list is built from `insightFormats`, so the only thing that had to
+        change here was the column count.
       */}
       <Section spacing="md" aria-label="Insight formats">
         <nav>
-          <ul className="-mx-(--gutter) flex snap-x snap-mandatory gap-x-6 overflow-x-auto px-(--gutter) pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-x-10 sm:gap-y-8 sm:overflow-visible sm:px-0 lg:grid-cols-4">
+          <ul className="-mx-(--gutter) flex snap-x snap-mandatory gap-x-6 overflow-x-auto px-(--gutter) pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-x-10 sm:gap-y-8 sm:overflow-visible sm:px-0 lg:grid-cols-5 lg:gap-x-8">
             {insightFormats.map((format, index) => (
               <li key={format.id} className="w-[13rem] shrink-0 snap-start sm:w-auto">
                 <Reveal delay={index * 90}>
@@ -168,6 +176,14 @@ export default function InsightPage() {
           </ul>
         </nav>
       </Section>
+
+      {/*
+        The daily feed, placed first because it is the most frequent of the
+        five and the one a reader can act on immediately. Muted ground and no
+        photography, so it does not read as a second copy of the editorial
+        split that follows it. See the component.
+      */}
+      <MenasDigitalNewsSection />
 
       <GulfBriefSection />
       <EditorialThemesSection />

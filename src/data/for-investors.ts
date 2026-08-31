@@ -150,9 +150,48 @@ export const investorConsent = {
 export interface Briefing {
   /** ISO date. */
   date: string;
+  /** The company or the briefing's own name. */
   title: string;
+  /**
+   * The sector the company works in.
+   *
+   * Optional, because a hosted session is not always about one company in one
+   * sector. Where it is set the row shows it, and a registrant can see at a
+   * glance whether the session matches the sectors they registered an interest
+   * in. Free text rather than the three-value list: a briefing may sit across
+   * two of them, and this is a label rather than a routing value.
+   */
+  sector?: string;
+  /** Dubai, Abu Dhabi or Riyadh, in practice. Never abbreviated. */
   city: string;
+  /** How the session runs - one-to-one, small group, roundtable, and so on. */
   format: string;
 }
+
+/**
+ * Standing copy for the module.
+ *
+ * Held here rather than written into the page so the heading and the
+ * supporting line are edited in the same file as the entries they describe.
+ *
+ * COMPLIANCE: the supporting line says what the sessions ARE. It does not say
+ * what attending one produces, and nothing may be added to it that does.
+ */
+export const upcomingBriefingsContent = {
+  label: "Calendar",
+  heading: "Upcoming Briefings",
+  intro:
+    "Upcoming Gulf Connect briefings and hosted sessions with international companies.",
+  /**
+   * The invitation request.
+   *
+   * Routes to the investor side of the Contact toggle rather than to a booking
+   * form of its own: a request for an invitation is a conversation, places are
+   * allocated by hand, and `briefingProcess` step 05 states plainly that
+   * registration does not guarantee a place at every briefing. A control that
+   * looked like a seat reservation would contradict it.
+   */
+  cta: { label: "Request an Invitation", href: "/contact?enquiry=investor" },
+} as const;
 
 export const upcomingBriefings: Briefing[] = [];

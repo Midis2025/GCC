@@ -14,6 +14,7 @@ import {
   fiveQuestionsDetail,
   fromTheRoomDetail,
   gulfBriefDetail,
+  menasDigitalNewsDetail,
   sectorNotesDetail,
 } from "@/data/insight-page";
 import { formatDate } from "@/lib/utils";
@@ -22,7 +23,7 @@ import { formatDate } from "@/lib/utils";
  * Published items for a format.
  *
  * Renders NOTHING when a format has none, which is the whole point: the page
- * describes four standing formats and must never imply a library it does not
+ * describes five standing formats and must never imply a library it does not
  * have. No skeletons, no "coming soon", no sample entries with invented dates.
  *
  * The moment real items exist they appear here under their format, with no
@@ -53,6 +54,131 @@ function PublishedItems({ format }: { format: InsightFormatId }) {
         </li>
       ))}
     </ul>
+  );
+}
+
+/**
+ * ============================================================================
+ * MENA'S DIGITAL NEWS
+ * ============================================================================
+ * The daily feed. First of the five, and the only one that lives off-site.
+ *
+ * ---------------------------------------------------------------------------
+ * Why this composition and not another
+ * ---------------------------------------------------------------------------
+ * Typographic, on the muted ground, with no photograph. Two reasons, and both
+ * are about the section that follows it: The Gulf Brief is an editorial split
+ * with a tall image on the canvas ground, and putting a second photographic
+ * split immediately above it would have read as the same section twice. The
+ * page's rule is that no two neighbours share a ground or a composition, and
+ * this is the section that has to satisfy it - the other four were placed
+ * against each other before it existed.
+ *
+ * It is otherwise built from exactly the parts the other formats use: the
+ * cadence as a `SectionLabel`, the name as a display `Heading`, the subline as
+ * a lead, the covers list with the accent dashes The Gulf Brief uses, and the
+ * standing qualifier on a rule at the foot of the column.
+ *
+ * ---------------------------------------------------------------------------
+ * The call to action
+ * ---------------------------------------------------------------------------
+ * This is the one format a reader joins rather than reads here, so it is the
+ * one format section with a button. `Button` detects the external href and
+ * adds `target="_blank"` and `rel="noopener noreferrer"` itself.
+ *
+ * If `cta.href` is cleared - and it is marked as awaiting client confirmation
+ * in `data/insight-page.ts` - the button is not rendered at all. A call to
+ * action that goes nowhere is worse than none, and this is the only link on
+ * the page whose destination is still open.
+ */
+export function MenasDigitalNewsSection() {
+  const format = getFormat("menas-digital-news");
+  if (!format) return null;
+
+  const { cta } = menasDigitalNewsDetail;
+
+  return (
+    <Section
+      spacing="lg"
+      tone="muted"
+      id="menas-digital-news"
+      aria-labelledby="format-menas-digital-news"
+      className="scroll-mt-[calc(var(--header-h)+2rem)]"
+    >
+      <div className="grid gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-x-24">
+        <div>
+          <Reveal>
+            <SectionLabel>{format.cadence}</SectionLabel>
+            <Heading
+              id="format-menas-digital-news"
+              level={2}
+              size="display"
+              className="mt-5 max-w-[11ch]"
+            >
+              {format.name}
+            </Heading>
+          </Reveal>
+
+          <Reveal delay={140}>
+            <p className="mt-7 max-w-[44ch] text-lead text-(--color-foreground-muted)">
+              {menasDigitalNewsDetail.subline}
+            </p>
+            {menasDigitalNewsDetail.paragraphs.map((paragraph) => (
+              <p
+                key={paragraph}
+                className="mt-5 max-w-[52ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)"
+              >
+                {paragraph}
+              </p>
+            ))}
+          </Reveal>
+        </div>
+
+        <div className="lg:pt-3">
+          <Reveal delay={180}>
+            <p className="text-label uppercase text-(--color-foreground-subtle)">
+              What it may cover
+            </p>
+            <ul className="mt-5 grid gap-x-8 gap-y-2.5 sm:grid-cols-2">
+              {menasDigitalNewsDetail.covers.map((entry) => (
+                <li
+                  key={entry}
+                  className="flex items-start gap-3 text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="mt-2.5 h-px w-3 shrink-0 bg-(--color-accent)"
+                  />
+                  <span>{entry}</span>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+
+          {/* COMPLIANCE. Standing qualifier, in the same place as every other format's. */}
+          <Reveal delay={260}>
+            <p className="mt-9 border-t border-(--color-border) pt-6 text-sm text-(--color-foreground-subtle)">
+              {menasDigitalNewsDetail.note}
+            </p>
+          </Reveal>
+
+          {cta.href && (
+            <Reveal delay={320}>
+              <div className="mt-8 flex flex-col gap-4">
+                <Button href={cta.href} variant="outline" withArrow>
+                  {cta.label}
+                </Button>
+                <p className="text-sm leading-relaxed text-(--color-foreground-subtle)">
+                  {cta.note}
+                </p>
+              </div>
+            </Reveal>
+          )}
+
+          <PublishedItems format="menas-digital-news" />
+        </div>
+      </div>
+    </Section>
   );
 }
 

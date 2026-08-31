@@ -1,13 +1,20 @@
 import { NextResponse } from "next/server";
 
-import { preferredTimeOptions } from "@/data/contact";
+import { areaOfInterestOptions, preferredTimeOptions } from "@/data/contact";
 import {
   GENERAL_CONTENT_ONLY,
   investorCategories,
   investorConsent,
   investorSectors,
 } from "@/data/for-investors";
-import { deliverToCrm, isCrmConfigured, type CrmResult, type CrmSubmission } from "@/lib/crm";
+import {
+  CRM_FORM_TYPE,
+  deliverToCrm,
+  isCrmConfigured,
+  type CrmResult,
+  type CrmSubmission,
+} from "@/lib/crm";
+import { confirmationUrl } from "@/lib/optin";
 import {
   adminRecipient,
   buildAdminMail,
@@ -153,6 +160,25 @@ function validate(type: string, payload: Payload): Validation {
 
   if (type === "company-enquiry") {
     if (!str(payload, "companyName")) errors.companyName = "Please enter your company name.";
+
+    /*
+     * Sector is required on this form, and enforced here as well as in the
+     * browser. It is the field that decides whether an enquiry is answerable,
+     * and it is free text by design - see the note in `CompanyForm`.
+     */
+    if (!str(payload, "sector")) errors.sector = "Please tell us which sector you operate in.";
+
+    /*
+     * Area of interest is optional, and checked against the fixed list when it
+     * is present. The same reasoning as the investor category and the
+     * preferred time: a value the form never offered is a value nobody
+     * downstream can route on, so it is rejected rather than stored.
+     */
+    const areaOfInterest = str(payload, "areaOfInterest");
+    if (areaOfInterest && !areaOfInterestOptions.some((o) => o.value === areaOfInterest)) {
+      errors.areaOfInterest = "Please choose an area of interest.";
+    }
+
     const message = str(payload, "message");
     if (!message) errors.message = "Please tell us briefly what you are looking for.";
     else if (message.length < 20) errors.message = "Please add a little more detail.";
@@ -203,6 +229,7 @@ export async function POST(request: Request) {
 
   const submission: CrmSubmission = {
     type,
+    formType: CRM_FORM_TYPE[type],
     source: str(payload, "source") || "/",
     submittedAt: now,
 
@@ -216,6 +243,7 @@ export async function POST(request: Request) {
     listingVenue: str(payload, "listingVenue") || undefined,
     ticker: str(payload, "ticker") || undefined,
     sector: str(payload, "sector") || undefined,
+    areaOfInterest: str(payload, "areaOfInterest") || undefined,
     preferredDate: str(payload, "preferredDate") || undefined,
     preferredTime: str(payload, "preferredTime") || undefined,
     message: str(payload, "message") || undefined,
@@ -226,6 +254,18 @@ export async function POST(request: Request) {
       (investorSectors as readonly string[]).includes(s),
     ),
     generalContentOnly: type === "investor-registration" && category === GENERAL_CONTENT_ONLY,
+    /*
+     * The same rule, stored the way an email platform reads it.
+     *
+     *   "Other"       -> general content only, NOT eligible for briefings
+     *   anything else -> eligible
+     *
+     * Undefined on a company enquiry: that is correspondence, not an audience,
+     * and a false here would read as an issuer who was excluded rather than as
+     * one who was never a candidate. See `briefingEligible` in `lib/crm.ts`.
+     */
+    briefingEligible:
+      type === "investor-registration" ? category !== GENERAL_CONTENT_ONLY : undefined,
 
     consentGiven: true,
     consentAt: now,
@@ -256,7 +296,20 @@ export async function POST(request: Request) {
           email: str(payload, "email"),
           phone: str(payload, "phone") || undefined,
           market: marketCode,
-          area: str(payload, "sector") || "general",
+          /*
+           * The backend's `area` is the enquiry's area of interest, so it now
+           * takes the value of the field that actually asks for one. Before
+           * that field existed this carried the free-text sector, which is why
+           * the sector remains the fallback - an enquiry submitted without an
+           * area still reaches the backend exactly as it did before.
+           *
+           * `sector` is sent alongside it so the sector is not lost now that
+           * `area` no longer doubles as it. It is a field the backend did not
+           * previously receive; if it is not stored there, the sector is still
+           * carried on the CRM record above.
+           */
+          area: str(payload, "areaOfInterest") || str(payload, "sector") || "general",
+          sector: str(payload, "sector") || undefined,
           message: str(payload, "message"),
           preferredDate: str(payload, "preferredDate") || undefined,
           preferredTime: str(payload, "preferredTime") || undefined,
@@ -314,7 +367,22 @@ export async function POST(request: Request) {
 
   if (isMailConfigured()) {
     try {
-      await sendMail(buildConfirmationMail(submission));
+      /*
+       * The double opt-in link.
+       *
+       * Signed with `OPTIN_SECRET` and undefined when that is not set, in
+       * which case `buildConfirmationMail` falls back to its `[confirmation
+       * link]` placeholder rather than inventing an unsigned URL that the
+       * /confirm route would then have to honour. See `lib/optin.ts`.
+       */
+      await sendMail(
+        buildConfirmationMail(
+          submission,
+          submission.type === "investor-registration"
+            ? confirmationUrl(submission.email)
+            : undefined,
+        ),
+      );
     } catch (error) {
       mailErrors.push(error instanceof Error ? error.message : "Confirmation email failed.");
     }

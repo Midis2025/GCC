@@ -1,4 +1,5 @@
 import NextImage from "next/image";
+import Link from "next/link";
 
 import { CoverageSectors } from "@/components/sections/CoverageSectors";
 import { GlobalConnection } from "@/components/sections/GlobalConnection";
@@ -21,6 +22,7 @@ import {
   investorBenefits,
   investorCategories,
   upcomingBriefings,
+  upcomingBriefingsContent,
 } from "@/data/for-investors";
 import { createMetadata } from "@/lib/seo";
 
@@ -205,23 +207,31 @@ export default function ForInvestorsPage() {
       */}
       {upcomingBriefings.length > 0 && (
         <Section spacing="lg" aria-labelledby="investors-briefings">
-          <Reveal>
-            <SectionLabel>Calendar</SectionLabel>
-            <Heading
-              id="investors-briefings"
-              level={2}
-              size="display"
-              className="mt-5 max-w-[14ch]"
-            >
-              Upcoming Briefings
-            </Heading>
-          </Reveal>
+          <div className="grid gap-x-16 gap-y-8 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-end">
+            <Reveal>
+              <SectionLabel>{upcomingBriefingsContent.label}</SectionLabel>
+              <Heading
+                id="investors-briefings"
+                level={2}
+                size="display"
+                className="mt-5 max-w-[14ch]"
+              >
+                {upcomingBriefingsContent.heading}
+              </Heading>
+            </Reveal>
+
+            <Reveal delay={120}>
+              <p className="max-w-[58ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-subtle) lg:pb-2">
+                {upcomingBriefingsContent.intro}
+              </p>
+            </Reveal>
+          </div>
 
           <ul className="mt-[var(--space-heading)] border-t border-(--color-border)">
             {upcomingBriefings.map((briefing) => (
               <li
                 key={`${briefing.date}-${briefing.title}`}
-                className="grid gap-x-10 gap-y-2 border-b border-(--color-border) py-7 lg:grid-cols-[minmax(0,0.22fr)_minmax(0,1fr)_minmax(0,0.28fr)] lg:items-baseline"
+                className="grid gap-x-10 gap-y-4 border-b border-(--color-border) py-7 lg:grid-cols-[minmax(0,0.22fr)_minmax(0,1fr)_minmax(0,0.36fr)] lg:items-baseline"
               >
                 <time
                   dateTime={briefing.date}
@@ -235,11 +245,37 @@ export default function ForInvestorsPage() {
                   }).format(new Date(briefing.date))}
                 </time>
 
-                <h3 className="font-display text-[1.25rem] leading-snug">{briefing.title}</h3>
+                <div>
+                  <h3 className="font-display text-[1.25rem] leading-snug">{briefing.title}</h3>
 
-                <p className="text-[0.9375rem] text-(--color-foreground-muted)">
-                  {briefing.city} &middot; {briefing.format}
-                </p>
+                  {/* The sector, where the entry carries one. */}
+                  {briefing.sector && (
+                    <p className="mt-2 text-label uppercase text-(--color-foreground-subtle)">
+                      {briefing.sector}
+                    </p>
+                  )}
+                </div>
+
+                {/*
+                  Location, format, and the way in.
+
+                  The link is the row's only control. It routes to the investor
+                  side of the Contact toggle rather than reserving anything -
+                  see the note on `upcomingBriefingsContent.cta`.
+                */}
+                <div className="flex flex-col gap-3 lg:items-start">
+                  <p className="text-[0.9375rem] text-(--color-foreground-muted)">
+                    {briefing.city} &middot; {briefing.format}
+                  </p>
+
+                  <Link
+                    href={upcomingBriefingsContent.cta.href}
+                    className="link-underline inline-block py-1 text-[0.9375rem] text-(--color-foreground) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
+                  >
+                    {upcomingBriefingsContent.cta.label}
+                    <span className="sr-only"> — {briefing.title}</span>
+                  </Link>
+                </div>
               </li>
             ))}
           </ul>

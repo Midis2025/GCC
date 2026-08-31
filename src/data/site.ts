@@ -58,6 +58,26 @@ export const siteConfig = {
    */
   ogImage: "/images/og-default.png",
   locale: "en-GB",
+  /**
+   * Writing direction, written onto <html>.
+   *
+   * `ltr` and staying that way: there is NO Arabic edition of this site and no
+   * language switcher, and this field does not create one. It exists because
+   * the direction was previously implicit, and an implicit direction is the
+   * thing that has to be found and fixed in every component on the day an
+   * Arabic edition is built.
+   *
+   * Declared here, read once in `app/layout.tsx`. A future Arabic route sets
+   * it to `rtl` on its own layout and inherits everything else.
+   *
+   * HONEST NOTE for whoever builds that: the existing layout uses physical
+   * Tailwind utilities in places - `ml-`, `pl-`, `border-l`, `text-left` - so
+   * setting this to `rtl` will not mirror the site on its own. The work is a
+   * pass converting those to the logical equivalents (`ms-`, `ps-`,
+   * `border-s`, `text-start`), which is a mechanical change but not a free
+   * one. Nothing NEW should add a physical utility where a logical one exists.
+   */
+  direction: "ltr",
 } as const;
 
 /**
@@ -130,10 +150,16 @@ export const footerDisclosure =
  *
  * The brief requires it above the content, not below it: a disclosure a reader
  * meets after forming a view is not a disclosure. `{company}` is replaced with
- * the client name held on the item.
+ * the client name held on the item, and with "This company" where an item is
+ * marked as client-involved without naming one - the disclosure is required
+ * either way and must never be skipped for want of a name.
+ *
+ * The entity is written in full, FZCO included. This is a legal statement
+ * about a commercial relationship, and legal use takes the legal name - see
+ * the naming note at the top of this file.
  */
 export const clientDisclosureTemplate =
-  "{company} is a client of Gulf Connect Consultancy and has paid Gulf Connect a fixed professional fee for communications services.";
+  "{company} is a client of Gulf Connect Consultancy FZCO and has paid Gulf Connect a fixed professional fee for communications services.";
 
 /**
  * ----------------------------------------------------------------------------

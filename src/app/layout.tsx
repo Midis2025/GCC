@@ -46,8 +46,17 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
+  /*
+   * `dir` is stated on <html> rather than left implicit. It is `ltr` and this
+   * is an English-only site - see the note on `siteConfig.direction`, which
+   * also records what an Arabic edition would actually require.
+   */
   return (
-    <html lang={siteConfig.locale} className={`${primary.variable} h-full`}>
+    <html
+      lang={siteConfig.locale}
+      dir={siteConfig.direction}
+      className={`${primary.variable} h-full`}
+    >
       <body className="flex min-h-full flex-col">
         <SkipLink />
         <Header />

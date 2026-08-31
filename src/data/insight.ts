@@ -8,7 +8,7 @@
  * comes back for the next one, and nobody comes back for "our latest articles".
  *
  * Renaming a format later loses whatever audience has accumulated under it, so
- * the four are fixed from day one even though the library launches near-empty.
+ * the five are fixed from day one even though the library launches near-empty.
  *
  * ----------------------------------------------------------------------------
  * COMPLIANCE - applies to every item ever added
@@ -26,6 +26,7 @@
  */
 
 export type InsightFormatId =
+  | "menas-digital-news"
   | "gulf-brief"
   | "five-questions"
   | "sector-notes"
@@ -42,13 +43,31 @@ export interface InsightFormat {
 }
 
 /**
- * The four formats.
+ * The five formats.
  *
- * A taxonomy, deliberately - not four hard-coded systems. Adding a fifth is a
+ * A taxonomy, deliberately - not five hard-coded systems. Adding a sixth is a
  * data change; the landing page, the filters and the item template all read
  * from this array.
  */
 export const insightFormats: InsightFormat[] = [
+  {
+    /*
+     * The daily feed, and the only format that lives off-site.
+     *
+     * It is a WhatsApp channel rather than a page in this library, so it has
+     * no archive here and will never carry published items - the format
+     * section on the Insight page routes to the channel instead. The wording
+     * and the destination are held in `menasDigitalNewsDetail`
+     * (`data/insight-page.ts`) and are marked as awaiting final client
+     * confirmation, so both can be changed in one place.
+     */
+    id: "menas-digital-news",
+    name: "MENA's Digital News",
+    cadence: "Daily",
+    medium: "written",
+    description:
+      "A daily digital news feed covering relevant developments across Gulf markets and Gulf Connect's core sectors.",
+  },
   {
     id: "gulf-brief",
     name: "The Gulf Brief",
@@ -89,6 +108,26 @@ export function getFormat(id: InsightFormatId): InsightFormat | undefined {
 
 /**
  * ----------------------------------------------------------------------------
+ * SECTOR - the second taxonomy
+ * ----------------------------------------------------------------------------
+ * The three sectors the library follows, as ids. The names and what each one
+ * covers are held once in `insightSectors` (`data/insight-page.ts`); these are
+ * the keys that file already uses, lifted here so an item can be classified
+ * without the content model importing page copy.
+ *
+ * Format is the primary axis and sector is the secondary one: a piece is a
+ * Gulf Brief first and a critical-minerals piece second.
+ */
+export type InsightSectorId = "critical-minerals" | "ai-data-infrastructure" | "life-sciences";
+
+export const insightSectorIds: InsightSectorId[] = [
+  "critical-minerals",
+  "ai-data-infrastructure",
+  "life-sciences",
+];
+
+/**
+ * ----------------------------------------------------------------------------
  * ITEM SHAPE
  * ----------------------------------------------------------------------------
  * The fields a CMS record must carry. Kept flat and explicit so this file can
@@ -102,6 +141,15 @@ export interface InsightItem {
   slug: string;
   title: string;
   format: InsightFormatId;
+  /**
+   * The sector the item sits in, from the three the library follows.
+   *
+   * A second axis alongside `format`, and optional because not every item has
+   * one - a Gulf Brief on market structure belongs to no single sector. Where
+   * it is set, `itemsBySector` can build a sector archive the same way
+   * `itemsByFormat` builds a format one.
+   */
+  sector?: InsightSectorId;
   /** ISO date. */
   date: string;
   author: string;
@@ -120,6 +168,22 @@ export interface InsightItem {
   /** Gated items require registration. Sector Notes are gated by default. */
   gated: boolean;
   language: "en" | "ar";
+  /**
+   * The Arabic edition of this item, where one is planned or exists.
+   *
+   * A STATUS rather than a switch, because "is there an Arabic version" has
+   * three answers and not two: none is intended, one is being prepared, or one
+   * is published. Nothing on the site reads `published` yet - there is no
+   * Arabic edition and no language switcher - so this records the state of a
+   * translation without asserting that a reader can reach it.
+   *
+   * `slug` is the Arabic item's own slug, set only once its status is
+   * `published`. It exists so a future `/ar` route has somewhere to point.
+   */
+  arabic?: {
+    status: "none" | "in-progress" | "published";
+    slug?: string;
+  };
   seoTitle?: string;
   seoDescription?: string;
 }
@@ -148,6 +212,19 @@ export function itemsByFormat(format: InsightFormatId): InsightItem[] {
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 
+/**
+ * The same filter on the sector axis.
+ *
+ * Exists so a sector archive can be built from the same array the format
+ * sections already read, rather than from a second source that has to be kept
+ * in step. Nothing renders it while the library is empty.
+ */
+export function itemsBySector(sector: InsightSectorId): InsightItem[] {
+  return insightItems
+    .filter((item) => item.sector === sector)
+    .sort((a, b) => b.date.localeCompare(a.date));
+}
+
 /** Most recent first. Used by the landing page and the homepage module. */
 export function latestInsightItems(limit: number): InsightItem[] {
   return [...insightItems].sort((a, b) => b.date.localeCompare(a.date)).slice(0, limit);
@@ -165,7 +242,7 @@ export const HOMEPAGE_INSIGHT_THRESHOLD = 3;
 export const insightContent = {
   eyebrow: "Insight",
   title: "Written for the Gulf, About the Sectors We Cover",
-  lead: "Four recurring formats rather than a feed. Each has a name, a cadence and a standing description, so a reader who values one knows when the next arrives.",
+  lead: "Five recurring formats rather than a feed. Each has a name, a cadence and a standing description, so a reader who values one knows when the next arrives.",
   /**
    * Shown while the library is empty. Honest rather than apologetic: it says
    * the formats exist and publication has not begun, which is true, instead of

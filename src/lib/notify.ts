@@ -27,6 +27,26 @@ export interface MailMessage {
   subject: string;
   /** Plain text. Deliberately not HTML - these are transactional, not design. */
   body: string;
+  /**
+   * Set on MARKETING sends only, and unset on transactional ones.
+   *
+   * When present, `sendMail` must emit both RFC 8058 headers:
+   *
+   *   List-Unsubscribe: <this url>
+   *   List-Unsubscribe-Post: List-Unsubscribe=One-Click
+   *
+   * The URL is `/api/unsubscribe?token=…` from `unsubscribeUrl()` in
+   * `lib/optin.ts`, which is signed per recipient. A visible link to
+   * `/unsubscribe` carrying the same token belongs in the body of the same
+   * message - the header is for the mail client's own control, the link is for
+   * the reader, and a marketing send needs both.
+   *
+   * Deliberately absent from the two messages built below. Neither is
+   * marketing: one confirms an address and the other notifies an internal
+   * address, and putting an unsubscribe header on a confirmation invites
+   * somebody to unsubscribe from the very message that would have added them.
+   */
+  listUnsubscribeUrl?: string;
 }
 
 export function isMailConfigured(): boolean {

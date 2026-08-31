@@ -95,11 +95,21 @@ export default async function InsightItemPage({ params }: PageProps<"/insight/[s
             CLIENT DISCLOSURE. Top of the item, before the body.
             Do not move this below the content.
           */}
-          {item.clientDisclosure && item.clientName && (
+          {/*
+            The condition is `clientDisclosure` ALONE.
+
+            It previously also required `clientName`, which meant an item
+            marked as client-involved but published without a name rendered no
+            disclosure at all - the one failure mode this block exists to
+            prevent, and a silent one. The name is used when it is there and
+            "This company" stands in when it is not, so the flag on the item is
+            the only thing that decides whether a reader sees the line.
+          */}
+          {item.clientDisclosure && (
             <div className="mb-12 border-l-2 border-(--color-accent) bg-(--color-surface-muted) px-6 py-5">
               <p className="text-label uppercase text-(--color-accent)">Disclosure</p>
               <p className="mt-3 text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
-                {clientDisclosureTemplate.replace("{company}", item.clientName)}
+                {clientDisclosureTemplate.replace("{company}", item.clientName ?? "This company")}
               </p>
             </div>
           )}
