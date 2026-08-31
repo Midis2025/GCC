@@ -6,6 +6,7 @@ import { globeMarkets, internationalArcs } from "@/data/outreach-globe";
 import {
   DEG,
   GLOW_REACH,
+  ZOOM_FLOOR,
   ZOOM_MAX,
   ZOOM_MIN,
   approach,
@@ -41,10 +42,9 @@ const MAX_PITCH = 62 * DEG;
 /**
  * Fraction of the remaining zoom distance still left after one second.
  *
- * The camera is driven directly by scroll position, so this is not the
- * animation - it is a ~130ms smoothing over it, which takes the stepping out of
- * a coarse trackpad or a wheel notch without putting any perceptible lag
- * between the page and the globe.
+ * The camera is driven directly by a pinch, so this is not the animation - it
+ * is a ~130ms smoothing over it, which takes the stepping out of a gesture
+ * without putting any perceptible lag between the fingers and the globe.
  */
 const ZOOM_EASE = 0.0005;
 
@@ -97,10 +97,13 @@ export interface GlobeCanvasProps {
    * How close the camera is, as a multiple of `frame.radius`. Sampled once a
    * frame; `ZOOM_MIN` - or omitting it entirely - is the untouched view.
    *
-   * A REF rather than a value, because the thing that moves it is scroll
-   * position. Passing it as a prop would mean a React render for every scroll
-   * frame, of a subtree carrying the whole information panel, to move one
+   * A REF rather than a value, because the thing that moves it is a two-finger
+   * pinch. Passing it as a prop would mean a React render for every frame of a
+   * gesture, of a subtree carrying the whole information panel, to move one
    * number that only the draw loop ever reads.
+   *
+   * Supplying it is also what OPTS A CALLER IN to pinch-to-zoom: a globe with
+   * no zoom ref has nowhere to write, so the gesture is inert there.
    */
   zoom?: React.RefObject<number>;
   className?: string;
@@ -164,6 +167,22 @@ export function GlobeCanvas({
   const manualUntil = useRef(0);
   const inView = useRef(false);
   const pointer = useRef({ dragging: false, moved: 0, x: 0, y: 0 });
+  /**
+   * Live TOUCH points, by pointer id. Only touches are tracked: a pinch is a
+   * two-finger gesture and nothing else can produce one, which is what keeps
+   * this entirely off the desktop.
+   */
+  const touches = useRef(new Map<number, { x: number; y: number }>());
+  /**
+   * The in-flight pinch, or null.
+   *
+   * `distance` and `zoom` are the readings at the moment the second finger
+   * landed, so the gesture is a RATIO against where it started rather than an
+   * accumulation between frames - the same reasoning as everywhere else here.
+   * Pinching back to the separation you began with returns exactly the zoom you
+   * began with.
+   */
+  const pinch = useRef<{ distance: number; zoom: number } | null>(null);
   /**
    * Where the camera actually is. The caller's ref says where it should be -
    * this is what chases it, so the section can write a raw scroll reading and
@@ -344,7 +363,7 @@ export function GlobeCanvas({
         somewhere the canvas cannot hold it.
       */
       const target = Math.max(
-        ZOOM_MIN,
+        ZOOM_FLOOR,
         Math.min(ZOOM_MAX, camera.current?.current ?? ZOOM_MIN),
       );
 
@@ -527,12 +546,102 @@ export function GlobeCanvas({
     if (element.style.cursor !== value) element.style.cursor = value;
   }, []);
 
+  /**
+   * Separation between the two live touches, in client pixels.
+   *
+   * Returns 0 for any other count, which every caller treats as "not a pinch".
+   */
+  const spread = useCallback(() => {
+    const points = [...touches.current.values()];
+    if (points.length !== 2) return 0;
+    return Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
+  }, []);
+
+  /**
+   * Ends a pinch and hands the element back to the page.
+   *
+   * Restoring `pan-y` is the important half: while a pinch is running the
+   * canvas is `touch-action: none` so the browser does not pan the page out
+   * from under the gesture, and leaving it that way would make the section a
+   * dead zone for one-finger scrolling.
+   */
+  const endPinch = useCallback((element: HTMLCanvasElement) => {
+    if (!pinch.current) return;
+    pinch.current = null;
+    element.style.touchAction = "pan-y";
+
+    /*
+      Disarm the tap test for whatever is still down.
+
+      A pinch ends on the FIRST lift, but the second finger is still on the
+      glass and will fire its own `pointerup` a moment later. That one arrives
+      with `pinch.current` already null, so without this it would run the
+      normal path - and because a pinch never accumulates `moved`, it would
+      look like a stationary tap and select whichever market it happened to be
+      resting on. Finishing a zoom must not change the active market.
+
+      The next press resets this: `pointerdown` on the disc replaces the whole
+      object with a fresh `moved: 0`.
+    */
+    pointer.current.moved = Number.POSITIVE_INFINITY;
+  }, []);
+
   const handlePointerDown = useCallback(
     (event: React.PointerEvent<HTMLCanvasElement>) => {
+      /*
+        Track touches first, and before the disc test below returns.
+
+        A pinch is judged on where the two fingers are TOGETHER, so a finger
+        that lands off the disc still has to be counted - otherwise a pinch
+        straddling the limb would look like a one-finger gesture.
+      */
+      if (event.pointerType === "touch") {
+        touches.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+        /*
+          Second finger down. A pinch starts only if the gesture is ON the
+          globe - the midpoint has to be inside the disc - so two fingers
+          landing on the copy beside it still belong to the page.
+
+          `camera.current` is the caller's zoom ref, and it is the switch that
+          keeps this to the one globe that has one: the hero passes no ref, so
+          a pinch there does nothing and its behaviour is unchanged.
+        */
+        if (touches.current.size === 2 && camera.current) {
+          const [a, b] = [...touches.current.values()];
+          const midX = (a.x + b.x) / 2;
+          const midY = (a.y + b.y) / 2;
+
+          if (onDisc(event.currentTarget, midX, midY)) {
+            pinch.current = {
+              distance: Math.hypot(a.x - b.x, a.y - b.y),
+              zoom: camera.current.current,
+            };
+
+            // A pinch is not a drag. Drop any rotation the first finger began.
+            pointer.current.dragging = false;
+
+            /*
+              `none` for the duration of the gesture ONLY.
+
+              The element sits at `pan-y` the rest of the time, which is what
+              lets a one-finger swipe scroll the page normally. Holding it at
+              `none` globally would make the globe a hole in the page on a
+              phone - the thing this must not do - so it is set here and put
+              back in `endPinch`.
+            */
+            event.currentTarget.style.touchAction = "none";
+          }
+        }
+      }
+
       // Only inside the disc. Everywhere else in the canvas is background, and a
       // press there belongs to the page - selecting the headline, for instance -
       // not to the globe.
       if (!onDisc(event.currentTarget, event.clientX, event.clientY)) return;
+
+      // A second finger is a zoom, not a grab.
+      if (pinch.current) return;
 
       // Stops the press turning into a text selection or a native image drag
       // as the pointer travels across the section.
@@ -548,6 +657,42 @@ export function GlobeCanvas({
   const handlePointerMove = useCallback(
     (event: React.PointerEvent<HTMLCanvasElement>) => {
       const state = pointer.current;
+
+      /* --- Pinch ------------------------------------------------------- */
+      if (event.pointerType === "touch" && touches.current.has(event.pointerId)) {
+        touches.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+        const gesture = pinch.current;
+        const camera_ = camera.current;
+
+        if (gesture && camera_) {
+          const distance = spread();
+
+          if (distance > 0 && gesture.distance > 0) {
+            /*
+              A ratio against the separation the gesture STARTED at, not a
+              per-frame delta, so the zoom is reversible: bring the fingers
+              back to where they began and the globe is exactly where it began.
+
+              Clamped to the same pair the renderer clamps to, so the value in
+              the ref is never a number the draw loop would have to correct.
+            */
+            camera_.current = Math.max(
+              ZOOM_FLOOR,
+              Math.min(ZOOM_MAX, (gesture.zoom * distance) / gesture.distance),
+            );
+          }
+
+          // Belt and braces with the `touch-action: none` set on pointerdown:
+          // if the browser has not already claimed the gesture, this stops it
+          // scrolling the page while two fingers are working the globe.
+          if (event.cancelable) event.preventDefault();
+          return;
+        }
+
+        // Touches that are not a pinch fall through to the drag path below,
+        // which is what keeps one-finger rotation working exactly as it did.
+      }
 
       if (state.dragging) {
         const dx = event.clientX - state.x;
@@ -583,13 +728,34 @@ export function GlobeCanvas({
         onHover(index, event.clientX - rect.left, event.clientY - rect.top);
       }
     },
-    [onHover, pick, onDisc, setCursor],
+    [onHover, pick, onDisc, setCursor, spread],
   );
 
   const handlePointerUp = useCallback(
     (event: React.PointerEvent<HTMLCanvasElement>) => {
       const state = pointer.current;
+
+      /*
+        Retire the finger, and end the pinch as soon as there are fewer than
+        two - which also restores `touch-action: pan-y`.
+
+        `wasPinching` suppresses the selection below: lifting from a pinch must
+        not be read as a tap, or finishing a zoom would change the active
+        market as a side effect.
+      */
+      const wasPinching = pinch.current !== null;
+
+      if (event.pointerType === "touch") {
+        touches.current.delete(event.pointerId);
+        if (touches.current.size < 2) endPinch(event.currentTarget);
+      }
+
       state.dragging = false;
+
+      if (wasPinching) {
+        setCursor(event.currentTarget, "default");
+        return;
+      }
 
       setCursor(
         event.currentTarget,
@@ -623,13 +789,24 @@ export function GlobeCanvas({
         }
       }
     },
-    [onSelect, onHover, pick, onDisc, setCursor],
+    [onSelect, onHover, pick, onDisc, setCursor, endPinch],
   );
 
   const handlePointerLeave = useCallback(
     (event: React.PointerEvent<HTMLCanvasElement>) => {
       pointer.current.dragging = false;
       setCursor(event.currentTarget, "default");
+
+      /*
+        Also the cancel path - the same handler serves `pointercancel`, which is
+        what fires if the browser takes a gesture over. A finger that ends this
+        way must still be forgotten, or the map would keep a phantom touch and
+        the next single tap would look like the second half of a pinch.
+      */
+      if (event.pointerType === "touch") {
+        touches.current.delete(event.pointerId);
+        if (touches.current.size < 2) endPinch(event.currentTarget);
+      }
 
       /*
         A touch pointer ceases to exist the moment the finger lifts, so the
@@ -646,7 +823,7 @@ export function GlobeCanvas({
         onHover(null, 0, 0);
       }
     },
-    [onHover, setCursor],
+    [onHover, setCursor, endPinch],
   );
 
   return (
@@ -758,7 +935,22 @@ function buildLayers(
 
   const base = make();
   if (base.context) {
-    drawAtmosphere(base.context, cx, cy, radius, compact || hero);
+    /*
+      The atmosphere is the HERO's alone.
+
+      The outreach globe sits on a flat dark band, and there the halo read as a
+      light source hanging behind the disc rather than as an edge-lit sphere.
+      It is not drawn for the `panel` variant at all, so the pixels immediately
+      outside the limb are the section's own background.
+
+      Only the OUTER light goes. The gradient starts at 0.94r, inside the limb,
+      but `drawSphere` paints over that on the next line - so nothing that was
+      ever visible ON the disc is affected, and the rim, terminator, graticule,
+      coastlines, markers and labels are all untouched. The layer is still
+      sized to `GLOW_REACH`, so the disc keeps exactly the size and position it
+      had.
+    */
+    if (hero) drawAtmosphere(base.context, cx, cy, radius, compact || hero);
     drawSphere(base.context, cx, cy, radius, hero);
   }
 

@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { GlobeMarket } from "@/data/outreach-globe";
 import { globeMarkets, globePanelContent } from "@/data/outreach-globe";
 import { outreachContent } from "@/data/homepage";
-import { GLOW_REACH, ZOOM_MAX, ZOOM_MIN, glowBox } from "@/lib/globe";
+import { GLOW_REACH, ZOOM_MIN, glowBox } from "@/lib/globe";
 import { cn } from "@/lib/utils";
 
 /**
@@ -27,19 +27,6 @@ const GlobeCanvas = dynamic(
   },
 );
 
-/** How long a deliberate selection outranks the scroll position. */
-const SELECTION_HOLD_MS = 7000;
-
-/**
- * Flat at both ends, steepest in the middle.
- *
- * A linear map from scroll to camera starts and stops with a kick, because the
- * reader's scroll velocity is not zero at either end of the stretch. This makes
- * the departure and the arrival the slowest parts of the move, which is what
- * gives it the feeling of a camera being flown rather than a value being set.
- */
-const smoothstep = (t: number) => t * t * (3 - 2 * t);
-
 interface Tooltip {
   market: GlobeMarket | null;
   visible: boolean;
@@ -48,14 +35,12 @@ interface Tooltip {
 /**
  * Investor outreach globe.
  *
- * Owns which market is active and how that gets decided, which is the only
- * genuinely subtle part of the feature. Three inputs compete for it:
+ * Owns which market is active and how that gets decided. Two inputs, and
+ * neither of them is the scrollbar:
  *
- *   scroll     - the section's own progress through the viewport steps through
- *                the seven markets in order, so simply reading the page tells
- *                the story without anyone having to touch anything.
- *   selection  - clicking a node or a rail item wins outright for 7s, so a
- *                deliberate choice is never yanked away by a stray scroll.
+ *   selection  - clicking a node or a rail item sets the active market, and it
+ *                stands until the next deliberate choice. Nothing competes with
+ *                it, so nothing has to outrank it.
  *   hover      - previews a market in the tooltip without changing the active
  *                one, so exploring the globe does not lose your place.
  *
@@ -70,22 +55,16 @@ export function GlobeExperience({ className }: { className?: string }) {
   const [compact, setCompact] = useState(false);
   const [panelFloats, setPanelFloats] = useState(false);
 
-  const wrapper = useRef<HTMLDivElement>(null);
   const tooltipElement = useRef<HTMLDivElement>(null);
-  const heldUntil = useRef(0);
   /**
-   * How close the camera should be. Written from the scroll handler and read by
-   * the renderer's draw loop; deliberately never state, because a camera that
-   * moves with the scrollbar would otherwise re-render this whole subtree -
-   * panel, rail and caption - sixty times a second.
+   * How close the camera is, read by the renderer's draw loop once a frame.
+   *
+   * A ref and not state, because a pinch moves it continuously and re-rendering
+   * this whole subtree - panel, rail and caption - for each step of a gesture
+   * would be the most expensive thing on the page. It rests at ZOOM_MIN, and
+   * only a two-finger pinch on the globe ever writes to it.
    */
   const camera = useRef(ZOOM_MIN);
-  /**
-   * `reducedMotion` again, in a ref. The scroll handler needs to read it, and
-   * it is the one input to that handler that must not be allowed to rebuild the
-   * listeners it installs.
-   */
-  const motionless = useRef(false);
 
   /* --- Environment ------------------------------------------------------ */
   useEffect(() => {
@@ -96,7 +75,6 @@ export function GlobeExperience({ className }: { className?: string }) {
     const wide = window.matchMedia("(min-width: 1024px)");
 
     const sync = () => {
-      motionless.current = motion.matches;
       setReducedMotion(motion.matches);
       setCompact(small.matches);
       setPanelFloats(wide.matches);
@@ -114,74 +92,28 @@ export function GlobeExperience({ className }: { className?: string }) {
     };
   }, []);
 
-  /* --- Scroll storytelling ---------------------------------------------- */
-  useEffect(() => {
-    let queued = false;
+  /*
+    --- No scroll storytelling ---------------------------------------------
 
-    const measure = () => {
-      queued = false;
+    This section used to install a scroll listener that did two things: it flew
+    the camera from ZOOM_MIN to ZOOM_MAX across the section's passage through
+    the viewport, and it stepped the active market as the reader descended.
 
-      const element = wrapper.current;
-      if (!element) return;
+    Both are gone. The globe now holds still while the page scrolls past it -
+    it does not zoom, scale, rotate or move on scroll, and there is no listener
+    left to make it. Which market is active is decided ONLY by a deliberate
+    act: the rail buttons below, a tap on a node, or the keyboard.
 
-      const rect = element.getBoundingClientRect();
-      const travel = rect.height + window.innerHeight;
-      if (travel <= 0) return;
+    `camera` survives as the zoom ref because the renderer still reads it - on
+    a touch device a two-finger pinch writes to it. It simply rests at
+    ZOOM_MIN, the approved view, until someone pinches.
 
-      // 0 as the top edge enters the viewport, 1 as the bottom edge leaves it.
-      const progress = (window.innerHeight - rect.top) / travel;
-
-      // The approach and the departure are dead time; the markets step through
-      // the middle stretch, where the section is actually being looked at.
-      const staged = (progress - 0.22) / 0.56;
-      const travelled = Math.max(0, Math.min(1, staged));
-
-      /*
-        The camera flies over exactly the stretch the markets step through: it
-        leaves the approved view as the first market is named, arrives as the
-        last one is, and holds while the section departs. Because the globe is
-        already turned so that the active market faces the viewer, closing on
-        the centre of the disc IS closing on the marked region - no second
-        target, and nothing moved to make one.
-
-        A pure function of scroll position. No velocity term, no easing of its
-        own, nothing accumulated between frames - which is the whole reason the
-        journey is reversible: scrolling back up retraces the descent value for
-        value, and the top of the stretch is ZOOM_MIN exactly rather than
-        somewhere near it.
-      */
-      camera.current = motionless.current
-        ? ZOOM_MIN
-        : ZOOM_MIN + (ZOOM_MAX - ZOOM_MIN) * smoothstep(travelled);
-
-      // A deliberate selection outranks the scroll position for a while - but
-      // only over which market is named. The camera belongs to the page.
-      if (performance.now() < heldUntil.current) return;
-
-      const index = Math.floor(staged * globeMarkets.length);
-
-      setActiveIndex(Math.max(0, Math.min(globeMarkets.length - 1, index)));
-    };
-
-    const onScroll = () => {
-      if (queued) return;
-      queued = true;
-      requestAnimationFrame(measure);
-    };
-
-    measure();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, []);
+    Nothing about the section's height, layout or copy changes: the rail still
+    marks the active market, and the panel still names it.
+  */
 
   /* --- Interaction ------------------------------------------------------ */
   const select = useCallback((index: number) => {
-    heldUntil.current = performance.now() + SELECTION_HOLD_MS;
     setActiveIndex(index);
   }, []);
 
@@ -229,7 +161,7 @@ export function GlobeExperience({ className }: { className?: string }) {
   );
 
   return (
-    <div ref={wrapper} className={cn("relative", className)}>
+    <div className={cn("relative", className)}>
       {/* --- Stage: the globe, with the panel floating over it on desktop --- */}
       <div className="relative">
         <div className="relative mx-auto aspect-square w-full max-w-[21rem] sm:max-w-[26rem] md:max-w-[30rem] lg:max-w-none">
@@ -252,9 +184,9 @@ export function GlobeExperience({ className }: { className?: string }) {
               compact={compact}
               frame={frame}
               /*
-                The camera, driven by this section's own scroll progress. At
-                the top of the stretch it holds the placement above exactly, so
-                the section arrives looking the way it always has.
+                The camera. Rests at the placement above and is moved only by a
+                two-finger pinch on the globe; the page's scroll position no
+                longer touches it.
               */
               zoom={camera}
               className="h-full w-full"
@@ -290,11 +222,11 @@ export function GlobeExperience({ className }: { className?: string }) {
           thing it describes.
         */}
         {/*
-          Deliberately NOT an aria-live region. Scrolling the page steps through
-          seven markets on its own, and announcing each one would talk over
-          someone who is simply reading past the section. The rail below is the
-          control, its buttons report their own pressed state, and this panel is
-          the next thing in the reading order after them.
+          Deliberately NOT an aria-live region. The rail below is the control,
+          its buttons report their own pressed state, and this panel is the next
+          thing in the reading order after them - so a market change is already
+          announced by the control that caused it, and a live region here would
+          say the same thing twice.
         */}
         <div
           className={cn(
@@ -348,8 +280,8 @@ export function GlobeExperience({ className }: { className?: string }) {
 
       {/*
         Market rail. The keyboard and screen-reader route to everything the
-        globe does, and the progress indicator for the scroll sequence at the
-        same time. Plain toggle buttons rather than an ARIA tablist: there is no
+        globe does, and now the only thing that changes the active market at
+        all. Plain toggle buttons rather than an ARIA tablist: there is no
         tab panel here, and a half-implemented tablist is worse than none.
       */}
       <div

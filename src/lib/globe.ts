@@ -201,6 +201,21 @@ export const GLOW_REACH = 1.32;
 export const ZOOM_MIN = 1;
 export const ZOOM_MAX = 1.3;
 
+/**
+ * How far a manual pinch may pull the camera BACK, past the approved view.
+ *
+ * `ZOOM_MIN` is the resting position and the size the globe is drawn at when
+ * nobody has touched it - that does not move. This is only the floor a
+ * deliberate two-finger gesture may reach, so that pinching out is a real zoom
+ * out rather than merely a return to where the globe already was.
+ *
+ * 0.85 rather than something looser: the disc is drawn into a canvas sized to
+ * `GLOW_REACH`, so there is room to shrink, but a globe much smaller than this
+ * stops reading as the subject of the section and starts reading as a mistake.
+ * Nothing auto-returns from it - a manual zoom stays where it was put.
+ */
+export const ZOOM_FLOOR = 0.85;
+
 /** Where a disc sits inside a box, as fractions of that box. */
 export interface Disc {
   cx: number;
