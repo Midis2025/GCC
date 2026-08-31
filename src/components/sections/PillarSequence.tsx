@@ -515,13 +515,48 @@ export function PillarSequence({
                 <span aria-hidden="true" className="why-glow absolute inset-0 -z-10" />
 
                 {/*
-                  Oversized index. Clipped by the panel rather than bleeding
-                  past it, and sized in `vw` so it stays proportional to the
-                  column instead of dominating a narrow one.
+                  Oversized index, sized in `vw` so it stays proportional to
+                  the column instead of dominating a narrow one.
+
+                  ------------------------------------------------------------
+                  Why `top` is 0.1em and not a negative rem
+                  ------------------------------------------------------------
+                  THREE things move this numeral up, and the offset has to
+                  clear all of them or the digits are cut by the panel's top
+                  hairline:
+
+                  1. `leading-none` makes the line box 1em while the font's
+                     content area is 1.26em (ascent 1038 + descent 222 over
+                     1000 upem), so the digits' cap tops sit 0.163em below the
+                     top of the span.
+                  2. `.why-numeral` translates it up 0.5rem with emphasis.
+                  3. It also scales 1.04 from the centre, which lifts the top
+                     edge by a further 0.02 of the element's height.
+
+                  Those collapse to one expression for where the digits land,
+                  measured from the panel's top edge:
+
+                      y = top + 0.1495 x font-size - 0.5rem
+
+                  At `-top-3` that is negative until the numeral passes
+                  8.36rem - so the tops were intact only above a ~1216px
+                  viewport, and even there by under 3px. Below it they were cut
+                  by 3px at 1024 and 8px on a phone.
+
+                  `0.1em` scales the offset with the size it is compensating
+                  for, which is what a fixed rem cannot do against a clamp
+                  running 5rem to 9.5rem. It leaves 12px of clearance at the
+                  smallest size and 30px at the largest, so the number always
+                  sits fully inside the panel with air above it.
+
+                  The panel keeps `overflow-hidden`: the numeral is still
+                  cropped at the right and bottom, which is what keeps it
+                  reading as a ghost behind the panel rather than a graphic on
+                  it. Only the top is no longer cropped.
                 */}
                 <span
                   aria-hidden="true"
-                  className="why-numeral pointer-events-none absolute -top-3 right-2 -z-10 num font-display leading-none text-(--color-foreground) text-[clamp(5rem,11vw,9.5rem)] sm:right-4"
+                  className="why-numeral pointer-events-none absolute top-[0.1em] right-2 -z-10 num font-display leading-none text-(--color-foreground) text-[clamp(5rem,11vw,9.5rem)] sm:right-4"
                 >
                   {String(index + 1).padStart(2, "0")}
                 </span>
