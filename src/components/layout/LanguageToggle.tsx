@@ -48,11 +48,13 @@ import { cn } from "@/lib/utils";
  * the necessary-cookies category rather than behind the consent gate.
  *
  * ----------------------------------------------------------------------------
- * IT RENDERS NOTHING UNTIL ARABIC IS PUBLISHED
+ * WHEN IT RENDERS
  * ----------------------------------------------------------------------------
- * `publishedLocales()` returns English alone while `NEXT_PUBLIC_AR_ENABLED` is
- * unset, and a single-language toggle is not a toggle. This is the control the
- * brief means when it rules out a switcher that leads to an empty Arabic site.
+ * `publishedLocales()` returns both languages now that Arabic is published, so
+ * this renders. It falls back to nothing if Arabic is ever withdrawn with
+ * `NEXT_PUBLIC_AR_ENABLED=false`, because a single-language toggle is not a
+ * toggle - which is also the control the brief means when it rules out a
+ * switcher leading to an empty Arabic site.
  */
 /**
  * Writes the preference.

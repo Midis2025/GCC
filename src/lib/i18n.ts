@@ -22,23 +22,38 @@
  * that `proxy.ts` rewrites onto, never a URL a visitor sees.
  *
  * ----------------------------------------------------------------------------
- * ARABIC IS OFF BY DEFAULT
+ * ARABIC IS PUBLISHED
  * ----------------------------------------------------------------------------
- * `arabicEnabled` gates the language toggle. Until it is switched on the site
- * behaves exactly as it did before this file existed: no switcher, no `/ar`
- * links, English only.
+ * Both editions are live. English is the DEFAULT and is unaffected: it keeps
+ * the unprefixed URLs, it is what every first-time visitor is served, and it
+ * is what `x-default` points at. Arabic is opt-in - reached by the header
+ * toggle, by a direct `/ar` link, or by a returning visitor's stored choice at
+ * the bare domain.
  *
- * The brief that governs this site is explicit that a language selector
- * leading to a half-translated site is worse than no selector at all, and the
- * compliance copy - the standing disclosure, the consent wording, the legal
- * pages - has to be read by someone who can vouch for the Arabic before any of
- * it is published. So the architecture ships complete and dark, and one
- * environment variable turns it on:
+ * `arabicEnabled` survives as a KILL SWITCH rather than an opt-in. It is on
+ * unless something turns it off:
  *
- *   NEXT_PUBLIC_AR_ENABLED=true
+ *   NEXT_PUBLIC_AR_ENABLED=false
+ *
+ * The inversion is deliberate. The flag existed to keep an unfinished edition
+ * out of public view; now that the edition is published, the useful thing to
+ * keep is a way to withdraw it in a single deploy - if a translation has to be
+ * pulled, or the compliance wording is challenged - without reverting code.
  *
  * `NEXT_PUBLIC_` is correct here and is not a mistake: this value decides what
  * the browser renders, so the browser has to know it. It is not a secret.
+ *
+ * ----------------------------------------------------------------------------
+ * WHAT IS AND IS NOT TRANSLATED, AS OF PUBLICATION
+ * ----------------------------------------------------------------------------
+ * Fully Arabic: the chrome on every page - navigation, footer, both forms and
+ * their validation, the cookie banner, the standing disclosure - and the whole
+ * of the home page.
+ *
+ * Still English inside Arabic chrome: the page copy of What We Do and its four
+ * service pages, For Investors, About, Insight, Contact and the four legal
+ * pages. Each goes Arabic the moment its content module lands in
+ * `src/content/ar/`, with no further wiring.
  */
 
 export const locales = ["en", "ar"] as const;
@@ -72,14 +87,21 @@ export function isLocale(value: string | undefined | null): value is Locale {
 }
 
 /**
- * Whether the Arabic edition is published.
+ * Whether the Arabic edition is published. It is.
  *
- * Read at module scope so it is inlined at build time in both bundles. Flipping
- * it requires a redeploy, which is the right weight for a decision this size.
+ * A KILL SWITCH, not an opt-in: on unless `NEXT_PUBLIC_AR_ENABLED` is the
+ * literal string "false". Any other value, and the absence of the variable
+ * entirely, leaves Arabic published - so a deployment that has never heard of
+ * this variable serves both languages, which is the correct default now that
+ * both are live.
+ *
+ * Read at module scope so it is inlined at build time in both bundles.
+ * Withdrawing Arabic is therefore a redeploy, which is the right weight for a
+ * decision this size.
  */
-export const arabicEnabled = process.env.NEXT_PUBLIC_AR_ENABLED === "true";
+export const arabicEnabled = process.env.NEXT_PUBLIC_AR_ENABLED !== "false";
 
-/** The locales a visitor may actually reach. English alone until Arabic ships. */
+/** The locales a visitor may reach. Both, unless Arabic has been withdrawn. */
 export function publishedLocales(): Locale[] {
   return arabicEnabled ? [...locales] : [defaultLocale];
 }

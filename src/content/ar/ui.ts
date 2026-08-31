@@ -28,8 +28,8 @@ import type { Dictionary } from "@/content/dictionary";
  * `consentLabel`, `consentNote` and `clientDisclosure` are compliance
  * statements. The Arabic below preserves the meaning of the approved English
  * clause for clause, but it has not been read by a translator qualified to
- * certify that - which is why `NEXT_PUBLIC_AR_ENABLED` is off. See
- * `legalReviewRequired` in `content/dictionary.ts`.
+ * certify that. The edition is now published, so that review is outstanding
+ * rather than pending. See `legalReviewRequired` in `content/dictionary.ts`.
  */
 export const ui: Dictionary = {
   meta: {

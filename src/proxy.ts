@@ -78,9 +78,11 @@ export function proxy(request: NextRequest) {
     }
 
     /*
-      A locale that exists in the code but is not published yet. While
-      `NEXT_PUBLIC_AR_ENABLED` is unset, `/ar` is not a half-finished page for
-      the public to find - it is not a page at all.
+      A locale that has been withdrawn. Arabic is published, so this branch
+      is normally dead; it exists so that setting
+      `NEXT_PUBLIC_AR_ENABLED=false` takes `/ar` out of circulation cleanly -
+      redirecting to the English equivalent rather than 404ing a URL that was
+      live and may be linked.
     */
     if (!arabicEnabled) {
       const url = request.nextUrl.clone();

@@ -52,7 +52,12 @@ import type { Locale } from "@/lib/i18n";
  * standing disclosure, the consent wording, the client disclosure. The Arabic
  * provided is a faithful rendering, but "faithful" is a judgement a translator
  * with the relevant standing has to make rather than one this file can assert
- * about itself. `NEXT_PUBLIC_AR_ENABLED` stays off until they have.
+ * about itself.
+ *
+ * The Arabic edition is now PUBLISHED, so these strings are live and this
+ * review is outstanding rather than pending. If any of it is judged wrong, the
+ * fix is to correct the string - or to withdraw Arabic in one deploy with
+ * `NEXT_PUBLIC_AR_ENABLED=false` - not to leave it standing.
  */
 export const legalReviewRequired = [
   "footer.disclosure",
