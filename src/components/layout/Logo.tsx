@@ -65,6 +65,19 @@ function LogoLockup({ className }: { className?: string }) {
       // The link that wraps this carries the accessible name.
       aria-hidden="true"
       focusable="false"
+      /*
+        The artwork is LTR in both languages.
+
+        SVG `<text>` inherits `direction` from CSS, and `text-anchor: start`
+        resolves against it - so on an Arabic document "start" becomes the
+        right-hand edge and every run is laid out from the wrong side, back
+        across the emblem. `isolate` keeps the surrounding Arabic out of the
+        bidi calculation entirely.
+
+        This does not mirror or restyle the logo. It pins it to the
+        orientation it was drawn in.
+      */
+      style={{ direction: "ltr", unicodeBidi: "isolate" }}
       className={cn("block w-auto", className)}
     >
       <g fill="var(--color-accent)">
@@ -82,7 +95,20 @@ function LogoLockup({ className }: { className?: string }) {
         units, so they scale with the viewBox exactly as the artwork does.
       */}
       <g
-        fontFamily="var(--font-sans), 'Plus Jakarta Sans', system-ui, sans-serif"
+        /*
+          `--font-primary`, NOT `--font-sans`.
+
+          The two are the same face in English, but `--font-sans` is
+          re-pointed on an Arabic document to put the Arabic face first, and
+          IBM Plex Sans Arabic carries Latin glyphs of its own with different
+          metrics. The `tspan` offsets below are hand-authored against Plus
+          Jakarta Sans Bold, so under any other face the letters land at the
+          wrong positions and the wordmark comes apart.
+
+          The logo is English artwork in both languages, so it names the brand
+          face directly and cannot be reached by the locale alias.
+        */
+        fontFamily="var(--font-primary), 'Plus Jakarta Sans', system-ui, sans-serif"
         fontSize="26.07"
         fontWeight="700"
       >
