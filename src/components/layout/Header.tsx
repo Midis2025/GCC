@@ -121,8 +121,21 @@ export function Header() {
             enough from the primary button that neither is mistaken for the
             other. It renders nothing at all until Arabic is published, so the
             header is unchanged in the meantime.
+
+            AT EVERY WIDTH, not just from `xl`. Changing language is not a
+            navigation choice a reader should have to open a menu to find: on a
+            phone it was two taps behind the hamburger, and the one control a
+            visitor who has landed in the wrong language needs is the one they
+            could not see. The two actions still collapse into the panel below
+            `xl` - those are destinations, and the menu is where destinations
+            live.
+
+            The toggle stays in the panel as well. The panel and its scrim sit
+            at `z-50` over this header at `z-40`, so while the menu is open the
+            control up here is covered and unusable; the two are for different
+            states rather than a duplicate.
           */}
-          <LanguageToggle className="hidden xl:flex" />
+          <LanguageToggle />
 
           <div className="hidden xl:block">
             <Button
