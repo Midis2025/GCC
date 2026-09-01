@@ -16,7 +16,7 @@
 export const forInvestorsHero = {
   eyebrow: "For Investors",
   title: "Briefings With International Companies",
-  lead: "Gulf Connect convenes briefings with international listed companies working in critical minerals, AI and data infrastructure, and life sciences, and publishes written commentary on those sectors for a Gulf audience.",
+  lead: "Gulf Connect convenes briefings with international listed companies working across sectors including energy, mining, pharmaceuticals and data centres, and publishes written commentary on those sectors for a Gulf audience.",
 } as const;
 
 export const forInvestorsIntro = {
@@ -47,7 +47,7 @@ export const investorBenefits = {
     {
       term: "The Gulf Brief",
       description:
-        "A fortnightly written note on what is moving in Gulf capital markets and in the three sectors we cover. Commentary only.",
+        "A fortnightly written note on what is moving in Gulf capital markets and in the sectors we cover. Commentary only.",
     },
     {
       term: "Quarterly Sector Notes",
@@ -57,7 +57,7 @@ export const investorBenefits = {
     {
       term: "Access to the interview library",
       description:
-        "Five Questions - a fixed-format interview with the chief executive of a company in one of the three sectors.",
+        "Five Questions - a fixed-format interview with the chief executive of a company in one of the sectors we cover.",
     },
   ],
 } as const;
@@ -126,10 +126,26 @@ export const GENERAL_CONTENT_ONLY: InvestorCategory = "other";
  * which is how the Arabic edition shows Arabic sector names while writing the
  * same record as the English one.
  */
+/*
+  The sector options on the investor registration form.
+
+  These strings are BOTH the visible labels and the values that reach the CRM -
+  the form posts the English string and `api/submit` validates the submission
+  against this array, so the two cannot be separated. Renaming an option
+  therefore renames a CRM value; that is intended here, and the site has not
+  launched, so there is no stored history to reconcile.
+
+  "Other" is not a fifth option and should not become one without the client:
+  a free-text sector field on a form that feeds a CRM is a data-quality problem
+  rather than a courtesy. The four below are where the practice concentrates,
+  not the limit of what it works on - the page copy around the form carries
+  that qualification.
+*/
 export const investorSectors = [
-  "Critical minerals",
-  "AI and data infrastructure",
-  "Life sciences",
+  "Energy",
+  "Mining",
+  "Pharmaceuticals",
+  "Data centres",
 ] as const;
 
 /**
@@ -142,7 +158,7 @@ export const investorSectors = [
  */
 export const investorConsent = {
   label:
-    "I agree to Gulf Connect Consultancy FZCO contacting me by email with briefing invitations and written content, and I understand I can unsubscribe at any time.",
+    "I agree to Gulf Connect contacting me by email with briefing invitations and written content, and I understand I can unsubscribe at any time.",
   note: "We will send a confirmation email. Your registration is complete once you confirm it from that email.",
 } as const;
 
@@ -225,7 +241,7 @@ export const investorsReach = {
   label: "Reach",
   heading: "Where the Companies Come From",
   paragraphs: [
-    "The companies convened for briefings are international - listed small and mid-cap businesses working in critical minerals, AI and data infrastructure, and life sciences, based well outside the region.",
+    "The companies convened for briefings are international - listed small and mid-cap businesses working across sectors including energy, mining, pharmaceuticals and data centres, based well outside the region.",
     "Bringing them into a room with Gulf audiences is the whole of the exercise. Registration is what puts a professional investor on the list for those sessions.",
   ],
 } as const;

@@ -104,19 +104,17 @@ export function CapabilityShowcase({
                       onTouchStart={() => setActive(index)}
                       className="group block py-8 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring) sm:py-10"
                     >
-                      <div className="flex items-start gap-5 sm:gap-8">
-                        <span
-                          aria-hidden="true"
-                          className={cn(
-                            "mt-1 shrink-0 num font-display-sm text-[0.9375rem] transition-colors duration-500",
-                            isActive
-                              ? "text-(--color-accent)"
-                              : "text-(--color-foreground-subtle)",
-                          )}
-                        >
-                          {capability.number}
-                        </span>
+                      {/*
+                        The index that opened each row is gone with the
+                        01/02/03 format. Which row is active is still carried -
+                        by the title colour, the rule and the photograph
+                        changing beside it - so nothing about the control was
+                        load-bearing on the numeral.
 
+                        The flex wrapper stays: the row still has a second
+                        child after this one.
+                      */}
+                      <div className="flex items-start gap-5 sm:gap-8">
                         <div className="min-w-0 flex-1">
                           {/*
                             The title shifts a few pixels right on activation.
@@ -239,10 +237,7 @@ export function CapabilityShowcase({
 
               {/* Caption plate, tracking the active row. */}
               <div className="absolute inset-x-0 bottom-0 z-10 p-7">
-                <p className="num font-display-sm text-sm text-(--color-accent)">
-                  {capabilities[active].number}
-                </p>
-                <p className="mt-2 font-display text-[1.5rem] leading-snug text-[#f4f1eb]">
+                <p className="font-display text-[1.5rem] leading-snug text-[#f4f1eb]">
                   {capabilities[active].title}
                 </p>
               </div>

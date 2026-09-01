@@ -45,52 +45,64 @@ export const insightPosition = {
 } as const;
 
 /**
- * The three sectors the library follows.
+ * The sectors the library follows. Not a closed list - see the intro.
  *
  * COMPLIANCE: each `covers` list is SUBJECT MATTER. "Supply chains" is a
  * topic; "a company's supply-chain advantage" would be a view. The standing
  * qualifier under the panels says the coverage is contextual, not advisory.
+ *
+ * The set is not closed. These are the sectors followed today; the intro says
+ * so in as many words, and a sector may be added without the section changing
+ * shape - it is a list, not a fixed composition.
  */
 export const insightSectors = {
   label: "Territory",
   heading: "What We Follow",
   intro:
-    "Three sectors, followed consistently rather than covered occasionally. A reader who follows one of them should find the material worth their time.",
+    "Sectors followed consistently rather than covered occasionally. A reader who follows one of them should find the material worth their time. The list below is where the coverage sits today, not the limit of what it can cover.",
   sectors: [
     {
-      key: "critical-minerals",
-      number: "01",
-      name: "Critical Minerals",
+      key: "energy",
+      name: "Energy",
       covers: [
-        "Strategic resources",
-        "Development projects",
-        "Supply chains",
-        "Energy transition",
+        "Production and generation",
+        "Transition projects",
+        "Power infrastructure",
+        "Corporate development",
         "International issuers",
       ],
     },
     {
-      key: "ai-data-infrastructure",
-      number: "02",
-      name: "AI & Data Infrastructure",
+      key: "mining",
+      name: "Mining",
+      covers: [
+        "Resource development",
+        "Development projects",
+        "Supply chains",
+        "Strategic materials",
+        "International issuers",
+      ],
+    },
+    {
+      key: "pharmaceuticals",
+      name: "Pharmaceuticals",
+      covers: [
+        "Clinical pipelines",
+        "Healthcare innovation",
+        "Medical technology",
+        "Research",
+        "International corporate development",
+      ],
+    },
+    {
+      key: "data-centres",
+      name: "Data Centres",
       covers: [
         "Data centres",
         "Compute infrastructure",
         "Power requirements",
         "Digital infrastructure",
         "AI deployment",
-      ],
-    },
-    {
-      key: "life-sciences",
-      number: "03",
-      name: "Life Sciences",
-      covers: [
-        "Biotechnology",
-        "Healthcare innovation",
-        "Medical technology",
-        "Research",
-        "International corporate development",
       ],
     },
   ],
@@ -133,9 +145,10 @@ export const menasDigitalNewsDetail = {
   coversLabel: "What it may cover",
   covers: [
     "Gulf market developments",
-    "Critical minerals",
-    "AI and data infrastructure",
-    "Life sciences",
+    "Energy",
+    "Mining",
+    "Pharmaceuticals",
+    "Data centres",
     "Regional business news",
     "International companies in Gulf conversations",
   ],
@@ -184,32 +197,26 @@ export const editorialThemes = {
   note: "Editorial themes, not published research.",
   themes: [
     {
-      number: "01",
       title: "How Gulf institutions assess international growth companies",
       tag: "Market structure",
     },
     {
-      number: "02",
       title: "Why Arabic-language communication matters in regional markets",
       tag: "Communication",
     },
     {
-      number: "03",
       title: "The role of infrastructure in AI and data-centre expansion",
-      tag: "AI & data infrastructure",
+      tag: "Data centres",
     },
     {
-      number: "04",
-      title: "Critical-mineral supply chains and Gulf industrial strategy",
-      tag: "Critical minerals",
+      title: "Mineral supply chains and Gulf industrial strategy",
+      tag: "Mining",
     },
     {
-      number: "05",
       title: "What international issuers often misunderstand about Gulf market engagement",
       tag: "Market entry",
     },
     {
-      number: "06",
       title: "How media, meetings and digital communication reinforce one another",
       tag: "Communication",
     },
@@ -221,11 +228,11 @@ export const fiveQuestionsDetail = {
   subline:
     "A consistent executive interview format designed to make company stories easier to follow.",
   areas: [
-    { number: "01", term: "The Business" },
-    { number: "02", term: "The Strategy" },
-    { number: "03", term: "The Market" },
-    { number: "04", term: "Execution" },
-    { number: "05", term: "What Comes Next" },
+    { term: "The Business" },
+    { term: "The Strategy" },
+    { term: "The Market" },
+    { term: "Execution" },
+    { term: "What Comes Next" },
   ],
   /* COMPLIANCE. The format is a structure for a conversation, not analysis. */
   note: "An interview format. Not investment analysis.",
@@ -253,7 +260,7 @@ export const sectorNotesDetail = {
     "Sector development",
   ],
   /* Sample TOPIC CATEGORIES, not report titles. */
-  categories: ["Critical Minerals", "AI Infrastructure", "Data Centres", "Life Sciences"],
+  categories: ["Energy", "Mining", "Pharmaceuticals", "Data Centres"],
   note: "Informational briefings. Not security recommendations.",
   gated: {
     heading: "Some Briefings Are Available by Registration",
@@ -322,22 +329,18 @@ export const editorialPrinciples = {
   heading: "How We Approach Insight",
   principles: [
     {
-      number: "01",
       term: "Specific",
       description: "Named sectors, markets and themes rather than generic commentary.",
     },
     {
-      number: "02",
       term: "Structured",
       description: "Recurring formats with a clear purpose and a stated cadence.",
     },
     {
-      number: "03",
       term: "Relevant",
       description: "Content designed for professional Gulf audiences.",
     },
     {
-      number: "04",
       term: "Compliant",
       description:
         "No investment recommendations, no security-price forecasts and no undisclosed client relationships.",

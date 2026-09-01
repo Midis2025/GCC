@@ -38,16 +38,25 @@ import type {
  * ----------------------------------------------------------------------------
  * COMPLIANCE
  * ----------------------------------------------------------------------------
- * `commercialModelContent.exclusions` are the three compensation denials. They
- * are translated in full, in the same order, at the same force:
+ * `commercialModelContent.exclusions` is now ONE denial, translated in full
+ * and at the same force as the English:
  *
- *   No success fees                          -> لا أتعاب مشروطة بالنجاح
- *   No compensation linked to capital raised -> لا مقابل مرتبط برأس المال المُجمَّع
- *   No compensation linked to share price    -> لا مقابل مرتبط بسعر السهم
+ *   No success fees -> لا أتعاب مشروطة بالنجاح
  *
- * "ولا نستقطب استثمارات ولا نحتفظ بأموال العملاء" is load-bearing and matches
- * the wording of the standing disclosure in `content/ar/ui.ts`. None of the
- * three may be shortened, merged or softened.
+ * Two were removed with their English originals, on client instruction to take
+ * share-price and equity compensation language off the public site:
+ *
+ *   لا مقابل مرتبط برأس المال المُجمَّع
+ *   لا مقابل مرتبط بسعر السهم
+ *
+ * The statement of fact carried inside the first - "ولا نستقطب استثمارات ولا
+ * نحتفظ بأموال العملاء" - is not lost. It is a regulatory statement rather than
+ * a compensation one, and it still stands in the standing disclosure in
+ * `content/ar/ui.ts` on every page. Only its framing as a compensation
+ * exclusion has gone.
+ *
+ * What remains may not be shortened, merged or softened, and neither cut may be
+ * reversed without the client. Both await legal review with the English.
  */
 
 export const whatWeDoHeroAr: Localised<typeof whatWeDoHero> = {
@@ -58,7 +67,6 @@ export const whatWeDoHeroAr: Localised<typeof whatWeDoHero> = {
 
 export const serviceLinesAr: Localised<typeof serviceLines> = [
   {
-    number: "01",
     slug: "investor-roadshows",
     title: "جولات المستثمرين",
     href: "/what-we-do/investor-roadshows",
@@ -68,7 +76,6 @@ export const serviceLinesAr: Localised<typeof serviceLines> = [
       "سلسلة منظَّمة من الاجتماعات الثنائية وجلسة جماعية مستضافة مع مستثمرين خليجيين مؤهَّلين، مُعدَّة حول قطاع الشركة وقصتها المؤسسية.",
   },
   {
-    number: "02",
     slug: "gulf-programme",
     title: "برنامج الخليج",
     href: "/what-we-do/gulf-programme",
@@ -78,7 +85,6 @@ export const serviceLinesAr: Localised<typeof serviceLines> = [
       "استمرارية بدل زيارة واحدة. ستة أشهر من اجتماعات المستثمرين، وإنتاج المحتوى، ودورات العرض على الإعلام، والتوزيع باللغة العربية، وتقارير مكتوبة شهرية.",
   },
   {
-    number: "03",
     slug: "media-arabic-communications",
     title: "الإعلام والتواصل باللغة العربية",
     href: "/what-we-do/media-arabic-communications",
@@ -88,7 +94,6 @@ export const serviceLinesAr: Localised<typeof serviceLines> = [
       "تحريري ومدفوع ومملوك، يُفصل بينها فصلًا صريحًا، مع ترجمة مالية معتمدة وتواصل مؤسسي باللغة العربية للتوزيع الإقليمي.",
   },
   {
-    number: "04",
     slug: "advisory",
     title: "الاستشارات",
     href: "/what-we-do/advisory",
@@ -111,14 +116,6 @@ export const commercialModelContentAr: Localised<typeof commercialModelContent> 
     {
       term: "لا أتعاب مشروطة بالنجاح",
       description: "الأتعاب غير مشروطة بأي صفقة أو نتيجة اجتماع أو إعلان.",
-    },
-    {
-      term: "لا مقابل مرتبط برأس المال المُجمَّع",
-      description: "لا نستقطب استثمارات ولا نحتفظ بأموال العملاء.",
-    },
-    {
-      term: "لا مقابل مرتبط بسعر السهم",
-      description: "لا يتغيّر أي مما نتقاضاه بتغيّر سعر السهم أو حجم التداول.",
     },
   ],
 };

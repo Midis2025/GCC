@@ -72,7 +72,6 @@ import type {
 
 export const investorRoadshowsAr: Localised<typeof investorRoadshows> = {
   slug: "investor-roadshows",
-  number: "01",
   title: "جولات المستثمرين",
   eyebrow: "خدماتنا",
   lead: "سلسلة منظَّمة من الاجتماعات الثنائية وجلسة جماعية مستضافة مع مستثمرين خليجيين مؤهَّلين، مبنيّة حول قطاع الشركة وقصتها المؤسسية.",
@@ -201,7 +200,6 @@ export const investorRoadshowsAr: Localised<typeof investorRoadshows> = {
 
 export const gulfProgrammeAr: Localised<typeof gulfProgramme> = {
   slug: "gulf-programme",
-  number: "02",
   title: "برنامج الخليج",
   eyebrow: "خدماتنا",
   lead: "برنامج تواصل مع المستثمرين مدته ستة أشهر. استمرارية بدل زيارة واحدة: اجتماعات، ومحتوى، ودورات إعلامية، وتوزيع باللغة العربية، وفق تقويم زمني، مع تقرير شهري.",
@@ -344,7 +342,6 @@ export const gulfProgrammeAr: Localised<typeof gulfProgramme> = {
 
 export const mediaArabicAr: Localised<typeof mediaArabic> = {
   slug: "media-arabic-communications",
-  number: "03",
   title: "الإعلام والتواصل باللغة العربية",
   eyebrow: "خدماتنا",
   lead: "الإعلام الاقتصادي الإقليمي بالإنجليزية والعربية. فصل صريح بين المكتسب والمدفوع والمملوك، مع ترجمة مالية معتمدة وتواصل مؤسسي باللغة العربية.",
@@ -454,7 +451,6 @@ export const mediaArabicAr: Localised<typeof mediaArabic> = {
 
 export const advisoryAr: Localised<typeof advisory> = {
   slug: "advisory",
-  number: "04",
   title: "الاستشارات",
   eyebrow: "خدماتنا",
   lead: "إحاطات حول الطريقة التي ستُقرأ بها الشركة في أسواق الخليج: تقييم الإدراج الإقليمي، واعتبارات دخول السوق، واستراتيجية المؤتمرات.",

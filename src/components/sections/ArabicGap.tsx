@@ -217,15 +217,15 @@ export async function ArabicGap() {
           {/* The three concepts. A measure, not a set of cards. */}
           <ol className="mt-12 flex flex-col">
             {arabicGap.concepts.map((concept, index) => (
-              <li key={concept.number}>
+              <li key={concept.term}>
                 <Reveal delay={420 + index * 110}>
-                  <div className="group flex items-baseline gap-5 border-t border-white/12 py-5 transition-colors duration-500 hover:border-(--color-accent)/45">
-                    <span
-                      aria-hidden="true"
-                      className="num font-display-sm text-[0.625rem] tracking-[0.14em] text-(--color-accent)"
-                    >
-                      {concept.number}
-                    </span>
+                  {/*
+                    The numeral that opened each row is gone. `items-baseline`
+                    and the gap went with it - with one child left, a baseline
+                    flex row is a div with extra words - so the term now sits
+                    directly on the rule.
+                  */}
+                  <div className="group border-t border-white/12 py-5 transition-colors duration-500 hover:border-(--color-accent)/45">
                     <h3 className="text-[1.0625rem] font-medium leading-snug transition-colors duration-500 group-hover:text-(--color-accent)">
                       {concept.term}
                     </h3>

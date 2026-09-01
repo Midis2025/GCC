@@ -27,26 +27,42 @@ const nextConfig: NextConfig = {
   /*
    * Image delivery.
    *
-   * The source frames are 1800-2000px JPEGs, which is the right size for a
-   * full-bleed band on a 1440-1920px display and sharp enough not to soften on
-   * a retina panel at the widths they are actually rendered. The job here is
-   * to stop shipping them as JPEG.
+   * `formats` lists AVIF first because it is materially smaller than WebP on
+   * exactly this kind of material - large, dark, low-frequency architectural
+   * photography, where WebP spends bits on gradient noise that AVIF does not.
+   * Browsers that do not accept AVIF fall back to WebP, and anything older
+   * falls back to the original JPEG, so there is no floor to raise.
    *
-   * `formats` was unset, so Next served WebP alone. AVIF is listed first
-   * because it is materially smaller than WebP on exactly this kind of
-   * material - large, dark, low-frequency architectural photography, where
-   * WebP spends bits on gradient noise that AVIF does not. Browsers that do
-   * not accept AVIF fall back to WebP, and anything older falls back to the
-   * original JPEG, so there is no floor to raise.
+   * `deviceSizes` has no 3840 bucket. Nothing on the site is a full-width
+   * image on a 4K display, so the widest anything is asked to serve is 2048,
+   * and leaving the bucket in only invites a `sizes` mistake to request an
+   * upscale. Every photograph in the library is now well above 2048 on its
+   * long edge, so 2048 is a genuine downscale rather than a ceiling.
    *
-   * `deviceSizes` drops the 3840 bucket. Nothing on the site is a full-width
-   * image on a 4K display, the sources top out at 2000px, and leaving the
-   * bucket in only invites `sizes` mistakes to request an upscale.
+   * ---------------------------------------------------------------------
+   * `qualities` - this line is why the photography looked soft
+   * ---------------------------------------------------------------------
+   * Next 16 changed the default for `images.qualities` from `all allowed` to
+   * `[75]`, and it does not warn when it clamps: a `quality` prop outside the
+   * list is silently coerced to the nearest allowed value. With the field
+   * unset, every frame on the site - 4000px sources included - was being
+   * re-encoded at q75, and there was no way to raise one.
+   *
+   * 90 is the value the photographic frames ask for. It is the point where
+   * AVIF stops smearing the fine repeating detail these images are made of -
+   * window mullions, facade grids, the flutes on a tower - which is the exact
+   * artefact that reads as `blurry` rather than as `compressed`. 100 was not
+   * used: it roughly doubles the bytes over 90 for a difference that does not
+   * survive a downscale into a 400px card.
+   *
+   * 75 stays in the list and stays the default, so nothing that does not ask
+   * for 90 changes weight.
    */
   images: {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1440, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    qualities: [75, 90],
   },
 
   async redirects() {

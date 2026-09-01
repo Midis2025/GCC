@@ -66,9 +66,10 @@ export async function InsightPosition() {
 export async function InsightSectors() {
   const insightSectors = await pick({ en: insightSectorsEn, ar: insightSectorsAr });
   const photo = {
-    "critical-minerals": segmentPhotos.criticalMinerals,
-    "ai-data-infrastructure": segmentPhotos.aiInfrastructure,
-    "life-sciences": segmentPhotos.lifeSciences,
+    energy: segmentPhotos.energy,
+  mining: segmentPhotos.mining,
+    "data-centres": segmentPhotos.dataCentres,
+    pharmaceuticals: segmentPhotos.pharmaceuticals,
   } as const;
 
   return (
@@ -108,13 +109,7 @@ export async function InsightSectors() {
 
             <Reveal delay={index * 140 + 120}>
               <div className="mt-7">
-                <span
-                  aria-hidden="true"
-                  className="num font-display-sm text-[0.625rem] tracking-[0.14em] text-(--color-accent)"
-                >
-                  {sector.number}
-                </span>
-                <h3 className="mt-4 font-display text-h3 tracking-tight text-balance">
+                <h3 className="font-display text-h3 tracking-tight text-balance">
                   {sector.name}
                 </h3>
                 <ul className="mt-6 flex flex-col gap-2.5 border-t border-(--color-border) pt-5">

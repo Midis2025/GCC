@@ -74,7 +74,7 @@ export const insightFormats: InsightFormat[] = [
     cadence: "Fortnightly",
     medium: "written",
     description:
-      "Short written commentary on what is moving in Gulf capital markets and in critical minerals, AI and data infrastructure, and life sciences. Sector context first.",
+      "Short written commentary on what is moving in Gulf capital markets and across the sectors the practice follows. Sector context first.",
   },
   {
     id: "five-questions",
@@ -110,20 +110,26 @@ export function getFormat(id: InsightFormatId): InsightFormat | undefined {
  * ----------------------------------------------------------------------------
  * SECTOR - the second taxonomy
  * ----------------------------------------------------------------------------
- * The three sectors the library follows, as ids. The names and what each one
- * covers are held once in `insightSectors` (`data/insight-page.ts`); these are
- * the keys that file already uses, lifted here so an item can be classified
+ * The sectors the library follows, as ids. The names and what each one covers
+ * are held once in `insightSectors` (`data/insight-page.ts`); these are the
+ * keys that file already uses, lifted here so an item can be classified
  * without the content model importing page copy.
  *
  * Format is the primary axis and sector is the secondary one: a piece is a
- * Gulf Brief first and a critical-minerals piece second.
+ * Gulf Brief first and a mining piece second.
+ *
+ * NOT A CLOSED LIST. These are the sectors the library follows today, named
+ * because a piece has to be filed somewhere - they are not the boundary of
+ * what the consultancy works on. Adding one is an entry here, an entry in
+ * `insightSectors`, and a frame in `segmentPhotos`; nothing else.
  */
-export type InsightSectorId = "critical-minerals" | "ai-data-infrastructure" | "life-sciences";
+export type InsightSectorId = "energy" | "mining" | "pharmaceuticals" | "data-centres";
 
 export const insightSectorIds: InsightSectorId[] = [
-  "critical-minerals",
-  "ai-data-infrastructure",
-  "life-sciences",
+  "energy",
+  "mining",
+  "pharmaceuticals",
+  "data-centres",
 ];
 
 /**

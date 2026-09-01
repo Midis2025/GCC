@@ -55,7 +55,6 @@ export default async function MediaArabicPage() {
         variant="feature"
         photo={capabilityPhotos["media-relations"]}
         eyebrow={page.eyebrow}
-        index={page.number}
         title={page.title}
         lead={page.lead}
         actions={

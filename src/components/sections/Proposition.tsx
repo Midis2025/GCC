@@ -33,15 +33,15 @@ export function Proposition() {
         {proposition.items.map((item, index) => (
           <li key={item.term}>
             <Reveal delay={index * 100}>
+              {/*
+                The rule is the only marker each item carries now. A numeral
+                sat above the term until the client asked for the 01/02/03
+                format to come off the site; the term moves up into the space
+                it held rather than the rule keeping a gap for something that
+                is no longer there.
+              */}
               <div className="border-t border-(--color-border) pt-7">
-                <span
-                  aria-hidden="true"
-                  className="num font-display-sm text-[0.6875rem] tracking-[0.14em] text-(--color-accent)"
-                >
-                  {item.number}
-                </span>
-
-                <h3 className="mt-5 text-h3 font-medium tracking-tight">{item.term}</h3>
+                <h3 className="text-h3 font-medium tracking-tight">{item.term}</h3>
 
                 <p className="mt-4 max-w-[42ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
                   {item.description}

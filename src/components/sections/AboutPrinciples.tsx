@@ -56,18 +56,16 @@ export async function AboutPrinciples() {
               {/* Soft lift on hover. Sits behind everything in the cell. */}
               <span aria-hidden="true" className="about-principle-wash absolute -inset-x-5 -inset-y-2 -z-10" />
 
-              <div className="flex items-center gap-4">
-                <span
-                  aria-hidden="true"
-                  className="about-principle-index num font-display-sm text-[0.6875rem] tracking-[0.14em] text-(--color-accent)"
-                >
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <span
-                  aria-hidden="true"
-                  className="about-principle-rule block h-px w-10 bg-(--color-accent)"
-                />
-              </div>
+              {/*
+                The index that opened this row is gone with the 01/02/03
+                format; the rule beside it stays and now starts the cell on its
+                own. The flex wrapper goes with the index - with one child left
+                it was a div holding a span.
+              */}
+              <span
+                aria-hidden="true"
+                className="about-principle-rule block h-px w-10 bg-(--color-accent)"
+              />
 
               <dt className="mt-6 text-h4 font-medium tracking-tight">{principle.term}</dt>
               <dd className="mt-3.5 max-w-[42ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">

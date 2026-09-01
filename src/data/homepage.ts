@@ -19,7 +19,7 @@
  * investors who will invest, or secure coverage, and it must not be rewritten
  * into anything that does.
  *
- * The subline names the three sectors and the three cities. Specifics rather
+ * The subline names the sectors and the three cities. Specifics rather
  * than adjectives is the register the whole site is written in.
  */
 export const heroContent = {
@@ -42,7 +42,7 @@ export const heroContent = {
    */
   headlineAccent: "Media.",
   supporting:
-    "Critical minerals, AI and data infrastructure, and life sciences - convened across Dubai, Abu Dhabi and Riyadh.",
+    "Energy, mining, pharmaceuticals and data centres - convened across Dubai, Abu Dhabi and Riyadh.",
   /** One path per audience. Companies first; investors are not an afterthought. */
   primaryCta: { label: "For companies", href: "/what-we-do" },
   secondaryCta: { label: "For investors", href: "/for-investors" },
@@ -231,18 +231,15 @@ export const approachContent = {
     "Five stages, run in sequence and then revisited. The last one is what keeps a programme from hardening into a script.",
   steps: [
     {
-      number: "01",
       title: "Understand",
       description:
         "Build a clear view of the company, its strategy, its market and its investment proposition.",
     },
     {
-      number: "02",
       title: "Position",
       description: "Develop a concise narrative aligned with the audiences that matter.",
     },
     {
-      number: "03",
       title: "Target",
       /*
         COMPLIANCE. "Communication channels", not "channels", and "relevant
@@ -255,7 +252,6 @@ export const approachContent = {
         "Identify relevant investors, market participants and communication channels appropriate to the mandate.",
     },
     {
-      number: "04",
       title: "Engage",
       /*
         COMPLIANCE. "Communications", not "outreach". This firm is not
@@ -266,7 +262,6 @@ export const approachContent = {
       description: "Execute coordinated investor, media and digital communications.",
     },
     {
-      number: "05",
       title: "Refine",
       description:
         "Use market feedback and engagement insight to strengthen communication over time.",
@@ -316,13 +311,13 @@ export const whyContent = {
  * Companies" and "Pre-IPO Businesses" contradict the launch positioning, which
  * is international LISTED small and mid-cap companies; "Growth Companies"
  * appears nowhere in the approved material and means whatever a reader wants
- * it to. They are replaced by the three sectors the brief names, so the panel
+ * it to. They are replaced by the sectors the brief names, so the panel
  * count and the mosaic layout are unchanged.
  *
  * Sources, entry by entry:
  * - Listed small and mid-cap: `home.whyGulfNow`, "International small and
  *   mid-cap companies working in exactly those sectors".
- * - The three sectors: `home.homeHero.lead` and `whyGulfNow.sectors`.
+ * - The sectors: `home.homeHero.lead` and `whyGulfNow.sectors`.
  * - International companies entering the Gulf: `whyGulfNow`, "too far away to
  *   build the relationships themselves".
  * - Leadership and IR teams: `about.aboutHowWeWork`, "Working alongside
@@ -342,21 +337,31 @@ export const audienceContent = {
     Order used to decide the pairing, because `Segments` read
     `segmentPhotos[index]`. That made the two things impossible to edit
     independently: re-cutting the labels to the launch positioning put
-    "Critical Minerals" over a desk meeting and "Life Sciences" over the Riyadh
+    a materials label over a desk meeting and a healthcare one over the Riyadh
     skyline, and correcting it meant sequencing the labels against the pictures
     rather than against the argument.
 
     Naming the frame ends that. The order below is now free to be editorial -
-    the primary audience first, the three sectors together, the two remaining
+    the primary audience first, the sectors together, the two remaining
     audiences after - and `international` sits last because the mosaic's final
     cell is a full-width letterbox that only a skyline survives.
+
+    SIX PANELS, and the count is structural rather than editorial: `Segments`
+    holds a hand-composed span for each cell - one tall anchor, four panels
+    around it, a full-width letterbox to close. A seventh entry would fall
+    through to the default span and break the composition.
+
+    That is why the fourth sector, energy, is not a panel here. The sector set
+    is named in full in the copy on this page and enumerated on For Investors
+    and Insight, where the layout is a list rather than a mosaic. If a seventh
+    panel is ever wanted, `PANEL_LAYOUT` has to be re-composed first.
   */
   segments: [
     { label: "Listed Small and Mid-Cap Companies", photo: "listed" },
     { label: "Leadership and IR Teams", photo: "leadership" },
-    { label: "AI and Data Infrastructure", photo: "aiInfrastructure" },
-    { label: "Critical Minerals", photo: "criticalMinerals" },
-    { label: "Life Sciences", photo: "lifeSciences" },
+    { label: "Data Centres", photo: "dataCentres" },
+    { label: "Mining", photo: "mining" },
+    { label: "Pharmaceuticals", photo: "pharmaceuticals" },
     { label: "International Companies Entering the Gulf", photo: "international" },
   ],
 } as const;

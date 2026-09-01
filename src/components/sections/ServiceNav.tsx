@@ -73,15 +73,6 @@ export function ServiceNav() {
                       : "text-(--color-foreground-muted) hover:text-(--color-foreground)",
                   )}
                 >
-                  <span
-                    aria-hidden="true"
-                    className={cn(
-                      "num font-display-sm text-xs transition-colors duration-300",
-                      isActive ? "text-(--color-accent)" : "text-(--color-foreground-subtle)",
-                    )}
-                  >
-                    {capability.number}
-                  </span>
                   <span>{capability.title}</span>
                   {/* Active marker: a rule, so state is not colour-only. */}
                   <span

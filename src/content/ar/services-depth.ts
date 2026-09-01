@@ -37,7 +37,6 @@ export const roadshowPhasesAr: Localised<typeof roadshowPhases> = {
   phases: [
     {
       key: "before",
-      number: "01",
       term: "قبل",
       summary: "الإعداد، والقرارات التي تجعل الاجتماعات جديرة بالانعقاد.",
       items: [
@@ -50,7 +49,6 @@ export const roadshowPhasesAr: Localised<typeof roadshowPhases> = {
     },
     {
       key: "during",
-      number: "02",
       term: "أثناء",
       summary: "البرنامج نفسه، منسَّقًا يومًا بيوم لا متروكًا لجدول مواعيد.",
       items: [
@@ -62,7 +60,6 @@ export const roadshowPhasesAr: Localised<typeof roadshowPhases> = {
     },
     {
       key: "after",
-      number: "03",
       term: "بعد",
       summary: "السجل. ما سُئل، وما قيل، وما ينبغي للشركة أن تفعله به.",
       items: [
@@ -92,7 +89,6 @@ export const advisoryAreasAr: Localised<typeof advisoryAreas> = {
   areas: [
     {
       key: "market-entry",
-      number: "01",
       term: "إحاطات دخول السوق",
       addresses:
         "شركة تدرس الخليج دون صورة واضحة عن اختلاف هذه السوق هيكليًا عن سوقها الأصلية.",
@@ -105,7 +101,6 @@ export const advisoryAreasAr: Localised<typeof advisoryAreas> = {
     },
     {
       key: "regional-listing",
-      number: "02",
       term: "تقييم الإدراج الإقليمي",
       addresses:
         "كيف سيُقرأ هيكل الشركة وقطاعها وإفصاحها قياسًا على أعراف الإدراج الإقليمية.",
@@ -118,7 +113,6 @@ export const advisoryAreasAr: Localised<typeof advisoryAreas> = {
     },
     {
       key: "conference-strategy",
-      number: "03",
       term: "استراتيجية المؤتمرات",
       addresses:
         "وقت الإدارة المُنفَق في فعاليات تُختار بحسب سمعتها لا بحسب صلتها بهدف محدَّد.",
@@ -131,7 +125,6 @@ export const advisoryAreasAr: Localised<typeof advisoryAreas> = {
     },
     {
       key: "executive-preparation",
-      number: "04",
       term: "إعداد القيادة التنفيذية",
       addresses:
         "قيادة تعرض الشركة نفسها بصور مختلفة في الاجتماع وفي المقابلة وعلى المنصة.",
@@ -144,7 +137,6 @@ export const advisoryAreasAr: Localised<typeof advisoryAreas> = {
     },
     {
       key: "communication-considerations",
-      number: "05",
       term: "اعتبارات التواصل الإقليمي",
       addresses:
         "إفصاح ولغة ووتيرة تنجح في السوق الأصلية ولا تنتقل كما هي.",

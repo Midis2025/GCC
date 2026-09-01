@@ -40,7 +40,6 @@ function Arrow({ className }: { className?: string }) {
 
 export interface ShowcaseItem {
   key: string;
-  number: string;
   title: string;
   summary: string;
   href: string;
@@ -170,19 +169,13 @@ export function Showcase({ id, label, heading, items, note }: ShowcaseProps) {
                         onTouchStart={() => setActive(index)}
                         className="group block py-8 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring) sm:py-10 lg:py-9"
                       >
+                        {/*
+                          The row index is gone with the 01/02/03 format. The
+                          active row is still marked by its title colour and by
+                          the photograph beside it, neither of which depended on
+                          the numeral.
+                        */}
                         <div className="flex items-start gap-5 sm:gap-8">
-                          <span
-                            aria-hidden="true"
-                            className={cn(
-                              "mt-2 shrink-0 num font-display-sm text-[0.9375rem] transition-colors duration-500",
-                              isActive
-                                ? "text-(--color-accent)"
-                                : "text-(--color-foreground-subtle)",
-                            )}
-                          >
-                            {item.number}
-                          </span>
-
                           <div className="min-w-0 flex-1">
                             {/*
                               Scale carries the state on `lg`, not just colour:
@@ -325,19 +318,15 @@ export function Showcase({ id, label, heading, items, note }: ShowcaseProps) {
               ))}
 
               {/*
-                The number, set over the photograph at display scale.
+                A numeral was set over the photograph at display scale here,
+                top-left in the heaviest part of the scrim. It is gone with the
+                01/02/03 format.
 
-                Top-left, in the heaviest part of the `soft` scrim, so an
-                oversized numeral has a ground dark enough to sit on at every
-                frame in the set. It is the one element that tells you the
-                panel and the list are the same object.
+                It was described as the one element tying the panel to the list.
+                That job now falls to the title on the plate below, which is
+                keyed and animated the same way and changes with the same
+                selection - so the pairing still reads, without a number on it.
               */}
-              <span
-                key={`n-${items[active].key}`}
-                className="showcase-index pointer-events-none absolute start-7 top-6 z-10 num font-display leading-none text-[#f4f1eb]/85 text-[clamp(3.5rem,6vw,5.5rem)]"
-              >
-                {items[active].number}
-              </span>
             </div>
 
             {/*

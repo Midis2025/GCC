@@ -69,7 +69,7 @@ export async function Approach({ tone = "muted" }: { tone?: "muted" | "canvas" }
         </span>
 
         {approachContent.steps.map((step, index) => (
-          <li key={step.number} className="approach-stage group relative ps-8 sm:ps-0">
+          <li key={step.title} className="approach-stage group relative ps-8 sm:ps-0">
             {/*
               Station marker for the vertical spine. A DIRECT child of the <li>,
               never inside <Reveal>: the reveal animation applies a transform,
@@ -100,16 +100,15 @@ export async function Approach({ tone = "muted" }: { tone?: "muted" | "canvas" }
               </span>
 
               {/*
-                The numeral is set at display scale now rather than at the old
-                `text-numeral`. Five stages set at body-adjacent size read as a
-                caption row; at this size each stage has its own mass and the
-                row becomes a measure with five stations on it.
-              */}
-              <p className="approach-num num font-display leading-none text-(--color-accent)/25 text-[clamp(3rem,5vw,4.5rem)] sm:mt-5">
-                {step.number}
-              </p>
+                The stage numeral is gone with the 01/02/03 format. What made
+                this a measure with stations on it was never the numerals - it
+                is the rule, the progress fill and the dots, all of which stay.
 
-              <h3 className="mt-5 text-h4 font-medium tracking-tight transition-colors duration-500">
+                The title takes over the numeral's top margin at `sm` and up so
+                the stage titles still align across the row; without it each
+                title would sit hard against its dot.
+              */}
+              <h3 className="mt-5 text-h4 font-medium tracking-tight transition-colors duration-500 sm:mt-10">
                 {step.title}
               </h3>
               <p className="mt-3.5 max-w-[38ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted) transition-colors duration-500">

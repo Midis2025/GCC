@@ -76,43 +76,60 @@ export const insightPositionAr: Localised<typeof insightPosition> = {
 export const insightSectorsAr: Localised<typeof insightSectors> = {
   label: "المجال",
   heading: "ما نتابعه",
+  /*
+    The intro no longer counts to three. The English dropped the count when the
+    client re-cut the sectors and said in as many words that the list is where
+    the coverage sits today rather than its boundary; the Arabic says the same,
+    or the two editions would describe the same list differently.
+
+    `key` values are identifiers and are repeated from the English verbatim -
+    they select each sector's photograph.
+  */
   intro:
-    "ثلاثة قطاعات تُتابَع باستمرار لا تُغطّى بين حين وآخر. وينبغي للقارئ الذي يتابع أحدها أن يجد المادة جديرة بوقته.",
+    "قطاعات تُتابَع باستمرار لا تُغطّى بين حين وآخر. وينبغي للقارئ الذي يتابع أحدها أن يجد المادة جديرة بوقته. والقائمة أدناه هي موضع التغطية اليوم، لا حدُّ ما يمكن أن تشمله.",
   sectors: [
     {
-      key: "critical-minerals",
-      number: "01",
-      name: "المعادن الحيوية",
+      key: "energy",
+      name: "الطاقة",
       covers: [
-        "الموارد الاستراتيجية",
-        "مشاريع التطوير",
-        "سلاسل التوريد",
-        "تحوّل الطاقة",
+        "الإنتاج والتوليد",
+        "مشاريع التحوّل",
+        "البنية التحتية للطاقة",
+        "التطور المؤسسي",
         "الشركات المدرجة دوليًا",
       ],
     },
     {
-      key: "ai-data-infrastructure",
-      number: "02",
-      name: "الذكاء الاصطناعي والبنية التحتية للبيانات",
+      key: "mining",
+      name: "التعدين",
+      covers: [
+        "تطوير الموارد",
+        "مشاريع التطوير",
+        "سلاسل التوريد",
+        "المواد الاستراتيجية",
+        "الشركات المدرجة دوليًا",
+      ],
+    },
+    {
+      key: "pharmaceuticals",
+      name: "المستحضرات الدوائية",
+      covers: [
+        "خطوط التطوير السريري",
+        "الابتكار في الرعاية الصحية",
+        "التقنية الطبية",
+        "البحث العلمي",
+        "التطور المؤسسي الدولي",
+      ],
+    },
+    {
+      key: "data-centres",
+      name: "مراكز البيانات",
       covers: [
         "مراكز البيانات",
         "البنية التحتية الحوسبية",
         "متطلبات الطاقة",
         "البنية التحتية الرقمية",
         "تطبيقات الذكاء الاصطناعي",
-      ],
-    },
-    {
-      key: "life-sciences",
-      number: "03",
-      name: "علوم الحياة",
-      covers: [
-        "التقنية الحيوية",
-        "الابتكار في الرعاية الصحية",
-        "التقنية الطبية",
-        "البحث العلمي",
-        "التطور المؤسسي الدولي",
       ],
     },
   ],
@@ -129,9 +146,10 @@ export const menasDigitalNewsDetailAr: Localised<typeof menasDigitalNewsDetail> 
   coversLabel: "ما قد تتناوله",
   covers: [
     "تطورات الأسواق الخليجية",
-    "المعادن الحيوية",
-    "الذكاء الاصطناعي والبنية التحتية للبيانات",
-    "علوم الحياة",
+    "الطاقة",
+    "التعدين",
+    "المستحضرات الدوائية",
+    "مراكز البيانات",
     "أخبار الأعمال الإقليمية",
     "الشركات العالمية في النقاش الخليجي",
   ],
@@ -172,32 +190,26 @@ export const editorialThemesAr: Localised<typeof editorialThemes> = {
   note: "موضوعات تحريرية، وليست بحوثًا منشورة.",
   themes: [
     {
-      number: "01",
       title: "كيف تقيّم المؤسسات الخليجية شركات النمو العالمية",
       tag: "بنية السوق",
     },
     {
-      number: "02",
       title: "لماذا يهمّ التواصل باللغة العربية في الأسواق الإقليمية",
       tag: "التواصل",
     },
     {
-      number: "03",
       title: "دور البنية التحتية في توسّع الذكاء الاصطناعي ومراكز البيانات",
-      tag: "الذكاء الاصطناعي والبنية التحتية للبيانات",
+      tag: "مراكز البيانات",
     },
     {
-      number: "04",
-      title: "سلاسل توريد المعادن الحيوية والاستراتيجية الصناعية الخليجية",
-      tag: "المعادن الحيوية",
+      title: "سلاسل توريد المعادن والاستراتيجية الصناعية الخليجية",
+      tag: "التعدين",
     },
     {
-      number: "05",
       title: "ما يسيء الفهم فيه المُصدِرون الدوليون كثيرًا بشأن التعامل مع السوق الخليجية",
       tag: "دخول السوق",
     },
     {
-      number: "06",
       title: "كيف يعزّز الإعلام والاجتماعات والتواصل الرقمي بعضها بعضًا",
       tag: "التواصل",
     },
@@ -207,11 +219,11 @@ export const editorialThemesAr: Localised<typeof editorialThemes> = {
 export const fiveQuestionsDetailAr: Localised<typeof fiveQuestionsDetail> = {
   subline: "صيغة مقابلة تنفيذية متسقة، مصمَّمة لتيسير متابعة قصص الشركات.",
   areas: [
-    { number: "01", term: "الأعمال" },
-    { number: "02", term: "الاستراتيجية" },
-    { number: "03", term: "السوق" },
-    { number: "04", term: "التنفيذ" },
-    { number: "05", term: "ما يأتي بعد ذلك" },
+    { term: "الأعمال" },
+    { term: "الاستراتيجية" },
+    { term: "السوق" },
+    { term: "التنفيذ" },
+    { term: "ما يأتي بعد ذلك" },
   ],
   /* COMPLIANCE. A structure for a conversation, not analysis. */
   note: "صيغة مقابلة. وليست تحليلًا استثماريًا.",
@@ -238,7 +250,7 @@ export const sectorNotesDetailAr: Localised<typeof sectorNotesDetail> = {
     "تطور القطاع",
   ],
   /* Sample TOPIC CATEGORIES, not report titles. */
-  categories: ["المعادن الحيوية", "البنية التحتية للذكاء الاصطناعي", "مراكز البيانات", "علوم الحياة"],
+  categories: ["الطاقة", "التعدين", "المستحضرات الدوائية", "مراكز البيانات"],
   note: "إحاطات إعلامية. وليست توصيات بشأن أوراق مالية.",
   gated: {
     heading: "بعض الإحاطات متاحة بالتسجيل",
@@ -306,22 +318,18 @@ export const editorialPrinciplesAr: Localised<typeof editorialPrinciples> = {
   heading: "كيف نتعامل مع الرؤى",
   principles: [
     {
-      number: "01",
       term: "محدَّد",
       description: "قطاعات وأسواق وموضوعات مسمّاة، لا تعليق عام.",
     },
     {
-      number: "02",
       term: "منظَّم",
       description: "صيغ دورية ذات غرض واضح ووتيرة معلنة.",
     },
     {
-      number: "03",
       term: "ذو صلة",
       description: "محتوى مصمَّم للجمهور المهني في الخليج.",
     },
     {
-      number: "04",
       term: "ملتزم",
       description:
         "لا توصيات استثمارية، ولا تنبؤات بأسعار الأوراق المالية، ولا علاقات عملاء غير مُفصَح عنها.",

@@ -36,25 +36,21 @@ export const communicationEffects = {
     "Communication is not decoration on a business; it is how a business is understood by people who will never see the inside of it. Four things separate the kind that works from the kind that fills a calendar.",
   effects: [
     {
-      number: "01",
       term: "Clarifies",
       description:
         "What the business is, what it does and where it is going - stated the same way whether a reader has five minutes or an afternoon.",
     },
     {
-      number: "02",
       term: "Connects",
       description:
         "Corporate strategy to the audiences for whom it is actually relevant, rather than to whoever happens to be available.",
     },
     {
-      number: "03",
       term: "Reinforces",
       description:
         "One account of the business across meetings, media and a company's own channels, so the three do not quietly contradict each other.",
     },
     {
-      number: "04",
       term: "Compounds",
       description:
         "Understanding through repetition. A market that has encountered a company four times reads the fifth encounter differently from the first.",

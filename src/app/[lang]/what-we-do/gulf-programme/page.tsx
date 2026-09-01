@@ -43,7 +43,6 @@ export default async function GulfProgrammePage() {
         variant="feature"
         photo={insightPhotos[1]}
         eyebrow={page.eyebrow}
-        index={page.number}
         title={page.title}
         lead={page.lead}
         actions={

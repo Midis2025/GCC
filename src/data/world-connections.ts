@@ -114,7 +114,7 @@ const ASIA: MapNode = {
 /**
  * Insight: global sector context meeting Gulf audiences.
  *
- * The captions name the three sectors rather than the four services, because
+ * The captions name the sectors rather than the four services, because
  * an Insight reader is here for the subject matter.
  */
 export const insightMap = {

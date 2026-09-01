@@ -22,8 +22,6 @@
  */
 
 export interface Industry {
-  /** Two-digit editorial index. */
-  number: string;
   slug: string;
   title: string;
   /** One line on what the sector is, in capital-markets terms. */
@@ -69,7 +67,6 @@ export const industriesContent = {
 
 export const industries: Industry[] = [
   {
-    number: "01",
     slug: "financial-services",
     title: "Financial Services",
     summary:
@@ -85,7 +82,6 @@ export const industries: Industry[] = [
     keywords: ["Capital", "Risk", "Governance"],
   },
   {
-    number: "02",
     slug: "energy-and-utilities",
     title: "Energy & Utilities",
     summary:
@@ -101,7 +97,6 @@ export const industries: Industry[] = [
     keywords: ["Energy", "Transition", "Capital"],
   },
   {
-    number: "03",
     slug: "real-estate-and-development",
     title: "Real Estate & Development",
     summary:
@@ -117,7 +112,6 @@ export const industries: Industry[] = [
     keywords: ["Assets", "Pipeline", "Valuation"],
   },
   {
-    number: "04",
     slug: "industrials-and-manufacturing",
     title: "Industrials & Manufacturing",
     summary:
@@ -133,7 +127,6 @@ export const industries: Industry[] = [
     keywords: ["Scale", "Margins", "Capital"],
   },
   {
-    number: "05",
     slug: "transport-and-logistics",
     title: "Transport & Logistics",
     summary:
@@ -149,7 +142,6 @@ export const industries: Industry[] = [
     keywords: ["Trade", "Volume", "Infrastructure"],
   },
   {
-    number: "06",
     slug: "technology-and-digital",
     title: "Technology & Digital Infrastructure",
     summary:

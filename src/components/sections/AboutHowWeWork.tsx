@@ -10,14 +10,14 @@ import { commercialModel as commercialModelEn } from "@/data/site";
 /**
  * How we work, and who we work with.
  *
- * The commercial position stated plainly, next to the three sectors. Both
+ * The commercial position stated plainly, next to the sectors. Both
  * belong on About: a reader who wants to know what kind of firm this is is
  * asking two questions - how are you paid, and who is this for.
  *
- * COMPLIANCE: the three exclusions come from `commercialModel` in
- * `data/site.ts` and are the same three statements the What We Do page makes.
- * They are compensation statements, not marketing lines, and they are stated
- * once from a single source so the two pages can never disagree.
+ * COMPLIANCE: the exclusions come from `commercialModel` in `data/site.ts`
+ * and are the same statements the What We Do page makes. They are compensation
+ * statements, not marketing lines, and they are stated once from a single
+ * source so the two pages can never disagree.
  */
 export async function AboutHowWeWork() {
   const aboutClients = await pick({ en: aboutClientsEn, ar: aboutClientsAr });
@@ -52,17 +52,11 @@ export async function AboutHowWeWork() {
               {aboutCommercial.exclusionsLabel}
             </p>
             <ul className="mt-5 flex flex-col">
-              {commercialModel.exclusions.map((item, index) => (
+              {commercialModel.exclusions.map((item) => (
                 <li
                   key={item}
-                  className="flex items-baseline gap-4 border-t border-(--color-border) py-4 text-[1.0625rem]"
+                  className="border-t border-(--color-border) py-4 text-[1.0625rem]"
                 >
-                  <span
-                    aria-hidden="true"
-                    className="num font-display-sm text-[0.625rem] tracking-[0.14em] text-(--color-accent)"
-                  >
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
                   {item}
                 </li>
               ))}

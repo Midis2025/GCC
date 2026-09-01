@@ -985,46 +985,26 @@ a[href^="tel:"] {
 }
 
 /*
- * Pointer state. The stage under the pointer takes its numeral to full bronze
- * and brings its copy up to full strength; the rest are unchanged rather than
- * dimmed, because dimming four of five on hover makes a calm row flicker as
- * the pointer crosses it.
+ * The stage under the pointer used to take its numeral to full bronze. The
+ * numeral is gone with the 01/02/03 format, and these rules went with it
+ * rather than being left to match nothing: the stage title already carries a
+ * colour transition of its own, so the row still responds to the pointer.
  */
-.approach-stage:hover .approach-num,
-.approach-stage:focus-within .approach-num {
-  color: var(--color-accent);
-}
-
-.approach-num {
-  transition: color 500ms var(--ease-out-soft);
-}
 
 /* ==========================================================================
    SHOWCASE
    --------------------------------------------------------------------------
-   The number over the photograph and the title on the plate below it are
-   keyed by the active item, so React remounts them on every change - which is
-   what lets these animations replay rather than firing once on load.
+   The title on the plate is keyed by the active item, so React remounts it on
+   every change - which is what lets this animation replay rather than firing
+   once on load.
 
-   Deliberately shorter than the 400ms crossfade behind them. The photograph is
+   A numeral over the photograph was animated the same way and is gone with the
+   01/02/03 format; `.showcase-index` and its keyframes went with it.
+
+   Deliberately shorter than the 400ms crossfade behind it. The photograph is
    the slower element and the type should have arrived by the time it settles,
    not after it.
    ========================================================================== */
-.showcase-index {
-  animation: showcase-index-in 420ms var(--ease-out-soft) both;
-}
-
-@keyframes showcase-index-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .showcase-title {
   animation: showcase-title-in 380ms var(--ease-out-soft) both;
 }
@@ -1041,7 +1021,6 @@ a[href^="tel:"] {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .showcase-index,
   .showcase-title {
     animation: none !important;
     opacity: 1;
@@ -1424,16 +1403,6 @@ a[href^="tel:"] {
   transition: opacity 1100ms var(--ease-out-soft);
 }
 
-/* Oversized ghost index. Rises and opens up a little as its panel takes over. */
-.why-numeral {
-  opacity: calc(0.035 + var(--why-emphasis) * 0.055);
-  transform: translate3d(0, calc(var(--why-emphasis) * -0.5rem), 0)
-    scale(calc(1 + var(--why-emphasis) * 0.04));
-  transition:
-    opacity 900ms var(--ease-out-soft),
-    transform 1100ms var(--ease-out-expo);
-}
-
 /* The small line mark. Quiet until its panel is the one being read. */
 .why-mark {
   opacity: calc(0.3 + var(--why-emphasis) * 0.7);
@@ -1776,14 +1745,6 @@ a[href^="tel:"] {
   transition: transform 900ms var(--ease-out-expo);
 }
 
-.about-stage-ghost {
-  opacity: calc(0.03 + var(--about-emphasis) * 0.05);
-  transform: translate3d(0, calc(var(--about-emphasis) * -0.4rem), 0);
-  transition:
-    opacity 900ms var(--ease-out-soft),
-    transform 1100ms var(--ease-out-expo);
-}
-
 @media (hover: hover) and (pointer: fine) {
   .about-stages[data-settled="true"] .about-stage:hover {
     opacity: 1;
@@ -1802,10 +1763,6 @@ a[href^="tel:"] {
   transition: transform 700ms var(--ease-out-expo);
 }
 
-.about-principle-index {
-  transition: transform 700ms var(--ease-out-expo);
-}
-
 .about-principle-wash {
   opacity: 0;
   background: linear-gradient(
@@ -1819,10 +1776,6 @@ a[href^="tel:"] {
 @media (hover: hover) and (pointer: fine) {
   .about-principle:hover .about-principle-rule {
     transform: scaleX(2.4);
-  }
-
-  .about-principle:hover .about-principle-index {
-    transform: translate3d(-0.25rem, 0, 0);
   }
 
   .about-principle:hover .about-principle-wash {
@@ -1898,7 +1851,10 @@ a[href^="tel:"] {
 }
 
 /* --------------------------------------------------------------------------
-   Sector coverage - the 01-06 contents rule
+   Sector coverage - the contents rule
+
+   This staggered the numerals 01-06 in. It now staggers the sector titles that
+   replaced them; the animation is unchanged, only what it reveals.
    -------------------------------------------------------------------------- */
 
 .ind-contents-index {
@@ -1911,18 +1867,16 @@ a[href^="tel:"] {
 }
 
 /* --------------------------------------------------------------------------
-   Sector explorer - the index
+   Sector explorer - the row title
+
+   `.ind-nav-index` was the numeral beside each title and is gone with the
+   01/02/03 format, along with the rule that took it to bronze when its row was
+   active. The title's own colour change is what marks the active row now.
    -------------------------------------------------------------------------- */
 
-.ind-nav-index,
 .ind-nav-title {
   transition: color 500ms var(--ease-out-soft);
   color: var(--color-foreground-subtle);
-}
-
-.ind-nav[data-active="true"] .ind-nav-index,
-.ind-acc[data-open="true"] .ind-nav-index {
-  color: var(--color-accent);
 }
 
 .ind-nav[data-active="true"] .ind-nav-title,
@@ -2159,6 +2113,24 @@ a[href^="tel:"] {
 
 .media-frame img {
   transition: transform 900ms var(--ease-out-expo);
+}
+
+/*
+ * `will-change` is armed on hover, not declared at rest.
+ *
+ * Declared at rest it is permanent: every zoomable frame on the site sits on
+ * its own compositor layer from first paint, whether or not anyone ever points
+ * at it. That is a real cost on a page carrying a dozen of them, and on a
+ * high-DPI display it hands the raster of a large photograph to the compositor
+ * when the page layer would have painted it more crisply.
+ *
+ * Arming it on hover gives the browser the hint at the only moment it can act
+ * on it - the transition runs for 900ms, so there is time in hand - and lets
+ * the layer be discarded again on the way out.
+ */
+.group:hover .media-frame img,
+.group:focus-visible .media-frame img,
+.media-frame:hover img {
   will-change: transform;
 }
 

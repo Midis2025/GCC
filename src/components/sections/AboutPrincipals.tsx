@@ -3,24 +3,25 @@ import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { pick } from "@/content";
+import { cn } from "@/lib/utils";
 import { aboutPrincipalsAr } from "@/content/ar/about";
 import { aboutPrincipals as aboutPrincipalsEn } from "@/data/about";
 
 /**
- * The two principals.
+ * The principals.
  *
- * Two entries, set as an editorial pair rather than as profile cards. No
- * photographs - none have been supplied, and a silhouette or a set of initials
- * in a circle is worse than the name alone.
+ * Editorial entries rather than profile cards. No photographs - none have been
+ * supplied, and a silhouette or a set of initials in a circle is worse than the
+ * name alone.
  *
- * CONTENT INTEGRITY: every word of both biographies comes from the client's
+ * CONTENT INTEGRITY: every word of every biography comes from the client's
  * factual direction. Nothing here may be extended with awards, employers, deal
- * history or years of experience, and the register must stay at "two capable
+ * history or years of experience, and the register must stay at "capable
  * people" rather than drifting towards a firm pretending to be larger. See the
  * note on `aboutPrincipals` in `data/about.ts`.
  *
- * This is deliberately NOT a Team page. The brief rules one out at launch: two
- * principals do not need a page of their own, and giving them one invites the
+ * This is deliberately NOT a Team page. The brief rules one out at launch: a
+ * principal does not need a page of their own, and giving them one invites the
  * question of who else there is.
  */
 export async function AboutPrincipals() {
@@ -43,14 +44,31 @@ export async function AboutPrincipals() {
         </Reveal>
       </div>
 
-      <ul className="mt-[var(--space-heading)] grid gap-x-16 gap-y-12 lg:grid-cols-2">
+      {/*
+        The second column appears only when there is something to put in it.
+
+        This list is content-driven and currently holds ONE entry. A hard
+        `lg:grid-cols-2` left that entry in a half-width column with an empty
+        half beside it, which reads as a missing person rather than as a
+        deliberate layout. Below the breakpoint nothing changes either way.
+
+        `max-w` on the single-entry case stops the biography running to a
+        90-character measure on a wide display now that no second column is
+        holding it in.
+      */}
+      <ul
+        className={cn(
+          "mt-[var(--space-heading)] grid gap-x-16 gap-y-12",
+          aboutPrincipals.people.length > 1 ? "lg:grid-cols-2" : "max-w-[46rem]",
+        )}
+      >
         {aboutPrincipals.people.map((person, index) => (
           <li key={person.name}>
             <Reveal delay={index * 110}>
               {/*
                 A typographic monogram stands where a portrait would.
 
-                No approved photographs of either principal exist and none may
+                No approved photographs of any principal exist and none may
                 be generated, so the alternative to a picture is not a grey
                 placeholder silhouette - it is type. The initials are set at
                 display scale in the accent at low strength, which gives each
@@ -58,7 +76,7 @@ export async function AboutPrincipals() {
                 anything about a person's appearance.
 
                 `aria-hidden`: the name is the heading directly beside it, and
-                announcing "EK" before "Edward Karr" is noise.
+                announcing the initials before the name is noise.
 
                 Replace with a real portrait by dropping a `photo` onto the
                 person record and swapping this span for a `Figure` - the

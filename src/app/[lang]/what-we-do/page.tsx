@@ -28,6 +28,7 @@ import {
   whatWeDoTransition as whatWeDoTransitionEn,
 } from "@/data/what-we-do";
 import { narrowMap, whatWeDoMap as whatWeDoMapEn } from "@/data/world-connections";
+import { cn } from "@/lib/utils";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({
@@ -97,7 +98,6 @@ export default async function WhatWeDoPage() {
         note={showcase.note}
         items={serviceLines.map((line) => ({
           key: line.slug,
-          number: line.number,
           title: line.title,
           summary: line.summary,
           href: line.href,
@@ -113,9 +113,10 @@ export default async function WhatWeDoPage() {
       {/*
         The commercial model.
 
-        COMPLIANCE: the three exclusions are statements about compensation and
-        they are load-bearing. Do not soften, merge or move them into a
-        footnote - see the header of `data/what-we-do.ts`.
+        COMPLIANCE: the exclusions are statements about compensation and they
+        are load-bearing. Do not soften, merge or move them into a footnote -
+        see the header of `data/what-we-do.ts`, which also records the two that
+        were removed on client instruction and why.
       */}
       {/*
         Recomposed as a statement over three columns.
@@ -126,9 +127,9 @@ export default async function WhatWeDoPage() {
         distinctive thing on the page and they now hold the full width as
         columns, under the statement they qualify.
 
-        COMPLIANCE is untouched: same wording, same order, all three visible
-        without an interaction, and the label above them unchanged. See the
-        header of `data/what-we-do.ts`.
+        COMPLIANCE: same wording, same order, all of them visible without an
+        interaction, and the label above them unchanged. See the header of
+        `data/what-we-do.ts`.
       */}
       <Section spacing="lg" tone="muted" aria-labelledby="commercial-model">
         <div className="grid gap-x-20 gap-y-9 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end">
@@ -163,14 +164,24 @@ export default async function WhatWeDoPage() {
         </Reveal>
 
         {/*
-          Three columns, divided by vertical rules rather than boxed.
+          Columns divided by vertical rules rather than boxed, and the count
+          follows the list rather than being fixed at three.
+
+          It WAS fixed at three, for three denials. Two of those were removed
+          on client instruction and a hard `sm:grid-cols-3` would have left the
+          remaining one in a third of the row with two empty columns beside it -
+          which reads as a rendering failure, not as a design.
 
           The gold rule sits on top of each column and draws itself in
-          sequence, so the row resolves left to right as the section arrives -
-          which is the reading order of the three denials and the reason they
-          are staggered rather than appearing together.
+          sequence, so a multi-column row still resolves left to right as the
+          section arrives.
         */}
-        <dl className="mt-8 grid border-t border-(--color-border) sm:grid-cols-3">
+        <dl
+          className={cn(
+            "mt-8 grid border-t border-(--color-border)",
+            commercialModelContent.exclusions.length > 1 && "sm:grid-cols-3",
+          )}
+        >
           {commercialModelContent.exclusions.map((item, index) => (
             <div
               key={item.term}
@@ -181,13 +192,6 @@ export default async function WhatWeDoPage() {
                   aria-hidden="true"
                   className="about-rule absolute start-0 top-0 block h-px w-full bg-(--color-accent) sm:w-[calc(100%-2.5rem)]"
                 />
-
-                <span
-                  aria-hidden="true"
-                  className="num font-display leading-none text-(--color-accent)/22 text-[clamp(2.75rem,4.5vw,4rem)]"
-                >
-                  {String(index + 1).padStart(2, "0")}
-                </span>
 
                 <dt className="mt-6 max-w-[18ch] font-display text-[1.375rem] leading-snug text-balance">
                   {item.term}

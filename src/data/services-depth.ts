@@ -41,7 +41,6 @@ export const roadshowPhases = {
   phases: [
     {
       key: "before",
-      number: "01",
       term: "Before",
       summary: "Preparation, and the decisions that make the meetings worth holding.",
       items: [
@@ -54,7 +53,6 @@ export const roadshowPhases = {
     },
     {
       key: "during",
-      number: "02",
       term: "During",
       summary: "The programme itself, coordinated day by day rather than left to a diary.",
       items: [
@@ -66,7 +64,6 @@ export const roadshowPhases = {
     },
     {
       key: "after",
-      number: "03",
       term: "After",
       summary:
         "The record. What was asked, what was said, and what a company should do with it.",
@@ -119,7 +116,6 @@ export const advisoryAreas = {
   areas: [
     {
       key: "market-entry",
-      number: "01",
       term: "Market Entry Briefings",
       addresses:
         "A company considering the Gulf without a clear picture of how the market differs structurally from its home market.",
@@ -132,7 +128,6 @@ export const advisoryAreas = {
     },
     {
       key: "regional-listing",
-      number: "02",
       term: "Regional Listing Assessment",
       addresses:
         "How a company's structure, sector and disclosure would be read against regional listing conventions.",
@@ -145,7 +140,6 @@ export const advisoryAreas = {
     },
     {
       key: "conference-strategy",
-      number: "03",
       term: "Conference Strategy",
       addresses:
         "Management time spent at events chosen by reputation rather than by relevance to a specific objective.",
@@ -158,7 +152,6 @@ export const advisoryAreas = {
     },
     {
       key: "executive-preparation",
-      number: "04",
       term: "Executive Preparation",
       addresses:
         "Leadership presenting the same business differently in a meeting, an interview and on a stage.",
@@ -171,7 +164,6 @@ export const advisoryAreas = {
     },
     {
       key: "communication-considerations",
-      number: "05",
       term: "Regional Communication Considerations",
       addresses:
         "Disclosure, language and cadence that work at home and do not travel unchanged.",

@@ -107,7 +107,7 @@ export function buildConfirmationMail(
         "",
         "You can unsubscribe from any message we send. We do not sell or share your details, and we do not send investment recommendations.",
         "",
-        `${siteConfig.legalName}`,
+        `${siteConfig.legalName || siteConfig.name}`,
         siteConfig.url,
       ].join("\n")
     : [
@@ -126,7 +126,7 @@ export function buildConfirmationMail(
           ? `Preferred time: ${submission.preferredTime} (Gulf Standard Time)`
           : "",
         "",
-        `${siteConfig.legalName}`,
+        `${siteConfig.legalName || siteConfig.name}`,
         siteConfig.url,
       ]
         .filter((line) => line !== "")

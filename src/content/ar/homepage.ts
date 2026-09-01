@@ -56,7 +56,7 @@ export const heroContentAr: Localised<typeof heroContent> = {
   headlineLines: ["نربط الشركات العالمية", "برأس المال والشركاء", "والإعلام في الخليج."],
   headlineAccent: "والإعلام في الخليج.",
   supporting:
-    "المعادن الحيوية، والذكاء الاصطناعي والبنية التحتية للبيانات، وعلوم الحياة — عبر دبي وأبوظبي والرياض.",
+    "الطاقة، والتعدين، والمستحضرات الدوائية، ومراكز البيانات — عبر دبي وأبوظبي والرياض.",
   primaryCta: { label: "للشركات", href: "/what-we-do" },
   secondaryCta: { label: "للمستثمرين", href: "/for-investors" },
 };
@@ -170,28 +170,23 @@ export const approachContentAr: Localised<typeof approachContent> = {
     "خمس مراحل تُنفَّذ بالتسلسل ثم يُعاد النظر فيها. والمرحلة الأخيرة هي ما يمنع البرنامج من التحوّل إلى نصٍّ جامد.",
   steps: [
     {
-      number: "01",
       title: "الفهم",
       description: "تكوين صورة واضحة عن الشركة واستراتيجيتها وسوقها وأطروحتها الاستثمارية.",
     },
     {
-      number: "02",
       title: "التموضع",
       description: "صياغة سردية موجزة تتوافق مع الجهات المعنيّة.",
     },
     {
-      number: "03",
       title: "الاستهداف",
       description:
         "تحديد المستثمرين والمشاركين في السوق وقنوات التواصل المناسبة للتفويض.",
     },
     {
-      number: "04",
       title: "التواصل",
       description: "تنفيذ تواصل منسّق مع المستثمرين والإعلام والقنوات الرقمية.",
     },
     {
-      number: "05",
       title: "التطوير",
       description: "الإفادة من ملاحظات السوق ورؤى التواصل لتعزيز الاتصال مع الوقت.",
     },
@@ -229,9 +224,9 @@ export const audienceContentAr: Localised<typeof audienceContent> = {
   segments: [
     { label: "الشركات المدرجة الصغيرة والمتوسطة", photo: "listed" },
     { label: "فرق القيادة وعلاقات المستثمرين", photo: "leadership" },
-    { label: "الذكاء الاصطناعي والبنية التحتية للبيانات", photo: "aiInfrastructure" },
-    { label: "المعادن الحيوية", photo: "criticalMinerals" },
-    { label: "علوم الحياة", photo: "lifeSciences" },
+    { label: "مراكز البيانات", photo: "dataCentres" },
+    { label: "التعدين", photo: "mining" },
+    { label: "المستحضرات الدوائية", photo: "pharmaceuticals" },
     { label: "الشركات العالمية الداخلة إلى الخليج", photo: "international" },
   ],
 };

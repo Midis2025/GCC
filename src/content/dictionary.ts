@@ -33,7 +33,7 @@ import type { Locale } from "@/lib/i18n";
  *
  * Four rules hold throughout:
  *
- *   1. The legal entity stays "Gulf Connect Consultancy FZCO" in Latin script.
+ *   1. The name stays "Gulf Connect" in Latin script.
  *      It is a registered name; translating it invents an entity that does not
  *      exist on any licence.
  *   2. Western numerals throughout, matching Gulf corporate convention and the

@@ -69,18 +69,16 @@ export async function LegalPageLayout({ page }: { page: Localised<LegalPage> }) 
             {page.sections.map((section, index) => (
               <Reveal key={section.heading} delay={160 + index * 60}>
                 <li className="border-t border-(--color-border) py-7">
-                  <div className="flex items-baseline gap-4">
-                    <span
-                      aria-hidden="true"
-                      className="num font-display-sm text-[0.625rem] tracking-[0.14em] text-(--color-accent)"
-                    >
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <Heading level={4} size="h4" className="font-medium">
-                      {section.heading}
-                    </Heading>
-                  </div>
-                  <p className="mt-3 ps-8 text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
+                  <Heading level={4} size="h4" className="font-medium">
+                    {section.heading}
+                  </Heading>
+                  {/*
+                    `ps-8` went with the index it was clearing. The scope line
+                    was inset to sit under the heading rather than under the
+                    numeral in the margin; with the numeral gone the inset was
+                    an indent with nothing above it.
+                  */}
+                  <p className="mt-3 text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
                     {section.scope}
                   </p>
                 </li>
@@ -90,13 +88,19 @@ export async function LegalPageLayout({ page }: { page: Localised<LegalPage> }) 
 
           <Reveal delay={400}>
             {/*
-              The registered entity is substituted into the sentence rather
-              than concatenated onto it, because Arabic puts the name in a
-              different position from English. `legalName` is a registered name
+              The publisher is substituted into the sentence rather than
+              concatenated onto it, because Arabic puts the name in a different
+              position from English. The name is Latin script in both languages
               and is never translated.
+
+              `legalName` is EMPTY and is expected to stay empty: no company
+              has been incorporated under the Gulf Connect name, so the brand
+              name is what publishes these pages. The fallback is written out
+              rather than the field being read directly, so that a future
+              incorporation is one edit in `site.ts` and none here.
             */}
             <p className="mt-14 border-t border-(--color-border) pt-8 text-sm leading-relaxed text-(--color-foreground-subtle)">
-              {chrome.publishedBy.replace("{entity}", siteConfig.legalName)}
+              {chrome.publishedBy.replace("{entity}", siteConfig.legalName || siteConfig.name)}
             </p>
           </Reveal>
         </Container>

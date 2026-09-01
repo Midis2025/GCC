@@ -232,7 +232,7 @@ export async function EditorialPrinciplesSection() {
       <ol className="mt-[var(--space-heading)] flex flex-col">
         {editorialPrinciples.principles.map((principle, index) => (
           <li
-            key={principle.number}
+            key={principle.term}
             style={{ "--step": index } as React.CSSProperties}
             className={cn(
               /*
@@ -249,14 +249,14 @@ export async function EditorialPrinciplesSection() {
             )}
           >
             <Reveal delay={index * 120}>
-              <div className="relative grid grid-cols-[3rem_minmax(0,1fr)] items-baseline gap-x-5 overflow-hidden py-9 sm:grid-cols-[6rem_minmax(0,1fr)] sm:gap-x-10">
-                <span
-                  aria-hidden="true"
-                  className="num font-display leading-none text-(--color-accent)/25 text-[clamp(2rem,3.5vw,3rem)]"
-                >
-                  {principle.number}
-                </span>
-
+              {/*
+                One column now. The first was a fixed gutter for a display
+                numeral; with the 01/02/03 format removed it would have been
+                3rem of nothing indenting every principle, on top of the
+                staircase indent the <li> already applies. The staircase is
+                what carries the sequence here and it is untouched.
+              */}
+              <div className="relative overflow-hidden py-9">
                 <div className="min-w-0">
                   <h3 className="font-display text-h3 tracking-tight">{principle.term}</h3>
                   <p className="mt-4 max-w-[52ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">

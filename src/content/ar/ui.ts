@@ -11,7 +11,7 @@ import type { Dictionary } from "@/content/dictionary";
  * ---------------------------------------------------------------------------
  * TERMS DELIBERATELY LEFT IN LATIN SCRIPT
  * ---------------------------------------------------------------------------
- * "Gulf Connect Consultancy FZCO" is a registered legal name. It appears
+ * "Gulf Connect" is the name in both editions, in Latin script. It appears
  * unchanged inside Arabic sentences, which is standard practice in Gulf
  * corporate Arabic and the only correct treatment: a translated entity name is
  * an entity that appears on no licence and in no register.
@@ -79,23 +79,41 @@ export const ui: Dictionary = {
     office: "المكتب",
     international: "الأسواق الدولية",
     contact: "تواصل معنا",
-    locality: "دبي، الإمارات العربية المتحدة",
+    /*
+      Display copy, and the flag is part of the string in both languages so
+      the two editions show the same thing.
+
+      The emoji is direction-neutral, so appending it puts it at the visual
+      end of the line in each script - after "UAE" in English, to the LEFT of
+      the Arabic in RTL. That is the correct place in both.
+
+      Metadata, structured data, legal paragraphs and accessible names read
+      `contactConfig.locality`, which carries no emoji.
+    */
+    locality: "دبي، الإمارات العربية المتحدة 🇦🇪",
     /*
       AWAITING LEGAL REVIEW.
 
       The four statements of the English are preserved in the same order and
       with the same force: the services and the fixed-fee basis; the denial
       that anything here is an offer, solicitation, recommendation or advice;
-      the absence of a UAE financial-services licence together with the three
+      the absence of a UAE financial-services licence together with the two
       things the firm does not do; and the disclosure of a commercial
       relationship where one exists.
+
+      A third "does not do" clause was removed to match the English, on
+      client instruction to take share-price and equity compensation language
+      off the public site. The registered entity that opened the sentence was
+      removed with it: no company has been incorporated under this name, so
+      the brand name stands alone. Both cuts await the same legal review as
+      the English.
 
       "غير مرخّصة لممارسة أنشطة الخدمات المالية في دولة الإمارات" is the
       load-bearing clause. It states the absence of a licence and must not be
       softened into a statement about what the firm chooses not to do.
     */
     disclosure:
-      "تقدّم شركة Gulf Connect Consultancy FZCO خدمات التواصل مع المستثمرين وتنظيم الفعاليات والخدمات الإعلامية مقابل أتعاب مهنية ثابتة. ولا يشكّل أي محتوى في هذا الموقع عرضًا أو استقطابًا أو توصية أو مشورة استثمارية، ولا يجوز الاعتماد عليه في اتخاذ أي قرار استثماري. وشركة Gulf Connect غير مرخّصة لممارسة أنشطة الخدمات المالية في دولة الإمارات العربية المتحدة، ولا تستقطب استثمارات، ولا تحتفظ بأموال العملاء، ولا تتقاضى أي مقابل مرتبط برأس المال المُجمَّع أو بسعر السهم أو بحجم التداول. وحيثما اتصل المحتوى بشركة تعاقدت مع Gulf Connect، يُفصح عن العلاقة التجارية ضمن ذلك المحتوى.",
+      "تقدّم Gulf Connect خدمات التواصل مع المستثمرين وتنظيم الفعاليات والخدمات الإعلامية مقابل أتعاب مهنية ثابتة. ولا يشكّل أي محتوى في هذا الموقع عرضًا أو استقطابًا أو توصية أو مشورة استثمارية، ولا يجوز الاعتماد عليه في اتخاذ أي قرار استثماري. وGulf Connect غير مرخّصة لممارسة أنشطة الخدمات المالية في دولة الإمارات العربية المتحدة، ولا تستقطب استثمارات، ولا تحتفظ بأموال العملاء. وحيثما اتصل المحتوى بشركة تعاقدت مع Gulf Connect، يُفصح عن العلاقة التجارية ضمن ذلك المحتوى.",
     legal: {
       privacy: "سياسة الخصوصية",
       disclaimer: "إخلاء المسؤولية",
@@ -177,9 +195,10 @@ export const ui: Dictionary = {
         other: "غير ذلك",
       },
       investorSector: {
-        "Critical minerals": "المعادن الحيوية",
-        "AI and data infrastructure": "الذكاء الاصطناعي والبنية التحتية للبيانات",
-        "Life sciences": "علوم الحياة",
+        Energy: "الطاقة",
+        Mining: "التعدين",
+        Pharmaceuticals: "المستحضرات الدوائية",
+        "Data centres": "مراكز البيانات",
       },
       preferredTime: {
         "09:00 AM": "09:00 صباحًا",
@@ -214,7 +233,7 @@ export const ui: Dictionary = {
       enquiry: "الاستفسار",
       enquiryHelp: "نبذة موجزة عن وضع الشركة وما تتطلعون إليه.",
       consentLabel:
-        "أوافق على أن تتواصل معي شركة Gulf Connect Consultancy FZCO بشأن هذا الاستفسار.",
+        "أوافق على أن تتواصل معي Gulf Connect بشأن هذا الاستفسار.",
       submit: "إرسال الاستفسار",
       successHeading: "شكرًا لاستفساركم.",
       successBody: "تلقّينا بياناتكم، وسيطّلع أحد أعضاء الفريق على استفساركم.",
@@ -235,7 +254,7 @@ export const ui: Dictionary = {
       sectorsLegend: "القطاعات محل الاهتمام",
       sectorsHelp: "اختياري. نستعين بذلك لإرسال الدعوات ذات الصلة بكم دون سواها.",
       consentLabel:
-        "أوافق على أن تتواصل معي شركة Gulf Connect Consultancy FZCO عبر البريد الإلكتروني بدعوات الجلسات التعريفية والمواد التحريرية، وأدرك أن بإمكاني إلغاء الاشتراك في أي وقت.",
+        "أوافق على أن تتواصل معي Gulf Connect عبر البريد الإلكتروني بدعوات الجلسات التعريفية والمواد التحريرية، وأدرك أن بإمكاني إلغاء الاشتراك في أي وقت.",
       consentNote:
         "سنرسل إليكم رسالة تأكيد. ويكتمل تسجيلكم بمجرد تأكيده من خلال تلك الرسالة.",
       submit: "تسجيل",
@@ -281,7 +300,7 @@ export const ui: Dictionary = {
     by: "بقلم",
     disclosure: "إفصاح",
     clientDisclosure:
-      "{company} عميل لدى شركة Gulf Connect Consultancy FZCO، وقد سدّد إليها أتعابًا مهنية ثابتة مقابل خدمات التواصل.",
+      "{company} عميل لدى Gulf Connect، وقد سدّد إليها أتعابًا مهنية ثابتة مقابل خدمات التواصل.",
     thisCompany: "هذه الشركة",
     allInsights: "جميع الرؤى",
   },

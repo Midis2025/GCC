@@ -104,14 +104,8 @@ export async function Intro() {
             <li key={principle.title}>
               <Reveal
                 delay={index * 70}
-                className="flex h-full gap-5 border-b border-(--color-border) py-8 sm:py-9 lg:border-b-0 lg:pe-10"
+                className="flex h-full border-b border-(--color-border) py-8 sm:py-9 lg:border-b-0 lg:pe-10"
               >
-                <span
-                  aria-hidden="true"
-                  className="font-display text-sm leading-none text-(--color-accent)"
-                >
-                  {String(index + 1).padStart(2, "0")}
-                </span>
                 <div>
                   <h3 className="text-[1.0625rem] font-medium tracking-tight">{principle.title}</h3>
                   <p className="mt-2.5 max-w-[34ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">

@@ -19,7 +19,6 @@
 
 export interface ServicePageContent {
   slug: string;
-  number: string;
   title: string;
   eyebrow: string;
   lead: string;
@@ -32,7 +31,6 @@ export interface ServicePageContent {
 
 export const investorRoadshows = {
   slug: "investor-roadshows",
-  number: "01",
   title: "Investor Roadshows",
   eyebrow: "What We Do",
   lead: "A structured sequence of one-to-one meetings and a hosted group session with qualified Gulf investors, built around the company's sector and corporate story.",
@@ -169,7 +167,6 @@ export const investorRoadshows = {
 
 export const gulfProgramme = {
   slug: "gulf-programme",
-  number: "02",
   title: "The Gulf Programme",
   eyebrow: "What We Do",
   lead: "A six-month investor communications programme. Continuity rather than a single visit: meetings, content, media cycles and Arabic distribution, run to a calendar and reported on monthly.",
@@ -313,7 +310,6 @@ export const gulfProgramme = {
 
 export const mediaArabic = {
   slug: "media-arabic-communications",
-  number: "03",
   title: "Media & Arabic Communications",
   eyebrow: "What We Do",
   lead: "Regional business media in English and Arabic. Earned, paid and owned kept explicitly separate, with certified financial translation and Arabic-language corporate communication.",
@@ -441,7 +437,6 @@ export const mediaArabic = {
 
 export const advisory = {
   slug: "advisory",
-  number: "04",
   title: "Advisory",
   eyebrow: "What We Do",
   lead: "Briefings on how a company would be read in Gulf markets: regional listing assessment, market-entry considerations and conference strategy.",

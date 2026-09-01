@@ -81,15 +81,9 @@ export async function CommunicationEffects() {
       */}
       <ul className="mt-[var(--space-heading)] grid gap-x-14 gap-y-12 sm:grid-cols-2 lg:gap-x-20">
         {communicationEffects.effects.map((effect, index) => (
-          <li key={effect.number} className="border-t border-white/12 pt-8">
+          <li key={effect.term} className="border-t border-white/12 pt-8">
             <Reveal delay={index * 110}>
-              <span
-                aria-hidden="true"
-                className="num font-display-sm text-[0.625rem] tracking-[0.14em] text-(--color-accent)"
-              >
-                {effect.number}
-              </span>
-              <h3 className="mt-5 font-display text-h2 leading-none">{effect.term}</h3>
+              <h3 className="font-display text-h2 leading-none">{effect.term}</h3>
               <p className="mt-6 max-w-[42ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
                 {effect.description}
               </p>

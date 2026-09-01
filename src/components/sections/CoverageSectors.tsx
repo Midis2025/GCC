@@ -10,16 +10,17 @@ import { coverage as coverageEn } from "@/data/investors-depth";
 
 /** The frame for each sector. Shared with the homepage mosaic on purpose. */
 const SECTOR_PHOTO = {
-  "critical-minerals": segmentPhotos.criticalMinerals,
-  "ai-data-infrastructure": segmentPhotos.aiInfrastructure,
-  "life-sciences": segmentPhotos.lifeSciences,
+  energy: segmentPhotos.energy,
+  mining: segmentPhotos.mining,
+  "data-centres": segmentPhotos.dataCentres,
+  pharmaceuticals: segmentPhotos.pharmaceuticals,
 } as const;
 
 /**
  * ============================================================================
  * WHAT WE COVER
  * ============================================================================
- * The three sectors, as wide horizontal bands rather than three columns.
+ * The sectors, as wide horizontal bands rather than columns.
  *
  * The shape is the point. This page already carries a scroll-driven sequence,
  * a typographic band and a split-screen form; three columns would have been a
@@ -27,7 +28,7 @@ const SECTOR_PHOTO = {
  * each sector a whole row and let the page breathe between them.
  *
  * The photographs are the same three the homepage mosaic uses for the same
- * three sectors, which is deliberate rather than lazy: one sector, one frame,
+ * same sectors, which is deliberate rather than lazy: one sector, one frame,
  * across the site. A different picture of a data centre on each page would be
  * variety for its own sake and would make the two pages look unrelated.
  *
@@ -90,15 +91,7 @@ export async function CoverageSectors() {
 
                 <div className={imageFirst ? "lg:order-2" : "lg:order-1"}>
                   <Reveal delay={index * 90 + 100}>
-                    <div className="flex items-baseline gap-5">
-                      <span
-                        aria-hidden="true"
-                        className="num font-display-sm text-[0.6875rem] tracking-[0.16em] text-(--color-accent)"
-                      >
-                        {sector.number}
-                      </span>
-                      <h3 className="font-display text-h3 tracking-tight">{sector.name}</h3>
-                    </div>
+                    <h3 className="font-display text-h3 tracking-tight">{sector.name}</h3>
 
                     <p className="mt-6 max-w-[58ch] text-[1.0625rem] leading-relaxed text-(--color-foreground-muted)">
                       {sector.description}

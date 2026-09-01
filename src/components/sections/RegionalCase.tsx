@@ -82,13 +82,12 @@ export async function RegionalCase() {
             {gulfDifference.paragraphs.map((paragraph, index) => (
               <li key={paragraph} className="border-t border-(--color-border)">
                 <Reveal delay={index * 110}>
-                  <div className="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-x-4 py-7 sm:grid-cols-[3.5rem_minmax(0,1fr)] sm:gap-x-6">
-                    <span
-                      aria-hidden="true"
-                      className="num font-display-sm text-[0.625rem] tracking-[0.14em] text-(--color-accent) sm:pt-1"
-                    >
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
+                  {/*
+                    The numeral column is gone with the 01/02/03 format, and the
+                    grid went with it: a 2.5rem gutter with nothing in it would
+                    have indented every paragraph past the section's measure.
+                  */}
+                  <div className="py-7">
                     <p className="max-w-[62ch] text-[1.0625rem] leading-relaxed text-(--color-foreground-muted)">
                       {paragraph}
                     </p>

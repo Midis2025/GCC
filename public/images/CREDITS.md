@@ -87,27 +87,61 @@ have no source URL on file, so there is nothing to refetch them from. They remai
 `downtown-dubai-blue-hour.jpg`. The dead `sector-*` set and `etihad-towers-golden-hour.jpg`
 were skipped deliberately — nothing renders them.
 
-### The three market panels
+### The three market panels — replaced, then replaced again
 
-`cityPhotos` had to be replaced outright rather than re-fetched. The panels name Dubai,
-Abu Dhabi and Riyadh, and none of the three frames identified its city: Dubai was a
-Downtown skyline with no Burj Khalifa in it, and Abu Dhabi and Riyadh were both night
-shots under a heavy teal-and-neon cast, dark enough that the architecture was hard to
-read at card size. Three anonymous towers at night is one picture printed three times.
+`cityPhotos` went through two passes. The first fixed identity: the panels name Dubai,
+Abu Dhabi and Riyadh, and none of the three frames then in place identified its city.
+That pass got the landmarks right and the frames were still described as soft.
 
-Each is now a landmark that settles the question on sight, and the three are lit
-differently on purpose so the row is not three variations of one photograph. None is a
-night shot.
+The second pass found why, and it was not the pixel count. All three replacements were
+long-lens frames of one or two towers standing in a large field of empty sky — Riyadh was
+roughly three-quarters flat haze, Abu Dhabi three-fifths flat blue. A 4:5 card filled
+mostly with a smooth gradient carries almost no high-frequency detail, so it reads as
+low-resolution however large the file is. Two delivery faults were compounding it, both
+recorded in the code:
 
-| File | City | Landmark | Light | Source |
-| --- | --- | --- | --- | --- |
-| `uae/downtown-dubai-burj-khalifa.jpg` | Dubai | Burj Khalifa over Burj Lake, Downtown | Late afternoon | https://images.unsplash.com/photo-1737475989516-a00ab059781d |
-| `uae/abu-dhabi-corniche-skyline.jpg` | Abu Dhabi | Corniche towers from the water | Daylight | https://images.unsplash.com/photo-1769160853964-402d56a943b3 |
-| `uae/riyadh-kingdom-centre.jpg` | Riyadh | Kingdom Centre and its arch | Golden hour | https://images.unsplash.com/photo-1694018359679-49465b4c0d61 |
+- **`images.qualities` was unset in `next.config.ts`.** Next 16 changed that default from
+  *all allowed* to `[75]` and clamps silently, so every photograph on the site was being
+  re-encoded at q75 with no way to raise one. The list is now `[75, 90]`; only these three
+  panels ask for 90.
+- **These panels were passing `overlay="soft"` to `Figure`.** Nothing is set over these
+  frames — the city, country and description all sit *below* the panel — so a scrim that
+  runs to 90% at the foot and 24% two-thirds of the way up was flattening three daylight
+  photographs to hold type that is not there. They now pass `veil`.
 
-`position` on each holds the landmark through a tall crop — the spire, the towers and the
-arch respectively — and was checked at 1440 and again at 390, where the cards are taller
-still. See the notes beside each entry in `src/data/imagery.ts`.
+The set in use is below. Each was chosen for density as much as for landmark: architecture
+carries across most of the height in all three, and they are lit differently on purpose so
+the row is not three variations of one photograph. None is a night shot.
+
+| File | City | Landmark | Source pixels | Light | Source |
+| --- | --- | --- | --- | --- | --- |
+| `uae/dubai-downtown-sheikh-zayed-road.jpg` | Dubai | Burj Khalifa above the Sheikh Zayed Road interchange, with the metro viaduct | 2668×4000 | Dusk, warm grade | https://images.unsplash.com/photo-1657106251952-2d584ebdf886 |
+| `uae/abu-dhabi-world-trade-centre.jpg` | Abu Dhabi | Burj Mohammed Bin Rashid at the World Trade Center, Khalifa Street | 2800×3500 | Clear daylight | https://images.unsplash.com/photo-1655921779880-69f4c192e4f6 |
+| `uae/riyadh-kingdom-centre-skyline.jpg` | Riyadh | Kingdom Centre and its arch over the Olaya district | 3280×4100 | Late afternoon | https://images.unsplash.com/photo-1778846266217-6a7783e6eabd |
+
+**Abu Dhabi is deliberately not Etihad Towers.** That is the obvious frame and it is the
+one this panel may not use: `segmentPhotos.listed` is already Etihad Towers and sits on
+the same page. Burj Mohammed Bin Rashid is the other Abu Dhabi landmark that reads at card
+size, and it is a different building rather than the same one from a second angle.
+
+**Two of the three were cut to 4:5 in the download, not by `object-fit`.** Next chooses its
+variant from the width in `sizes`, so a landscape source going into a tall box loses a
+third of that width to the cover crop and lands *short* of the pixels the box needs —
+Riyadh measured 1080×852 served into an 800×1000 device-pixel card, a 1.17× enlargement.
+Cropping to ratio at source fixes that and spends every delivered pixel on the frame. Abu
+Dhabi was cut for composition too: the full photograph has a strip of parked traffic along
+the bottom. Dubai is left at its native 2:3 and cropped by `position: "50% 0%"`, which
+holds the Burj Khalifa's spire — it sits a few pixels below the top edge, so any vertical
+offset takes the tip off.
+
+Measured after the change, at 1440 CSS px: **1.60× oversample at 100%, 1.28× at 125%,
+1.25× at 150%, 1.35× at 200%, 1.20× at 300%**, and 1.37× on a 390px phone at 3×. Nothing
+is enlarged at any step.
+
+Retired with this pass: `uae/downtown-dubai-burj-khalifa.jpg`,
+`uae/abu-dhabi-corniche-skyline.jpg` and `uae/riyadh-kingdom-centre.jpg`. Deleted rather
+than left in the tree — a frame that was rejected for composition should not be one import
+away from being used again.
 
 ### `uae/editorial-broadcast-gallery.jpg` — removed from the repository
 

@@ -61,10 +61,31 @@ export const ui: Dictionary = {
     office: "Office",
     international: "International",
     contact: "Contact",
-    locality: "Dubai, UAE",
-    /* Verbatim from `footerDisclosure` in data/site.ts. Do not edit. */
+    /*
+      The only location this site publishes, and the flag is part of the
+      string on purpose.
+
+      This value is DISPLAY copy - it renders in the footer and in the contact
+      page's office block, nowhere else. Metadata, structured data, legal
+      paragraphs and accessible names read `contactConfig.locality` in
+      data/site.ts instead, which is the same words with no emoji.
+
+      No building, no office number, no street, no free-zone address. Not
+      pending - the client has directed that the public location stay generic.
+    */
+    locality: "Dubai, UAE 🇦🇪",
+    /*
+      Verbatim from `footerDisclosure` in data/site.ts. Do not edit here -
+      edit there, then mirror. The two must not drift.
+
+      AWAITING LEGAL REVIEW. Two client-directed cuts: the registered entity
+      that opened the sentence does not exist, so the sentence now names the
+      brand; and the undertaking about compensation linked to capital raised,
+      share price or trading volume has been removed. See the note on
+      `footerDisclosure` for why that is a narrowing rather than a rewording.
+    */
     disclosure:
-      "Gulf Connect Consultancy FZCO provides investor communications, events and media services for fixed professional fees. Nothing on this site is an offer, solicitation, recommendation or investment advice, and it should not be relied upon in making any investment decision. Gulf Connect is not licensed to conduct financial services activity in the UAE and does not solicit investment, hold client funds or receive compensation linked to capital raised, share price or trading volume. Where content relates to a company that has engaged Gulf Connect, the commercial relationship is disclosed on that content.",
+      "Gulf Connect provides investor communications, events and media services for fixed professional fees. Nothing on this site is an offer, solicitation, recommendation or investment advice, and it should not be relied upon in making any investment decision. Gulf Connect is not licensed to conduct financial services activity in the UAE and does not solicit investment or hold client funds. Where content relates to a company that has engaged Gulf Connect, the commercial relationship is disclosed on that content.",
     legal: {
       privacy: "Privacy Policy",
       disclaimer: "Disclaimer",
@@ -130,9 +151,10 @@ export const ui: Dictionary = {
         other: "Other",
       },
       investorSector: {
-        "Critical minerals": "Critical minerals",
-        "AI and data infrastructure": "AI and data infrastructure",
-        "Life sciences": "Life sciences",
+        Energy: "Energy",
+        Mining: "Mining",
+        Pharmaceuticals: "Pharmaceuticals",
+        "Data centres": "Data centres",
       },
       preferredTime: {
         "09:00 AM": "09:00 AM",
@@ -167,7 +189,7 @@ export const ui: Dictionary = {
       enquiry: "Enquiry",
       enquiryHelp: "A short outline of your situation and what you are looking for.",
       consentLabel:
-        "I agree to Gulf Connect Consultancy FZCO contacting me about this enquiry.",
+        "I agree to Gulf Connect contacting me about this enquiry.",
       submit: "Submit Enquiry",
       successHeading: "Thank you for your enquiry.",
       successBody: "We have your details and a member of the team will read your enquiry.",
@@ -188,7 +210,7 @@ export const ui: Dictionary = {
       sectorsLegend: "Sectors of interest",
       sectorsHelp: "Optional. We use this to send only the invitations that are relevant to you.",
       consentLabel:
-        "I agree to Gulf Connect Consultancy FZCO contacting me by email with briefing invitations and written content, and I understand I can unsubscribe at any time.",
+        "I agree to Gulf Connect contacting me by email with briefing invitations and written content, and I understand I can unsubscribe at any time.",
       consentNote:
         "We will send a confirmation email. Your registration is complete once you confirm it from that email.",
       submit: "Register",
@@ -234,7 +256,7 @@ export const ui: Dictionary = {
     by: "By",
     disclosure: "Disclosure",
     clientDisclosure:
-      "{company} is a client of Gulf Connect Consultancy FZCO and has paid Gulf Connect a fixed professional fee for communications services.",
+      "{company} is a client of Gulf Connect and has paid Gulf Connect a fixed professional fee for communications services.",
     /* Verbatim from the fallback in the Insight item template. */
     thisCompany: "This company",
     allInsights: "All insights",

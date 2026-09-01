@@ -165,14 +165,12 @@ export default async function InsightPage() {
                       />
                     </span>
 
-                    <span
-                      aria-hidden="true"
-                      className="mt-5 block num font-display-sm text-[0.625rem] tracking-[0.14em] text-(--color-accent)"
-                    >
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-
-                    <span className="mt-3 block font-display text-[1.25rem] leading-snug transition-colors duration-500 group-hover:text-(--color-accent)">
+                    {/*
+                      The format index is gone with the 01/02/03 format. The
+                      name takes over its top margin so the cards still line up
+                      under the rule above them.
+                    */}
+                    <span className="mt-5 block font-display text-[1.25rem] leading-snug transition-colors duration-500 group-hover:text-(--color-accent)">
                       {format.name}
                     </span>
 

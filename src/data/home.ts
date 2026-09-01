@@ -16,7 +16,7 @@
 export const homeHero = {
   eyebrow: "Gulf Connect",
   title: "We Connect International Companies With Gulf Capital, Partners and Media.",
-  lead: "Critical minerals, AI and data infrastructure, and life sciences - convened across Dubai, Abu Dhabi and Riyadh.",
+  lead: "Energy, mining, pharmaceuticals and data centres - convened across Dubai, Abu Dhabi and Riyadh.",
   actions: {
     company: { label: "For companies", href: "/what-we-do" },
     investor: { label: "For investors", href: "/for-investors" },
@@ -42,7 +42,6 @@ export const proposition = {
   intro: "Three kinds of work, and every engagement is some combination of them.",
   items: [
     {
-      number: "01",
       term: "Convene",
       /* The line mark drawn beside this entry. See `PillarSequence`. */
       mark: "convene",
@@ -50,14 +49,12 @@ export const proposition = {
         "Curated investor meetings across Dubai, Abu Dhabi and Riyadh. We identify the investors for whom a company's sector and stage are relevant, prepare both sides and stage the meetings.",
     },
     {
-      number: "02",
       term: "Place",
       mark: "place",
       description:
         "We develop, position and pitch your story to a named list of regional business media, in English and in Arabic. Editorial coverage is decided by the publication; the work we are paid for is the pitch.",
     },
     {
-      number: "03",
       term: "Produce",
       mark: "produce",
       description:
@@ -78,15 +75,22 @@ export const whyGulfNow = {
   label: "The Opportunity",
   heading: "A Route That Does Not Exist Yet",
   paragraphs: [
-    "Gulf capital has appetite for hard assets: critical minerals, the energy transition, digital infrastructure, healthcare and life sciences. Those are the sectors regional institutions, family offices and sovereign-linked capital are actively looking at.",
+    "Gulf capital has appetite for hard assets: energy and the transition around it, mining, digital infrastructure and healthcare. Those are among the sectors regional institutions, family offices and sovereign-linked capital are actively looking at.",
     "International small and mid-cap companies working in exactly those sectors have no structured route to that audience. They are too small for the banks that convene these meetings and too far away to build the relationships themselves. That gap is the reason this firm exists.",
   ],
+  /*
+    Subject matter, not a service list.
+
+    These label what regional capital is looking at, which is why "Hard assets"
+    sits beside the named sectors rather than being one of them. They are
+    examples - the paragraph above says "among the sectors" for that reason.
+  */
   sectors: [
     "Hard assets",
-    "Critical minerals",
-    "Energy transition",
+    "Energy",
+    "Mining",
     "Digital infrastructure",
-    "Healthcare and life sciences",
+    "Healthcare and pharmaceuticals",
   ],
 } as const;
 
@@ -126,9 +130,9 @@ export const arabicGap = {
    * than items in a run of prose.
    */
   concepts: [
-    { number: "01", term: "Certified Financial Translation" },
-    { number: "02", term: "Arabic Corporate Communications" },
-    { number: "03", term: "Regional Distribution" },
+    { term: "Certified Financial Translation" },
+    { term: "Arabic Corporate Communications" },
+    { term: "Regional Distribution" },
   ],
   /*
    * The route the work takes, set as a typographic detail rather than a

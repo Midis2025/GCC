@@ -47,7 +47,7 @@ export const metadata = createMetadata({
   title: "For Investors",
   path: "/for-investors",
   description:
-    "Gulf Connect convenes briefings with international companies in critical minerals, AI and data infrastructure, and life sciences. Registration is free.",
+    "Gulf Connect convenes briefings with international companies across sectors including energy, mining, pharmaceuticals and data centres. Registration is free.",
 });
 
 /**
@@ -221,13 +221,7 @@ export default async function ForInvestorsPage() {
                 className="border-b border-(--color-border) sm:border-b-0 sm:border-t sm:basis-1/2 lg:basis-1/5"
               >
                 <Reveal delay={index * 90}>
-                  <div className="flex items-baseline gap-4 py-6 sm:flex-col sm:items-start sm:gap-3 sm:pe-6">
-                    <span
-                      aria-hidden="true"
-                      className="num font-display-sm text-[0.625rem] tracking-[0.14em] text-(--color-accent)"
-                    >
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
+                  <div className="py-6 sm:pe-6">
                     <span className="text-[1.0625rem] leading-snug">
                       {optionLabel(
                         t.forms.options.investorCategory,

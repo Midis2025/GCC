@@ -64,7 +64,7 @@ import type {
  *   governing law and jurisdiction -> القانون الحاكم والاختصاص القضائي
  *   strictly necessary cookies     -> ملفات تعريف الارتباط الضرورية للغاية
  *
- * "Gulf Connect Consultancy FZCO" is a registered legal name and is never
+ * "Gulf Connect" is the name in both editions, Latin script, and is never
  * translated. `slug` and `eyebrow` follow the site's own conventions: the slug
  * is a route, and the eyebrow is translated.
  */
@@ -85,12 +85,12 @@ export const privacyPolicyAr: Localised<typeof privacyPolicy> = {
   slug: "privacy",
   title: "سياسة الخصوصية",
   eyebrow: "قانوني",
-  lead: "كيف تجمع شركة Gulf Connect Consultancy FZCO المعلومات الشخصية المقدَّمة عبر هذا الموقع وتستخدمها وتخزّنها وتحميها.",
+  lead: "كيف تجمع Gulf Connect المعلومات الشخصية المقدَّمة عبر هذا الموقع وتستخدمها وتخزّنها وتحميها.",
   sections: [
     {
       heading: "من نحن وكيفية التواصل معنا",
       scope:
-        "هوية المتحكّم في البيانات، والكيان المسجَّل، وعنوان الاستفسارات والطلبات المتعلقة بالخصوصية.",
+        "الجهة المسؤولة عن المعلومات الشخصية المقدَّمة عبر هذا الموقع، وعنوان الاستفسارات والطلبات المتعلقة بالخصوصية. وتُحدَّد الجهة المتحكِّمة بالتشاور مع المستشار القانوني.",
     },
     {
       heading: "ما الذي نجمعه",
@@ -138,12 +138,20 @@ export const privacyPolicyAr: Localised<typeof privacyPolicy> = {
 };
 
 /*
-  COMPLIANCE. Sections 02 to 05 of this page are the same four statements the
+  COMPLIANCE. The middle sections of this page are the same statements the
   standing disclosure makes, and they carry the same force here: nothing is an
   offer or a recommendation; the firm is not licensed for financial services
-  activity in the UAE; it takes no compensation linked to capital, share price
-  or trading volume; and a client relationship is disclosed on the content it
-  concerns. None may be softened.
+  activity in the UAE and neither solicits investment nor holds client funds;
+  it is paid fixed professional fees; and a client relationship is disclosed on
+  the content it concerns. None may be softened.
+
+  The undertaking about compensation linked to capital, share price or trading
+  volume was removed from both editions on client instruction and awaits legal
+  review. It is not to be restored here without the English.
+
+  "شركة" - the word for an incorporated company - has been dropped before the
+  name throughout. No company has been incorporated under it, and in a legal
+  document that word is a claim rather than a courtesy.
 */
 export const disclaimerAr: Localised<typeof disclaimer> = {
   slug: "disclaimer",
@@ -154,7 +162,7 @@ export const disclaimerAr: Localised<typeof disclaimer> = {
     {
       heading: "طبيعة المعلومات",
       scope:
-        "أن المواد الواردة في هذا الموقع معلومات عامة عن خدمات شركة Gulf Connect Consultancy FZCO وتعليق على القطاعات والأسواق، وأنها ليست موجَّهة إلى ظروف أي شخص بعينه.",
+        "أن المواد الواردة في هذا الموقع معلومات عامة عن خدمات Gulf Connect وتعليق على القطاعات والأسواق، وأنها ليست موجَّهة إلى ظروف أي شخص بعينه.",
     },
     {
       heading: "ليست عرضًا ولا توصية",
@@ -164,12 +172,17 @@ export const disclaimerAr: Localised<typeof disclaimer> = {
     {
       heading: "الوضع التنظيمي",
       scope:
-        "أن شركة Gulf Connect غير مرخّصة لممارسة أنشطة الخدمات المالية في دولة الإمارات العربية المتحدة، ولا تستقطب استثمارات، ولا تحتفظ بأموال العملاء.",
+        "أن Gulf Connect غير مرخّصة لممارسة أنشطة الخدمات المالية في دولة الإمارات العربية المتحدة، ولا تستقطب استثمارات، ولا تحتفظ بأموال العملاء.",
     },
+    /*
+      FOR LEGAL REVIEW, with the English. The undertaking that no compensation
+      is linked to capital raised, share price or trading volume has been
+      removed on client instruction; the fixed-fee basis is what remains.
+    */
     {
       heading: "المقابل المالي",
       scope:
-        "أن شركة Gulf Connect تتقاضى أتعابًا مهنية ثابتة مقابل نطاقات عمل محدَّدة، ولا تتقاضى أي مقابل مرتبط برأس المال المُجمَّع أو بسعر السهم أو بحجم التداول.",
+        "أن Gulf Connect تتقاضى أتعابًا مهنية ثابتة مقابل نطاقات عمل محدَّدة.",
     },
     {
       heading: "علاقات العملاء والإفصاح عنها",

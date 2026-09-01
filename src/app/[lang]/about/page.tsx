@@ -58,7 +58,7 @@ export const metadata = createMetadata({
  * Thirteen numbered blocks plus the conditional team section and the sitewide
  * call to action: an asymmetric hero, an editorial split with an oversized
  * pull-quote, a dark band with a measured criteria column, an interactive map,
- * a full-bleed statement, a fee-and-audience split, two typographic principal
+ * a full-bleed statement, a fee-and-audience split, a typographic principal
  * biographies, a scroll-driven four-stage sequence, a dark 2x2 field of verbs,
  * a three-column accounting of the work, a SECOND interactive map, a full-bleed
  * photograph, a 2x2 principles grid and a closing statement.
@@ -149,7 +149,7 @@ export default async function AboutPage() {
       {/* 6 - How we are paid, and who this is for. */}
       <AboutHowWeWork />
 
-      {/* 7 - Two principals. Not a team page. */}
+      {/* 7 - The principals. Not a team page. */}
       <AboutPrincipals />
 
       {/* 8 - How engagements are shaped. */}

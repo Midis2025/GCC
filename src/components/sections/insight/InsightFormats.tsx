@@ -349,15 +349,15 @@ export async function EditorialThemesSection() {
 
       <ol className="mt-[var(--space-heading)] flex flex-col">
         {editorialThemes.themes.map((theme, index) => (
-          <li key={theme.number} className="theme-row group relative border-t border-white/12">
+          <li key={theme.title} className="theme-row group relative border-t border-white/12">
             <Reveal delay={index * 80}>
-              <div className="relative grid grid-cols-[2.5rem_minmax(0,1fr)] items-baseline gap-x-5 py-7 sm:grid-cols-[4rem_minmax(0,1fr)_auto] sm:gap-x-8 sm:py-8">
-                <span
-                  aria-hidden="true"
-                  className="num font-display leading-none text-(--color-accent)/30 text-[1.5rem] sm:text-[2rem]"
-                >
-                  {theme.number}
-                </span>
+              {/*
+                The numeral column is gone with the 01/02/03 format, so the
+                grid drops from three tracks to two: title, then tag. Leaving
+                the 2.5rem/4rem gutter in place would have indented every theme
+                title past the section's own measure for no reason.
+              */}
+              <div className="relative grid items-baseline gap-x-5 py-7 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-x-8 sm:py-8">
 
                 <h3 className="theme-title max-w-[36ch] font-display text-[1.25rem] leading-snug text-balance sm:text-[1.5rem]">
                   {theme.title}
@@ -460,15 +460,14 @@ export async function FiveQuestionsSection() {
           className="absolute inset-x-0 top-0 hidden h-px bg-white/12 sm:block"
         />
         {fiveQuestionsDetail.areas.map((area, index) => (
-          <li key={area.number} className="border-t border-white/12 pt-6 sm:border-t-0">
+          <li key={area.term} className="border-t border-white/12 pt-6 sm:border-t-0">
             <Reveal delay={index * 110}>
-              <span
-                aria-hidden="true"
-                className="num font-display leading-none text-(--color-accent)/30 text-[1.75rem]"
-              >
-                {area.number}
-              </span>
-              <p className="mt-4 text-[1.0625rem] font-medium leading-snug">{area.term}</p>
+              {/*
+                The station numeral is gone with the 01/02/03 format. The rule
+                across the top of the row is what makes this a measure with
+                five stations on it, and it stays.
+              */}
+              <p className="text-[1.0625rem] font-medium leading-snug">{area.term}</p>
             </Reveal>
           </li>
         ))}
@@ -600,13 +599,7 @@ export async function SectorNotesSection() {
             {sectorNotesDetail.examines.map((entry, index) => (
               <li key={entry} className="border-t border-(--color-border)">
                 <Reveal delay={200 + index * 70}>
-                  <div className="flex items-baseline gap-5 py-4">
-                    <span
-                      aria-hidden="true"
-                      className="num font-display-sm text-[0.625rem] tracking-[0.14em] text-(--color-accent)"
-                    >
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
+                  <div className="py-4">
                     <span className="text-[1.0625rem] leading-snug">{entry}</span>
                   </div>
                 </Reveal>

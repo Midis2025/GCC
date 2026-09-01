@@ -48,13 +48,6 @@ export async function OtherServiceLines({ currentSlug }: { currentSlug: string }
                 href={line.href}
                 className="group flex flex-col gap-2 py-7 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring) sm:flex-row sm:items-baseline sm:gap-8"
               >
-                <span
-                  aria-hidden="true"
-                  className="num font-display-sm text-[0.8125rem] text-(--color-accent)"
-                >
-                  {line.number}
-                </span>
-
                 <span className="min-w-0 flex-1">
                   <span className="block font-display text-[1.375rem] leading-snug transition-colors duration-500 group-hover:text-(--color-accent)">
                     {line.title}

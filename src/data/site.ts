@@ -22,19 +22,39 @@
  * region reads as nonsense however it is punctuated. Where both appear, the
  * sentence gets rewritten.
  *
- * - "Gulf Connect Consultancy FZCO" - legal and formal use only. Footer
- *   disclosure, legal pages, structured data.
- * - "Gulf Connect" - everywhere else. Page copy, navigation, buttons, meta
- *   descriptions, alt text, email, file names.
+ * - "Gulf Connect" - EVERYWHERE. Page copy, navigation, buttons, meta
+ *   descriptions, alt text, email, file names, legal pages, structured data.
+ *   There is no second, longer, more formal form of the name to reach for.
  * - "GCC states" or "the Gulf" - the region, and only the region.
+ *
+ * THERE IS NO LEGAL ENTITY. Gulf Connect is a brand and a website; no company
+ * has been incorporated under the name. Nothing on this site may describe it
+ * as one - no FZCO, no LLC, no Ltd, no registration number, no free-zone
+ * address - and no substitute entity may be invented to fill the gap that
+ * leaves in legal copy. See `legalName` below.
  *
  * British English throughout, consistent with regional business media
  * conventions.
  */
 export const siteConfig = {
   name: "Gulf Connect",
-  /** Legal entity, confirmed by the client. Formal and legal use only. */
-  legalName: "Gulf Connect Consultancy FZCO",
+  /**
+   * TODO: legal entity. NONE EXISTS.
+   *
+   * This previously read "Gulf Connect Consultancy FZCO". The client has
+   * confirmed that no company has been incorporated under the Gulf Connect
+   * name: it is a brand and a website presence, nothing more. Publishing an
+   * entity that does not exist is a misrepresentation, so the field is empty
+   * and every consumer falls back to `name`.
+   *
+   * Empty rather than deleted on purpose. The fallback is written once, here
+   * and at each call site, so the day an entity IS registered this is a
+   * one-line change rather than a hunt through the legal pages.
+   *
+   * DO NOT populate this with a guess, a placeholder or a name borrowed from
+   * a related business.
+   */
+  legalName: "",
   /**
    * The name set in the supplied logo artwork, read off `/images/logo.svg`.
    *
@@ -118,13 +138,47 @@ export const contactConfig: ContactConfig = {
   email: "",
   /** TODO: single contact number. */
   phone: "",
-  /** TODO: registered office address, if it is to be published at all. */
+  /**
+   * Deliberately empty, and not a TODO.
+   *
+   * The client has directed that the public location stay generic: no
+   * building, no office number, no street, no free-zone registration address.
+   * `locality` carries everything the site is permitted to say. Filling this
+   * in would break that instruction, not complete it.
+   */
   address: "",
-  /** Supplied: the brief states Dubai, UAE. */
+  /**
+   * The only location the site publishes, in every language and every context.
+   *
+   * A flag emoji is appended for DISPLAY in page copy where the surrounding
+   * style carries it - see `localityDisplay`. This plain form is what goes
+   * into metadata, structured data, legal text, email and accessible names,
+   * where an emoji is noise at best and unreadable at worst.
+   */
   locality: "Dubai, UAE",
-  /** TODO: full LinkedIn company URL. Presence begins at soft launch. */
+  /**
+   * TODO: Gulf Connect's OWN LinkedIn company URL.
+   *
+   * Empty, and it stays empty until Gulf Connect's own account exists. Every
+   * component that renders it checks first, so the footer and contact page
+   * simply omit the link rather than showing a dead one.
+   *
+   * DO NOT fill this with a related business's profile, a personal profile, or
+   * a search URL. A social link is a claim of identity; borrowing one asserts
+   * a shared presence that does not exist.
+   */
   linkedin: "",
 };
+
+/**
+ * The location as it is SET IN PAGE COPY.
+ *
+ * Same string as `contactConfig.locality` with the flag appended, kept apart
+ * from it so the emoji cannot leak into the places it does not belong -
+ * `<title>`, meta descriptions, JSON-LD, legal paragraphs, alt text and
+ * aria-labels all read `locality`, which has no emoji in it.
+ */
+export const localityDisplay = `${contactConfig.locality} \u{1F1E6}\u{1F1EA}`;
 
 /**
  * ----------------------------------------------------------------------------
@@ -140,9 +194,27 @@ export const contactConfig: ContactConfig = {
  *
  * If a future change makes this text inconvenient to lay out, the layout
  * changes. This does not.
+ *
+ * ---------------------------------------------------------------------------
+ * TWO CLIENT-DIRECTED EDITS - FLAGGED FOR LEGAL REVIEW
+ * ---------------------------------------------------------------------------
+ * 1. The entity was "Gulf Connect Consultancy FZCO". No such company exists,
+ *    so the sentence now names the brand.
+ * 2. The clause "or receive compensation linked to capital raised, share price
+ *    or trading volume" has been removed on instruction to take stock and
+ *    equity compensation language off the public site.
+ *
+ * Both make this paragraph say LESS than the version counsel approved. The
+ * fixed-fee basis, the not-an-offer statement, the unlicensed statement and
+ * the client-relationship disclosure all survive; the specific undertaking
+ * about share-price-linked compensation does not. That undertaking is a
+ * common expectation of an unlicensed communications firm operating around
+ * listed companies, and dropping it is a narrowing of the site's compliance
+ * position rather than a wording preference. It needs a lawyer's sign-off, not
+ * a developer's.
  */
 export const footerDisclosure =
-  "Gulf Connect Consultancy FZCO provides investor communications, events and media services for fixed professional fees. Nothing on this site is an offer, solicitation, recommendation or investment advice, and it should not be relied upon in making any investment decision. Gulf Connect is not licensed to conduct financial services activity in the UAE and does not solicit investment, hold client funds or receive compensation linked to capital raised, share price or trading volume. Where content relates to a company that has engaged Gulf Connect, the commercial relationship is disclosed on that content.";
+  "Gulf Connect provides investor communications, events and media services for fixed professional fees. Nothing on this site is an offer, solicitation, recommendation or investment advice, and it should not be relied upon in making any investment decision. Gulf Connect is not licensed to conduct financial services activity in the UAE and does not solicit investment or hold client funds. Where content relates to a company that has engaged Gulf Connect, the commercial relationship is disclosed on that content.";
 
 /**
  * The disclosure shown at the TOP of an Insight item whose subject has engaged
@@ -154,12 +226,11 @@ export const footerDisclosure =
  * marked as client-involved without naming one - the disclosure is required
  * either way and must never be skipped for want of a name.
  *
- * The entity is written in full, FZCO included. This is a legal statement
- * about a commercial relationship, and legal use takes the legal name - see
- * the naming note at the top of this file.
+ * The brand name is used throughout. There is no registered entity to name
+ * instead - see the naming note at the top of this file.
  */
 export const clientDisclosureTemplate =
-  "{company} is a client of Gulf Connect Consultancy FZCO and has paid Gulf Connect a fixed professional fee for communications services.";
+  "{company} is a client of Gulf Connect and has paid Gulf Connect a fixed professional fee for communications services.";
 
 /**
  * ----------------------------------------------------------------------------
@@ -168,16 +239,26 @@ export const clientDisclosureTemplate =
  * Stated plainly wherever the service architecture is described, because the
  * brief treats it as a differentiator rather than a caveat.
  *
- * These are negative statements about compensation and they are load-bearing
- * compliance copy. Do not soften them into marketing lines.
+ * ---------------------------------------------------------------------------
+ * CLIENT-DIRECTED EDIT - FLAGGED FOR LEGAL REVIEW
+ * ---------------------------------------------------------------------------
+ * Two exclusions have been removed on instruction to take stock, share-price
+ * and equity compensation language off the public site:
+ *
+ *   "No compensation linked to capital raised"
+ *   "No compensation linked to share price or trading volume"
+ *
+ * Both were negative statements - undertakings about what the firm does NOT
+ * take - so removing them makes the site claim less, not more. Nothing has
+ * been invented to replace them and no new compensation model is described.
+ * The fixed-fee basis is unchanged and is now the whole of the statement.
+ *
+ * What survives is still load-bearing compliance copy. Do not soften it into
+ * a marketing line, and do not restore the removed lines without the client.
  */
 export const commercialModel = {
   basis: "Fixed professional fees for defined scopes of work.",
-  exclusions: [
-    "No success fees",
-    "No compensation linked to capital raised",
-    "No compensation linked to share price or trading volume",
-  ],
+  exclusions: ["No success fees"],
 } as const;
 
 /**

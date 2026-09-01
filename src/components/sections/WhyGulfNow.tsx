@@ -52,13 +52,7 @@ export function WhyGulfNow() {
           <ul className="mt-7 flex flex-col">
             {whyGulfNow.sectors.map((sector, index) => (
               <Reveal key={sector} delay={240 + index * 80}>
-                <li className="flex items-baseline gap-5 border-t border-(--color-border) py-5">
-                  <span
-                    aria-hidden="true"
-                    className="num font-display-sm text-[0.625rem] tracking-[0.14em] text-(--color-accent)"
-                  >
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
+                <li className="border-t border-(--color-border) py-5">
                   <span className="font-display text-[1.1875rem] leading-snug">{sector}</span>
                 </li>
               </Reveal>

@@ -72,13 +72,16 @@ export async function AdvisoryAreas() {
             )}
           >
             <Reveal delay={index * 90}>
-              <div className="grid gap-x-10 gap-y-7 py-10 lg:grid-cols-[4rem_minmax(0,1fr)_minmax(0,1fr)] lg:gap-x-14 lg:py-12">
-                <span
-                  aria-hidden="true"
-                  className="num font-display leading-none text-(--color-accent)/25 text-[2rem] lg:text-[2.75rem]"
-                >
-                  {area.number}
-                </span>
+              {/*
+                Two columns, not three.
+
+                The first column was a fixed 4rem gutter holding a display
+                numeral. With the 01/02/03 format removed the column would have
+                been 4rem of nothing at the start of every row, pushing the term
+                and its description off the section's own measure - so the
+                column came out with the numeral rather than being left empty.
+              */}
+              <div className="grid gap-x-10 gap-y-7 py-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-x-14 lg:py-12">
 
                 <div>
                   <h3 className="text-h4 font-medium tracking-tight">{area.term}</h3>

@@ -87,11 +87,13 @@ export async function PhaseJourney() {
                 <span className="h-1.5 w-1.5 rounded-full bg-(--color-accent)" />
               </span>
 
-              <p className="num font-display leading-none text-(--color-accent)/25 text-[clamp(2.5rem,4vw,3.5rem)] sm:mt-6">
-                {phase.number}
-              </p>
-
-              <h3 className="mt-5 text-h4 font-medium tracking-tight">{phase.term}</h3>
+              {/*
+                The phase numeral is gone with the 01/02/03 format. The dot on
+                the spine already says which station this is and where it sits
+                in the sequence; the title inherits the numeral's top margin so
+                the row still aligns.
+              */}
+              <h3 className="mt-5 text-h4 font-medium tracking-tight sm:mt-11">{phase.term}</h3>
 
               <p className="mt-3.5 max-w-[38ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
                 {phase.summary}

@@ -30,12 +30,11 @@ import type { commercialModel } from "@/data/site";
  * ----------------------------------------------------------------------------
  * PROPER NAMES ARE NOT TRANSLATED
  * ----------------------------------------------------------------------------
- * "Edward Karr" and "Peter Lee" are personal names and stay in Latin script.
- * Transliterating a person's name invents a spelling they do not use and that
- * appears on no document of theirs. Their LOCATIONS are place names and do
- * translate: Geneva -> جنيف, Dubai -> دبي.
+ * "Peter Lee" is a personal name and stays in Latin script. Transliterating a
+ * person's name invents a spelling they do not use and that appears on no
+ * document of theirs. LOCATIONS are place names and do translate: Dubai -> دبي.
  *
- * "Gulf Connect" is a registered name and stays in Latin inside Arabic
+ * "Gulf Connect" is the brand name and stays in Latin inside Arabic
  * sentences. `key` values are identifiers and are repeated verbatim.
  *
  * ----------------------------------------------------------------------------
@@ -56,8 +55,10 @@ import type { commercialModel } from "@/data/site";
  * - `communicationEffects` describes what COMMUNICATION does, never what Gulf
  *   Connect achieves for a client. The Arabic verbs - يوضّح، يربط، يعزّز،
  *   يتراكم - are properties of the communication, not effects on a market.
- * - `commercialModel.exclusions` are the three compensation denials, at the
- *   same force as everywhere else on the site.
+ * - `commercialModel.exclusions` is now one denial - "لا أتعاب مشروطة
+ *   بالنجاح" - at the same force as everywhere else on the site. The two
+ *   share-price and capital-raised denials were removed with their English
+ *   originals on client instruction; see `content/ar/what-we-do.ts`.
  */
 
 export const aboutHeroAr: Localised<typeof aboutHero> = {
@@ -69,16 +70,21 @@ export const aboutHeroAr: Localised<typeof aboutHero> = {
 /*
   CONTENT INTEGRITY. Only what was supplied. Personal names stay in Latin.
 */
+/*
+  One entry, matching the English exactly.
+
+  The heading and the intro previously counted to two - "شريكان مؤسسان",
+  "يعملان بين جنيف ودبي" - so both were rewritten rather than merely having a
+  person deleted from underneath them. Arabic marks the dual explicitly, so a
+  leftover dual form would have been a louder error here than in English.
+
+  Do not restore the second entry, and do not invent one.
+*/
 export const aboutPrincipalsAr: Localised<typeof aboutPrincipals> = {
-  label: "الشركاء المؤسسون",
-  heading: "شريكان مؤسسان",
-  intro: "تُدار Gulf Connect بواسطة شريكين مؤسسين، يعملان بين جنيف ودبي.",
+  label: "الشريك المؤسس",
+  heading: "تُدار من دبي",
+  intro: "تُدار Gulf Connect من دبي.",
   people: [
-    {
-      name: "Edward Karr",
-      location: "جنيف",
-      bio: "مواطن سويسري ذو خلفية في أسواق المال والتمويل المؤسسي، وخبرة في بناء أعمال التواصل مع المستثمرين العابرة للحدود في أوروبا.",
-    },
     {
       name: "Peter Lee",
       location: "دبي",
@@ -95,23 +101,28 @@ export const aboutClientsAr: Localised<typeof aboutClients> = {
   heading: "شركات عالمية مدرجة صغيرة ومتوسطة",
   paragraphs: [
     "تعمل Gulf Connect مع شركات عالمية مدرجة صغيرة ومتوسطة الحجم — وهي فئة الشركات التي لا يوجد لها طريق منظَّم إلى أسواق الخليج بغير ذلك.",
-    "وثلاثة قطاعات، لأنها القطاعات التي ينظر إليها رأس المال الإقليمي فعليًا، والقطاعات التي يكون فيها إعداد الشركة نفسها أعمق ما يكون.",
+    "والعمل يمتد عبر القطاعات. والطاقة والتعدين والمستحضرات الدوائية ومراكز البيانات هي المجالات التي يتركّز فيها أكثر من غيرها، لأنها ما ينظر إليه رأس المال الإقليمي فعليًا، غير أنها أمثلة على اتساع النطاق لا حدٌّ له.",
   ],
   sectors: [
     {
-      term: "المعادن الحيوية",
+      term: "الطاقة",
       description:
-        "منتجون ومطوّرون تحتاج قاعدة أصولهم وترتيبات بيع إنتاجهم إلى شرح لجمهور يقرأ التعدين قراءة مختلفة.",
+        "منتجون ومولِّدون ومشاريع تحوّل تُقيَّم بناءً على جداول التطوير بقدر ما تُقيَّم بناءً على الإنتاج الحالي.",
     },
     {
-      term: "الذكاء الاصطناعي والبنية التحتية للبيانات",
+      term: "التعدين",
       description:
-        "أعمال الحوسبة والاتصال ومراكز البيانات التي يقوم عليها الاستثمار الرقمي الإقليمي.",
+        "منتجون ومطوّرون تحتاج قاعدة أصولهم وترتيبات بيع إنتاجهم إلى شرح لجمهور يقرأ الموارد قراءة مختلفة.",
     },
     {
-      term: "علوم الحياة",
+      term: "المستحضرات الدوائية",
       description:
         "شركات تُقيَّم بناءً على خط منتجاتها ومحطاتها لا على أرباحها الحالية.",
+    },
+    {
+      term: "مراكز البيانات",
+      description:
+        "أعمال الحوسبة والاتصال ومراكز البيانات التي يقوم عليها الاستثمار الرقمي الإقليمي.",
     },
   ],
 };
@@ -229,16 +240,12 @@ export const aboutCommunicationAr: Localised<typeof aboutCommunication> = {
 };
 
 /*
-  COMPLIANCE. The three compensation denials, at the same force as the
+  COMPLIANCE. The compensation denial that remains, at the same force as the
   standing disclosure and the What We Do page. None may be softened.
 */
 export const commercialModelAr: Localised<typeof commercialModel> = {
   basis: "أتعاب مهنية ثابتة مقابل نطاقات عمل محدَّدة.",
-  exclusions: [
-    "لا أتعاب مشروطة بالنجاح",
-    "لا مقابل مرتبط برأس المال المُجمَّع",
-    "لا مقابل مرتبط بسعر السهم أو بحجم التداول",
-  ],
+  exclusions: ["لا أتعاب مشروطة بالنجاح"],
 };
 
 export const aboutCommercialAr: Localised<typeof aboutCommercial> = {
@@ -286,25 +293,21 @@ export const communicationEffectsAr: Localised<typeof communicationEffects> = {
     "التواصل ليس زينة على الشركة؛ بل هو الطريقة التي يفهمها بها من لن يروا داخلها قط. وأربعة أمور تفصل التواصل المجدي عمّا يملأ الجدول فحسب.",
   effects: [
     {
-      number: "01",
       term: "يوضّح",
       description:
         "ما هي الشركة، وماذا تفعل، وإلى أين تتجه — مصوغًا بالطريقة نفسها سواء كان أمام القارئ خمس دقائق أو بعد ظهيرة كاملة.",
     },
     {
-      number: "02",
       term: "يربط",
       description:
         "الاستراتيجية المؤسسية بالجهات التي تكون ذات صلة فعلية بها، لا بمن يصادف أن يكون متاحًا.",
     },
     {
-      number: "03",
       term: "يعزّز",
       description:
         "حكاية واحدة عن الشركة عبر الاجتماعات والإعلام وقنوات الشركة نفسها، فلا تتناقض الثلاث في صمت.",
     },
     {
-      number: "04",
       term: "يتراكم",
       description:
         "الفهم بالتكرار. فالسوق الذي التقى شركةً أربع مرات يقرأ اللقاء الخامس قراءة مختلفة عن الأول.",

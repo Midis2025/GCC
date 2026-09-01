@@ -214,11 +214,6 @@ export function MobileMenu({ items, cta, secondaryCta, className }: MobileMenuPr
                   underline={false}
                   className="w-full py-4 font-display text-2xl"
                   onNavigate={close}
-                  prefix={
-                    <span aria-hidden="true" className="num font-display-sm text-xs text-(--color-accent)">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                  }
                 />
               </li>
             ))}

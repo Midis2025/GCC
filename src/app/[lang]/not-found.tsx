@@ -57,7 +57,7 @@ export default async function NotFound() {
           <ul className="mt-8 border-t border-(--color-border)">
             {navItems
               .filter((item) => item.href !== "/")
-              .map((item, index) => (
+              .map((item) => (
                 <li key={item.href} className="border-b border-(--color-border)">
                   {/*
                     `LocaleLink`, so a visitor who reached a bad Arabic URL is
@@ -66,11 +66,8 @@ export default async function NotFound() {
                   */}
                   <LocaleLink
                     href={item.href}
-                    className="group flex items-baseline gap-5 py-6 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
+                    className="group block py-6 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
                   >
-                    <span aria-hidden="true" className="num font-display-sm text-sm text-(--color-accent)">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
                     <span className="font-display text-h3 transition-colors duration-300 group-hover:text-(--color-accent)">
                       {item.label}
                     </span>

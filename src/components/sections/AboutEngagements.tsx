@@ -140,29 +140,32 @@ export function AboutEngagements({
               className="about-stage-edge-lit absolute inset-x-0 top-0 h-px"
             />
 
-            <div className="relative grid grid-cols-[auto_minmax(0,1fr)] gap-x-6 overflow-hidden py-9 sm:gap-x-12 sm:py-12 lg:grid-cols-[8rem_minmax(0,1fr)]">
-              {/*
-                Oversized ghost index, clipped by the stage rather than bleeding
-                past it, and sized in vw so it stays proportional to the column.
-              */}
-              <span
-                aria-hidden="true"
-                className="about-stage-ghost pointer-events-none absolute end-0 -top-4 -z-10 num font-display leading-none text-(--color-foreground) text-[clamp(4.5rem,10vw,9rem)]"
-              >
-                {String(index + 1).padStart(2, "0")}
-              </span>
+            {/*
+              The margin track is sized to the rule, not to a numeral.
 
-              {/* The index in the margin, and its rule. */}
+              It was a fixed 8rem at `lg` because it held a display index above
+              the rule. With the 01/02/03 format removed the rule is the only
+              thing in it, and 8rem left a 3.5rem rule adrift in the middle of
+              an empty column with the copy pushed well off the section measure.
+              3.5rem is the rule’s own width at that breakpoint, so the track now
+              fits what is in it and the gap does the separating.
+            */}
+            <div className="relative grid grid-cols-[auto_minmax(0,1fr)] gap-x-6 overflow-hidden py-9 sm:gap-x-12 sm:py-12 lg:grid-cols-[3.5rem_minmax(0,1fr)]">
+              {/*
+                An oversized ghost index sat here, clipped by the stage. It is
+                gone with the 01/02/03 format, and `overflow-hidden` on the
+                stage stays: the ghost was not the only thing it was clipping.
+              */}
+              {/*
+                The rule in the margin. The index above it is gone with the
+                01/02/03 format; the rule stays, because it is what marks the
+                stage column at all - the grid still reserves that track and an
+                empty one would read as a missing element.
+              */}
               <div className="flex flex-col items-start">
                 <span
                   aria-hidden="true"
-                  className="about-stage-index num font-display text-[1.75rem] leading-none sm:text-[2.25rem]"
-                >
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <span
-                  aria-hidden="true"
-                  className="about-stage-rule mt-4 block h-px w-10 bg-(--color-accent) sm:w-14"
+                  className="about-stage-rule block h-px w-10 bg-(--color-accent) sm:w-14"
                 />
               </div>
 

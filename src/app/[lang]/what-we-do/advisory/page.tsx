@@ -44,7 +44,6 @@ export default async function AdvisoryPage() {
         variant="feature"
         photo={backdrops.advisory}
         eyebrow={page.eyebrow}
-        index={page.number}
         title={page.title}
         lead={page.lead}
         actions={
@@ -85,7 +84,7 @@ export default async function AdvisoryPage() {
         </Reveal>
 
         <Reveal delay={140} className="mt-[var(--space-heading)]">
-          <DefinitionList items={page.areas.items} numbered columns={2} />
+          <DefinitionList items={page.areas.items} columns={2} />
         </Reveal>
       </Section>
 

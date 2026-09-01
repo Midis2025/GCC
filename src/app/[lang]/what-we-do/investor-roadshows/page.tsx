@@ -54,7 +54,6 @@ export default async function InvestorRoadshowsPage() {
         variant="feature"
         photo={capabilityPhotos["investor-outreach"]}
         eyebrow={page.eyebrow}
-        index={page.number}
         title={page.title}
         lead={page.lead}
         actions={
@@ -100,7 +99,7 @@ export default async function InvestorRoadshowsPage() {
         </Reveal>
 
         <Reveal delay={140} className="mt-[var(--space-heading)]">
-          <DefinitionList items={page.format.items} numbered columns={2} />
+          <DefinitionList items={page.format.items} columns={2} />
         </Reveal>
       </Section>
 

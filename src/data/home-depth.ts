@@ -69,17 +69,14 @@ export const openingQuestions = {
     "The strongest engagement programmes begin with clarity about the business itself. The communication framework is developed before any decision about meetings, media or content.",
   questions: [
     {
-      number: "01",
       question: "What does the company need the market to understand?",
       note: "Not what it would like said about it. The specific thing a reader, an analyst or a journalist should be able to state accurately after an encounter with the business.",
     },
     {
-      number: "02",
       question: "Which audiences are actually relevant to that objective?",
       note: "Relevance is set by mandate, geography and sector rather than by reach. A smaller number of appropriate conversations is the point of the exercise.",
     },
     {
-      number: "03",
       question: "What evidence supports the narrative?",
       note: "Every claim in a corporate story has to be traceable to something disclosed. Where it is not, the story is revised rather than the evidence stretched.",
     },

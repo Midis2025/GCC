@@ -24,7 +24,7 @@
  *      starting point.
  *
  * What IS safe to state, and is stated, is the firm's own commercial position:
- * fixed fees, no solicitation, no performance-linked compensation, disclosure
+ * fixed fees, no solicitation, disclosure
  * of client relationships. Those are facts about the business rather than
  * legal advice, and they already appear verbatim in the standing disclosure.
  */
@@ -54,8 +54,9 @@ export const pendingCounselNotice = {
  * The two standing lines around the section list.
  *
  * MOVED, NOT REWRITTEN, from `LegalPageLayout`. `publishedBy` is a template:
- * `{entity}` is replaced with `siteConfig.legalName`, which is a registered
- * name and is never translated in either edition.
+ * `{entity}` is replaced with `siteConfig.legalName` where one exists and with
+ * `siteConfig.name` where it does not - which is the case today. The name
+ * is Latin script in both editions and is never translated.
  */
 export const legalPageChrome = {
   contentsHeading: "What this document will cover",
@@ -67,12 +68,22 @@ export const privacyPolicy: LegalPage = {
   slug: "privacy",
   title: "Privacy Policy",
   eyebrow: "Legal",
-  lead: "How Gulf Connect Consultancy FZCO collects, uses, stores and protects personal information submitted through this website.",
+  lead: "How Gulf Connect collects, uses, stores and protects personal information submitted through this website.",
   sections: [
     {
       heading: "Who we are and how to contact us",
       scope:
-        "The identity of the controller, the registered entity, and the address for privacy enquiries and requests.",
+      /*
+        FOR LEGAL REVIEW. This scope line named a registered entity, and
+        there is not one: no company has been incorporated under the Gulf
+        Connect name. A privacy notice has to identify a controller, and a
+        brand is not a legal person, so the finished document cannot simply
+        drop the words - it needs counsel to say who the controller is.
+
+        The line now describes the question rather than presuming the
+        answer. Do not fill it in with an invented entity.
+      */
+        "Who is responsible for personal information submitted through this site, and the address for privacy enquiries and requests. The controlling party is to be confirmed with counsel.",
     },
     {
       heading: "What we collect",
@@ -128,7 +139,7 @@ export const disclaimer: LegalPage = {
     {
       heading: "Nature of the information",
       scope:
-        "That material on this site is general information about the services of Gulf Connect Consultancy FZCO and commentary on sectors and markets, and is not directed at any individual's circumstances.",
+        "That material on this site is general information about the services of Gulf Connect and commentary on sectors and markets, and is not directed at any individual's circumstances.",
     },
     {
       heading: "Not an offer or a recommendation",
@@ -140,10 +151,19 @@ export const disclaimer: LegalPage = {
       scope:
         "That Gulf Connect is not licensed to conduct financial services activity in the UAE, does not solicit investment and does not hold client funds.",
     },
+    /*
+      FOR LEGAL REVIEW. This section previously undertook that no compensation
+      is linked to capital raised, share price or trading volume. That clause
+      has been removed on client instruction to take share-price and equity
+      compensation language off the public site; the fixed-fee basis is what
+      remains. The undertaking was a negative one, so the section now says
+      less, not more - and a disclaimer that says less is a decision for
+      counsel, not for a content edit.
+    */
     {
       heading: "Compensation",
       scope:
-        "That Gulf Connect is paid fixed professional fees for defined scopes of work, and receives no compensation linked to capital raised, share price or trading volume.",
+        "That Gulf Connect is paid fixed professional fees for defined scopes of work.",
     },
     {
       heading: "Client relationships and disclosure",

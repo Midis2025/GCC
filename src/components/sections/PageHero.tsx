@@ -31,8 +31,6 @@ export interface PageHeroProps {
   lead?: string;
   /** Buttons or links rendered under the lead. */
   actions?: ReactNode;
-  /** Editorial index, e.g. "02", shown on service detail pages. */
-  index?: string;
   variant?: PageHeroVariant;
   photo: Photo;
   /** Rendered under the main column, e.g. a contents list or key figures. */
@@ -66,7 +64,6 @@ export function PageHero({
   title,
   lead,
   actions,
-  index,
   variant = "feature",
   photo,
   children,
@@ -155,7 +152,12 @@ export function PageHero({
             className="reveal flex flex-wrap items-center gap-x-3.5 gap-y-2 text-label uppercase text-(--color-accent)"
             data-visible="true"
           >
-            {index && <span className="num font-display-sm normal-case">{index}</span>}
+            {/*
+              The service pages passed an editorial index here - "01" through
+              "04" - and it is gone with the 01/02/03 format. The rule that
+              followed it stays: it is the eyebrow's own mark on every page
+              that uses this hero, not a separator between two things.
+            */}
             <span aria-hidden="true" className="h-px w-10 bg-(--color-accent)" />
             <span>{eyebrow}</span>
           </p>

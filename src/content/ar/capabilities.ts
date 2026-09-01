@@ -26,7 +26,6 @@ import type { capabilities } from "@/data/capabilities";
  */
 export const capabilitiesAr: Localised<typeof capabilities> = [
   {
-    number: "01",
     title: "علاقات المستثمرين",
     slug: "investor-relations",
     href: "/what-we-do/gulf-programme",
@@ -46,7 +45,6 @@ export const capabilitiesAr: Localised<typeof capabilities> = [
     ],
   },
   {
-    number: "02",
     title: "استهداف المستثمرين والتواصل مع الأسواق",
     slug: "investor-outreach",
     href: "/what-we-do/investor-roadshows",
@@ -69,7 +67,6 @@ export const capabilitiesAr: Localised<typeof capabilities> = [
     ],
   },
   {
-    number: "03",
     title: "العلاقات الإعلامية",
     slug: "media-relations",
     href: "/what-we-do/media-arabic-communications",
@@ -88,7 +85,6 @@ export const capabilitiesAr: Localised<typeof capabilities> = [
     ],
   },
   {
-    number: "04",
     title: "الاتصال الرقمي",
     slug: "digital-communications",
     href: "/what-we-do/media-arabic-communications",

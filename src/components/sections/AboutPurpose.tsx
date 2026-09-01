@@ -93,14 +93,7 @@ export async function AboutPurpose() {
             {aboutPurpose.criteria.map((criterion, index) => (
               <li key={criterion}>
                 <Reveal delay={280 + index * 110}>
-                  <div className="about-criterion group flex items-baseline gap-5 border-t border-(--color-foreground)/12 py-5 sm:gap-7 sm:py-6">
-                    <span
-                      aria-hidden="true"
-                      className="num font-display-sm text-[0.6875rem] tracking-[0.14em] text-(--color-accent)"
-                    >
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-
+                  <div className="about-criterion group border-t border-(--color-foreground)/12 py-5 sm:py-6">
                     <span className="about-criterion-term font-display text-[1.375rem] leading-snug sm:text-[1.5rem]">
                       {criterion}
                     </span>

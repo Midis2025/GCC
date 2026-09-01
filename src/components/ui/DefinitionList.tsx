@@ -8,7 +8,6 @@ export interface DefinitionItem {
 export interface DefinitionListProps {
   items: readonly DefinitionItem[];
   /** Adds a two-digit index before each term. */
-  numbered?: boolean;
   columns?: 1 | 2;
   className?: string;
 }
@@ -16,10 +15,14 @@ export interface DefinitionListProps {
 /**
  * Term/description pairs rendered as a real <dl>.
  * Used for investor categories, methodology steps and capability groupings.
+ *
+ * There WAS a `numbered` prop that prefixed each term with "01", "02" and so
+ * on, generated from the map index. It is gone with the 01/02/03 format the
+ * client has taken off the site, along with the two call sites that passed it.
+ * Do not reintroduce it.
  */
 export function DefinitionList({
   items,
-  numbered = false,
   columns = 2,
   className,
 }: DefinitionListProps) {
@@ -31,16 +34,9 @@ export function DefinitionList({
         className,
       )}
     >
-      {items.map((item, index) => (
+      {items.map((item) => (
         <div key={item.term} className="border-t border-(--color-border) pt-5">
-          <dt className="flex items-baseline gap-3 text-[1.0625rem] font-medium">
-            {numbered && (
-              <span className="num font-display-sm text-sm text-(--color-accent)">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-            )}
-            {item.term}
-          </dt>
+          <dt className="text-[1.0625rem] font-medium">{item.term}</dt>
           <dd className="mt-2.5 text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
             {item.description}
           </dd>

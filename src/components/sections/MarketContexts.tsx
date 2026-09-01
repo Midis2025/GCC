@@ -80,8 +80,30 @@ export async function MarketContexts() {
                 */
                 photo={cityPhotos[city.key as keyof typeof cityPhotos]}
                 ratio="tall"
-                overlay="soft"
+                /*
+                  `veil`, not `soft`.
+
+                  Nothing is set over these frames - the city, the country and
+                  the description all sit BELOW the panel, in the block after
+                  this one. `soft` is the scrim built for the segment mosaic,
+                  where a label does sit on the photograph, and it runs to 90%
+                  opacity at the foot and still 24% two-thirds of the way up.
+                  Carrying that here was flattening the contrast out of three
+                  daylight photographs to hold type that is not there.
+
+                  `veil` keeps the one thing the scrim is doing that matters:
+                  a soft anchor at the bottom edge so the frame settles onto
+                  the rule and caption beneath it rather than stopping dead.
+                */
+                overlay="veil"
                 zoom
+                /*
+                  These three are the densest photographs on the page - facade
+                  grids, an interchange, a city read at distance - held in a
+                  ~400px card. q75 turns that kind of fine repeating detail to
+                  mush; 90 is the allowlisted step that keeps it.
+                */
+                quality={90}
                 className="w-full"
                 sizes="(min-width: 640px) 30vw, 100vw"
               />

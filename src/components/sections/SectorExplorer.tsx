@@ -29,15 +29,9 @@ function FocusGrid({ focus }: { focus: readonly string[] }) {
       </h4>
 
       <ul className="mt-5 grid gap-x-10 sm:grid-cols-2">
-        {focus.map((item, index) => (
+        {focus.map((item) => (
           <li key={item} className="ind-focus group relative">
-            <div className="flex items-baseline gap-4 border-t border-(--color-foreground)/12 py-4">
-              <span
-                aria-hidden="true"
-                className="num font-display-sm text-[0.625rem] tracking-[0.14em] text-(--color-accent)"
-              >
-                {String(index + 1).padStart(2, "0")}
-              </span>
+            <div className="border-t border-(--color-foreground)/12 py-4">
               <span className="ind-focus-text text-[0.9375rem] leading-snug">{item}</span>
             </div>
             {/* The rule that lengthens on hover, over the top border. */}
@@ -223,9 +217,6 @@ export function SectorExplorer() {
                         />
 
                         <span className="flex items-center gap-5">
-                          <span className="ind-nav-index num font-display-sm text-[0.75rem] tracking-[0.14em]">
-                            {industry.number}
-                          </span>
                           <span className="ind-nav-title font-display text-[1.25rem] leading-snug xl:text-[1.4375rem]">
                             {industry.title}
                           </span>
@@ -295,10 +286,7 @@ export function SectorExplorer() {
 
                   {/* Index and title, on the frame. */}
                   <div className="absolute inset-x-0 bottom-0 z-10 p-7">
-                    <p className="num font-display-sm text-sm text-(--color-accent)">
-                      {current.number}
-                    </p>
-                    <p className="mt-2 max-w-[20ch] font-display text-[1.75rem] leading-snug text-[#f4f1eb]">
+                    <p className="max-w-[20ch] font-display text-[1.75rem] leading-snug text-[#f4f1eb]">
                       {current.title}
                     </p>
                   </div>
@@ -375,9 +363,6 @@ export function SectorExplorer() {
                   data-open={isOpen ? "true" : "false"}
                   className="ind-acc group flex w-full items-center gap-5 py-6 text-start focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
                 >
-                  <span className="ind-nav-index num font-display-sm text-[0.75rem] tracking-[0.14em]">
-                    {industry.number}
-                  </span>
                   <span className="ind-nav-title flex-1 font-display text-[1.1875rem] leading-snug">
                     {industry.title}
                   </span>

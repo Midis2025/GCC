@@ -30,41 +30,54 @@
  */
 
 /**
- * The three sectors the coverage concerns.
+ * The sectors the coverage concerns.
  *
  * Each `focus` list names subject matter, not companies and not positions.
  * "Supply chains" is a topic; "a company's supply-chain advantage" would be a
  * view, and the difference is the whole compliance position of this section.
+ *
+ * ---------------------------------------------------------------------------
+ * EXAMPLES OF BREADTH, NOT A BOUNDARY
+ * ---------------------------------------------------------------------------
+ * This list used to open with "The focus is deliberately narrow". It no longer
+ * does, and that is a client-directed change of position rather than a change
+ * of wording: the consultancy works across sectors, and these four are where
+ * the coverage sits today. The intro says so, so that adding a fifth is an
+ * entry in an array rather than a contradiction of the paragraph above it.
  */
 export const coverage = {
   label: "What We Cover",
-  heading: "Three Sectors, Covered Consistently",
+  heading: "Sectors We Cover",
   intro:
-    "Briefings and written content concentrate on three areas. The focus is deliberately narrow: a reader who follows one of these sectors should find the coverage worth their time, rather than finding a little of everything.",
+    "Briefings and written content are published across sectors, currently concentrating on energy, mining, pharmaceuticals and data centres. A reader who follows one of them should find the coverage worth their time, rather than finding a little of everything - and the list grows with the businesses the practice works with.",
   sectors: [
     {
-      key: "critical-minerals",
-      number: "01",
-      name: "Critical Minerals",
+      key: "energy",
+      name: "Energy",
+      description:
+        "Production, generation and the transition projects reshaping both. Coverage follows project development, corporate updates and the infrastructure the sector depends on.",
+      focus: ["Production and generation", "Transition projects", "Power infrastructure", "Project development"],
+    },
+    {
+      key: "mining",
+      name: "Mining",
       description:
         "Resource development and the materials underpinning energy transition and industrial supply. Coverage follows project development, corporate updates and the structure of the supply chains involved.",
       focus: ["Resource development", "Strategic materials", "Supply chains", "Project development"],
     },
     {
-      key: "ai-data-infrastructure",
-      number: "02",
-      name: "AI and Data Infrastructure",
-      description:
-        "The physical layer beneath artificial intelligence: data centres, compute capacity and the power and connectivity they depend on, alongside the corporate development of the companies building it.",
-      focus: ["Data centres", "Compute capacity", "Power requirements", "Digital infrastructure"],
-    },
-    {
-      key: "life-sciences",
-      number: "03",
-      name: "Life Sciences",
+      key: "pharmaceuticals",
+      name: "Pharmaceuticals",
       description:
         "Healthcare innovation, biotechnology and medical technology, with attention to corporate development and to how companies in the sector approach international markets.",
       focus: ["Healthcare innovation", "Biotechnology", "Medical technology", "International activity"],
+    },
+    {
+      key: "data-centres",
+      name: "Data Centres",
+      description:
+        "The physical layer beneath artificial intelligence: data centres, compute capacity and the power and connectivity they depend on, alongside the corporate development of the companies building it.",
+      focus: ["Data centres", "Compute capacity", "Power requirements", "Digital infrastructure"],
     },
   ],
   /*
@@ -89,31 +102,26 @@ export const briefingProcess = {
   heading: "From Registration to the Room",
   steps: [
     {
-      number: "01",
       term: "Join the invitation list",
       description:
         "Registration is free and takes a minute. The category and sectors selected determine what is sent.",
     },
     {
-      number: "02",
       term: "Briefings are announced",
       description:
         "When a session is scheduled, it is communicated to the registrants for whom the company, sector and format are relevant.",
     },
     {
-      number: "03",
       term: "You select what interests you",
       description:
         "Invitations are not obligations. A registrant indicates which sessions they would like to attend, and ignores the rest.",
     },
     {
-      number: "04",
       term: "Material is provided",
       description:
         "Company and background material is circulated ahead of a session, so the discussion starts from a shared base rather than an introduction.",
     },
     {
-      number: "05",
       term: "Participation is confirmed",
       /*
        * COMPLIANCE. The load-bearing sentence in this file. Registration puts

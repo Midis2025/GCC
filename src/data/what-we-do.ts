@@ -13,10 +13,10 @@
  *   matching investors with companies / any offer, solicitation or invitation
  *   to acquire securities
  *
- *   any success fee, commission, equity or performance-linked compensation
+ *   any success fee, commission or performance-linked compensation
  *
  *   any guarantee, forecast or implication of media coverage, investor
- *   interest, funds raised or share price effect
+ *   interest or funds raised
  *
  *   any claim that past programmes produced financings or investments
  *
@@ -27,7 +27,6 @@
  */
 
 export interface ServiceLine {
-  number: string;
   slug: string;
   title: string;
   href: string;
@@ -53,7 +52,6 @@ export const whatWeDoHero = {
 
 export const serviceLines: ServiceLine[] = [
   {
-    number: "01",
     slug: "investor-roadshows",
     title: "Investor Roadshows",
     href: "/what-we-do/investor-roadshows",
@@ -63,7 +61,6 @@ export const serviceLines: ServiceLine[] = [
       "A structured sequence of one-to-one meetings and a hosted group session with qualified Gulf investors, prepared around the company's sector and corporate story.",
   },
   {
-    number: "02",
     slug: "gulf-programme",
     title: "The Gulf Programme",
     href: "/what-we-do/gulf-programme",
@@ -73,7 +70,6 @@ export const serviceLines: ServiceLine[] = [
       "Continuity rather than a single visit. Six months of investor meetings, content production, media pitching cycles, Arabic distribution and written monthly reporting.",
   },
   {
-    number: "03",
     slug: "media-arabic-communications",
     title: "Media & Arabic Communications",
     href: "/what-we-do/media-arabic-communications",
@@ -83,7 +79,6 @@ export const serviceLines: ServiceLine[] = [
       "Earned, paid and owned media kept explicitly separate, with certified financial translation and Arabic-language corporate communication for regional distribution.",
   },
   {
-    number: "04",
     slug: "advisory",
     title: "Advisory",
     href: "/what-we-do/advisory",
@@ -109,19 +104,29 @@ export const commercialModelContent = {
     "Gulf Connect works on fixed professional fees agreed in advance against a defined scope of work. A programme is priced on what is prepared, convened, produced and reported - not on what follows from it.",
     "That is a deliberate structure rather than a pricing preference. It keeps the firm's interest in the quality of the work rather than in a transaction, and it is what allows the commercial relationship to be disclosed plainly wherever our content concerns a company that has engaged us.",
   ],
+  /*
+    FOR LEGAL REVIEW.
+
+    Two of the three exclusions have been removed on client instruction to take
+    share-price and equity compensation language off the public site:
+
+      "No compensation linked to capital raised"
+      "No compensation linked to share price"
+
+    The statement of fact inside the first of them - that the firm does not
+    solicit investment and holds no client funds - is NOT lost. It is a
+    regulatory statement rather than a compensation one, and it still stands in
+    the footer disclosure on every page and in the Regulatory position section
+    of the Disclaimer. Only its framing as a compensation exclusion has gone.
+
+    Nothing replaces them. Do not restore them, and do not write a new
+    compensation model into this list, without the client.
+  */
   exclusionsLabel: "What we are not paid for",
   exclusions: [
     {
       term: "No success fees",
       description: "Fees are not contingent on any transaction, meeting outcome or announcement.",
-    },
-    {
-      term: "No compensation linked to capital raised",
-      description: "We do not solicit investment and we hold no client funds.",
-    },
-    {
-      term: "No compensation linked to share price",
-      description: "Nothing we are paid varies with share price or trading volume.",
     },
   ],
 } as const;

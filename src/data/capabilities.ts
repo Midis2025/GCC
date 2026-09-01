@@ -1,6 +1,4 @@
 export interface Capability {
-  /** Two-digit editorial index, e.g. "01". */
-  number: string;
   title: string;
   slug: string;
   href: string;
@@ -41,7 +39,6 @@ export interface Capability {
  */
 export const capabilities: Capability[] = [
   {
-    number: "01",
     title: "Investor Relations",
     slug: "investor-relations",
     href: "/what-we-do/gulf-programme",
@@ -61,7 +58,6 @@ export const capabilities: Capability[] = [
     ],
   },
   {
-    number: "02",
     title: "Investor Targeting & Market Outreach",
     slug: "investor-outreach",
     href: "/what-we-do/investor-roadshows",
@@ -84,7 +80,6 @@ export const capabilities: Capability[] = [
     ],
   },
   {
-    number: "03",
     title: "Media Relations",
     slug: "media-relations",
     href: "/what-we-do/media-arabic-communications",
@@ -103,7 +98,6 @@ export const capabilities: Capability[] = [
     ],
   },
   {
-    number: "04",
     title: "Digital Communications",
     slug: "digital-communications",
     href: "/what-we-do/media-arabic-communications",

@@ -52,8 +52,12 @@ export interface StageSequenceProps {
  * STAGE SEQUENCE
  * ============================================================================
  * A scroll-driven column. Whichever stage is crossing the reading position
- * takes the bronze index, the rule and full strength; the others go quiet, and
- * an oversized ghosted numeral sits behind each one for depth.
+ * takes the bronze rule and full strength; the others go quiet.
+ *
+ * There WAS an index in the margin and an oversized ghosted numeral behind each
+ * stage. Both were the 01/02/03 format and both are gone; `label` still renders
+ * in the margin when a stage carries one of its own ("Month 1"), but it no
+ * longer falls back to the map index.
  *
  * Generalised from `AboutEngagements`, which was hard-wired to one list on one
  * page. Nothing about the mechanism was specific to that content, so it now
@@ -182,29 +186,45 @@ export function StageSequence({
               className="about-stage-edge-lit absolute inset-x-0 top-0 h-px"
             />
 
-            <div className="relative grid grid-cols-[auto_minmax(0,1fr)] gap-x-6 overflow-hidden py-9 sm:gap-x-12 sm:py-12 lg:grid-cols-[8rem_minmax(0,1fr)]">
-              {/*
-                Oversized ghost index, clipped by the stage rather than bleeding
-                past it, and sized in vw so it stays proportional to the column.
-              */}
-              <span
-                aria-hidden="true"
-                className="about-stage-ghost pointer-events-none absolute end-0 -top-4 -z-10 num font-display leading-none text-(--color-foreground) text-[clamp(4.5rem,10vw,9rem)]"
-              >
-                {String(index + 1).padStart(2, "0")}
-              </span>
+            {/*
+              The margin track is sized to the rule, not to a numeral.
 
-              {/* The index in the margin, and its rule. */}
+              It was a fixed 8rem at `lg` because it held a display index above
+              the rule. With the 01/02/03 format removed the rule is the only
+              thing in it, and 8rem left a 3.5rem rule adrift in the middle of
+              an empty column with the copy pushed well off the section measure.
+              3.5rem is the rule’s own width at that breakpoint, so the track now
+              fits what is in it and the gap does the separating.
+            */}
+            <div className="relative grid grid-cols-[auto_minmax(0,1fr)] gap-x-6 overflow-hidden py-9 sm:gap-x-12 sm:py-12 lg:grid-cols-[3.5rem_minmax(0,1fr)]">
+              {/*
+                An oversized ghost index sat here, clipped by the stage. It is
+                gone with the 01/02/03 format, and `overflow-hidden` on the
+                stage stays: the ghost was not the only thing it was clipping.
+              */}
+              {/*
+                The stage's own label in the margin, and its rule.
+
+                `label` used to fall back to the map index rendered as "01",
+                which is the format the client has taken off the site. It no
+                longer does: a stage with no label of its own now shows the
+                rule alone rather than a number invented from its position.
+              */}
               <div className="flex flex-col items-start">
+                {stage.label && (
+                  <span
+                    aria-hidden="true"
+                    className="about-stage-index num font-display leading-none text-[1.75rem] sm:text-[2.25rem]"
+                  >
+                    {stage.label}
+                  </span>
+                )}
                 <span
                   aria-hidden="true"
-                  className="about-stage-index num font-display leading-none text-[1.75rem] sm:text-[2.25rem]"
-                >
-                  {stage.label ?? String(index + 1).padStart(2, "0")}
-                </span>
-                <span
-                  aria-hidden="true"
-                  className="about-stage-rule mt-4 block h-px w-10 bg-(--color-accent) sm:w-14"
+                  className={cn(
+                    "about-stage-rule block h-px w-10 bg-(--color-accent) sm:w-14",
+                    stage.label && "mt-4",
+                  )}
                 />
               </div>
 

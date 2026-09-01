@@ -12,11 +12,11 @@ import downtownDubaiDusk from "../../public/images/downtown-dubai-dusk.jpg";
 import downtownDubaiNight from "../../public/images/downtown-dubai-night.jpg";
 import dubaiMuseumFutureTowers from "../../public/images/dubai-museum-future-towers.jpg";
 import dubaiTradeCentreTowers from "../../public/images/uae/dubai-trade-centre-towers.jpg";
-import abuDhabiCornicheSkyline from "../../public/images/uae/abu-dhabi-corniche-skyline.jpg";
+import abuDhabiWorldTradeCentre from "../../public/images/uae/abu-dhabi-world-trade-centre.jpg";
 import broadcastInterviewCamera from "../../public/images/uae/broadcast-interview-camera.jpg";
 import broadcastMicrophones from "../../public/images/uae/broadcast-microphones.jpg";
-import downtownDubaiBurjKhalifa from "../../public/images/uae/downtown-dubai-burj-khalifa.jpg";
-import riyadhKingdomCentre from "../../public/images/uae/riyadh-kingdom-centre.jpg";
+import dubaiDowntownSheikhZayedRoad from "../../public/images/uae/dubai-downtown-sheikh-zayed-road.jpg";
+import riyadhKingdomCentreSkyline from "../../public/images/uae/riyadh-kingdom-centre-skyline.jpg";
 import etihadTowersAbuDhabi from "../../public/images/uae/etihad-towers-abu-dhabi.jpg";
 import sheikhZayedRoadDusk from "../../public/images/uae/sheikh-zayed-road-dusk.jpg";
 import dohaSkylineDay from "../../public/images/doha-skyline-day.jpg";
@@ -723,7 +723,7 @@ export const segmentPhotos = {
    * This was a plain array read as `segmentPhotos[index]`, which meant the
    * ORDER of the labels in `audienceContent` silently decided which picture
    * each one got. Re-cutting those labels to the launch positioning promptly
-   * put "Critical Minerals" over a desk meeting and "Life Sciences" over the
+   * put a materials label over a desk meeting and a healthcare one over the
    * Riyadh skyline, and the fix at the time was to reorder the labels against
    * the pictures - which works until the next edit reorders them back.
    *
@@ -746,35 +746,51 @@ export const segmentPhotos = {
   leadership: { src: leadershipReviewNight, alt: "", position: "50% 45%" },
 
   /*
-   * The three sector frames. These already existed in the library for the
-   * retired industries page and were sitting unused while the sector labels
-   * on the homepage ran over generic office and skyline stock - server racks
-   * for data infrastructure and a container terminal for minerals say what
-   * those categories are; a dark lobby says nothing.
+   * The sector frames.
    *
-   * `lifeSciences` is the compromise in the set. There is no laboratory or
-   * research photograph in the library and none may be invented, so it carries
-   * the automated production line - precision manufacturing, which is at least
-   * adjacent. It is the one frame here worth replacing when real photography
-   * is commissioned.
+   * These already existed in the library for the retired industries page and
+   * were sitting unused while the sector labels on the homepage ran over
+   * generic office and skyline stock - server racks for data centres and a
+   * container terminal for materials say what those categories are; a dark
+   * lobby says nothing.
+   *
+   * ---------------------------------------------------------------------
+   * KEYS RENAMED WITH THE SECTORS, NOT AFTER THEM
+   * ---------------------------------------------------------------------
+   * The client has re-cut the sector names: critical minerals is now mining,
+   * AI and data infrastructure is now data centres, life sciences is now
+   * pharmaceuticals, and energy has been added. The keys moved with the names
+   * in the same edit. A key called `criticalMinerals` feeding a panel labelled
+   * "Mining" is the kind of drift that survives one edit and misleads the next
+   * person to touch the file.
+   *
+   * `mining` is the weakest pairing in the set: it carries the container
+   * terminal, which is the movement of bulk materials rather than a mine. It
+   * is the one frame here worth replacing first when real photography is
+   * commissioned.
    */
-  aiInfrastructure: { src: sectorTechnologyRacks, alt: "", position: "50% 50%" },
-  criticalMinerals: { src: sectorLogisticsPort, alt: "", position: "50% 50%" },
+  dataCentres: { src: sectorTechnologyRacks, alt: "", position: "50% 50%" },
+  mining: { src: sectorLogisticsPort, alt: "", position: "50% 50%" },
   /*
-    A laboratory, at last.
+    Storage tanks against a dusk sky. Already in the library, unused, and dark
+    enough to sit in a row with the others without a per-frame grade.
+  */
+  energy: { src: sectorEnergyDusk, alt: "", position: "50% 55%" },
+  /*
+    A laboratory.
 
     This panel carried an automated production line - precision manufacturing,
-    adjacent to life sciences at best - because the library held no laboratory
-    frame. It needed a heavy per-frame grade to stop a bright daylit picture
-    shouting in a row of dark night ones, and a photograph that has to be
-    filtered into submission is the wrong photograph.
+    adjacent at best - because the library held no laboratory frame. It needed a
+    heavy per-frame grade to stop a bright daylit picture shouting in a row of
+    dark night ones, and a photograph that has to be filtered into submission is
+    the wrong photograph.
 
     Gloved hands drawing from a vial inside a fume hood: dark on its own terms,
-    so it needs no override, unmistakably life sciences, and no identifiable
+    so it needs no override, unmistakably pharmaceutical, and no identifiable
     face - which is a requirement of every frame here, not a preference. See
     public/images/CREDITS.md.
   */
-  lifeSciences: { src: uaeLifeSciencesLab, alt: "", position: "50% 50%" },
+  pharmaceuticals: { src: uaeLifeSciencesLab, alt: "", position: "50% 50%" },
 
   international: { src: downtownDubaiDusk, alt: "", position: "50% 42%" },
 } as const satisfies Record<string, Photo>;
@@ -805,63 +821,81 @@ export type SegmentPhotoKey = keyof typeof segmentPhotos;
  * ---------------------------------------------------------------------------
  * EACH ONE HAS TO NAME ITS OWN CITY WITHOUT THE LABEL
  * ---------------------------------------------------------------------------
- * That is the whole job of this set, and the previous three did not do it.
- * Dubai was a Downtown skyline with no Burj Khalifa in it; Abu Dhabi and
- * Riyadh were both night frames carrying a heavy teal-and-neon cast, dark
- * enough that the architecture identifying either city was hard to read at
- * card size. Three anonymous towers at night is one picture printed three
- * times.
+ * That is the first job of this set:
  *
- * Each is now a landmark that settles the question on sight:
+ *   Dubai      Burj Khalifa over the Sheikh Zayed Road interchange
+ *   Abu Dhabi  Burj Mohammed Bin Rashid at the World Trade Center
+ *   Riyadh     Kingdom Centre, its arch unmistakable, over the city below
  *
- *   Dubai      Burj Khalifa, centre frame, over Burj Lake
- *   Abu Dhabi  the Corniche towers on the waterfront
- *   Riyadh     Kingdom Centre, its arch unmistakable
+ * ---------------------------------------------------------------------------
+ * THE SECOND JOB IS DENSITY, AND IT IS WHY THIS SET WAS REPLACED AGAIN
+ * ---------------------------------------------------------------------------
+ * The previous three named their cities correctly and still read as soft. The
+ * cause was composition, not resolution: they were long-lens frames of one or
+ * two towers standing in a large field of empty sky - Riyadh was roughly
+ * three-quarters flat haze, Abu Dhabi three-fifths flat blue. A tall card
+ * filled mostly with a smooth gradient carries almost no high-frequency
+ * detail, so it reads as low-resolution however many pixels the file has.
  *
- * And they are lit differently on purpose, so the row is not three variations
- * of one photograph: Dubai in late-afternoon gold against blue, Abu Dhabi in
- * clear daylight, Riyadh at golden hour. None is a night shot.
+ * Each of these carries architecture across most of its height instead. That,
+ * plus the two delivery faults found alongside them - the `qualities`
+ * allowlist in next.config.ts, which was silently pinning every frame on the
+ * site to q75, and the scrim these panels were passing to Figure - is what
+ * the sharpness complaint was actually about.
  *
- * `position` on each holds the landmark through the crop. The panels are tall,
- * so the default vertical framing would cut the top off exactly the buildings
- * that carry the recognition - see the note on each.
+ * ---------------------------------------------------------------------------
+ * NOT ETIHAD TOWERS
+ * ---------------------------------------------------------------------------
+ * The obvious Abu Dhabi frame is Etihad Towers, and it is the one photograph
+ * this panel may not use: `segmentPhotos.listed` is already Etihad Towers and
+ * sits on this same page. Burj Mohammed Bin Rashid, on Khalifa Street, is the
+ * other Abu Dhabi landmark that reads at card size, and it is a genuinely
+ * different building rather than the same one from a second angle.
+ *
+ * `position` on each holds the landmark through the crop - see the note on
+ * each. Verified at 1440 and again at 390, where the cards are taller still.
  */
 export const cityPhotos = {
   dubai: {
-    src: downtownDubaiBurjKhalifa,
+    src: dubaiDowntownSheikhZayedRoad,
     alt: "",
     /*
-      Held high in the frame. The Burj Khalifa runs nearly the full height of
-      the source, so a centred crop takes its spire off; this keeps the top of
-      the tower and lets the podium go instead.
+      Pinned to the TOP. The source is 2668x4000 in a 4:5 frame, so cover
+      discards about a sixth of its height; the Burj Khalifa's spire sits a few
+      pixels below the top edge, and any vertical offset at all takes the tip
+      off. The sixth comes off the bottom instead, where the interchange has
+      detail to spare.
     */
-    position: "50% 34%",
-    positionMobile: "50% 30%",
+    position: "50% 0%",
   },
   "abu-dhabi": {
-    src: abuDhabiCornicheSkyline,
+    src: abuDhabiWorldTradeCentre,
     alt: "",
     /*
-      Pulled DOWN, not centred.
-
-      The source's sky is a deep, saturated blue that goes almost black under
-      the section's veil, so a centred crop filled the top third of a tall card
-      with dead colour and the panel read as another night shot - the very
-      thing this set replaced. Sitting lower drops most of that sky and takes
-      in the lit towers and the water below them instead, which is where the
-      luminance in this frame actually is.
+      2800x3500 is exactly 4:5, so nothing is cropped and the centre is the
+      only honest value. The frame was cut to that ratio at source rather than
+      left to object-fit: the full photograph has a strip of parked traffic
+      along the bottom, and trimming it in the download keeps every delivered
+      pixel on the architecture.
     */
-    position: "52% 64%",
-    positionMobile: "56% 66%",
+    position: "50% 50%",
   },
   riyadh: {
-    src: riyadhKingdomCentre,
+    src: riyadhKingdomCentreSkyline,
     alt: "",
     /*
-      Kingdom Centre stands left of centre and its arch is the whole point of
-      the frame. Held high and slightly left so the arch survives a tall crop.
+      3280x4100 is exactly 4:5, cut from a 5200x4100 landscape at source.
+
+      That crop had to happen in the download rather than in object-fit. Next
+      picks its variant from the width in `sizes`, so a landscape frame going
+      into a tall box loses a third of that width to the cover crop and ends
+      up SHORT of the pixels the box needs - measured at 1080x852 served into
+      an 800x1000 device-pixel card, a 1.17x enlargement. Cropping to ratio
+      first makes the served variant land exactly on the frame.
+
+      Kingdom Centre stands almost exactly on the centre line and the city
+      reads outward from it in both directions, so the crop is centred.
     */
-    position: "46% 38%",
-    positionMobile: "44% 34%",
+    position: "50% 50%",
   },
 } as const satisfies Record<string, Photo>;

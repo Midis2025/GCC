@@ -22,27 +22,36 @@ export const aboutHero = {
  * experience, no deal history, no qualifications. If a fact is not here it was
  * not supplied, and it may not be inferred, researched or improved upon.
  *
- * The register is set deliberately too: two principals should read as two
- * capable people. No "all-star team", no "global powerhouse", no cumulative
- * years of experience, and nothing that implies a larger firm standing behind
- * them. The brief is explicit that overstating the size of the team is the
- * failure mode of the predecessor material.
+ * The register is set deliberately too: a principal should read as one capable
+ * person. No "all-star team", no "global powerhouse", no cumulative years of
+ * experience, and nothing that implies a larger firm standing behind them. The
+ * brief is explicit that overstating the size of the team is the failure mode
+ * of the predecessor material.
+ *
+ * ---------------------------------------------------------------------------
+ * ONE ENTRY, AND THE SECOND ONE IS NOT COMING BACK
+ * ---------------------------------------------------------------------------
+ * This list held two people. The client has directed that the second is not to
+ * appear publicly in connection with Gulf Connect - no name, no biography, no
+ * location, no attribution, nothing in metadata.
+ *
+ * The heading and the intro were rewritten because they COUNTED: "Two
+ * Principals", "run by two principals, working between Geneva and Dubai".
+ * Removing a person and leaving a sentence that says there are two of them
+ * would have been worse than leaving the person in.
+ *
+ * DO NOT invent a second principal, a founder, an advisory board or a
+ * "leadership team" to fill the space. The section renders one entry cleanly -
+ * see the grid note in `AboutPrincipals`.
  *
  * Photographs are outstanding. The list renders without them rather than with
- * silhouettes or initials.
+ * silhouettes.
  */
 export const aboutPrincipals = {
-  label: "Principals",
-  heading: "Two Principals",
-  intro:
-    "Gulf Connect is run by two principals, working between Geneva and Dubai.",
+  label: "Principal",
+  heading: "Run From Dubai",
+  intro: "Gulf Connect is run from Dubai.",
   people: [
-    {
-      name: "Edward Karr",
-      /** Supplied: Swiss national, Geneva-based. */
-      location: "Geneva",
-      bio: "A Swiss national with a background in capital markets and corporate finance, and experience building cross-border investor communications businesses in Europe.",
-    },
     {
       name: "Peter Lee",
       /** Supplied: Dubai-based. */
@@ -55,32 +64,47 @@ export const aboutPrincipals = {
 /**
  * Who we work with.
  *
- * The three sectors, named. This is a statement about who the firm is set up
- * to serve, not a claim about who it has served - there are no clients to name
- * and none may be implied.
+ * A statement about who the firm is set up to serve, not a claim about who it
+ * has served - there are no clients to name and none may be implied.
+ *
+ * ---------------------------------------------------------------------------
+ * THE SECTORS ARE EXAMPLES
+ * ---------------------------------------------------------------------------
+ * The second paragraph used to read "Three sectors, because they are the ones
+ * regional capital is actively looking at" - a closed list, and the client has
+ * directed that the positioning be broader than that. It now names the four as
+ * examples of the range and says plainly that the work is not limited to them.
+ *
+ * Keep that sentence when adding or editing a sector. A list of four with no
+ * qualifier around it reads as a boundary however it is introduced.
  */
 export const aboutClients = {
   label: "Who We Work With",
   heading: "International Listed Small and Mid-Caps",
   paragraphs: [
     "Gulf Connect works with international listed small and mid-cap companies - the size of business for which a structured route into Gulf markets does not otherwise exist.",
-    "Three sectors, because they are the ones regional capital is actively looking at and the ones where the firm's own preparation is deepest.",
+    "The work is cross-sector. Energy, mining, pharmaceuticals and data centres are where it sits most often, because they are what regional capital is actively looking at, but they are examples of the range rather than the limit of it.",
   ],
   sectors: [
     {
-      term: "Critical minerals",
+      term: "Energy",
       description:
-        "Producers and developers whose asset base and offtake position need explaining to an audience that reads mining differently.",
+        "Producers, generators and transition projects assessed on development timelines as much as on current output.",
     },
     {
-      term: "AI and data infrastructure",
+      term: "Mining",
       description:
-        "The compute, connectivity and data-centre businesses behind regional digital investment.",
+        "Producers and developers whose asset base and offtake position need explaining to an audience that reads resources differently.",
     },
     {
-      term: "Life sciences",
+      term: "Pharmaceuticals",
       description:
         "Companies assessed on pipeline and milestones rather than on current earnings.",
+    },
+    {
+      term: "Data centres",
+      description:
+        "The compute, connectivity and data-centre businesses behind regional digital investment.",
     },
   ],
 } as const;

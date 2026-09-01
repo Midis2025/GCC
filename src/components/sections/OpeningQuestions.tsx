@@ -78,67 +78,42 @@ export async function OpeningQuestions() {
       <ol className="mt-[var(--space-heading)] flex flex-col">
         {openingQuestions.questions.map((entry, index) => (
           <li
-            key={entry.number}
+            key={entry.question}
             style={{ "--step": index } as React.CSSProperties}
             className={cn(
               "border-t border-white/12 lg:[margin-left:calc(var(--step)*4rem)]",
               /* Last question: no bottom padding on top of the section's. */
               index === openingQuestions.questions.length - 1 &&
-                "[&>div>div]:pb-0 sm:[&>div>div]:pb-0",
+                "[&>div]:pb-0 sm:[&>div]:pb-0",
             )}
           >
             <Reveal delay={index * 130}>
-              <div className="relative overflow-hidden py-10 sm:py-12">
-                {/*
-                  Oversized numeral, sized in vw so it stays proportional
-                  rather than dominating a narrow column.
+              {/*
+                This row carried the 01/02/03 format twice over: a ghost
+                numeral set at up to 10rem behind it, and a small bronze one on
+                the baseline beside the question. Both are gone.
 
-                  The offset is in `em` and not `rem`, which is the whole
-                  reason the digits are no longer cut off at the top.
+                What made the section read as a sequence was never those - it
+                is the staircase indent on the <li>, which steps each question
+                further across the page than the one above it, and the rules
+                between them. Both are untouched.
 
-                  `leading-none` makes the line box 1em, but this font's
-                  content area is 1.26em (ascent 1038 + descent 222 over 1000
-                  upem). The half-leading is therefore -0.13em and the digits'
-                  cap tops land 0.163em below the top of the span - a distance
-                  that scales with the font size, which here is a clamp running
-                  from 5rem to 10rem.
+                `overflow-hidden` went with the ghost numeral: nothing overflows
+                this row any more, and leaving a clip on a row with nothing to
+                clip is a trap for whatever gets added next.
 
-                  A fixed `-top-6` could not satisfy that. It cleared the edge
-                  only while the numeral was above ~9.2rem, so the tops were
-                  intact on a wide desktop and cut by 4px at 1024, 9px at 768
-                  and 11px on a phone. `em` makes the offset track the size it
-                  is compensating for: 0.05em leaves 0.113em of headroom at
-                  every viewport, so this cannot regress at a breakpoint nobody
-                  thought to check.
-
-                  The row keeps `overflow-hidden`. The numeral is still cropped
-                  at the right and bottom, which is what keeps it reading as a
-                  ghost behind the row rather than a graphic on it.
-                */}
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute -top-[0.05em] end-0 -z-10 num font-display leading-none text-(--color-foreground)/[0.06] text-[clamp(5rem,12vw,10rem)]"
-                >
-                  {entry.number}
-                </span>
-
-                <div className="flex items-baseline gap-5 sm:gap-8">
-                  <span
-                    aria-hidden="true"
-                    className="shrink-0 num font-display-sm text-[0.6875rem] tracking-[0.16em] text-(--color-accent)"
-                  >
-                    {entry.number}
-                  </span>
-
-                  <div className="min-w-0">
-                    <h3 className="max-w-[26ch] font-display text-h3 leading-snug text-balance">
-                      {entry.question}
-                    </h3>
-                    <p className="mt-5 max-w-[58ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
-                      {entry.note}
-                    </p>
-                  </div>
-                </div>
+                The flex row went too. With the small numeral removed it held a
+                single child, so the question and note now sit directly in the
+                row and start on the section's own measure rather than 1.25rem
+                inside it.
+              */}
+              <div className="relative py-10 sm:py-12">
+                <h3 className="max-w-[26ch] font-display text-h3 leading-snug text-balance">
+                  {entry.question}
+                </h3>
+                <p className="mt-5 max-w-[58ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
+                  {entry.note}
+                </p>
               </div>
             </Reveal>
           </li>

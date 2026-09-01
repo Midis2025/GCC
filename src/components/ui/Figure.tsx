@@ -58,6 +58,19 @@ export interface FigureProps {
   grade?: boolean;
   /** LCP hero only. Emits a <link rel=preload> rather than lazy-loading. */
   preload?: boolean;
+  /**
+   * Encoder quality. Omitted, Next uses its default of 75.
+   *
+   * Only values in `images.qualities` in next.config.ts exist - anything else
+   * is silently clamped to the nearest one, with no warning at build or at
+   * request time. The list is currently `[75, 90]`.
+   *
+   * Reach for 90 on a frame whose subject is fine repeating detail (a facade
+   * grid, a run of windows) held at small size, where q75 smears the pattern
+   * into mush. It is not a general upgrade: on the dark, soft-focus frames
+   * that make up most of the library it buys nothing and costs bytes.
+   */
+  quality?: number;
   /** Responsive hint. Always pass a real one for anything below full width. */
   sizes?: string;
   className?: string;
@@ -84,6 +97,7 @@ export function Figure({
   grain = false,
   grade = true,
   preload = false,
+  quality,
   sizes = "(min-width: 1024px) 50vw, 100vw",
   className,
   imageClassName,
@@ -112,6 +126,7 @@ export function Figure({
         sizes={sizes}
         placeholder="blur"
         preload={preload || undefined}
+        quality={quality}
         style={
           {
             ...(photo.position && {

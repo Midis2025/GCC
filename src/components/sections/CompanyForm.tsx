@@ -83,7 +83,7 @@ export function CompanyForm({ source }: { source: string }) {
      * Sector is required.
      *
      * It is the field that decides whether an enquiry is answerable at all -
-     * the firm covers three sectors - so an enquiry that does not say which
+     * the firm covers several sectors - so an enquiry that does not say which
      * one it concerns has to be chased before it can be read. Left as free
      * text rather than a select on purpose: a company that sits between two
      * of the three should be able to say so in its own words.

@@ -52,7 +52,7 @@ export default async function ContactPage() {
     The details block.
 
     Always rendered, because the entity and the city are both confirmed facts:
-    Gulf Connect Consultancy FZCO, Dubai, UAE. It used to appear only when an
+    Gulf Connect, Dubai, UAE. It used to appear only when an
     email, a phone number or a street address existed, which meant a Contact
     page that named the firm nowhere while all three were outstanding.
 
@@ -177,7 +177,13 @@ export default async function ContactPage() {
                   </dt>
                   <dd className="mt-2">
                     <address className="text-[1.0625rem] not-italic leading-relaxed">
-                      {siteConfig.legalName}
+                      {/*
+                        The BRAND name. `legalName` is empty and is expected to
+                        stay empty - no company has been incorporated under the
+                        Gulf Connect name - so this falls back to `name` rather
+                        than rendering a blank first line above the city.
+                      */}
+                      {siteConfig.legalName || siteConfig.name}
                       <br />
                       {/*
                         The street address if the client publishes one, and
