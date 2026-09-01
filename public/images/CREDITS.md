@@ -58,6 +58,86 @@ desaturated, cool, strong negative space. No handshakes, no bright open-plan
 meeting-room stock, no dunes, no tourist framing, and nothing carrying legible
 third-party branding.
 
+## The 2026 imagery pass — resolution and location accuracy
+
+Two problems were addressed together: frames that were too small to stay sharp, and
+frames whose subject did not match the section they sat in.
+
+### Resolution
+
+Every photograph still in use was re-downloaded from its own Unsplash id at **3840px on
+the long edge**, replacing sources that were mostly 2000px. Same photographs, same
+licence, same crops — only the pixel count changed. `fit=max` was used, so no frame was
+re-cropped or had its aspect ratio altered by the refetch.
+
+This matters because of how the site serves images. `next.config.ts` caps `deviceSizes`
+at 2048, so a 2000px source was being *upscaled* into the 2048 bucket on large displays —
+which is exactly the softness that prompted this pass. Anything comfortably above 2048
+makes that bucket a genuine downscale, and leaves pixels in hand for the frames that are
+cropped by `object-position` rather than shown whole.
+
+Delivery is unchanged and still handled by `next/image`: AVIF and WebP, a responsive
+`srcset`, lazy loading below the fold. Nobody downloads a 3840px JPEG; the large source
+exists so the derivatives are sharp.
+
+**Not re-downloaded, and why.** Five frames in use predate the id-recording convention and
+have no source URL on file, so there is nothing to refetch them from. They remain at
+2000px: `business-bay-reflection.jpg`, `doha-skyline-day.jpg`,
+`gulf-financial-district-night.jpg`, `skyline-twilight.jpg` and
+`downtown-dubai-blue-hour.jpg`. The dead `sector-*` set and `etihad-towers-golden-hour.jpg`
+were skipped deliberately — nothing renders them.
+
+### The three market panels
+
+`cityPhotos` had to be replaced outright rather than re-fetched. The panels name Dubai,
+Abu Dhabi and Riyadh, and none of the three frames identified its city: Dubai was a
+Downtown skyline with no Burj Khalifa in it, and Abu Dhabi and Riyadh were both night
+shots under a heavy teal-and-neon cast, dark enough that the architecture was hard to
+read at card size. Three anonymous towers at night is one picture printed three times.
+
+Each is now a landmark that settles the question on sight, and the three are lit
+differently on purpose so the row is not three variations of one photograph. None is a
+night shot.
+
+| File | City | Landmark | Light | Source |
+| --- | --- | --- | --- | --- |
+| `uae/downtown-dubai-burj-khalifa.jpg` | Dubai | Burj Khalifa over Burj Lake, Downtown | Late afternoon | https://images.unsplash.com/photo-1737475989516-a00ab059781d |
+| `uae/abu-dhabi-corniche-skyline.jpg` | Abu Dhabi | Corniche towers from the water | Daylight | https://images.unsplash.com/photo-1769160853964-402d56a943b3 |
+| `uae/riyadh-kingdom-centre.jpg` | Riyadh | Kingdom Centre and its arch | Golden hour | https://images.unsplash.com/photo-1694018359679-49465b4c0d61 |
+
+`position` on each holds the landmark through a tall crop — the spire, the towers and the
+arch respectively — and was checked at 1440 and again at 390, where the cards are taller
+still. See the notes beside each entry in `src/data/imagery.ts`.
+
+### `uae/editorial-broadcast-gallery.jpg` — removed from the repository
+
+This is the one deletion. It sat on the Arabic Gap panel, and the subject was wrong in a
+way that is only visible once you look closely: **the monitors in that gallery are running
+a church worship service.** The lyrics are legible across two screens, and there is a drum
+kit and a pair of guitars on the camera feeds.
+
+On the section arguing that this firm publishes in Arabic for Gulf business audiences,
+that is not merely a dull photograph — it is the wrong content, and the legible
+third-party text breaks the rule stated at the top of this file on its own. The file was
+deleted rather than left in place, because a frame like that should not be one import away
+from being used again.
+
+### Media frames, re-cast
+
+| File | Now used for | Source |
+| --- | --- | --- |
+| `uae/broadcast-interview-camera.jpg` | The Arabic Gap panel (homepage) | https://images.unsplash.com/photo-1535540878298-a155c6d065ef |
+| `uae/broadcast-microphones.jpg` | Media Relations capability | https://images.unsplash.com/photo-1567598110120-04e7c2390863 |
+
+The Arabic Gap panel needs a ground, not just a picture: the Arabic mark sits over it at
+low opacity, so the frame has to be dark across most of its area with the light confined
+to one place. The interview lens does that; the microphones do not, being bright and
+even, which is why they went to the capability panel instead.
+
+`media-broadcast-camera.jpg` came off the capability panel for two reasons — a heavy
+magenta cast from the stage lighting, and the need to keep the two media frames on the
+homepage from both being cameras. It is still in use on the What We Do showcase.
+
 ## Files in use
 
 Source is given as the Unsplash CDN URL, which is the exact frame downloaded and can be

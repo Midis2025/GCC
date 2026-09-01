@@ -12,7 +12,11 @@ import downtownDubaiDusk from "../../public/images/downtown-dubai-dusk.jpg";
 import downtownDubaiNight from "../../public/images/downtown-dubai-night.jpg";
 import dubaiMuseumFutureTowers from "../../public/images/dubai-museum-future-towers.jpg";
 import dubaiTradeCentreTowers from "../../public/images/uae/dubai-trade-centre-towers.jpg";
-import editorialBroadcastGallery from "../../public/images/uae/editorial-broadcast-gallery.jpg";
+import abuDhabiCornicheSkyline from "../../public/images/uae/abu-dhabi-corniche-skyline.jpg";
+import broadcastInterviewCamera from "../../public/images/uae/broadcast-interview-camera.jpg";
+import broadcastMicrophones from "../../public/images/uae/broadcast-microphones.jpg";
+import downtownDubaiBurjKhalifa from "../../public/images/uae/downtown-dubai-burj-khalifa.jpg";
+import riyadhKingdomCentre from "../../public/images/uae/riyadh-kingdom-centre.jpg";
 import etihadTowersAbuDhabi from "../../public/images/uae/etihad-towers-abu-dhabi.jpg";
 import sheikhZayedRoadDusk from "../../public/images/uae/sheikh-zayed-road-dusk.jpg";
 import dohaSkylineDay from "../../public/images/doha-skyline-day.jpg";
@@ -444,19 +448,36 @@ export const photos = {
    * It also has to work as a GROUND, not just a picture - the Arabic mark sits
    * over it at low opacity, and a busy or bright frame would leave that mark
    * either invisible or fighting the detail underneath. This one is dark
-   * across most of its area with the light confined to the screens.
+   * across most of its area with the light confined to the lens.
    *
-   * Deliberately not `mediaBroadcastCamera`, which is the obvious choice and
-   * the wrong one: that frame is already on this page in the capability panel,
-   * and again on the media service page. Two pictures of the same subject on
-   * one scroll reads as an accident.
+   * ---------------------------------------------------------------------------
+   * WHY THE PREVIOUS FRAME HAD TO GO
+   * ---------------------------------------------------------------------------
+   * It was `editorialBroadcastGallery`, and the subject was wrong in a way that
+   * is only visible once you look at it closely: the monitors in that gallery
+   * are running a church worship service. The lyrics are legible across two
+   * screens, and there is a drum kit and a pair of guitars on the camera feeds.
+   *
+   * On the section arguing that this firm publishes in Arabic for Gulf
+   * business audiences, that is not merely dull - it is the wrong content, and
+   * it carries legible third-party text, which the rules in `CREDITS.md` rule
+   * out on their own.
+   *
+   * This frame keeps everything that slot needs - a broadcast subject, dark
+   * across most of its area, light confined to one place, no branding and no
+   * identifiable face - and says "interview" rather than "gallery".
+   *
+   * Still deliberately not the frame on the media capability panel. That one is
+   * now `broadcastMicrophones`, so the two are different objects: a lens here,
+   * microphones there. Two pictures of the same subject on one scroll reads as
+   * an accident.
    */
   arabicGap: {
-    src: editorialBroadcastGallery,
+    src: broadcastInterviewCamera,
     alt: "",
-    position: "50% 45%",
-    /* The screens sit centre-left; a phone crop holds them rather than the desk. */
-    positionMobile: "42% 45%",
+    /* The lens sits left of centre; both crops hold it rather than the body. */
+    position: "38% 50%",
+    positionMobile: "34% 50%",
   },
   whyMarket: {
     /*
@@ -510,10 +531,20 @@ export const capabilityPhotos: Record<string, Photo> = {
     alt: "Delegates seated in a darkened conference hall beneath a wall of soft lights.",
     position: "50% 58%",
   },
+  /*
+    Microphones rather than the venue camera that was here.
+
+    Two reasons. The camera frame carried a heavy magenta cast from the stage
+    lighting, which is the one colour on the site with nowhere to sit; and the
+    Arabic gap panel on the same page now needs a broadcast subject of its own,
+    so keeping a camera in both places would have put two of them on one
+    scroll. A pair of studio microphones says the same thing about the work and
+    is a different object.
+  */
   "media-relations": {
-    src: mediaBroadcastCamera,
-    alt: "A broadcast camera on a tripod at the back of a hall, facing a lit stage.",
-    position: "64% 50%",
+    src: broadcastMicrophones,
+    alt: "Two professional broadcast microphones on boom arms in a studio.",
+    position: "50% 50%",
   },
   "digital-communications": {
     src: digitalMarketData,
@@ -768,23 +799,69 @@ export type SegmentPhotoKey = keyof typeof segmentPhotos;
  * `alt` is empty on all three: the city name is set as a heading directly
  * beneath each frame, so an announced description would only repeat it.
  */
+/**
+ * The three market panels.
+ *
+ * ---------------------------------------------------------------------------
+ * EACH ONE HAS TO NAME ITS OWN CITY WITHOUT THE LABEL
+ * ---------------------------------------------------------------------------
+ * That is the whole job of this set, and the previous three did not do it.
+ * Dubai was a Downtown skyline with no Burj Khalifa in it; Abu Dhabi and
+ * Riyadh were both night frames carrying a heavy teal-and-neon cast, dark
+ * enough that the architecture identifying either city was hard to read at
+ * card size. Three anonymous towers at night is one picture printed three
+ * times.
+ *
+ * Each is now a landmark that settles the question on sight:
+ *
+ *   Dubai      Burj Khalifa, centre frame, over Burj Lake
+ *   Abu Dhabi  the Corniche towers on the waterfront
+ *   Riyadh     Kingdom Centre, its arch unmistakable
+ *
+ * And they are lit differently on purpose, so the row is not three variations
+ * of one photograph: Dubai in late-afternoon gold against blue, Abu Dhabi in
+ * clear daylight, Riyadh at golden hour. None is a night shot.
+ *
+ * `position` on each holds the landmark through the crop. The panels are tall,
+ * so the default vertical framing would cut the top off exactly the buildings
+ * that carry the recognition - see the note on each.
+ */
 export const cityPhotos = {
   dubai: {
-    src: downtownDubaiBlueHour,
+    src: downtownDubaiBurjKhalifa,
     alt: "",
-    position: "50% 42%",
-    /* Taller frame on a phone; the skyline needs to sit higher in it. */
-    positionMobile: "50% 34%",
+    /*
+      Held high in the frame. The Burj Khalifa runs nearly the full height of
+      the source, so a centred crop takes its spire off; this keeps the top of
+      the tower and lets the podium go instead.
+    */
+    position: "50% 34%",
+    positionMobile: "50% 30%",
   },
   "abu-dhabi": {
-    src: abuDhabiNight,
+    src: abuDhabiCornicheSkyline,
     alt: "",
-    position: "50% 58%",
-    positionMobile: "50% 62%",
+    /*
+      Pulled DOWN, not centred.
+
+      The source's sky is a deep, saturated blue that goes almost black under
+      the section's veil, so a centred crop filled the top third of a tall card
+      with dead colour and the panel read as another night shot - the very
+      thing this set replaced. Sitting lower drops most of that sky and takes
+      in the lit towers and the water below them instead, which is where the
+      luminance in this frame actually is.
+    */
+    position: "52% 64%",
+    positionMobile: "56% 66%",
   },
   riyadh: {
-    src: riyadhNightAerial,
+    src: riyadhKingdomCentre,
     alt: "",
-    position: "50% 48%",
+    /*
+      Kingdom Centre stands left of centre and its arch is the whole point of
+      the frame. Held high and slightly left so the arch survives a tall crop.
+    */
+    position: "46% 38%",
+    positionMobile: "44% 34%",
   },
 } as const satisfies Record<string, Photo>;
