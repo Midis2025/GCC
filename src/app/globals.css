@@ -290,6 +290,7 @@
  * trigger - only the end they start from.
  */
 [dir="rtl"] .insight-connector,
+[dir="rtl"] .principle-rule,
 [dir="rtl"] .why-progress-x,
 [dir="rtl"] .about-rule,
 [dir="rtl"] .about-stage-rule,
@@ -865,6 +866,44 @@ a[href^="tel:"] {
 }
 
 @keyframes insight-connector-in {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/*
+ * The rules between the editorial standards.
+ *
+ * Base state is FULL, not empty - the same trap `.approach-progress` documents
+ * above. These lines are the structure of that section, and a visitor with
+ * reduced motion, or without JavaScript, has to see them; starting at
+ * `scaleX(0)` would leave them looking at four blocks of text with nothing
+ * between.
+ *
+ * The animation is layered on top, and only for a reader who has not asked for
+ * less of it. It runs slightly behind its own item's copy so the standard
+ * arrives and the rule closes underneath it, rather than the two racing.
+ */
+.principle-rule {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal .principle-rule {
+    transform: scaleX(0);
+  }
+
+  .reveal[data-visible="true"] .principle-rule {
+    animation: principle-rule-in 820ms var(--ease-out-expo) both;
+    animation-delay: calc(var(--reveal-delay, 0ms) + 120ms);
+  }
+}
+
+@keyframes principle-rule-in {
   from {
     transform: scaleX(0);
   }

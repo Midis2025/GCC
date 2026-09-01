@@ -207,12 +207,37 @@ export async function BilingualSection() {
 }
 
 /**
- * Editorial principles. Staggered typography, oversized ghosted numerals.
+ * Editorial principles. Heading on the left, the four standards on the right.
  *
- * COMPLIANCE: principle 04 is the page's own statement of its limits and is
- * not decoration - no recommendations, no price forecasts, no undisclosed
- * client relationships. It stays last so it reads as the standard the other
- * three are held to.
+ * ---------------------------------------------------------------------------
+ * THE STAIRCASE IS GONE
+ * ---------------------------------------------------------------------------
+ * Each principle used to be inset further than the one above it, on a per-item
+ * custom property. The rule sits on the TOP of each <li>, so indenting an item
+ * indented its rule with it: measured at 1440, the four dividers began at 72,
+ * 128, 184 and 240px and all ended at the container edge, giving four different
+ * start positions AND four different widths down a single list.
+ *
+ * The four terms started at those same four positions, which is what stopped
+ * the set reading as a list of standards a reader can scan in one movement.
+ * They now share one left edge, and so do the dividers.
+ *
+ * ---------------------------------------------------------------------------
+ * WHY TWO COLUMNS
+ * ---------------------------------------------------------------------------
+ * The heading sat in a full-width row of its own with the list beneath it, so
+ * the eye crossed a whole empty band to get from one to the other, and every
+ * row carried a 571px description inside a 1296px box - about 725px of nothing
+ * to the right of each line.
+ *
+ * Heading left, standards right. The two halves are now beside each other
+ * rather than stacked with a gap between them, and the dividers span the
+ * standards column rather than the page.
+ *
+ * COMPLIANCE: the fourth principle is the page's own statement of its limits
+ * and is not decoration - no recommendations, no price forecasts, no
+ * undisclosed client relationships. It stays last so it reads as the standard
+ * the other three are held to.
  */
 export async function EditorialPrinciplesSection() {
   const editorialPrinciples = await pick({
@@ -222,52 +247,94 @@ export async function EditorialPrinciplesSection() {
 
   return (
     <Section spacing="lg" aria-labelledby="insight-principles">
-      <Reveal>
-        <SectionLabel>{editorialPrinciples.label}</SectionLabel>
-        <Heading id="insight-principles" level={2} size="display" className="mt-5 max-w-[12ch]">
-          {editorialPrinciples.heading}
-        </Heading>
-      </Reveal>
+      {/*
+        NO INNER CAP. This used to be held to 92rem / 1472px, which made it
+        the one section on this page narrower than the sections either side of
+        it - measured at 1920: 1472px here against 1728px above and below, a
+        256px step in the page's own edge. It now takes the full content width
+        that `Container` gives every other section, so the page has one
+        vertical down its whole length.
 
-      <ol className="mt-[var(--space-heading)] flex flex-col">
-        {editorialPrinciples.principles.map((principle, index) => (
-          <li
-            key={principle.term}
-            style={{ "--step": index } as React.CSSProperties}
-            className={cn(
+        Text width is controlled where it belongs - on the paragraphs, in `ch`
+        - rather than by squeezing the whole section.
+
+        The split favours the standards column, which carries four terms and
+        four descriptions against a two-line heading. Even columns left the
+        list cramped at 1024 while the heading sat in 440px of mostly empty
+        space; 0.82fr/1fr gives the copy the room and still leaves the headline
+        a full measure.
+      */}
+      <div
+        className={cn(
+          "grid gap-y-[var(--space-heading)]",
+          "lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1fr)] lg:items-start",
+          "lg:gap-x-[clamp(2.5rem,4vw,6rem)]",
+        )}
+      >
+        <Reveal>
+          <SectionLabel>{editorialPrinciples.label}</SectionLabel>
+          {/*
+            17ch rather than 12ch. At 12ch the headline broke over three lines;
+            17ch is the measure at which it settles on the two it is written as,
+            "How We / Approach Insight". The type size is untouched.
+          */}
+          <Heading id="insight-principles" level={2} size="display" className="mt-5 max-w-[17ch]">
+            {editorialPrinciples.heading}
+          </Heading>
+        </Reveal>
+
+        {/*
+          `lg:pt-2` only. It drops the first term onto the heading's cap line
+          rather than its box top, so the two columns start together instead of
+          the list floating a few pixels high.
+        */}
+        <ol className="flex flex-col lg:pt-2">
+          {editorialPrinciples.principles.map((principle, index) => (
+            <li
+              key={principle.term}
               /*
-                The staircase indents each principle further than the one
-                above it, so the set descends across the page in the reading
-                direction. `margin-inline-start` rather than `margin-left`:
-                it resolves to the left in English and to the right in Arabic,
-                which is what keeps the stair descending forwards rather than
-                climbing back out of the column. Identical output in English.
+                One spacing rule for every item: 36px of air, the rule, 36px of
+                air. No item can end up taller than another for any reason but
+                its own copy.
               */
-              "border-t border-(--color-border) lg:[margin-inline-start:calc(var(--step)*3.5rem)]",
-              /* Last principle: the section's padding already provides the air. */
-              index === editorialPrinciples.principles.length - 1 && "[&>div>div]:pb-0",
-            )}
-          >
-            <Reveal delay={index * 120}>
-              {/*
-                One column now. The first was a fixed gutter for a display
-                numeral; with the 01/02/03 format removed it would have been
-                3rem of nothing indenting every principle, on top of the
-                staircase indent the <li> already applies. The staircase is
-                what carries the sequence here and it is untouched.
-              */}
-              <div className="relative overflow-hidden py-9">
-                <div className="min-w-0">
-                  <h3 className="font-display text-h3 tracking-tight">{principle.term}</h3>
-                  <p className="mt-4 max-w-[52ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
-                    {principle.description}
-                  </p>
-                </div>
-              </div>
-            </Reveal>
-          </li>
-        ))}
-      </ol>
+              className="not-first:mt-9 not-first:pt-9"
+            >
+              <Reveal delay={index * 120} className="relative">
+                {/*
+                  The rule between the standards, and it is INSIDE the reveal
+                  on purpose.
+
+                  It was a `border-top` on the <li>, which sits outside every
+                  animated element - so the three rules painted instantly at
+                  full strength while the text they belong to was still fading
+                  in. On a section whose entire structure is those three lines,
+                  that is what made the whole thing look static: the skeleton
+                  arrived first and the content caught up.
+
+                  As a positioned span it inherits its item's `data-visible`
+                  and its stagger, so each rule draws itself as its own
+                  standard arrives. `-top-9` puts it back on the 36px boundary
+                  the padding creates, so nothing moved.
+
+                  Not on the first item: the heading beside it already opens
+                  the block, and a rule across the top of the column read as a
+                  stray line.
+                */}
+                {index > 0 && (
+                  <span
+                    aria-hidden="true"
+                    className="principle-rule absolute inset-x-0 -top-9 block h-px bg-(--color-border)"
+                  />
+                )}
+                <h3 className="font-display text-h3 tracking-tight">{principle.term}</h3>
+                <p className="mt-4 max-w-[58ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
+                  {principle.description}
+                </p>
+              </Reveal>
+            </li>
+          ))}
+        </ol>
+      </div>
     </Section>
   );
 }
