@@ -181,7 +181,7 @@ export function MobileMenu({ items, cta, secondaryCta, className }: MobileMenuPr
 
         <div className="flex items-center justify-between">
           <span className="text-label uppercase text-(--color-foreground-subtle)">
-            Menu
+            {t.nav.menuHeading}
           </span>
           <button
             type="button"

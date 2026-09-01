@@ -43,6 +43,7 @@ export const ui: Dictionary = {
     primary: "التنقل الرئيسي",
     mobile: "تنقل الهاتف",
     siteMenu: "قائمة الموقع",
+    menuHeading: "القائمة",
     openMenu: "فتح القائمة",
     closeMenu: "إغلاق القائمة",
     skipToContent: "تخطٍ إلى المحتوى الرئيسي",

@@ -23,6 +23,8 @@ export const ui: Dictionary = {
     primary: "Primary",
     mobile: "Mobile",
     siteMenu: "Site menu",
+    /* Verbatim from the panel heading in `MobileMenu`. */
+    menuHeading: "Menu",
     openMenu: "Open menu",
     closeMenu: "Close menu",
     skipToContent: "Skip to main content",

@@ -89,6 +89,13 @@ export interface Dictionary {
     primary: string;
     mobile: string;
     siteMenu: string;
+    /**
+     * The visible heading at the top of the open mobile panel.
+     *
+     * Distinct from `siteMenu`, which is the panel`s accessible name: one is
+     * read, the other is announced, and they are not the same words in Arabic.
+     */
+    menuHeading: string;
     openMenu: string;
     closeMenu: string;
     skipToContent: string;
