@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useId, type ReactNode } from "react";
 
+import { useLocale } from "@/components/layout/LocaleProvider";
 import { cn } from "@/lib/utils";
 
 interface FormFieldContextValue {
@@ -52,6 +53,7 @@ export function FormField({
   hideLabel = false,
   className,
 }: FormFieldProps) {
+  const { t } = useLocale();
   const id = useId();
   const descriptionId = description ? `${id}-description` : undefined;
   const errorId = error ? `${id}-error` : undefined;
@@ -74,7 +76,12 @@ export function FormField({
               *
             </span>
           )}
-          {required && <span className="sr-only"> (required)</span>}
+          {/*
+            The asterisk above is decorative and hidden; this is what a screen
+            reader actually hears, so it is copy and it translates. The leading
+            space separates it from the label in the announced string.
+          */}
+          {required && <span className="sr-only"> {t.forms.required}</span>}
         </label>
 
         {children}

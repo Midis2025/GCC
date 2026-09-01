@@ -166,6 +166,8 @@ export const outreachContentAr: Localised<typeof outreachContent> = {
 export const approachContentAr: Localised<typeof approachContent> = {
   label: "منهجنا",
   heading: "منهج أكثر تركيزًا في التواصل مع السوق",
+  intro:
+    "خمس مراحل تُنفَّذ بالتسلسل ثم يُعاد النظر فيها. والمرحلة الأخيرة هي ما يمنع البرنامج من التحوّل إلى نصٍّ جامد.",
   steps: [
     {
       number: "01",

@@ -3,32 +3,33 @@ import { Section } from "@/components/sections/Section";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
+import { pick, type Localised } from "@/content";
+import { legalPageChromeAr, pendingCounselNoticeAr } from "@/content/ar/legal";
 import { backdrops } from "@/data/imagery";
-import { pendingCounselNotice, type LegalPage } from "@/data/legal";
+import {
+  legalPageChrome as legalPageChromeEn,
+  pendingCounselNotice as pendingCounselNoticeEn,
+  type LegalPage,
+} from "@/data/legal";
 import { siteConfig } from "@/data/site";
 
 /**
- * The shared template for all four legal pages.
+ * The shared frame for all four legal pages.
  *
- * One component rather than four near-identical pages: the four documents
- * differ in their sections and in nothing else, and four copies of this layout
- * would be four places to update when the counsel-approved text lands.
+ * `page` is the document, in whichever language the route resolved - the four
+ * routes each `pick` their own and hand it over, exactly as they handed over
+ * the English one before. The two standing lines around the section list, and
+ * the pending-counsel notice at the top, are the same on all four pages and
+ * are read here rather than being passed four times.
  *
- * ---------------------------------------------------------------------------
- * The pending notice
- * ---------------------------------------------------------------------------
- * Rendered first, before any section, and styled as a standing notice rather
- * than as body copy. It says plainly that the wording is being prepared with
- * counsel and that nothing here should be relied on.
- *
- * That placement is deliberate. A reader who arrives at a page headed "Privacy
- * Policy" assumes it IS the policy, and a caveat at the foot would be met
- * after that assumption had already done its work.
- *
- * Design: the existing system - `PageHero`, `Section`, the numbered-row
- * treatment used elsewhere. No new pattern for a page nobody visits twice.
+ * CONTENT INTEGRITY. The notice is FIRST and unmissable in both languages, and
+ * it is not conditional: it is what tells a reader that nothing on the page is
+ * final. See the header of `data/legal.ts`.
  */
-export function LegalPageLayout({ page }: { page: LegalPage }) {
+export async function LegalPageLayout({ page }: { page: Localised<LegalPage> }) {
+  const notice = await pick({ en: pendingCounselNoticeEn, ar: pendingCounselNoticeAr });
+  const chrome = await pick({ en: legalPageChromeEn, ar: legalPageChromeAr });
+
   return (
     <>
       <PageHero
@@ -45,24 +46,22 @@ export function LegalPageLayout({ page }: { page: LegalPage }) {
           {/* Status. First, and unmissable. */}
           <Reveal>
             <div className="border-s-2 border-(--color-accent) bg-(--color-surface-muted) px-6 py-6">
-              <p className="text-label uppercase text-(--color-accent)">
-                {pendingCounselNotice.label}
-              </p>
+              <p className="text-label uppercase text-(--color-accent)">{notice.label}</p>
               <h2
                 id={`legal-${page.slug}`}
                 className="mt-3 font-display text-[1.375rem] leading-snug"
               >
-                {pendingCounselNotice.heading}
+                {notice.heading}
               </h2>
               <p className="mt-4 text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
-                {pendingCounselNotice.body}
+                {notice.body}
               </p>
             </div>
           </Reveal>
 
           <Reveal delay={120}>
             <h3 className="mt-14 text-label uppercase text-(--color-foreground-subtle)">
-              What this document will cover
+              {chrome.contentsHeading}
             </h3>
           </Reveal>
 
@@ -90,9 +89,14 @@ export function LegalPageLayout({ page }: { page: LegalPage }) {
           </ol>
 
           <Reveal delay={400}>
+            {/*
+              The registered entity is substituted into the sentence rather
+              than concatenated onto it, because Arabic puts the name in a
+              different position from English. `legalName` is a registered name
+              and is never translated.
+            */}
             <p className="mt-14 border-t border-(--color-border) pt-8 text-sm leading-relaxed text-(--color-foreground-subtle)">
-              This page is published by {siteConfig.legalName}. Final wording will replace the
-              structure above once it has been approved.
+              {chrome.publishedBy.replace("{entity}", siteConfig.legalName)}
             </p>
           </Reveal>
         </Container>

@@ -125,3 +125,44 @@ export const commercialModelContent = {
     },
   ],
 } as const;
+
+/**
+ * Page-level copy that used to be written inline in `app/[lang]/what-we-do`.
+ *
+ * MOVED, NOT REWRITTEN. Every string below is the one the page already
+ * rendered, character for character, lifted out of the JSX so that it has an
+ * Arabic sibling in `content/ar/what-we-do.ts`. If any of it reads differently
+ * from what the English page said before, that is a bug.
+ */
+export const whatWeDoShowcase = {
+  label: "Service Lines",
+  heading: "Four Ways We Work",
+  note: "Most companies do not need all four at once. The balance is set by where a business currently stands with the region.",
+} as const;
+
+/** The single-line pause between the commercial model and the process. */
+export const whatWeDoTransition = {
+  statement: "One market. Four ways of working in it.",
+} as const;
+
+/**
+ * The map band.
+ *
+ * COMPLIANCE: describes the ROUTE the work runs along - meetings prepared and
+ * convened, a story developed and pitched, content produced and handed over.
+ * It names no outcome and must not acquire one.
+ */
+export const whatWeDoReach = {
+  label: "Global Connection",
+  heading: "International Companies. Gulf Markets.",
+  paragraphs: [
+    "Every programme runs between two places: where a company is, and where the audiences relevant to it are. The work is the route between them - meetings prepared and convened, a story developed and pitched, content produced and handed over.",
+    "Dubai and Abu Dhabi carry most of it, with Riyadh where a company's sector makes it relevant.",
+  ],
+} as const;
+
+/** The closing band on each of the four service pages. */
+export const otherServiceLinesContent = {
+  label: "Also",
+  heading: "The Other Three Lines",
+} as const;

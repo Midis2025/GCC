@@ -95,8 +95,8 @@ export function EditorialStatement({
             aria-hidden="true"
             className={
               photoStrength === "faint"
-                ? "absolute inset-0 -z-10 bg-[linear-gradient(100deg,rgba(12,20,29,0.985)_10%,rgba(12,20,29,0.95)_46%,rgba(12,20,29,0.88)_100%)]"
-                : "absolute inset-0 -z-10 bg-[linear-gradient(100deg,rgba(12,20,29,0.95)_10%,rgba(12,20,29,0.84)_46%,rgba(12,20,29,0.6)_100%)]"
+                ? "absolute inset-0 -z-10 bg-[linear-gradient(100deg,rgba(12,20,29,0.985)_10%,rgba(12,20,29,0.95)_46%,rgba(12,20,29,0.88)_100%)] rtl:bg-[linear-gradient(260deg,rgba(12,20,29,0.985)_10%,rgba(12,20,29,0.95)_46%,rgba(12,20,29,0.88)_100%)]"
+                : "absolute inset-0 -z-10 bg-[linear-gradient(100deg,rgba(12,20,29,0.95)_10%,rgba(12,20,29,0.84)_46%,rgba(12,20,29,0.6)_100%)] rtl:bg-[linear-gradient(260deg,rgba(12,20,29,0.95)_10%,rgba(12,20,29,0.84)_46%,rgba(12,20,29,0.6)_100%)]"
             }
           />
           <div aria-hidden="true" className="grain absolute inset-0 -z-10" />

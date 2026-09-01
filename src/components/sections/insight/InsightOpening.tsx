@@ -4,7 +4,9 @@ import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { segmentPhotos } from "@/data/imagery";
-import { insightPosition, insightSectors } from "@/data/insight-page";
+import { pick } from "@/content";
+import { insightPositionAr, insightSectorsAr } from "@/content/ar/insight-page";
+import { insightPosition as insightPositionEn, insightSectors as insightSectorsEn } from "@/data/insight-page";
 
 /**
  * Context before commentary.
@@ -13,7 +15,9 @@ import { insightPosition, insightSectors } from "@/data/insight-page";
  * itself as the section arrives. Light ground directly after the dark hero, so
  * the page's first transition is a hard one.
  */
-export function InsightPosition() {
+export async function InsightPosition() {
+  const insightPosition = await pick({ en: insightPositionEn, ar: insightPositionAr });
+
   return (
     <Section spacing="lg" aria-labelledby="insight-position">
       <div className="grid gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-x-20">
@@ -59,7 +63,8 @@ export function InsightPosition() {
  * a page addressed to professional audiences is the easiest arrangement here
  * to mistake for research with a view.
  */
-export function InsightSectors() {
+export async function InsightSectors() {
+  const insightSectors = await pick({ en: insightSectorsEn, ar: insightSectorsAr });
   const photo = {
     "critical-minerals": segmentPhotos.criticalMinerals,
     "ai-data-infrastructure": segmentPhotos.aiInfrastructure,

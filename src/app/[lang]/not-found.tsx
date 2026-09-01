@@ -1,29 +1,44 @@
-import Link from "next/link";
-
+import { LocaleLink } from "@/components/layout/LocaleLink";
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
+import { getDictionary, pick } from "@/content";
+import { notFoundContentAr } from "@/content/ar/utility-pages";
 import { backdrops } from "@/data/imagery";
 import { mainNav } from "@/data/navigation";
+import { notFoundContent as notFoundContentEn } from "@/data/utility-pages";
+import { localiseNavItems } from "@/lib/nav-i18n";
 
-export default function NotFound() {
+/**
+ * 404.
+ *
+ * A designed page rather than a bare message, and it keeps the language the
+ * visitor was reading in: `not-found.tsx` sits inside `app/[lang]`, so a bad
+ * URL under `/ar` renders this in Arabic and every route below it stays in
+ * Arabic too.
+ */
+export default async function NotFound() {
+  const content = await pick({ en: notFoundContentEn, ar: notFoundContentAr });
+  const t = await getDictionary();
+  const navItems = localiseNavItems(mainNav, t);
+
   return (
     <>
       <PageHero
         variant="feature"
         photo={backdrops.utility}
         compact
-        eyebrow="404"
-        title="This page could not be found."
-        lead="The page you are looking for may have moved, or the address may be incorrect."
+        eyebrow={content.eyebrow}
+        title={content.title}
+        lead={content.lead}
         actions={
           <>
             <Button href="/" size="lg" withArrow>
-              Return home
+              {content.home}
             </Button>
             <Button href="/contact" size="lg" variant="outline">
-              Contact Gulf Connect
+              {content.contact}
             </Button>
           </>
         }
@@ -36,15 +51,20 @@ export default function NotFound() {
             id="not-found-nav"
             className="text-label uppercase text-(--color-foreground-subtle)"
           >
-            Go to
+            {content.goTo}
           </h2>
 
           <ul className="mt-8 border-t border-(--color-border)">
-            {mainNav
+            {navItems
               .filter((item) => item.href !== "/")
               .map((item, index) => (
                 <li key={item.href} className="border-b border-(--color-border)">
-                  <Link
+                  {/*
+                    `LocaleLink`, so a visitor who reached a bad Arabic URL is
+                    not sent back into the English site by the one list on the
+                    page whose whole job is to get them somewhere real.
+                  */}
+                  <LocaleLink
                     href={item.href}
                     className="group flex items-baseline gap-5 py-6 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
                   >
@@ -54,7 +74,7 @@ export default function NotFound() {
                     <span className="font-display text-h3 transition-colors duration-300 group-hover:text-(--color-accent)">
                       {item.label}
                     </span>
-                  </Link>
+                  </LocaleLink>
                 </li>
               ))}
           </ul>

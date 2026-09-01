@@ -90,4 +90,28 @@ export const contactContent = {
     "It helps to know where a company is starting from: whether it is listed, preparing to list or privately held, which markets matter most, and what prompted the enquiry.",
     "Enquiries are reviewed directly. If a request falls outside what we do, we will say so rather than take a meeting for its own sake.",
   ],
+
+  /*
+    MOVED, NOT REWRITTEN. The four strings below were written inline in the
+    page and are reproduced here word for word so that they can be translated.
+  */
+
+  /** The heading over the enquiry band's left column. */
+  introTitle: "Tell us where the company stands today.",
+
+  /**
+   * AWAITING CLIENT INFORMATION.
+   *
+   * Shown in place of an email row and a telephone row while neither has been
+   * supplied - see the TODOs on `contactConfig` in `data/site.ts`. Setting
+   * either one there replaces this block with the real rows and nothing else
+   * changes.
+   */
+  pendingDetails: {
+    label: "Email and telephone",
+    body: "Please use the enquiry form. A direct address and number will be published here once confirmed.",
+  },
+
+  /** Heading over the five area-of-interest tags. */
+  areasHeading: "Areas of interest",
 } as const;

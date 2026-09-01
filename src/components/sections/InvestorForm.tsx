@@ -2,17 +2,15 @@
 
 import { useCallback, useRef, useState, type FormEvent } from "react";
 
+import { useLocale } from "@/components/layout/LocaleProvider";
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { FormField } from "@/components/ui/FormField";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
+import { optionLabel } from "@/content/dictionary";
 import { preferredTimeOptions } from "@/data/contact";
-import {
-  investorCategories,
-  investorConsent,
-  investorSectors,
-} from "@/data/for-investors";
+import { investorCategories, investorSectors } from "@/data/for-investors";
 import { todayAsInputValue } from "@/lib/utils";
 
 type Errors = Partial<Record<string, string>>;
@@ -69,6 +67,17 @@ export function InvestorForm({
    */
   meetingPreference?: boolean;
 }) {
+  /*
+    Every visible string on this form comes from the shared dictionary.
+
+    The form is a Client Component, so it reads the language through
+    `LocaleProvider` rather than through `pick`. Nothing that is SUBMITTED
+    passes through here: the option values still come from the data modules and
+    are identical in both editions - see `forms.options` in
+    `content/dictionary.ts`.
+  */
+  const { locale, t } = useLocale();
+  const f = t.forms.investor;
   const [errors, setErrors] = useState<Errors>({});
   const [result, setResult] = useState<SubmitResult | null>(null);
   const [pending, setPending] = useState(false);
@@ -90,37 +99,38 @@ export function InvestorForm({
   }, []);
 
   function validate(data: FormData): Errors {
+    const e = t.forms.errors;
     const next: Errors = {};
     const value = (key: string) => String(data.get(key) ?? "").trim();
 
-    if (!value("name")) next.name = "Please enter your full name.";
-    if (!value("firm")) next.firm = "Please enter your firm.";
-    if (!value("role")) next.role = "Please enter your role.";
+    if (!value("name")) next.name = e.name;
+    if (!value("firm")) next.firm = e.firm;
+    if (!value("role")) next.role = e.role;
 
     const email = value("email");
-    if (!email) next.email = "Please enter your work email address.";
-    else if (!EMAIL_PATTERN.test(email)) next.email = "Please enter a valid email address.";
+    if (!email) next.email = e.email;
+    else if (!EMAIL_PATTERN.test(email)) next.email = e.emailInvalid;
 
-    if (!value("country")) next.country = "Please enter your country.";
+    if (!value("country")) next.country = e.country;
     if (!value("investorCategory")) {
-      next.investorCategory = "Please select an investor category.";
+      next.investorCategory = e.investorCategory;
     }
 
     // Only where the pair is shown. Validating a field that is not on the form
     // would make it unsubmittable and give nothing to focus.
     if (meetingPreference) {
       const preferredDate = value("preferredDate");
-      if (!preferredDate) next.preferredDate = "Please choose a preferred date.";
+      if (!preferredDate) next.preferredDate = e.preferredDate;
       else if (preferredDate < todayAsInputValue()) {
         // Both sides are `YYYY-MM-DD`, which compares correctly as a string.
-        next.preferredDate = "Please choose a date that has not already passed.";
+        next.preferredDate = e.preferredDatePast;
       }
 
-      if (!value("preferredTime")) next.preferredTime = "Please choose a preferred time.";
+      if (!value("preferredTime")) next.preferredTime = e.preferredTime;
     }
 
     if (data.get("consent") !== "on") {
-      next.consent = "Please confirm you agree to be contacted.";
+      next.consent = e.consent;
     }
 
     return next;
@@ -156,6 +166,12 @@ export function InvestorForm({
           email: data.get("email"),
           country: data.get("country"),
           investorCategory: data.get("investorCategory"),
+          /*
+            The language the form is being filled in, so the route can answer
+            in it. Used for validation wording only - it is not stored and it
+            changes nothing about the record. See `api/submit`.
+          */
+          locale,
           // Read from this form's own FormData, so the two forms on the
           // Contact page can never see each other's answers.
           preferredDate: data.get("preferredDate"),
@@ -176,14 +192,14 @@ export function InvestorForm({
           const first = Object.keys(payload.errors)[0];
           form.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
         } else {
-          setFailure(payload.error ?? "Something went wrong. Please try again.");
+          setFailure(payload.error ?? t.forms.errors.generic);
         }
         return;
       }
 
       setResult(payload);
     } catch {
-      setFailure("We could not reach the server. Please try again.");
+      setFailure(t.forms.errors.unreachable);
     } finally {
       setPending(false);
     }
@@ -202,20 +218,16 @@ export function InvestorForm({
       <div role="status">
         <span aria-hidden="true" className="block h-px w-12 bg-(--color-accent)" />
         <h3 className="mt-6 font-display text-h3">
-          {result.stored ? "Almost there." : "Registration received."}
+          {result.stored ? f.almostThere : f.received}
         </h3>
 
         <p className="mt-4 max-w-[52ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
-          {result.optInStatus === "pending"
-            ? "We have sent you an email. Please confirm your address from that message and your registration is complete. You are not on the list until you do."
-            : "Thank you. We have received your details."}
+          {result.optInStatus === "pending" ? f.pendingBody : f.confirmedBody}
         </p>
 
         {!result.stored && (
           <p className="mt-6 border-s-2 border-(--color-accent)/50 ps-4 text-sm leading-relaxed text-(--color-foreground-subtle)">
-            Note for review: the CRM is not yet connected, so this registration was not stored.
-            This state exists so the completed journey can be assessed. Configure the CRM before
-            the site is used with real registrants.
+            {f.notStored}
           </p>
         )}
 
@@ -228,7 +240,7 @@ export function InvestorForm({
               formRef.current?.reset();
             }}
           >
-            Register someone else
+            {f.registerAnother}
           </Button>
         </div>
       </div>
@@ -239,27 +251,27 @@ export function InvestorForm({
     <form ref={formRef} onSubmit={handleSubmit} noValidate className="flex flex-col gap-7">
       <div className="flex items-center gap-3.5 border-b border-(--color-border) pb-5">
         <span aria-hidden="true" className="h-px w-8 shrink-0 bg-(--color-accent)" />
-        <span className="text-label uppercase text-(--color-accent)">Investor Registration</span>
+        <span className="text-label uppercase text-(--color-accent)">{f.badge}</span>
       </div>
 
       <div className="grid gap-x-6 gap-y-7 sm:grid-cols-2">
-        <FormField label="Full name" error={errors.name} required>
+        <FormField label={f.fullName} error={errors.name} required>
           <Input name="name" autoComplete="name" />
         </FormField>
 
-        <FormField label="Firm" error={errors.firm} required>
+        <FormField label={f.firm} error={errors.firm} required>
           <Input name="firm" autoComplete="organization" />
         </FormField>
 
-        <FormField label="Role" error={errors.role} required>
+        <FormField label={f.role} error={errors.role} required>
           <Input name="role" autoComplete="organization-title" />
         </FormField>
 
-        <FormField label="Work email" error={errors.email} required>
+        <FormField label={f.workEmail} error={errors.email} required>
           <Input name="email" type="email" inputMode="email" autoComplete="email" />
         </FormField>
 
-        <FormField label="Country" error={errors.country} required>
+        <FormField label={f.country} error={errors.country} required>
           <Input name="country" autoComplete="country-name" />
         </FormField>
 
@@ -268,18 +280,24 @@ export function InvestorForm({
           by design - see the note in `data/for-investors.ts`.
         */}
         <FormField
-          label="Investor category"
+          label={f.category}
           error={errors.investorCategory}
-          description="Briefings are directed at institutional and professional audiences."
+          description={f.categoryHelp}
           required
         >
           <Select
             name="investorCategory"
+            /*
+              BACKEND VALUES UNCHANGED. `value` is what is submitted and what
+              the CRM stores; only the label is looked up by language. A
+              missing key falls back to the English label held beside the
+              value in `data/for-investors.ts`.
+            */
             options={investorCategories.map((option) => ({
               value: option.value,
-              label: option.label,
+              label: optionLabel(t.forms.options.investorCategory, option.value, option.label),
             }))}
-            placeholder="Select a category"
+            placeholder={f.categoryPlaceholder}
           />
         </FormField>
 
@@ -302,20 +320,23 @@ export function InvestorForm({
               locale format and keyboard entry. The ref puts today's floor on
               it - see `boundToToday` above.
             */}
-            <FormField label="Preferred date" error={errors.preferredDate} required>
+            <FormField label={t.forms.company.preferredDate} error={errors.preferredDate} required>
               <Input name="preferredDate" type="date" ref={boundToToday} />
             </FormField>
 
             <FormField
-              label="Preferred time"
+              label={t.forms.company.preferredTime}
               error={errors.preferredTime}
-              description="Gulf Standard Time"
+              description={t.forms.company.timezone}
               required
             >
               <Select
                 name="preferredTime"
-                options={preferredTimeOptions}
-                placeholder="Choose a time…"
+                options={preferredTimeOptions.map((option) => ({
+                  value: option.value,
+                  label: optionLabel(t.forms.options.preferredTime, option.value, option.label),
+                }))}
+                placeholder={t.forms.company.timePlaceholder}
               />
             </FormField>
           </>
@@ -323,14 +344,22 @@ export function InvestorForm({
       </div>
 
       <fieldset>
-        <legend className="text-[0.9375rem] font-medium">Sectors of interest</legend>
-        <p className="mt-1.5 text-sm text-(--color-foreground-subtle)">
-          Optional. We use this to send only the invitations that are relevant to you.
-        </p>
+        <legend className="text-[0.9375rem] font-medium">{f.sectorsLegend}</legend>
+        <p className="mt-1.5 text-sm text-(--color-foreground-subtle)">{f.sectorsHelp}</p>
 
         <div className="mt-5 flex flex-col gap-1">
+          {/*
+            The VALUE is the English sector string in both editions - it is
+            what `api/submit` validates against and what the CRM stores. Only
+            the label a registrant reads is looked up by language.
+          */}
           {investorSectors.map((sector) => (
-            <Checkbox key={sector} name="sectorsOfInterest" value={sector} label={sector} />
+            <Checkbox
+              key={sector}
+              name="sectorsOfInterest"
+              value={sector}
+              label={optionLabel(t.forms.options.investorSector, sector, sector)}
+            />
           ))}
         </div>
       </fieldset>
@@ -342,8 +371,8 @@ export function InvestorForm({
       <div className="border-t border-(--color-border) pt-7">
         <Checkbox
           name="consent"
-          label={investorConsent.label}
-          description={investorConsent.note}
+          label={f.consentLabel}
+          description={f.consentNote}
           error={errors.consent}
         />
       </div>
@@ -356,7 +385,7 @@ export function InvestorForm({
 
       <div className="mt-1 border-t border-(--color-border) pt-7">
         <Button type="submit" size="lg" withArrow disabled={pending}>
-          {pending ? "Submitting…" : "Register"}
+          {pending ? t.forms.submitting : f.submit}
         </Button>
       </div>
     </form>

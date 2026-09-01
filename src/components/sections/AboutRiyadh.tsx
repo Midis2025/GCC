@@ -2,6 +2,9 @@ import NextImage from "next/image";
 
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
+import { pick } from "@/content";
+import { aboutRiyadhContentAr } from "@/content/ar/about";
+import { aboutRiyadhContent as aboutRiyadhContentEn } from "@/data/about";
 import { photos } from "@/data/imagery";
 
 /**
@@ -27,7 +30,9 @@ import { photos } from "@/data/imagery";
  * office, no presence, no claim about work done there. See
  * `public/images/CREDITS.md`.
  */
-export function AboutRiyadh() {
+export async function AboutRiyadh() {
+  const content = await pick({ en: aboutRiyadhContentEn, ar: aboutRiyadhContentAr });
+
   const photo = photos.regionStreet;
 
   return (
@@ -78,7 +83,7 @@ export function AboutRiyadh() {
         <Reveal>
           <p className="flex items-center gap-3.5 text-label uppercase text-(--color-accent)">
             <span aria-hidden="true" className="h-px w-10 bg-(--color-accent)" />
-            <span>Riyadh</span>
+            <span>{content.eyebrow}</span>
           </p>
         </Reveal>
 
@@ -89,7 +94,7 @@ export function AboutRiyadh() {
             about the firm's presence in the city in the photograph.
           */}
           <p className="mt-5 max-w-[26ch] font-display text-[1.5rem] leading-snug text-balance sm:text-[1.875rem]">
-            Six markets, read separately.
+            {content.statement}
           </p>
         </Reveal>
       </Container>

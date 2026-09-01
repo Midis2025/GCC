@@ -134,8 +134,8 @@ export function PageHero({
         className={cn(
           "absolute inset-0 -z-10",
           isSplit
-            ? "bg-[linear-gradient(100deg,#0c141d_18%,rgba(12,20,29,0.88)_48%,rgba(12,20,29,0.6)_100%)] lg:bg-[linear-gradient(96deg,#0c141d_40%,rgba(12,20,29,0.82)_56%,rgba(12,20,29,0.3)_100%)]"
-            : "bg-[linear-gradient(100deg,#0c141d_8%,rgba(12,20,29,0.9)_40%,rgba(12,20,29,0.62)_76%,rgba(12,20,29,0.5)_100%)]",
+            ? "bg-[linear-gradient(100deg,#0c141d_18%,rgba(12,20,29,0.88)_48%,rgba(12,20,29,0.6)_100%)] rtl:bg-[linear-gradient(260deg,#0c141d_18%,rgba(12,20,29,0.88)_48%,rgba(12,20,29,0.6)_100%)] lg:bg-[linear-gradient(96deg,#0c141d_40%,rgba(12,20,29,0.82)_56%,rgba(12,20,29,0.3)_100%)] lg:rtl:bg-[linear-gradient(264deg,#0c141d_40%,rgba(12,20,29,0.82)_56%,rgba(12,20,29,0.3)_100%)]"
+            : "bg-[linear-gradient(100deg,#0c141d_8%,rgba(12,20,29,0.9)_40%,rgba(12,20,29,0.62)_76%,rgba(12,20,29,0.5)_100%)] rtl:bg-[linear-gradient(260deg,#0c141d_8%,rgba(12,20,29,0.9)_40%,rgba(12,20,29,0.62)_76%,rgba(12,20,29,0.5)_100%)]",
         )}
       />
       <div

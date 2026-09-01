@@ -17,8 +17,26 @@ import { Section } from "@/components/sections/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
+import { pick } from "@/content";
+import {
+  aboutCommunicationAr,
+  aboutHowWeWorkAr,
+  aboutPhilosophyAr,
+  aboutRegionAr,
+  aboutTeamContentAr,
+  aboutTransitionAr,
+} from "@/content/ar/about";
+import { gulfMarketsAr } from "@/content/ar/homepage";
 import { backdrops } from "@/data/imagery";
-import { aboutCommunication, aboutPhilosophy, aboutRegion, aboutTransition } from "@/data/about";
+import {
+  aboutCommunication as aboutCommunicationEn,
+  aboutHowWeWork as aboutHowWeWorkEn,
+  aboutPhilosophy as aboutPhilosophyEn,
+  aboutRegion as aboutRegionEn,
+  aboutTeamContent as aboutTeamContentEn,
+  aboutTransition as aboutTransitionEn,
+} from "@/data/about";
+import { gulfMarkets as gulfMarketsEn } from "@/data/homepage";
 import { hasTeam, team } from "@/data/team";
 import { createMetadata } from "@/lib/seo";
 
@@ -89,7 +107,16 @@ export const metadata = createMetadata({
  * standing text that it shows orientation and not presence. The team section
  * renders only when `data/team.ts` holds real people.
  */
-export default function AboutPage() {
+export default async function AboutPage() {
+  const aboutRegion = await pick({ en: aboutRegionEn, ar: aboutRegionAr });
+  const aboutTransition = await pick({ en: aboutTransitionEn, ar: aboutTransitionAr });
+  const aboutCommunication = await pick({ en: aboutCommunicationEn, ar: aboutCommunicationAr });
+  const aboutPhilosophy = await pick({ en: aboutPhilosophyEn, ar: aboutPhilosophyAr });
+  const aboutHowWeWork = await pick({ en: aboutHowWeWorkEn, ar: aboutHowWeWorkAr });
+  const teamContent = await pick({ en: aboutTeamContentEn, ar: aboutTeamContentAr });
+  /* The market list the two maps on this page label their nodes from. */
+  const gulfMarkets = await pick({ en: gulfMarketsEn, ar: gulfMarketsAr });
+
   return (
     <>
       {/* 1 - Who Gulf Connect is. */}
@@ -108,6 +135,7 @@ export default function AboutPage() {
         heading={aboutRegion.heading}
         paragraphs={aboutRegion.paragraphs}
         disclaimer={aboutRegion.disclaimer}
+        markets={gulfMarkets}
       />
 
       {/* 5 - The turn from the region to the work. */}
@@ -125,7 +153,7 @@ export default function AboutPage() {
       <AboutPrincipals />
 
       {/* 8 - How engagements are shaped. */}
-      <AboutEngagements />
+      <AboutEngagements content={aboutHowWeWork} />
 
       {/*
         9 - What communication is for, and what producing it costs.
@@ -161,6 +189,7 @@ export default function AboutPage() {
         paragraphs={aboutCommunication.paragraphs}
         selectorLabel={aboutCommunication.selectorLabel}
         disclaimer={aboutCommunication.disclaimer}
+        markets={gulfMarkets}
         tone="muted"
       />
 
@@ -188,9 +217,9 @@ export default function AboutPage() {
       {hasTeam() && (
         <Section spacing="lg" tone="muted" aria-labelledby="about-team">
           <Reveal className="max-w-3xl">
-            <SectionLabel>Team</SectionLabel>
+            <SectionLabel>{teamContent.label}</SectionLabel>
             <Heading id="about-team" level={2} size="display" className="mt-5">
-              The People Behind the Work
+              {teamContent.heading}
             </Heading>
           </Reveal>
 

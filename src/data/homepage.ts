@@ -219,6 +219,16 @@ export const outreachContent = {
 export const approachContent = {
   label: "Our Approach",
   heading: "A More Focused Approach to Market Engagement",
+  /*
+    The supporting line beside the heading.
+
+    It was written inline in `Approach`, which was tenable while the component
+    rendered in one language. It renders on What We Do as well as here, so it
+    is content and it belongs in a content module. MOVED, NOT REWRITTEN: same
+    two sentences, same wording.
+  */
+  intro:
+    "Five stages, run in sequence and then revisited. The last one is what keeps a programme from hardening into a script.",
   steps: [
     {
       number: "01",

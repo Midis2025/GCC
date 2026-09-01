@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 
+import { loadDictionary, type Dictionary } from "@/content/dictionary";
+import { defaultLocale, isLocale } from "@/lib/i18n";
 import { areaOfInterestOptions, preferredTimeOptions } from "@/data/contact";
 import {
   GENERAL_CONTENT_ONLY,
   investorCategories,
-  investorConsent,
   investorSectors,
 } from "@/data/for-investors";
 import {
@@ -97,12 +98,13 @@ function checkMeetingPreference(
   payload: Payload,
   errors: Record<string, string>,
   required: boolean,
+  e: Dictionary["forms"]["errors"],
 ): void {
   const preferredDate = str(payload, "preferredDate");
   if (!preferredDate) {
-    if (required) errors.preferredDate = "Please choose a preferred date.";
+    if (required) errors.preferredDate = e.preferredDate;
   } else if (!ISO_DATE_PATTERN.test(preferredDate) || Number.isNaN(Date.parse(preferredDate))) {
-    errors.preferredDate = "Please choose a preferred date.";
+    errors.preferredDate = e.preferredDate;
   }
 
   /*
@@ -112,20 +114,24 @@ function checkMeetingPreference(
    */
   const preferredTime = str(payload, "preferredTime");
   if (!preferredTime) {
-    if (required) errors.preferredTime = "Please choose a preferred time.";
+    if (required) errors.preferredTime = e.preferredTime;
   } else if (!preferredTimeOptions.some((option) => option.value === preferredTime)) {
-    errors.preferredTime = "Please choose a preferred time.";
+    errors.preferredTime = e.preferredTime;
   }
 }
 
-function validate(type: string, payload: Payload): Validation {
+function validate(
+  type: string,
+  payload: Payload,
+  e: Dictionary["forms"]["errors"],
+): Validation {
   const errors: Record<string, string> = {};
 
-  if (!str(payload, "name")) errors.name = "Please enter your full name.";
+  if (!str(payload, "name")) errors.name = e.name;
 
   const email = str(payload, "email");
-  if (!email) errors.email = "Please enter your work email address.";
-  else if (!EMAIL_PATTERN.test(email)) errors.email = "Please enter a valid email address.";
+  if (!email) errors.email = e.email;
+  else if (!EMAIL_PATTERN.test(email)) errors.email = e.emailInvalid;
 
   /*
    * Consent is validated server-side and not merely required in the markup.
@@ -133,13 +139,13 @@ function validate(type: string, payload: Payload): Validation {
    * false flag - an unconsented record is not a record this business can use.
    */
   if (payload.consent !== true) {
-    errors.consent = "Please confirm you agree to be contacted.";
+    errors.consent = e.consent;
   }
 
   if (type === "investor-registration") {
-    if (!str(payload, "firm")) errors.firm = "Please enter your firm.";
-    if (!str(payload, "role")) errors.role = "Please enter your role.";
-    if (!str(payload, "country")) errors.country = "Please enter your country.";
+    if (!str(payload, "firm")) errors.firm = e.firm;
+    if (!str(payload, "role")) errors.role = e.role;
+    if (!str(payload, "country")) errors.country = e.country;
 
     /*
      * The category is a compliance control. Required, and validated against
@@ -148,25 +154,25 @@ function validate(type: string, payload: Payload): Validation {
      */
     const category = str(payload, "investorCategory");
     if (!category) {
-      errors.investorCategory = "Please select an investor category.";
+      errors.investorCategory = e.investorCategory;
     } else if (!investorCategories.some((option) => option.value === category)) {
-      errors.investorCategory = "Please select an investor category.";
+      errors.investorCategory = e.investorCategory;
     }
 
     // Present from the Contact page, absent from For Investors - so checked
     // whenever it is there, and never demanded.
-    checkMeetingPreference(payload, errors, false);
+    checkMeetingPreference(payload, errors, false, e);
   }
 
   if (type === "company-enquiry") {
-    if (!str(payload, "companyName")) errors.companyName = "Please enter your company name.";
+    if (!str(payload, "companyName")) errors.companyName = e.companyName;
 
     /*
      * Sector is required on this form, and enforced here as well as in the
      * browser. It is the field that decides whether an enquiry is answerable,
      * and it is free text by design - see the note in `CompanyForm`.
      */
-    if (!str(payload, "sector")) errors.sector = "Please tell us which sector you operate in.";
+    if (!str(payload, "sector")) errors.sector = e.sector;
 
     /*
      * Area of interest is optional, and checked against the fixed list when it
@@ -176,18 +182,18 @@ function validate(type: string, payload: Payload): Validation {
      */
     const areaOfInterest = str(payload, "areaOfInterest");
     if (areaOfInterest && !areaOfInterestOptions.some((o) => o.value === areaOfInterest)) {
-      errors.areaOfInterest = "Please choose an area of interest.";
+      errors.areaOfInterest = e.areaOfInterest;
     }
 
     const message = str(payload, "message");
-    if (!message) errors.message = "Please tell us briefly what you are looking for.";
-    else if (message.length < 20) errors.message = "Please add a little more detail.";
+    if (!message) errors.message = e.message;
+    else if (message.length < 20) errors.message = e.messageShort;
 
     /*
      * The company enquiry always carries the meeting preference, so here it is
      * required as well as checked.
      */
-    checkMeetingPreference(payload, errors, true);
+    checkMeetingPreference(payload, errors, true, e);
   }
 
   return { ok: Object.keys(errors).length === 0, errors };
@@ -202,6 +208,26 @@ function toMarketCode(countryStr: string): string {
   if (lower.includes("kuwait") || lower === "kw") return "kw";
   if (lower.includes("bahrain") || lower === "bh") return "bh";
   if (lower.includes("oman") || lower === "om") return "om";
+
+  /*
+    The same six markets, written in Arabic.
+
+    `country` is a free-text field, so a visitor filling the Arabic form types
+    "الإمارات" and this function - reading only for English substrings - would
+    have filed them under "intl". That is a data-quality bug created by
+    publishing an Arabic edition, not a change of policy.
+
+    ADDITIVE ONLY. Every English input above still maps exactly as it did; no
+    existing rule is altered, reordered or removed, and nothing here changes
+    what an English submission produces. The codes returned are the same six.
+  */
+  if (lower.includes("إمارات") || lower.includes("امارات")) return "ae";
+  if (lower.includes("سعود")) return "sa";
+  if (lower.includes("قطر")) return "qa";
+  if (lower.includes("كويت")) return "kw";
+  if (lower.includes("بحرين")) return "bh";
+  if (lower.includes("عمان") || lower.includes("عُمان")) return "om";
+
   return "intl";
 }
 
@@ -219,7 +245,24 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Unknown form type." }, { status: 400 });
   }
 
-  const { ok, errors } = validate(type, payload);
+  /*
+    The language the visitor is filling the form in.
+
+    Sent by the form and used for ONE thing: the words in a validation
+    message. It is not stored, it is not mapped to the CRM and it changes no
+    other behaviour of this route - a registration made in Arabic produces
+    byte-for-byte the record an English one produces.
+
+    `next/root-params` is a Server Component API and is unavailable here, which
+    is why the locale arrives in the payload rather than being read from the
+    request. `loadDictionary` takes an explicit locale and needs neither.
+    Anything unrecognised falls back to English.
+  */
+  const submittedLocale = str(payload, "locale");
+  const locale = isLocale(submittedLocale) ? submittedLocale : defaultLocale;
+  const t = await loadDictionary(locale);
+
+  const { ok, errors } = validate(type, payload, t.forms.errors);
   if (!ok) {
     return NextResponse.json({ ok: false, errors }, { status: 422 });
   }
@@ -269,7 +312,28 @@ export async function POST(request: Request) {
 
     consentGiven: true,
     consentAt: now,
-    consentWording: investorConsent.label,
+    /*
+      THE WORDING THE PERSON ACTUALLY SAW.
+
+      `consentWording` exists so consent can be EVIDENCED later, which means it
+      has to be the sentence in front of the registrant when they ticked the
+      box - not a translation of it and not the other edition's copy. It is
+      therefore read from the dictionary for the locale the form was submitted
+      in rather than from `investorConsent` in `data/for-investors.ts`.
+
+      The English string is identical either way: `forms.investor.consentLabel`
+      is `investorConsent.label`, moved verbatim. An English submission
+      therefore stores exactly what it stored before, and an Arabic one now
+      stores the Arabic clause instead of an English one the registrant never
+      read.
+
+      KNOWN, PRE-EXISTING, AND LEFT ALONE: this stores the INVESTOR clause for
+      a company enquiry too, in both languages. That is a separate defect about
+      form type rather than about language, and correcting it would change what
+      an English company enquiry records - outside the scope of this change.
+      Flagged for the client.
+    */
+    consentWording: t.forms.investor.consentLabel,
 
     /*
      * Investor registrations enter the list PENDING and are only confirmed

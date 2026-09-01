@@ -230,3 +230,68 @@ export const aboutCommunication = {
     },
   ],
 } as const;
+
+/**
+ * ----------------------------------------------------------------------------
+ * PAGE-LEVEL COPY THAT USED TO BE WRITTEN INLINE
+ * ----------------------------------------------------------------------------
+ * MOVED, NOT REWRITTEN. Every string below is the one the page already
+ * rendered, word for word, lifted out of the components so that it can have an
+ * Arabic sibling in `content/ar/about.ts`.
+ */
+
+/** The pull quote beside the positioning section, and its ghosted echo. */
+export const aboutPositioningQuote = {
+  /** Set very faintly behind the quote. Decorative, and aria-hidden. */
+  ghost: "Clarity",
+  quote: "Clarity is a commercial position.",
+} as const;
+
+/** Heading over the four criteria beside `aboutPurpose`. */
+export const aboutPurposeCriteriaLabel = "What the market weighs" as const;
+
+/**
+ * The commercial model, as About states it.
+ *
+ * COMPLIANCE: `basis` and the exclusions come from `commercialModel` in
+ * `data/site.ts` and are not repeated here. What is here is the framing around
+ * them, which was written into `AboutHowWeWork` and had no Arabic.
+ */
+export const aboutCommercial = {
+  label: "How We Work",
+  heading: "Fixed Fees, Defined Scope, Written Reporting",
+  /** Follows `commercialModel.basis` in the same paragraph. */
+  detail:
+    "Every engagement is agreed in advance against what will be prepared, convened, produced and reported, and reported on in writing while it runs.",
+  exclusionsLabel: "What we are not paid for",
+} as const;
+
+/**
+ * The Riyadh band.
+ *
+ * CONTENT INTEGRITY: a city name over a photograph of that city, under a
+ * firm's logo, is easy to read as a footprint. The line asserts nothing about
+ * presence - it restates that the six markets are read separately.
+ */
+export const aboutRiyadhContent = {
+  eyebrow: "Riyadh",
+  statement: "Six markets, read separately.",
+} as const;
+
+/** The principles section's own label and heading. */
+export const aboutPrinciplesContent = {
+  label: "Principles",
+  heading: "How the Work Is Held",
+} as const;
+
+/**
+ * The team section.
+ *
+ * Rendered only when `data/team.ts` holds real people, which it does not. The
+ * copy is held here so that the section is correct in both languages the day
+ * a real entry is added.
+ */
+export const aboutTeamContent = {
+  label: "Team",
+  heading: "The People Behind the Work",
+} as const;

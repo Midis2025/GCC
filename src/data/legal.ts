@@ -50,6 +50,19 @@ export const pendingCounselNotice = {
   body: "This page sets out the structure of a document that is being prepared with legal counsel alongside the regulatory opinion. The sections below describe what the finished document will cover. Nothing on this page is final, and nothing on it should be relied upon.",
 } as const;
 
+/**
+ * The two standing lines around the section list.
+ *
+ * MOVED, NOT REWRITTEN, from `LegalPageLayout`. `publishedBy` is a template:
+ * `{entity}` is replaced with `siteConfig.legalName`, which is a registered
+ * name and is never translated in either edition.
+ */
+export const legalPageChrome = {
+  contentsHeading: "What this document will cover",
+  publishedBy:
+    "This page is published by {entity}. Final wording will replace the structure above once it has been approved.",
+} as const;
+
 export const privacyPolicy: LegalPage = {
   slug: "privacy",
   title: "Privacy Policy",

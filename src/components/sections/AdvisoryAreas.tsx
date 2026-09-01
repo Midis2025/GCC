@@ -2,7 +2,9 @@ import { Section } from "@/components/sections/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { advisoryAreas } from "@/data/services-depth";
+import { pick } from "@/content";
+import { advisoryAreasAr } from "@/content/ar/services-depth";
+import { advisoryAreas as advisoryAreasEn } from "@/data/services-depth";
 import { cn } from "@/lib/utils";
 
 /**
@@ -34,7 +36,9 @@ import { cn } from "@/lib/utils";
  * Nothing in this section is a recommendation, and the page's intro already
  * states that the firm makes none. See `data/services-depth.ts`.
  */
-export function AdvisoryAreas() {
+export async function AdvisoryAreas() {
+  const advisoryAreas = await pick({ en: advisoryAreasEn, ar: advisoryAreasAr });
+
   return (
     <Section spacing="lg" aria-labelledby="advisory-areas-detail">
       <div className="grid gap-x-16 gap-y-9 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-end lg:gap-x-24">
@@ -85,7 +89,7 @@ export function AdvisoryAreas() {
 
                 <div>
                   <p className="text-label uppercase text-(--color-foreground-subtle)">
-                    What it involves
+                    {advisoryAreas.involvesLabel}
                   </p>
                   <ul className="mt-5 flex flex-col gap-3">
                     {area.involves.map((entry) => (

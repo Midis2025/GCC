@@ -9,14 +9,24 @@ import { DefinitionList } from "@/components/ui/DefinitionList";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
+import { getDictionary, pick } from "@/content";
+import { investorRoadshowsAr } from "@/content/ar/service-lines";
 import { capabilityPhotos } from "@/data/imagery";
-import { investorRoadshows as page } from "@/data/service-lines";
+import { investorRoadshows as pageEn } from "@/data/service-lines";
 import { createMetadata } from "@/lib/seo";
 
+/*
+  Metadata stays English-sourced at module scope.
+
+  `createMetadata` runs where `next/root-params` is not available, and the
+  route's canonical, its path and its slug are the same in both editions. The
+  page's visible copy below is localised; its <title> follows the site's
+  existing metadata architecture, which is out of scope for this change.
+*/
 export const metadata = createMetadata({
-  title: page.title,
-  path: `/what-we-do/${page.slug}`,
-  description: page.metaDescription,
+  title: pageEn.title,
+  path: `/what-we-do/${pageEn.slug}`,
+  description: pageEn.metaDescription,
 });
 
 /**
@@ -34,7 +44,10 @@ export const metadata = createMetadata({
  * Design: existing system throughout. The hero reuses the conference-hall frame
  * already in the library; no new photography is introduced.
  */
-export default function InvestorRoadshowsPage() {
+export default async function InvestorRoadshowsPage() {
+  const page = await pick({ en: pageEn, ar: investorRoadshowsAr });
+  const t = await getDictionary();
+
   return (
     <>
       <PageHero
@@ -148,8 +161,13 @@ export default function InvestorRoadshowsPage() {
               ))}
             </div>
             <div className="mt-8">
+              {/*
+                The service line is named from the chrome dictionary, so this
+                button, the header dropdown and the footer all call it the same
+                thing in whichever language is rendering.
+              */}
               <Button href="/what-we-do/media-arabic-communications" variant="outline" withArrow>
-                Media &amp; Arabic Communications
+                {t.nav.services.mediaArabic}
               </Button>
             </div>
           </Reveal>

@@ -129,6 +129,8 @@ export const menasDigitalNewsDetail = {
   paragraphs: [
     "The shortest of the formats and the most frequent: a daily read for people who follow the region continuously rather than in quarters.",
   ],
+  /* Moved out of the format section's JSX unchanged, so it can translate. */
+  coversLabel: "What it may cover",
   covers: [
     "Gulf market developments",
     "Critical minerals",
@@ -154,6 +156,8 @@ export const gulfBriefDetail = {
   paragraphs: [
     "Short enough to read in the time between two meetings, and written to be useful to someone who follows the region rather than to someone encountering it for the first time.",
   ],
+  /* Moved out of the format section's JSX unchanged, so it can translate. */
+  coversLabel: "What it may cover",
   covers: [
     "Regional market developments",
     "Sector news",
@@ -237,6 +241,8 @@ export const fiveQuestionsDetail = {
 /** Sector Notes: the research-shaped format. */
 export const sectorNotesDetail = {
   subline: "Longer-form written briefings on sectors relevant to Gulf capital markets.",
+  examinesLabel: "What a note may examine",
+  categoriesLabel: "Sample topic categories",
   examines: [
     "Market structure",
     "Regional relevance",
@@ -261,6 +267,7 @@ export const sectorNotesDetail = {
 export const fromTheRoomDetail = {
   subline: "Short films and programme content captured around Gulf Connect engagements.",
   /* COMPLIANCE: environment and discussion, never outcome. */
+  showsLabel: "What it can show",
   shows: [
     "Programme environment",
     "Management communication",

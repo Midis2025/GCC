@@ -4,7 +4,9 @@ import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { segmentPhotos } from "@/data/imagery";
-import { coverage } from "@/data/investors-depth";
+import { pick } from "@/content";
+import { coverageAr } from "@/content/ar/for-investors";
+import { coverage as coverageEn } from "@/data/investors-depth";
 
 /** The frame for each sector. Shared with the homepage mosaic on purpose. */
 const SECTOR_PHOTO = {
@@ -38,7 +40,9 @@ const SECTOR_PHOTO = {
  * advice - three sector panels on a page addressed to investors is the easiest
  * arrangement here to mistake for coverage with a view. It is not collapsible.
  */
-export function CoverageSectors() {
+export async function CoverageSectors() {
+  const coverage = await pick({ en: coverageEn, ar: coverageAr });
+
   return (
     <Section spacing="lg" tone="muted" aria-labelledby="investors-coverage">
       <div className="grid gap-x-16 gap-y-9 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end lg:gap-x-24">

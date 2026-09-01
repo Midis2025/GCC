@@ -294,6 +294,8 @@ export const gulfProgramme = {
       "Every month the client receives a written report covering the meetings held, the content published and the outlets pitched. It records the work carried out, not an interpretation of its effect.",
       "Clients renew on evidence of work. Saying so plainly signals that we expect to be measured on it.",
     ],
+    /* Moved out of the page's JSX unchanged, so it can be translated. */
+    itemsLabel: "Each monthly report records",
     items: [
       "Meetings held, and with whom",
       "Content published, by format",
@@ -399,6 +401,8 @@ export const mediaArabic = {
       "Almost no international small or mid-cap company publishes or appears in Arabic. For a firm addressing Gulf audiences that is the clearest gap there is, and closing it is a discipline rather than a translation task.",
       "A general translation agency is not adequate for a listed company's disclosure. Terminology carries specific meaning in a regulatory context, and a term rendered loosely in Arabic can say something the English original does not. Gulf Connect works with certified financial translation and reviews terminology against the company's own reporting.",
     ],
+    /* Moved out of the page's JSX unchanged, so it can be translated. */
+    itemsLabel: "What this covers",
     items: [
       "Certified financial translation",
       "Arabic-language corporate communication",

@@ -1,5 +1,4 @@
-import Link from "next/link";
-
+import { LocaleLink } from "@/components/layout/LocaleLink";
 import { Section } from "@/components/sections/Section";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -7,15 +6,24 @@ import { Figure } from "@/components/ui/Figure";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { capabilityPhotos, insightPhotos } from "@/data/imagery";
-import { getFormat, itemsByFormat, type InsightFormatId } from "@/data/insight";
+import { currentLocale, insightFormat, pick } from "@/content";
 import {
-  editorialThemes,
-  fiveQuestionsDetail,
-  fromTheRoomDetail,
-  gulfBriefDetail,
-  menasDigitalNewsDetail,
-  sectorNotesDetail,
+  editorialThemesAr,
+  fiveQuestionsDetailAr,
+  fromTheRoomDetailAr,
+  gulfBriefDetailAr,
+  menasDigitalNewsDetailAr,
+  sectorNotesDetailAr,
+} from "@/content/ar/insight-page";
+import { capabilityPhotos, insightPhotos } from "@/data/imagery";
+import { itemsByFormat, type InsightFormatId } from "@/data/insight";
+import {
+  editorialThemes as editorialThemesEn,
+  fiveQuestionsDetail as fiveQuestionsDetailEn,
+  fromTheRoomDetail as fromTheRoomDetailEn,
+  gulfBriefDetail as gulfBriefDetailEn,
+  menasDigitalNewsDetail as menasDigitalNewsDetailEn,
+  sectorNotesDetail as sectorNotesDetailEn,
 } from "@/data/insight-page";
 import { formatDate } from "@/lib/utils";
 
@@ -29,15 +37,22 @@ import { formatDate } from "@/lib/utils";
  * The moment real items exist they appear here under their format, with no
  * other change to the page.
  */
-function PublishedItems({ format }: { format: InsightFormatId }) {
+async function PublishedItems({ format }: { format: InsightFormatId }) {
   const items = itemsByFormat(format);
   if (items.length === 0) return null;
+
+  /*
+    The published date is set in the language of the page. Nothing else about
+    an item is localised here - the title comes from the item itself, and an
+    Arabic edition of an item is a separate record: see `InsightItem.arabic`.
+  */
+  const locale = await currentLocale();
 
   return (
     <ul className="mt-10 border-t border-(--color-border)">
       {items.map((item) => (
         <li key={item.slug} className="border-b border-(--color-border)">
-          <Link
+          <LocaleLink
             href={`/insight/${item.slug}`}
             className="group flex flex-col gap-1.5 py-5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring) sm:flex-row sm:items-baseline sm:justify-between sm:gap-8"
           >
@@ -48,9 +63,9 @@ function PublishedItems({ format }: { format: InsightFormatId }) {
               dateTime={item.date}
               className="shrink-0 text-sm text-(--color-foreground-subtle)"
             >
-              {formatDate(item.date)}
+              {formatDate(item.date, locale)}
             </time>
-          </Link>
+          </LocaleLink>
         </li>
       ))}
     </ul>
@@ -91,10 +106,14 @@ function PublishedItems({ format }: { format: InsightFormatId }) {
  * action that goes nowhere is worse than none, and this is the only link on
  * the page whose destination is still open.
  */
-export function MenasDigitalNewsSection() {
-  const format = getFormat("menas-digital-news");
+export async function MenasDigitalNewsSection() {
+  const format = await insightFormat("menas-digital-news");
   if (!format) return null;
 
+  const menasDigitalNewsDetail = await pick({
+    en: menasDigitalNewsDetailEn,
+    ar: menasDigitalNewsDetailAr,
+  });
   const { cta } = menasDigitalNewsDetail;
 
   return (
@@ -137,7 +156,7 @@ export function MenasDigitalNewsSection() {
         <div className="lg:pt-3">
           <Reveal delay={180}>
             <p className="text-label uppercase text-(--color-foreground-subtle)">
-              What it may cover
+              {menasDigitalNewsDetail.coversLabel}
             </p>
             <ul className="mt-5 grid gap-x-8 gap-y-2.5 sm:grid-cols-2">
               {menasDigitalNewsDetail.covers.map((entry) => (
@@ -193,9 +212,11 @@ export function MenasDigitalNewsSection() {
  * single-sequence layout carried - so those links keep working across this
  * redesign.
  */
-export function GulfBriefSection() {
-  const format = getFormat("gulf-brief");
+export async function GulfBriefSection() {
+  const format = await insightFormat("gulf-brief");
   if (!format) return null;
+
+  const gulfBriefDetail = await pick({ en: gulfBriefDetailEn, ar: gulfBriefDetailAr });
 
   return (
     <Section
@@ -245,7 +266,7 @@ export function GulfBriefSection() {
 
           <Reveal delay={220}>
             <p className="mt-9 text-label uppercase text-(--color-foreground-subtle)">
-              What it may cover
+              {gulfBriefDetail.coversLabel}
             </p>
             <ul className="mt-5 grid gap-x-8 gap-y-2.5 sm:grid-cols-2">
               {gulfBriefDetail.covers.map((entry) => (
@@ -292,7 +313,9 @@ export function GulfBriefSection() {
  * list rather than under it. A qualifier below six headlines is read after the
  * headlines have already been taken as a contents page.
  */
-export function EditorialThemesSection() {
+export async function EditorialThemesSection() {
+  const editorialThemes = await pick({ en: editorialThemesEn, ar: editorialThemesAr });
+
   return (
     <Section
       spacing="lg"
@@ -378,9 +401,14 @@ export function EditorialThemesSection() {
  * clicked. When films exist, the still becomes a link and the indicator can
  * come with it.
  */
-export function FiveQuestionsSection() {
-  const format = getFormat("five-questions");
+export async function FiveQuestionsSection() {
+  const format = await insightFormat("five-questions");
   if (!format) return null;
+
+  const fiveQuestionsDetail = await pick({
+    en: fiveQuestionsDetailEn,
+    ar: fiveQuestionsDetailAr,
+  });
 
   return (
     <Section
@@ -463,7 +491,12 @@ export function FiveQuestionsSection() {
  * It follows the dark Five Questions section and precedes the cream Sector
  * Notes, and its whole job is to be the quiet moment between two dense ones.
  */
-export function FixedFormatStatement() {
+export async function FixedFormatStatement() {
+  const fiveQuestionsDetail = await pick({
+    en: fiveQuestionsDetailEn,
+    ar: fiveQuestionsDetailAr,
+  });
+
   return (
     <Section spacing="lg" tone="muted" aria-labelledby="insight-consistency">
       <Reveal variant="mask">
@@ -500,9 +533,11 @@ export function FixedFormatStatement() {
  * this one is the long-form written briefing, and giving it a picture would
  * make it look like the others rather than like a document.
  */
-export function SectorNotesSection() {
-  const format = getFormat("sector-notes");
+export async function SectorNotesSection() {
+  const format = await insightFormat("sector-notes");
   if (!format) return null;
+
+  const sectorNotesDetail = await pick({ en: sectorNotesDetailEn, ar: sectorNotesDetailAr });
 
   return (
     <Section
@@ -539,7 +574,7 @@ export function SectorNotesSection() {
           {/* Sample topic CATEGORIES. Not report titles. */}
           <Reveal delay={220}>
             <p className="mt-10 text-label uppercase text-(--color-foreground-subtle)">
-              Sample topic categories
+              {sectorNotesDetail.categoriesLabel}
             </p>
             <ul className="mt-5 flex flex-wrap gap-x-3 gap-y-3">
               {sectorNotesDetail.categories.map((category) => (
@@ -557,7 +592,7 @@ export function SectorNotesSection() {
         <div>
           <Reveal delay={180}>
             <p className="text-label uppercase text-(--color-foreground-subtle)">
-              What a note may examine
+              {sectorNotesDetail.examinesLabel}
             </p>
           </Reveal>
 
@@ -625,9 +660,11 @@ export function SectorNotesSection() {
  * COMPLIANCE: `shows` lists environment, communication and discussion. Nothing
  * claims an investor outcome, and nothing may be added that does.
  */
-export function FromTheRoomSection() {
-  const format = getFormat("from-the-room");
+export async function FromTheRoomSection() {
+  const format = await insightFormat("from-the-room");
   if (!format) return null;
+
+  const fromTheRoomDetail = await pick({ en: fromTheRoomDetailEn, ar: fromTheRoomDetailAr });
 
   return (
     <section
@@ -645,7 +682,7 @@ export function FromTheRoomSection() {
       </div>
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[linear-gradient(104deg,rgba(12,20,29,0.96)_12%,rgba(12,20,29,0.86)_52%,rgba(12,20,29,0.62)_100%)]"
+        className="absolute inset-0 -z-10 bg-[linear-gradient(104deg,rgba(12,20,29,0.96)_12%,rgba(12,20,29,0.86)_52%,rgba(12,20,29,0.62)_100%)] rtl:bg-[linear-gradient(256deg,rgba(12,20,29,0.96)_12%,rgba(12,20,29,0.86)_52%,rgba(12,20,29,0.62)_100%)]"
       />
       <div aria-hidden="true" className="grain absolute inset-0 -z-10" />
       <div
@@ -678,7 +715,7 @@ export function FromTheRoomSection() {
           <div className="lg:pt-3">
             <Reveal delay={200}>
               <p className="text-label uppercase text-(--color-foreground-subtle)">
-                What it can show
+                {fromTheRoomDetail.showsLabel}
               </p>
             </Reveal>
 

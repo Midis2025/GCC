@@ -10,14 +10,19 @@ import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { capabilityPhotos } from "@/data/imagery";
-import { mediaArabic as page } from "@/data/service-lines";
-import { mediaStrategy } from "@/data/services-depth";
+import { pick } from "@/content";
+import { mediaArabicAr } from "@/content/ar/service-lines";
+import { mediaStrategyAr } from "@/content/ar/services-depth";
+import { mediaArabic as pageEn } from "@/data/service-lines";
+import { gulfMarketsAr } from "@/content/ar/homepage";
+import { gulfMarkets as gulfMarketsEn } from "@/data/homepage";
+import { mediaStrategy as mediaStrategyEn } from "@/data/services-depth";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({
-  title: page.title,
-  path: `/what-we-do/${page.slug}`,
-  description: page.metaDescription,
+  title: pageEn.title,
+  path: `/what-we-do/${pageEn.slug}`,
+  description: pageEn.metaDescription,
 });
 
 /**
@@ -38,7 +43,12 @@ export const metadata = createMetadata({
  * Design: existing system. The hero reuses the broadcast frame already in the
  * library; the three layers use the same indexed-panel treatment as elsewhere.
  */
-export default function MediaArabicPage() {
+export default async function MediaArabicPage() {
+  const page = await pick({ en: pageEn, ar: mediaArabicAr });
+  const mediaStrategy = await pick({ en: mediaStrategyEn, ar: mediaStrategyAr });
+  /* The market list is chrome-adjacent copy shared with the footer and About. */
+  const gulfMarkets = await pick({ en: gulfMarketsEn, ar: gulfMarketsAr });
+
   return (
     <>
       <PageHero
@@ -118,6 +128,7 @@ export default function MediaArabicPage() {
         paragraphs={page.reach.paragraphs}
         selectorLabel={page.reach.selectorLabel}
         disclaimer={page.reach.disclaimer}
+        markets={gulfMarkets}
         tone="muted"
       />
 
@@ -210,7 +221,7 @@ export default function MediaArabicPage() {
 
           <Reveal delay={160} className="lg:pt-3">
             <p className="text-label uppercase text-(--color-foreground-subtle)">
-              What this covers
+              {page.arabic.itemsLabel}
             </p>
             <div className="mt-6">
               <CheckList items={page.arabic.items} columns={1} />

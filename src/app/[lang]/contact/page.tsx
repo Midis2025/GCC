@@ -7,9 +7,13 @@ import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
+import { getDictionary, pick } from "@/content";
+import { optionLabel } from "@/content/dictionary";
+import { contactContentAr } from "@/content/ar/contact";
+import { gulfMarketsAr } from "@/content/ar/homepage";
 import { backdrops } from "@/data/imagery";
-import { contactContent, areaOfInterestOptions } from "@/data/contact";
-import { gulfMarkets } from "@/data/homepage";
+import { contactContent as contactContentEn, areaOfInterestOptions } from "@/data/contact";
+import { gulfMarkets as gulfMarketsEn } from "@/data/homepage";
 import { contactConfig, siteConfig } from "@/data/site";
 import { createMetadata } from "@/lib/seo";
 
@@ -33,7 +37,17 @@ export const metadata = createMetadata({
  * always shown; every other contact detail is conditional on `data/site.ts`.
  * Nothing is invented, and no empty rows are rendered.
  */
-export default function ContactPage() {
+export default async function ContactPage() {
+  const contactContent = await pick({ en: contactContentEn, ar: contactContentAr });
+  const gulfMarkets = await pick({ en: gulfMarketsEn, ar: gulfMarketsAr });
+
+  /*
+    The row headings - Office, Email, Telephone - and the market list's own
+    heading are shared chrome: the footer names the same three things. Reading
+    them from one place is what keeps the two agreeing in either language.
+  */
+  const t = await getDictionary();
+
   /*
     The details block.
 
@@ -108,7 +122,7 @@ export default function ContactPage() {
         */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(104deg,rgba(9,14,21,0.95)_6%,rgba(10,16,24,0.86)_42%,rgba(12,20,29,0.58)_100%)]"
+          className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(104deg,rgba(9,14,21,0.95)_6%,rgba(10,16,24,0.86)_42%,rgba(12,20,29,0.58)_100%)] rtl:bg-[linear-gradient(256deg,rgba(9,14,21,0.95)_6%,rgba(10,16,24,0.86)_42%,rgba(12,20,29,0.58)_100%)]"
         />
         {/* Settles the top and bottom edges into the sections either side. */}
         <div
@@ -133,7 +147,7 @@ export default function ContactPage() {
             <Reveal>
               <SectionLabel>{contactContent.introHeading}</SectionLabel>
               <Heading id="contact-heading" level={2} size="h2" className="mt-5 max-w-[16ch]">
-                Tell us where the company stands today.
+                {contactContent.introTitle}
               </Heading>
 
               <div className="mt-8 flex flex-col gap-5">
@@ -159,7 +173,7 @@ export default function ContactPage() {
               <dl className="mt-12 flex flex-col gap-6 border-t border-(--color-border) pt-8">
                 <div>
                   <dt className="text-label uppercase text-(--color-foreground-subtle)">
-                    Office
+                    {t.footer.office}
                   </dt>
                   <dd className="mt-2">
                     <address className="text-[1.0625rem] not-italic leading-relaxed">
@@ -169,8 +183,15 @@ export default function ContactPage() {
                         The street address if the client publishes one, and
                         the city otherwise. Never both - `locality` is the
                         city the address would be in.
+
+                        The city comes from the dictionary rather than from
+                        `contactConfig`, because a place name is copy: the
+                        footer already prints "دبي، الإمارات العربية المتحدة"
+                        on this same page, and the two must agree. A street
+                        address, when one is supplied, is a postal address and
+                        is printed exactly as the client gives it.
                       */}
-                      {contactConfig.address || contactConfig.locality}
+                      {contactConfig.address || (contactConfig.locality && t.footer.locality)}
                     </address>
                   </dd>
                 </div>
@@ -178,7 +199,7 @@ export default function ContactPage() {
                 {contactConfig.email && (
                   <div>
                     <dt className="text-label uppercase text-(--color-foreground-subtle)">
-                      Email
+                      {t.footer.email}
                     </dt>
                     <dd className="mt-2">
                       <a
@@ -194,7 +215,7 @@ export default function ContactPage() {
                 {contactConfig.phone && (
                   <div>
                     <dt className="text-label uppercase text-(--color-foreground-subtle)">
-                      Telephone
+                      {t.footer.telephone}
                     </dt>
                     <dd className="mt-2">
                       <a
@@ -219,11 +240,10 @@ export default function ContactPage() {
                 {!hasDirectDetails && (
                   <div>
                     <dt className="text-label uppercase text-(--color-foreground-subtle)">
-                      Email and telephone
+                      {contactContent.pendingDetails.label}
                     </dt>
                     <dd className="mt-2 max-w-[46ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-subtle)">
-                      Please use the enquiry form. A direct address and number will be published
-                      here once confirmed.
+                      {contactContent.pendingDetails.body}
                     </dd>
                   </div>
                 )}
@@ -233,7 +253,7 @@ export default function ContactPage() {
             <Reveal delay={140}>
               <div className="mt-12 border-t border-(--color-border) pt-8">
                 <h3 className="text-label uppercase text-(--color-foreground-subtle)">
-                  Areas of interest
+                  {contactContent.areasHeading}
                 </h3>
                 {/*
                   Still the same five labels, still tags. What changes is that
@@ -247,13 +267,18 @@ export default function ContactPage() {
                       key={option.value}
                       className="border border-(--color-border) bg-white/[0.04] px-3.5 py-2 text-sm text-(--color-foreground-muted) backdrop-blur-[2px]"
                     >
-                      {option.label}
+                      {/*
+                        The tag reads the same label the select in the form
+                        beside it reads, keyed by the value the enquiry
+                        submits. One source for both.
+                      */}
+                      {optionLabel(t.forms.options.areaOfInterest, option.value, option.label)}
                     </li>
                   ))}
                 </ul>
 
                 <h3 className="mt-9 text-label uppercase text-(--color-foreground-subtle)">
-                  Markets
+                  {t.footer.markets}
                 </h3>
                 {/*
                   The markets were a row of words with gaps between them, which
@@ -262,7 +287,7 @@ export default function ContactPage() {
                   category list, so the two agree.
                 */}
                 <ul className="mt-5 flex flex-wrap gap-x-6 gap-y-2.5">
-                  {[...gulfMarkets.map((m) => m.label), "International"].map((label) => (
+                  {[...gulfMarkets.map((m) => m.label), t.footer.international].map((label) => (
                     <li
                       key={label}
                       className="flex items-center gap-2.5 text-sm text-(--color-foreground-muted)"
@@ -299,6 +324,7 @@ export default function ContactPage() {
               className={[
                 "relative isolate border border-white/12 p-6 backdrop-blur-[14px] sm:p-9 lg:p-10",
                 "bg-[linear-gradient(152deg,rgba(21,32,44,0.9)_0%,rgba(12,19,28,0.82)_52%,rgba(9,15,22,0.9)_100%)]",
+                "rtl:bg-[linear-gradient(208deg,rgba(21,32,44,0.9)_0%,rgba(12,19,28,0.82)_52%,rgba(9,15,22,0.9)_100%)]",
                 "shadow-[0_40px_90px_-40px_rgba(0,0,0,0.9)]",
               ].join(" ")}
             >

@@ -1,12 +1,12 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { LocaleLink } from "@/components/layout/LocaleLink";
 import { CTASection } from "@/components/sections/CTASection";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
-import { getFormat, getInsightItem, insightItems } from "@/data/insight";
-import { clientDisclosureTemplate, footerDisclosure } from "@/data/site";
+import { currentLocale, getDictionary, insightFormat } from "@/content";
+import { getInsightItem, insightItems } from "@/data/insight";
 import { formatDate } from "@/lib/utils";
 import { createMetadata } from "@/lib/seo";
 
@@ -53,7 +53,22 @@ export default async function InsightItemPage({ params }: PageProps<"/[lang]/ins
   const item = getInsightItem(slug);
   if (!item) notFound();
 
-  const format = getFormat(item.format);
+  const format = await insightFormat(item.format);
+  const locale = await currentLocale();
+
+  /*
+    The three standing lines on an item - the author label, the disclosure
+    heading and both disclosure paragraphs - come from the chrome dictionary.
+
+    They were read from `data/site.ts` before, which is where the approved
+    English still lives and where structured data still reads them; the
+    dictionary holds the same English words plus their Arabic.
+
+    COMPLIANCE: `clientDisclosure` and `footer.disclosure` are the two
+    statements that keep an item on the right side of a disclosure question.
+    Both are rendered unconditionally on every item, exactly as before.
+  */
+  const t = await getDictionary();
 
   return (
     <>
@@ -72,13 +87,13 @@ export default async function InsightItemPage({ params }: PageProps<"/[lang]/ins
           <Container className="relative z-10">
             <p className="flex flex-wrap items-center gap-x-4 gap-y-2 text-label uppercase text-(--color-accent)">
               {format && (
-                <Link href={`/insight#${format.id}`} className="link-underline">
+                <LocaleLink href={`/insight#${format.id}`} className="link-underline">
                   {format.name}
-                </Link>
+                </LocaleLink>
               )}
               <span aria-hidden="true" className="h-px w-8 bg-(--color-accent)/50" />
               <time dateTime={item.date} className="text-(--color-foreground-subtle)">
-                {formatDate(item.date)}
+                {formatDate(item.date, locale)}
               </time>
             </p>
 
@@ -86,7 +101,9 @@ export default async function InsightItemPage({ params }: PageProps<"/[lang]/ins
               {item.title}
             </Heading>
 
-            <p className="mt-6 text-sm text-(--color-foreground-subtle)">By {item.author}</p>
+            <p className="mt-6 text-sm text-(--color-foreground-subtle)">
+              {t.insight.by} {item.author}
+            </p>
           </Container>
         </header>
 
@@ -107,9 +124,12 @@ export default async function InsightItemPage({ params }: PageProps<"/[lang]/ins
           */}
           {item.clientDisclosure && (
             <div className="mb-12 border-s-2 border-(--color-accent) bg-(--color-surface-muted) px-6 py-5">
-              <p className="text-label uppercase text-(--color-accent)">Disclosure</p>
+              <p className="text-label uppercase text-(--color-accent)">{t.insight.disclosure}</p>
               <p className="mt-3 text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
-                {clientDisclosureTemplate.replace("{company}", item.clientName ?? "This company")}
+                {t.insight.clientDisclosure.replace(
+                  "{company}",
+                  item.clientName ?? t.insight.thisCompany,
+                )}
               </p>
             </div>
           )}
@@ -132,7 +152,7 @@ export default async function InsightItemPage({ params }: PageProps<"/[lang]/ins
           */}
           <div className="mt-16 border-t border-(--color-border) pt-8">
             <p className="text-sm leading-relaxed text-(--color-foreground-subtle)">
-              {footerDisclosure}
+              {t.footer.disclosure}
             </p>
           </div>
         </Container>

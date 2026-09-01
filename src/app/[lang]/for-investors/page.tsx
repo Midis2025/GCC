@@ -1,5 +1,4 @@
 import NextImage from "next/image";
-import Link from "next/link";
 
 import { CoverageSectors } from "@/components/sections/CoverageSectors";
 import { GlobalConnection } from "@/components/sections/GlobalConnection";
@@ -8,21 +7,39 @@ import { InvestorForm } from "@/components/sections/InvestorForm";
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
 import { StageSequence } from "@/components/sections/StageSequence";
-import { briefingProcess } from "@/data/investors-depth";
-import { investorsMap } from "@/data/world-connections";
+import { LocaleLink } from "@/components/layout/LocaleLink";
+import { currentLocale, getDictionary, pick } from "@/content";
+import { optionLabel } from "@/content/dictionary";
+import {
+  briefingProcessAr,
+  forInvestorsHeroAr,
+  forInvestorsIntroAr,
+  investorAssuranceAr,
+  investorBenefitsAr,
+  investorsReachAr,
+  registerPanelContentAr,
+  upcomingBriefingsContentAr,
+  whoRegistersContentAr,
+} from "@/content/ar/for-investors";
+import { investorsMapAr } from "@/content/ar/world-connections";
+import { briefingProcess as briefingProcessEn } from "@/data/investors-depth";
+import { investorsMap as investorsMapEn, narrowMap } from "@/data/world-connections";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { backdrops } from "@/data/imagery";
 import {
   GENERAL_CONTENT_ONLY,
-  forInvestorsHero,
-  forInvestorsIntro,
-  investorAssurance,
-  investorBenefits,
+  forInvestorsHero as forInvestorsHeroEn,
+  forInvestorsIntro as forInvestorsIntroEn,
+  investorAssurance as investorAssuranceEn,
+  investorBenefits as investorBenefitsEn,
   investorCategories,
+  investorsReach as investorsReachEn,
+  registerPanelContent as registerPanelContentEn,
   upcomingBriefings,
-  upcomingBriefingsContent,
+  upcomingBriefingsContent as upcomingBriefingsContentEn,
+  whoRegistersContent as whoRegistersContentEn,
 } from "@/data/for-investors";
 import { createMetadata } from "@/lib/seo";
 
@@ -53,7 +70,30 @@ export const metadata = createMetadata({
  * and inventing a briefing to fill it would be inventing a business fact.
  * Add real entries to the data file and the section appears.
  */
-export default function ForInvestorsPage() {
+export default async function ForInvestorsPage() {
+  const forInvestorsHero = await pick({ en: forInvestorsHeroEn, ar: forInvestorsHeroAr });
+  const forInvestorsIntro = await pick({ en: forInvestorsIntroEn, ar: forInvestorsIntroAr });
+  const investorBenefits = await pick({ en: investorBenefitsEn, ar: investorBenefitsAr });
+  const investorAssurance = await pick({ en: investorAssuranceEn, ar: investorAssuranceAr });
+  const investorsReach = await pick({ en: investorsReachEn, ar: investorsReachAr });
+  const whoRegisters = await pick({ en: whoRegistersContentEn, ar: whoRegistersContentAr });
+  const registerPanel = await pick({ en: registerPanelContentEn, ar: registerPanelContentAr });
+  const upcomingBriefingsContent = await pick({
+    en: upcomingBriefingsContentEn,
+    ar: upcomingBriefingsContentAr,
+  });
+  const briefingProcess = await pick({ en: briefingProcessEn, ar: briefingProcessAr });
+  const investorsMap = narrowMap(await pick({ en: investorsMapEn, ar: investorsMapAr }));
+
+  /*
+    The category names come from the chrome dictionary rather than from a
+    content module, keyed by the value each option submits - the same lookup
+    the registration form below uses, so the list a reader sees here and the
+    select they meet in the form can never disagree.
+  */
+  const t = await getDictionary();
+  const locale = await currentLocale();
+
   return (
     <>
       <PageHero
@@ -131,12 +171,9 @@ export default function ForInvestorsPage() {
       */}
       <GlobalConnection
         id="investors-reach"
-        label="Reach"
-        heading="Where the Companies Come From"
-        paragraphs={[
-          "The companies convened for briefings are international - listed small and mid-cap businesses working in critical minerals, AI and data infrastructure, and life sciences, based well outside the region.",
-          "Bringing them into a room with Gulf audiences is the whole of the exercise. Registration is what puts a professional investor on the list for those sessions.",
-        ]}
+        label={investorsReach.label}
+        heading={investorsReach.heading}
+        paragraphs={investorsReach.paragraphs}
         map={investorsMap}
       />
 
@@ -162,16 +199,15 @@ export default function ForInvestorsPage() {
       <Section spacing="md" aria-labelledby="investors-audience">
         <div className="grid gap-x-16 gap-y-8 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-end">
           <Reveal>
-            <SectionLabel>Who Registers</SectionLabel>
+            <SectionLabel>{whoRegisters.label}</SectionLabel>
             <Heading id="investors-audience" level={2} size="h2" className="mt-5 max-w-[14ch]">
-              A Professional List
+              {whoRegisters.heading}
             </Heading>
           </Reveal>
 
           <Reveal delay={120}>
             <p className="max-w-[58ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-subtle) lg:pb-2">
-              The categories the registration form asks you to select from. Registration is free,
-              and the category you choose determines what you are sent.
+              {whoRegisters.note}
             </p>
           </Reveal>
         </div>
@@ -192,7 +228,13 @@ export default function ForInvestorsPage() {
                     >
                       {String(index + 1).padStart(2, "0")}
                     </span>
-                    <span className="text-[1.0625rem] leading-snug">{category.label}</span>
+                    <span className="text-[1.0625rem] leading-snug">
+                      {optionLabel(
+                        t.forms.options.investorCategory,
+                        category.value,
+                        category.label,
+                      )}
+                    </span>
                   </div>
                 </Reveal>
               </li>
@@ -237,11 +279,19 @@ export default function ForInvestorsPage() {
                   dateTime={briefing.date}
                   className="num text-[0.9375rem] text-(--color-accent)"
                 >
-                  {new Intl.DateTimeFormat("en-GB", {
+                  {/*
+                    The date is formatted in the language being read: an
+                    Arabic page gets Arabic month names, from the same
+                    `Intl` call. `ar-AE` rather than a bare `ar` so the
+                    Gulf month names are used and the numerals stay Western,
+                    matching the rest of the site.
+                  */}
+                  {new Intl.DateTimeFormat(locale === "ar" ? "ar-AE" : "en-GB", {
                     day: "numeric",
                     month: "long",
                     year: "numeric",
                     timeZone: "UTC",
+                    numberingSystem: "latn",
                   }).format(new Date(briefing.date))}
                 </time>
 
@@ -268,13 +318,13 @@ export default function ForInvestorsPage() {
                     {briefing.city} &middot; {briefing.format}
                   </p>
 
-                  <Link
+                  <LocaleLink
                     href={upcomingBriefingsContent.cta.href}
                     className="link-underline inline-block py-1 text-[0.9375rem] text-(--color-foreground) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
                   >
                     {upcomingBriefingsContent.cta.label}
                     <span className="sr-only"> — {briefing.title}</span>
-                  </Link>
+                  </LocaleLink>
                 </div>
               </li>
             ))}
@@ -346,20 +396,20 @@ export default function ForInvestorsPage() {
             */}
             <div
               aria-hidden="true"
-              className="absolute inset-0 -z-10 bg-[linear-gradient(160deg,rgba(12,20,29,0.94)_18%,rgba(12,20,29,0.88)_58%,rgba(12,20,29,0.72)_100%)]"
+              className="absolute inset-0 -z-10 bg-[linear-gradient(160deg,rgba(12,20,29,0.94)_18%,rgba(12,20,29,0.88)_58%,rgba(12,20,29,0.72)_100%)] rtl:bg-[linear-gradient(200deg,rgba(12,20,29,0.94)_18%,rgba(12,20,29,0.88)_58%,rgba(12,20,29,0.72)_100%)]"
             />
             <div aria-hidden="true" className="grain absolute inset-0 -z-10" />
 
             <div className="px-8 py-12 sm:px-10 sm:py-14 lg:px-12 lg:py-16">
               <Reveal>
-                <SectionLabel>Register</SectionLabel>
+                <SectionLabel>{registerPanel.label}</SectionLabel>
                 <Heading
                   id="investors-register"
                   level={2}
                   size="display"
                   className="mt-5 max-w-[12ch]"
                 >
-                  Join the List
+                  {registerPanel.heading}
                 </Heading>
               </Reveal>
 

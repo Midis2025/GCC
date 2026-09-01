@@ -2,7 +2,12 @@ import { Section } from "@/components/sections/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { aboutPurpose } from "@/data/about";
+import { pick } from "@/content";
+import { aboutPurposeAr, aboutPurposeCriteriaLabelAr } from "@/content/ar/about";
+import {
+  aboutPurpose as aboutPurposeEn,
+  aboutPurposeCriteriaLabel as aboutPurposeCriteriaLabelEn,
+} from "@/data/about";
 
 /**
  * Purpose.
@@ -22,7 +27,13 @@ import { aboutPurpose } from "@/data/about";
  * They reveal one after another as the section enters view, which is the only
  * motion in here.
  */
-export function AboutPurpose() {
+export async function AboutPurpose() {
+  const aboutPurpose = await pick({ en: aboutPurposeEn, ar: aboutPurposeAr });
+  const criteriaLabel = await pick({
+    en: aboutPurposeCriteriaLabelEn,
+    ar: aboutPurposeCriteriaLabelAr,
+  });
+
   return (
     <Section
       spacing="lg"
@@ -74,7 +85,7 @@ export function AboutPurpose() {
         <div className="lg:pt-2">
           <Reveal delay={200}>
             <p className="text-label uppercase text-(--color-foreground-subtle)">
-              What the market weighs
+              {criteriaLabel}
             </p>
           </Reveal>
 

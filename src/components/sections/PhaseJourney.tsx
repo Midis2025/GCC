@@ -2,7 +2,9 @@ import { Section } from "@/components/sections/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { roadshowPhases } from "@/data/services-depth";
+import { pick } from "@/content";
+import { roadshowPhasesAr } from "@/content/ar/services-depth";
+import { roadshowPhases as roadshowPhasesEn } from "@/data/services-depth";
 
 /**
  * ============================================================================
@@ -25,7 +27,9 @@ import { roadshowPhases } from "@/data/services-depth";
  * COMPLIANCE: every item is work performed or a document delivered. Nothing
  * here is an outcome - see the header of `data/services-depth.ts`.
  */
-export function PhaseJourney() {
+export async function PhaseJourney() {
+  const roadshowPhases = await pick({ en: roadshowPhasesEn, ar: roadshowPhasesAr });
+
   return (
     <Section spacing="lg" tone="muted" aria-labelledby="roadshow-phases">
       <div className="grid gap-x-16 gap-y-9 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end lg:gap-x-24">

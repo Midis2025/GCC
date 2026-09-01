@@ -18,6 +18,8 @@ export const ui: Dictionary = {
   },
 
   nav: {
+    /* Verbatim from the aria-label in `Logo`. */
+    homeLink: "{wordmark} - home",
     primary: "Primary",
     mobile: "Mobile",
     siteMenu: "Site menu",
@@ -48,6 +50,9 @@ export const ui: Dictionary = {
       company: "Company",
       forInvestors: "For Investors",
     },
+    /* Verbatim from `siteConfig.shortDescription` in data/site.ts. */
+    description: "Investor communications, events and media services for Gulf capital markets.",
+    markets: "Markets",
     joinTheList: "Join the list",
     email: "Email",
     telephone: "Telephone",
@@ -75,10 +80,70 @@ export const ui: Dictionary = {
     reject: "Reject non-essential",
   },
 
+  /* Verbatim from `MAP_DENIAL` in `components/sections/GlobalConnection`. */
+  maps: {
+    denial:
+      "Connections shown represent cross-border company and market connectivity. They do not represent offices, registrations, licences or relationships in any jurisdiction.",
+  },
+
   forms: {
     optional: "Optional",
     required: "(required)",
     submitting: "Submitting…",
+    /* Verbatim from `ContactRouter`. */
+    audience: {
+      legend: "Who is enquiring",
+      company: "I represent a company",
+      investor: "I am an investor",
+    },
+    /*
+      Labels lifted verbatim from `data/contact.ts` and
+      `data/for-investors.ts`, keyed by the value each option submits. The
+      values are backend identifiers and are not repeated here as copy - they
+      are the keys.
+    */
+    options: {
+      areaOfInterest: {
+        "investor-roadshows": "Investor Roadshows",
+        "gulf-programme": "The Gulf Programme",
+        "media-arabic-communications": "Media & Arabic Communications",
+        advisory: "Advisory",
+        general: "General Enquiry",
+      },
+      market: {
+        ae: "United Arab Emirates",
+        sa: "Saudi Arabia",
+        qa: "Qatar",
+        kw: "Kuwait",
+        bh: "Bahrain",
+        om: "Oman",
+        intl: "Other international market",
+      },
+      investorCategory: {
+        institution: "Institution",
+        "asset-manager": "Asset Manager",
+        "family-office": "Family Office",
+        "private-bank-broker": "Private Bank or Broker",
+        "qualified-private-investor": "Qualified Private Investor",
+        other: "Other",
+      },
+      investorSector: {
+        "Critical minerals": "Critical minerals",
+        "AI and data infrastructure": "AI and data infrastructure",
+        "Life sciences": "Life sciences",
+      },
+      preferredTime: {
+        "09:00 AM": "09:00 AM",
+        "10:00 AM": "10:00 AM",
+        "11:00 AM": "11:00 AM",
+        "12:00 PM": "12:00 PM",
+        "01:00 PM": "01:00 PM",
+        "02:00 PM": "02:00 PM",
+        "03:00 PM": "03:00 PM",
+        "04:00 PM": "04:00 PM",
+        "05:00 PM": "05:00 PM",
+      },
+    },
     company: {
       badge: "Company Enquiry",
       companyName: "Company name",
@@ -168,6 +233,8 @@ export const ui: Dictionary = {
     disclosure: "Disclosure",
     clientDisclosure:
       "{company} is a client of Gulf Connect Consultancy FZCO and has paid Gulf Connect a fixed professional fee for communications services.",
+    /* Verbatim from the fallback in the Insight item template. */
+    thisCompany: "This company",
     allInsights: "All insights",
   },
 };

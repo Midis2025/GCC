@@ -77,6 +77,15 @@ export interface Dictionary {
   };
 
   nav: {
+    /**
+     * The logo`s accessible name.
+     *
+     * A template: `{wordmark}` is replaced with `siteConfig.wordmark`, which
+     * is the name set in the artwork and is never translated. Only the word
+     * around it changes, so a screen reader in either language announces the
+     * same mark and the correct destination.
+     */
+    homeLink: string;
     primary: string;
     mobile: string;
     siteMenu: string;
@@ -103,6 +112,18 @@ export interface Dictionary {
 
   footer: {
     groups: { whatWeDo: string; company: string; forInvestors: string };
+    /**
+     * The one line under the wordmark.
+     *
+     * Chrome rather than page copy: it renders in the footer of every route.
+     * The English is `siteConfig.shortDescription` moved here verbatim, so it
+     * can have an Arabic sibling. The value in `data/site.ts` stays where it
+     * is and keeps feeding metadata and structured data, which are a separate
+     * concern from what a reader sees.
+     */
+    description: string;
+    /** Heading over the market list. Used in the footer and on Contact. */
+    markets: string;
     joinTheList: string;
     email: string;
     telephone: string;
@@ -136,10 +157,74 @@ export interface Dictionary {
     reject: string;
   };
 
+  /**
+   * The standing denial under every map surface.
+   *
+   * Four sections across three pages draw a map, and every one of them carries
+   * this line. It lives here rather than in four content modules so the four
+   * cannot drift apart in either language.
+   *
+   * COMPLIANCE: a line on a map means cross-border company and market
+   * connectivity and nothing else - not an office, a registration, a licence
+   * or a relationship. Do not shorten it and do not make it conditional.
+   */
+  maps: {
+    denial: string;
+  };
+
   forms: {
     optional: string;
     required: string;
     submitting: string;
+    /**
+     * The Contact toggle.
+     *
+     * The keys are the routing identifiers `?enquiry=` carries and are never
+     * translated; only the labels are.
+     */
+    audience: {
+      legend: string;
+      company: string;
+      investor: string;
+    };
+    /**
+     * ------------------------------------------------------------------------
+     * SELECT AND CHECKBOX OPTIONS
+     * ------------------------------------------------------------------------
+     * A LABEL LOOKUP, KEYED BY THE VALUE THAT IS SUBMITTED.
+     *
+     * This is the one part of the dictionary where getting the split wrong has
+     * consequences outside the page. Every option on this site is a pair: a
+     * `value` that goes to `/api/submit` and on to the CRM, and a `label` that
+     * a human reads. The values live in `data/contact.ts` and
+     * `data/for-investors.ts` and are IDENTICAL in both editions - a
+     * registration made in Arabic writes exactly the record an English one
+     * writes. Only the labels below change with the language.
+     *
+     * So the keys here are backend identifiers and must never be translated:
+     * `family-office`, `media-arabic-communications`, `ae`, `09:00 AM`. If a
+     * key is ever missing, the call site falls back to the English label from
+     * the data module rather than rendering an empty option.
+     */
+    options: {
+      /** Keys: the four service-line slugs, plus `general`. */
+      areaOfInterest: Record<string, string>;
+      /** Keys: `ae`, `sa`, `qa`, `kw`, `bh`, `om`, `intl`. */
+      market: Record<string, string>;
+      /**
+       * Keys: `institution`, `asset-manager`, `family-office`,
+       * `private-bank-broker`, `qualified-private-investor`, `other`.
+       *
+       * COMPLIANCE: `other` is a real answer with a consequence - those
+       * registrants receive general content only. Its label must stay a
+       * neutral "other", never something that reads as a decline.
+       */
+      investorCategory: Record<string, string>;
+      /** Keys: the three sector strings the checkboxes submit. */
+      investorSector: Record<string, string>;
+      /** Keys: the nine `hh:mm AM/PM` strings the select submits. */
+      preferredTime: Record<string, string>;
+    };
     company: {
       badge: string;
       companyName: string;
@@ -227,11 +312,36 @@ export interface Dictionary {
     by: string;
     disclosure: string;
     clientDisclosure: string;
+    /**
+     * Stands in for a company name in the client disclosure.
+     *
+     * The flag on an item is what decides whether the line renders, never the
+     * presence of a name - an item marked as client-involved but published
+     * without one must still carry the disclosure. This is what it says when
+     * the name is missing.
+     */
+    thisCompany: string;
     allInsights: string;
   };
 }
 
 export type DictionaryKey = keyof Dictionary;
+
+/**
+ * The label a reader sees for one option, given the value it submits.
+ *
+ * Falls back to the English label held beside the value in the data module
+ * rather than rendering an empty option. That is the same narrow, deliberate
+ * fallback `pick` uses: a missing translation should be visible as English,
+ * never as a blank line in a select.
+ */
+export function optionLabel(
+  labels: Record<string, string>,
+  value: string,
+  fallback: string,
+): string {
+  return labels[value] ?? fallback;
+}
 
 const dictionaries: Record<Locale, () => Promise<Dictionary>> = {
   en: () => import("@/content/en/ui").then((m) => m.ui),

@@ -1,5 +1,7 @@
-import Link from "next/link";
+"use client";
 
+import { LocaleLink } from "@/components/layout/LocaleLink";
+import { useLocale } from "@/components/layout/LocaleProvider";
 import { siteConfig } from "@/data/site";
 import { cn } from "@/lib/utils";
 
@@ -151,8 +153,24 @@ function LogoLockup({ className }: { className?: string }) {
  * that without it the artwork would be the thing that gives.
  */
 export function Logo({ className, size = "sm" }: LogoProps) {
+  const { t } = useLocale();
+
   return (
-    <Link
+    /*
+      `LocaleLink`, not `next/link`.
+
+      The lockup is the one control on every page, and pointing it at `/` sent
+      a reader on any Arabic page back to the ENGLISH home page - the language
+      preference was never lost, the link simply pointed out of it.
+      `LocaleLink` resolves `/` to `/ar` in Arabic and leaves it exactly as it
+      was in English.
+
+      THE ARTWORK IS UNTOUCHED. `LogoLockup` renders the same SVG, in the same
+      orientation, in both languages: the wordmark is set in Latin letters and
+      is never mirrored, translated or re-lettered. Only the destination of the
+      link around it changes.
+    */
+    <LocaleLink
       href="/"
       /*
         Named for what the artwork says, not for the short site name. The mark
@@ -160,7 +178,7 @@ export function Logo({ className, size = "sm" }: LogoProps) {
         name of "GCC" against a logo a sighted visitor reads as "Gulf Connect
         Consultancy" is exactly the mismatch WCAG's Label in Name is about.
       */
-      aria-label={`${siteConfig.wordmark} - home`}
+      aria-label={t.nav.homeLink.replace("{wordmark}", siteConfig.wordmark)}
       className={cn(
         "inline-flex shrink-0 items-center text-(--color-foreground)",
         "transition-opacity duration-300 hover:opacity-70",
@@ -169,6 +187,6 @@ export function Logo({ className, size = "sm" }: LogoProps) {
       )}
     >
       <LogoLockup className={sizes[size]} />
-    </Link>
+    </LocaleLink>
   );
 }

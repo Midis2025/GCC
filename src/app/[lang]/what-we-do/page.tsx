@@ -8,9 +8,26 @@ import { Showcase } from "@/components/sections/Showcase";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
+import { pick } from "@/content";
+import {
+  commercialModelContentAr,
+  serviceLinesAr,
+  whatWeDoHeroAr,
+  whatWeDoReachAr,
+  whatWeDoShowcaseAr,
+  whatWeDoTransitionAr,
+} from "@/content/ar/what-we-do";
+import { whatWeDoMapAr } from "@/content/ar/world-connections";
 import { backdrops, serviceLinePhotos } from "@/data/imagery";
-import { commercialModelContent, serviceLines, whatWeDoHero } from "@/data/what-we-do";
-import { whatWeDoMap } from "@/data/world-connections";
+import {
+  commercialModelContent as commercialModelContentEn,
+  serviceLines as serviceLinesEn,
+  whatWeDoHero as whatWeDoHeroEn,
+  whatWeDoReach as whatWeDoReachEn,
+  whatWeDoShowcase as whatWeDoShowcaseEn,
+  whatWeDoTransition as whatWeDoTransitionEn,
+} from "@/data/what-we-do";
+import { narrowMap, whatWeDoMap as whatWeDoMapEn } from "@/data/world-connections";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({
@@ -37,7 +54,23 @@ export const metadata = createMetadata({
  * and no new imagery; the hero reuses the frame that opened the services index
  * this page replaces.
  */
-export default function WhatWeDoPage() {
+export default async function WhatWeDoPage() {
+  /*
+    One `pick` per content module, exactly as the home page does it. The page
+    body below is unchanged in structure - only the source of each string moved
+    from a hard-coded literal to a localised module.
+  */
+  const whatWeDoHero = await pick({ en: whatWeDoHeroEn, ar: whatWeDoHeroAr });
+  const serviceLines = await pick({ en: serviceLinesEn, ar: serviceLinesAr });
+  const showcase = await pick({ en: whatWeDoShowcaseEn, ar: whatWeDoShowcaseAr });
+  const commercialModelContent = await pick({
+    en: commercialModelContentEn,
+    ar: commercialModelContentAr,
+  });
+  const transition = await pick({ en: whatWeDoTransitionEn, ar: whatWeDoTransitionAr });
+  const reach = await pick({ en: whatWeDoReachEn, ar: whatWeDoReachAr });
+  const whatWeDoMap = narrowMap(await pick({ en: whatWeDoMapEn, ar: whatWeDoMapAr }));
+
   return (
     <>
       <PageHero
@@ -59,16 +92,21 @@ export default function WhatWeDoPage() {
       */}
       <Showcase
         id="service-lines"
-        label="Service Lines"
-        heading="Four Ways We Work"
-        note="Most companies do not need all four at once. The balance is set by where a business currently stands with the region."
+        label={showcase.label}
+        heading={showcase.heading}
+        note={showcase.note}
         items={serviceLines.map((line) => ({
           key: line.slug,
           number: line.number,
           title: line.title,
           summary: line.summary,
           href: line.href,
-          photo: serviceLinePhotos[line.photoKey],
+          /*
+            `photoKey` is an identifier, not copy. `Localised` widens every
+            string, so it is narrowed back here; the Arabic module repeats the
+            same four keys verbatim.
+          */
+          photo: serviceLinePhotos[line.photoKey as keyof typeof serviceLinePhotos],
         }))}
       />
 
@@ -179,7 +217,7 @@ export default function WhatWeDoPage() {
       */}
       <EditorialStatement
         id="what-we-do-transition"
-        statement="One market. Four ways of working in it."
+        statement={transition.statement}
         photo={backdrops.industriesTransition}
         compact
       />
@@ -194,12 +232,9 @@ export default function WhatWeDoPage() {
       */}
       <GlobalConnection
         id="what-we-do-reach"
-        label="Global Connection"
-        heading="International Companies. Gulf Markets."
-        paragraphs={[
-          "Every programme runs between two places: where a company is, and where the audiences relevant to it are. The work is the route between them - meetings prepared and convened, a story developed and pitched, content produced and handed over.",
-          "Dubai and Abu Dhabi carry most of it, with Riyadh where a company's sector makes it relevant.",
-        ]}
+        label={reach.label}
+        heading={reach.heading}
+        paragraphs={reach.paragraphs}
         map={whatWeDoMap}
       />
 

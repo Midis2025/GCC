@@ -3,16 +3,22 @@
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
+import { useLocale } from "@/components/layout/LocaleProvider";
 import { CompanyForm } from "@/components/sections/CompanyForm";
 import { InvestorForm } from "@/components/sections/InvestorForm";
 import { cn } from "@/lib/utils";
 
 type Audience = "company" | "investor";
 
-const OPTIONS: Array<{ value: Audience; label: string }> = [
-  { value: "company", label: "I represent a company" },
-  { value: "investor", label: "I am an investor" },
-];
+/*
+  The two audiences.
+
+  These are ROUTING IDENTIFIERS, not copy: `company` and `investor` are what
+  `?enquiry=` carries from the service pages and what decides which form
+  renders, so they are the same strings in both editions. The label beside each
+  is read from the dictionary as `forms.audience`.
+*/
+const AUDIENCES: readonly Audience[] = ["company", "investor"];
 
 /**
  * The Contact toggle.
@@ -47,6 +53,7 @@ const OPTIONS: Array<{ value: Audience; label: string }> = [
  * guarantee of that is that there is only one form.
  */
 export function ContactRouter() {
+  const { t } = useLocale();
   const params = useSearchParams();
   const requested = params.get("enquiry");
 
@@ -67,12 +74,13 @@ export function ContactRouter() {
     <div>
       <fieldset>
         <legend className="text-label uppercase text-(--color-foreground-subtle)">
-          Who is enquiring
+          {t.forms.audience.legend}
         </legend>
 
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
-          {OPTIONS.map((option) => {
-            const active = audience === option.value;
+          {AUDIENCES.map((value) => {
+            const option = { value, label: t.forms.audience[value] };
+            const active = audience === value;
 
             return (
               <label

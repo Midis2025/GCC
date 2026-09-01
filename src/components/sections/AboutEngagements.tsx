@@ -6,7 +6,11 @@ import { Section } from "@/components/sections/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { aboutHowWeWork } from "@/data/about";
+import type { Localised } from "@/content";
+import type { aboutHowWeWork } from "@/data/about";
+
+/** The four engagement types, in whichever language the page is rendering. */
+export type AboutEngagementsContent = Localised<typeof aboutHowWeWork>;
 
 /**
  * How we work.
@@ -25,7 +29,19 @@ import { aboutHowWeWork } from "@/data/about";
  * description still has to be readable. See the note on `.about-stage` in
  * globals.css for the contrast arithmetic.
  */
-export function AboutEngagements() {
+/**
+ * The content is a PROP, not an import.
+ *
+ * This is a Client Component - it drives the scroll sequence with an
+ * IntersectionObserver - and `pick` is a server-side API. The About page reads
+ * whichever language the request needs and hands it down, which is the same
+ * arrangement `MarketMap` and `StageSequence` use.
+ */
+export function AboutEngagements({
+  content: aboutHowWeWork,
+}: {
+  content: AboutEngagementsContent;
+}) {
   const modes = aboutHowWeWork.modes;
 
   /*

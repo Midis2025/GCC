@@ -42,14 +42,19 @@ export async function Footer() {
         <div className="flex flex-col gap-8 border-b border-(--color-border) pb-12 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-lg">
             <Logo size="lg" />
+            {/*
+              The wordmark's one line, from the dictionary rather than from
+              `siteConfig`. Same English words; `siteConfig.shortDescription`
+              is still what metadata reads, and this is what a reader sees.
+            */}
             <p className="mt-6 text-[1.0625rem] leading-relaxed text-(--color-foreground-muted)">
-              {siteConfig.shortDescription}
+              {t.footer.description}
             </p>
           </div>
 
           <div className="lg:text-end">
             <p className="text-label uppercase text-(--color-foreground-subtle)">
-              Markets
+              {t.footer.markets}
             </p>
             <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2 lg:justify-end">
               {gulfMarkets.map((market) => (

@@ -180,3 +180,56 @@ export const investorsMap = {
     },
   ],
 } as const;
+
+/* --------------------------------------------------------------------------
+   Narrowing a translated configuration
+   -------------------------------------------------------------------------- */
+
+/**
+ * The shape a translated map arrives in.
+ *
+ * `Localised` widens every string in a content module, and it cannot tell an
+ * identifier from a sentence: `kind: "hub"` and `side: "left"` are both
+ * literal unions in `MapNode` and both come back as `string` from an Arabic
+ * module. That is the documented consequence noted on `Localised` itself.
+ */
+export interface LocalisedMapConfig {
+  nodes: readonly {
+    id: string;
+    lon: number;
+    lat: number;
+    label: string;
+    kind: string;
+    detail?: string;
+    side?: string;
+    labelDy?: number;
+    compact?: boolean;
+  }[];
+  connections: readonly string[];
+  captions?: readonly { term: string; detail: string }[];
+}
+
+/**
+ * Narrows the two identifier fields a translation widens.
+ *
+ * Called once per map surface, on whichever language `pick` returned, so the
+ * call sites stay as short as they were before the site had two languages.
+ * The Arabic modules repeat both values verbatim - a translated `kind` would
+ * draw the wrong marker rather than fail, which is exactly why it is asserted
+ * in one place rather than at three call sites.
+ */
+export function narrowMap(map: LocalisedMapConfig): {
+  nodes: readonly MapNode[];
+  connections: readonly string[];
+  captions?: readonly { term: string; detail: string }[];
+} {
+  return {
+    nodes: map.nodes.map((node) => ({
+      ...node,
+      kind: node.kind as MapNode["kind"],
+      side: node.side as MapNode["side"],
+    })),
+    connections: map.connections,
+    captions: map.captions,
+  };
+}

@@ -2,7 +2,12 @@ import { Section } from "@/components/sections/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { aboutCommunication } from "@/data/about";
+import { pick } from "@/content";
+import { aboutCommunicationAr, aboutPrinciplesContentAr } from "@/content/ar/about";
+import {
+  aboutCommunication as aboutCommunicationEn,
+  aboutPrinciplesContent as aboutPrinciplesContentEn,
+} from "@/data/about";
 
 /**
  * Core principles.
@@ -23,7 +28,10 @@ import { aboutCommunication } from "@/data/about";
  * Nothing moves position, nothing scales, and on touch none of it applies -
  * see `.about-principle` in globals.css.
  */
-export function AboutPrinciples() {
+export async function AboutPrinciples() {
+  const aboutCommunication = await pick({ en: aboutCommunicationEn, ar: aboutCommunicationAr });
+  const content = await pick({ en: aboutPrinciplesContentEn, ar: aboutPrinciplesContentAr });
+
   return (
     <Section spacing="lg" tone="muted" aria-labelledby="about-principles">
       {/*
@@ -35,9 +43,9 @@ export function AboutPrinciples() {
         sentence explaining that there are four of them.
       */}
       <Reveal>
-        <SectionLabel>Principles</SectionLabel>
+        <SectionLabel>{content.label}</SectionLabel>
         <Heading id="about-principles" level={2} size="display" className="mt-5 max-w-[13ch]">
-          How the Work Is Held
+          {content.heading}
         </Heading>
       </Reveal>
 

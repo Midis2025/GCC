@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 
+import { LocaleLink } from "@/components/layout/LocaleLink";
 import { Section } from "@/components/sections/Section";
 import { Figure } from "@/components/ui/Figure";
 import { Heading } from "@/components/ui/Heading";
@@ -23,7 +23,14 @@ function Arrow({ className }: { className?: string }) {
       strokeLinecap="square"
       aria-hidden="true"
       focusable="false"
-      className={className}
+      /*
+        `btn-arrow` is the hook that mirrors this in Arabic - see globals.css.
+        Onward is leftward in RTL, and this glyph means onward. It contains no
+        text, so nothing legible is reversed; the row it sits in is not
+        touched. The translate that runs alongside it is already handled by the
+        `ltr:`/`rtl:` pair at the call site.
+      */
+      className={cn("btn-arrow", className)}
     >
       <path d="M0 6h23" />
       <path d="M18 1l5 5-5 5" />
@@ -156,7 +163,7 @@ export function Showcase({ id, label, heading, items, note }: ShowcaseProps) {
                     className="border-b border-(--color-border) lg:border-b-0"
                   >
                     <Reveal delay={index * 80}>
-                      <Link
+                      <LocaleLink
                         href={item.href}
                         onMouseEnter={() => setActive(index)}
                         onFocus={() => setActive(index)}
@@ -264,7 +271,7 @@ export function Showcase({ id, label, heading, items, note }: ShowcaseProps) {
                             <Arrow />
                           </span>
                         </div>
-                      </Link>
+                      </LocaleLink>
                     </Reveal>
                   </li>
                 );

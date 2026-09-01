@@ -2,12 +2,14 @@
 
 import { useCallback, useRef, useState, type FormEvent } from "react";
 
+import { useLocale } from "@/components/layout/LocaleProvider";
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { FormField } from "@/components/ui/FormField";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
+import { optionLabel } from "@/content/dictionary";
 import { areaOfInterestOptions, preferredTimeOptions } from "@/data/contact";
 import { todayAsInputValue } from "@/lib/utils";
 
@@ -38,6 +40,16 @@ interface SubmitResult {
  * sender for something that went nowhere.
  */
 export function CompanyForm({ source }: { source: string }) {
+  /*
+    Every visible string on this form comes from the shared dictionary.
+
+    Nothing that is SUBMITTED does: the option values still come from
+    `data/contact.ts` and are identical in both editions, so an enquiry made
+    in Arabic writes exactly the record an English one writes. See
+    `forms.options` in `content/dictionary.ts`.
+  */
+  const { locale, t } = useLocale();
+  const f = t.forms.company;
   const [errors, setErrors] = useState<Errors>({});
   const [result, setResult] = useState<SubmitResult | null>(null);
   const [pending, setPending] = useState(false);
@@ -62,10 +74,11 @@ export function CompanyForm({ source }: { source: string }) {
   }, []);
 
   function validate(data: FormData): Errors {
+    const e = t.forms.errors;
     const next: Errors = {};
     const value = (key: string) => String(data.get(key) ?? "").trim();
 
-    if (!value("companyName")) next.companyName = "Please enter your company name.";
+    if (!value("companyName")) next.companyName = e.companyName;
     /*
      * Sector is required.
      *
@@ -75,28 +88,28 @@ export function CompanyForm({ source }: { source: string }) {
      * text rather than a select on purpose: a company that sits between two
      * of the three should be able to say so in its own words.
      */
-    if (!value("sector")) next.sector = "Please tell us which sector you operate in.";
-    if (!value("name")) next.name = "Please enter your full name.";
+    if (!value("sector")) next.sector = e.sector;
+    if (!value("name")) next.name = e.name;
 
     const email = value("email");
-    if (!email) next.email = "Please enter your work email address.";
-    else if (!EMAIL_PATTERN.test(email)) next.email = "Please enter a valid email address.";
+    if (!email) next.email = e.email;
+    else if (!EMAIL_PATTERN.test(email)) next.email = e.emailInvalid;
 
     const preferredDate = value("preferredDate");
-    if (!preferredDate) next.preferredDate = "Please choose a preferred date.";
+    if (!preferredDate) next.preferredDate = e.preferredDate;
     else if (preferredDate < todayAsInputValue()) {
       // Both sides are `YYYY-MM-DD`, which compares correctly as a string.
-      next.preferredDate = "Please choose a date that has not already passed.";
+      next.preferredDate = e.preferredDatePast;
     }
 
-    if (!value("preferredTime")) next.preferredTime = "Please choose a preferred time.";
+    if (!value("preferredTime")) next.preferredTime = e.preferredTime;
 
     const message = value("message");
-    if (!message) next.message = "Please tell us briefly what you are looking for.";
-    else if (message.length < 20) next.message = "Please add a little more detail.";
+    if (!message) next.message = e.message;
+    else if (message.length < 20) next.message = e.messageShort;
 
     if (data.get("consent") !== "on") {
-      next.consent = "Please confirm you agree to be contacted.";
+      next.consent = e.consent;
     }
 
     return next;
@@ -125,6 +138,12 @@ export function CompanyForm({ source }: { source: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           type: "company-enquiry",
+          /*
+            The language the form is being filled in, so the route can answer
+            in it. Validation wording only - it is not stored and it changes
+            nothing about the record. See `api/submit`.
+          */
+          locale,
           source,
           companyName: data.get("companyName"),
           listingVenue: data.get("listingVenue"),
@@ -154,14 +173,14 @@ export function CompanyForm({ source }: { source: string }) {
           const first = Object.keys(payload.errors)[0];
           form.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
         } else {
-          setFailure(payload.error ?? "Something went wrong. Please try again.");
+          setFailure(payload.error ?? t.forms.errors.generic);
         }
         return;
       }
 
       setResult(payload);
     } catch {
-      setFailure("We could not reach the server. Please try again.");
+      setFailure(t.forms.errors.unreachable);
     } finally {
       setPending(false);
     }
@@ -171,15 +190,14 @@ export function CompanyForm({ source }: { source: string }) {
     return (
       <div role="status">
         <span aria-hidden="true" className="block h-px w-12 bg-(--color-accent)" />
-        <h3 className="mt-6 font-display text-h3">Thank you for your enquiry.</h3>
+        <h3 className="mt-6 font-display text-h3">{f.successHeading}</h3>
         <p className="mt-4 max-w-[52ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
-          We have your details and a member of the team will read your enquiry.
+          {f.successBody}
         </p>
 
         {!result.stored && (
           <p className="mt-6 border-s-2 border-(--color-accent)/50 ps-4 text-sm leading-relaxed text-(--color-foreground-subtle)">
-            Note for review: the CRM is not yet connected, so this enquiry was not stored. This
-            state exists so the completed journey can be assessed.
+            {f.notStored}
           </p>
         )}
 
@@ -192,7 +210,7 @@ export function CompanyForm({ source }: { source: string }) {
               formRef.current?.reset();
             }}
           >
-            Send another enquiry
+            {f.sendAnother}
           </Button>
         </div>
       </div>
@@ -203,43 +221,47 @@ export function CompanyForm({ source }: { source: string }) {
     <form ref={formRef} onSubmit={handleSubmit} noValidate className="flex flex-col gap-7">
       <div className="flex items-center gap-3.5 border-b border-(--color-border) pb-5">
         <span aria-hidden="true" className="h-px w-8 shrink-0 bg-(--color-accent)" />
-        <span className="text-label uppercase text-(--color-accent)">Company Enquiry</span>
+        <span className="text-label uppercase text-(--color-accent)">{f.badge}</span>
       </div>
 
       <div className="grid gap-x-6 gap-y-7 sm:grid-cols-2">
-        <FormField label="Company name" error={errors.companyName} required>
+        <FormField label={f.companyName} error={errors.companyName} required>
           <Input name="companyName" autoComplete="organization" />
         </FormField>
 
-        <FormField label="Listing venue" description="Optional">
-          <Input name="listingVenue" placeholder="e.g. LSE, ASX, TSX-V" />
+        <FormField label={f.listingVenue} description={t.forms.optional}>
+          {/*
+            The placeholder keeps its exchange codes in both editions. LSE, ASX
+            and TSX-V are identifiers, not words.
+          */}
+          <Input name="listingVenue" placeholder={f.listingVenuePlaceholder} />
         </FormField>
 
-        <FormField label="Ticker" description="Optional">
+        <FormField label={f.ticker} description={t.forms.optional}>
           <Input name="ticker" />
         </FormField>
 
-        <FormField label="Sector" error={errors.sector} required>
+        <FormField label={f.sector} error={errors.sector} required>
           <Input name="sector" />
         </FormField>
 
-        <FormField label="Your name" error={errors.name} required>
+        <FormField label={f.yourName} error={errors.name} required>
           <Input name="name" autoComplete="name" />
         </FormField>
 
-        <FormField label="Role" description="Optional">
+        <FormField label={f.role} description={t.forms.optional}>
           <Input name="role" autoComplete="organization-title" />
         </FormField>
 
-        <FormField label="Work email" error={errors.email} required>
+        <FormField label={f.workEmail} error={errors.email} required>
           <Input name="email" type="email" inputMode="email" autoComplete="email" />
         </FormField>
 
-        <FormField label="Phone" description="Optional">
+        <FormField label={f.phone} description={t.forms.optional}>
           <Input name="phone" type="tel" inputMode="tel" autoComplete="tel" />
         </FormField>
 
-        <FormField label="Country" description="Optional">
+        <FormField label={f.country} description={t.forms.optional}>
           <Input name="country" autoComplete="country-name" />
         </FormField>
 
@@ -260,11 +282,19 @@ export function CompanyForm({ source }: { source: string }) {
           full-width and is now half, which is what lets the two sit as a pair
           and keeps the grid on even rows.
         */}
-        <FormField label="Area of interest" description="Optional">
+        <FormField label={f.areaOfInterest} description={t.forms.optional}>
+          {/*
+            BACKEND VALUES UNCHANGED. The slug is what routes the record; only
+            the label is looked up by language, and a missing key falls back to
+            the English label held beside the value in `data/contact.ts`.
+          */}
           <Select
             name="areaOfInterest"
-            options={areaOfInterestOptions}
-            placeholder="Choose an area…"
+            options={areaOfInterestOptions.map((option) => ({
+              value: option.value,
+              label: optionLabel(t.forms.options.areaOfInterest, option.value, option.label),
+            }))}
+            placeholder={f.areaPlaceholder}
           />
         </FormField>
 
@@ -285,28 +315,31 @@ export function CompanyForm({ source }: { source: string }) {
           right for the price of a field that says which day suits. The ref is
           what puts today's floor on it - see `boundToToday` above.
         */}
-        <FormField label="Preferred date" error={errors.preferredDate} required>
+        <FormField label={f.preferredDate} error={errors.preferredDate} required>
           <Input name="preferredDate" type="date" ref={boundToToday} />
         </FormField>
 
         <FormField
-          label="Preferred time"
+          label={f.preferredTime}
           error={errors.preferredTime}
-          description="Gulf Standard Time"
+          description={f.timezone}
           required
         >
           <Select
             name="preferredTime"
-            options={preferredTimeOptions}
-            placeholder="Choose a time…"
+            options={preferredTimeOptions.map((option) => ({
+              value: option.value,
+              label: optionLabel(t.forms.options.preferredTime, option.value, option.label),
+            }))}
+            placeholder={f.timePlaceholder}
           />
         </FormField>
       </div>
 
       <FormField
-        label="Enquiry"
+        label={f.enquiry}
         error={errors.message}
-        description="A short outline of your situation and what you are looking for."
+        description={f.enquiryHelp}
         required
       >
         <Textarea name="message" rows={5} />
@@ -315,7 +348,7 @@ export function CompanyForm({ source }: { source: string }) {
       <div className="border-t border-(--color-border) pt-7">
         <Checkbox
           name="consent"
-          label="I agree to Gulf Connect Consultancy FZCO contacting me about this enquiry."
+          label={f.consentLabel}
           error={errors.consent}
         />
       </div>
@@ -331,7 +364,7 @@ export function CompanyForm({ source }: { source: string }) {
 
       <div className="mt-1 border-t border-(--color-border) pt-7">
         <Button type="submit" size="lg" withArrow disabled={pending}>
-          {pending ? "Submitting…" : "Submit Enquiry"}
+          {pending ? t.forms.submitting : f.submit}
         </Button>
       </div>
     </form>

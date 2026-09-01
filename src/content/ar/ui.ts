@@ -39,6 +39,7 @@ export const ui: Dictionary = {
   },
 
   nav: {
+    homeLink: "{wordmark} — الصفحة الرئيسية",
     primary: "التنقل الرئيسي",
     mobile: "تنقل الهاتف",
     siteMenu: "قائمة الموقع",
@@ -69,6 +70,8 @@ export const ui: Dictionary = {
       company: "الشركة",
       forInvestors: "للمستثمرين",
     },
+    description: "خدمات التواصل مع المستثمرين والفعاليات والإعلام لأسواق المال الخليجية.",
+    markets: "الأسواق",
     joinTheList: "انضم إلى القائمة",
     email: "البريد الإلكتروني",
     telephone: "الهاتف",
@@ -109,10 +112,86 @@ export const ui: Dictionary = {
     reject: "رفض غير الضروري",
   },
 
+  /*
+    COMPLIANCE. The denial under every map. Both halves are load-bearing: what
+    a line DOES mean, and the four things it does not. Neither may be dropped.
+  */
+  maps: {
+    denial:
+      "تمثّل الروابط المعروضة ترابطًا عابرًا للحدود بين الشركات والأسواق. ولا تمثّل مكاتب أو تسجيلات أو تراخيص أو علاقات في أي ولاية قضائية.",
+  },
+
   forms: {
     optional: "اختياري",
     required: "(مطلوب)",
     submitting: "جارٍ الإرسال…",
+    audience: {
+      legend: "من مقدّم الاستفسار",
+      company: "أمثّل شركة",
+      investor: "أنا مستثمر",
+    },
+    /*
+      OPTION LABELS ONLY.
+
+      Every key below is a backend identifier submitted to `/api/submit` and
+      stored in the CRM - `family-office`, `ae`, `09:00 AM` - and none of them
+      is translated. A registration made on this edition writes exactly the
+      record an English one writes; only what the registrant reads changes.
+
+      The four service-line names match `nav.services` so the header, the
+      footer and this select all name the same thing the same way.
+
+      Times keep their Western numerals and are given the Arabic forms of
+      morning and afternoon. The KEY remains the English string, so the
+      notification email and the stored record are unchanged.
+    */
+    options: {
+      areaOfInterest: {
+        "investor-roadshows": "جولات المستثمرين",
+        "gulf-programme": "برنامج الخليج",
+        "media-arabic-communications": "الإعلام والتواصل باللغة العربية",
+        advisory: "الاستشارات",
+        general: "استفسار عام",
+      },
+      market: {
+        ae: "الإمارات العربية المتحدة",
+        sa: "المملكة العربية السعودية",
+        qa: "قطر",
+        kw: "الكويت",
+        bh: "البحرين",
+        om: "عُمان",
+        intl: "سوق دولية أخرى",
+      },
+      /*
+        COMPLIANCE. "غير ذلك" is a neutral "other", not a decline. Registrants
+        who select it receive general content only, and the label must not
+        imply that they have withheld an answer.
+      */
+      investorCategory: {
+        institution: "مؤسسة استثمارية",
+        "asset-manager": "شركة إدارة أصول",
+        "family-office": "مكتب عائلي",
+        "private-bank-broker": "بنك خاص أو وسيط",
+        "qualified-private-investor": "مستثمر خاص مؤهَّل",
+        other: "غير ذلك",
+      },
+      investorSector: {
+        "Critical minerals": "المعادن الحيوية",
+        "AI and data infrastructure": "الذكاء الاصطناعي والبنية التحتية للبيانات",
+        "Life sciences": "علوم الحياة",
+      },
+      preferredTime: {
+        "09:00 AM": "09:00 صباحًا",
+        "10:00 AM": "10:00 صباحًا",
+        "11:00 AM": "11:00 صباحًا",
+        "12:00 PM": "12:00 ظهرًا",
+        "01:00 PM": "01:00 مساءً",
+        "02:00 PM": "02:00 مساءً",
+        "03:00 PM": "03:00 مساءً",
+        "04:00 PM": "04:00 مساءً",
+        "05:00 PM": "05:00 مساءً",
+      },
+    },
     company: {
       badge: "استفسار من شركة",
       companyName: "اسم الشركة",
@@ -202,6 +281,7 @@ export const ui: Dictionary = {
     disclosure: "إفصاح",
     clientDisclosure:
       "{company} عميل لدى شركة Gulf Connect Consultancy FZCO، وقد سدّد إليها أتعابًا مهنية ثابتة مقابل خدمات التواصل.",
+    thisCompany: "هذه الشركة",
     allInsights: "جميع الرؤى",
   },
 };

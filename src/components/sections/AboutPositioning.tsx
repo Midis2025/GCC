@@ -2,7 +2,12 @@ import { Section } from "@/components/sections/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { aboutPositioning } from "@/data/about";
+import { pick } from "@/content";
+import { aboutPositioningAr, aboutPositioningQuoteAr } from "@/content/ar/about";
+import {
+  aboutPositioning as aboutPositioningEn,
+  aboutPositioningQuote as aboutPositioningQuoteEn,
+} from "@/data/about";
 
 /**
  * Positioning.
@@ -23,7 +28,10 @@ import { aboutPositioning } from "@/data/about";
  * is also the heading of the section immediately below - which is deliberate.
  * The quote states the claim; the next section argues it.
  */
-export function AboutPositioning() {
+export async function AboutPositioning() {
+  const aboutPositioning = await pick({ en: aboutPositioningEn, ar: aboutPositioningAr });
+  const quote = await pick({ en: aboutPositioningQuoteEn, ar: aboutPositioningQuoteAr });
+
   return (
     <Section spacing="lg" aria-labelledby="about-positioning">
       <div className="grid gap-x-16 gap-y-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-x-20">
@@ -68,7 +76,7 @@ export function AboutPositioning() {
               aria-hidden="true"
               className="pointer-events-none absolute -top-5 -start-1 -z-10 select-none font-display leading-[0.8] tracking-tight text-(--color-foreground)/[0.05] text-[clamp(3.5rem,8vw,7rem)]"
             >
-              Clarity
+              {quote.ghost}
             </span>
 
             <blockquote className="relative border-t border-(--color-accent)/40 pt-9">
@@ -86,7 +94,7 @@ export function AboutPositioning() {
               </span>
 
               <p className="mt-9 max-w-[22ch] font-display text-h2 leading-[1.12] text-balance">
-                Clarity is a commercial position.
+                {quote.quote}
               </p>
 
               <span

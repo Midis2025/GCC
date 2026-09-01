@@ -78,16 +78,26 @@ export function todayAsInputValue(): string {
 
 /**
  * Formats an ISO date for display, e.g. "12 March 2026".
- * Locale is pinned so server and client render identically (no hydration drift).
+ *
+ * The locale is PASSED, never detected. Server and client have to render the
+ * identical string or React reports a hydration mismatch, and the browser's
+ * own locale is not the one the page is written in - a reader in Riyadh with a
+ * French browser is still reading the Arabic edition.
+ *
+ * `ar-AE` rather than a bare `ar` gives the Gulf month names, and
+ * `numberingSystem: "latn"` keeps the numerals Western - matching Gulf
+ * corporate convention and the numerals used everywhere else on this site.
+ * Defaults to English, so a caller that passes nothing behaves as before.
  */
-export function formatDate(iso: string): string {
+export function formatDate(iso: string, locale: "en" | "ar" = "en"): string {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return "";
 
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat(locale === "ar" ? "ar-AE" : "en-GB", {
     day: "numeric",
     month: "long",
     year: "numeric",
     timeZone: "UTC",
+    numberingSystem: "latn",
   }).format(date);
 }

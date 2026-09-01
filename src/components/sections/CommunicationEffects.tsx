@@ -2,7 +2,12 @@ import { Section } from "@/components/sections/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { communicationEffects, workBehindTheRoom } from "@/data/about-depth";
+import { pick } from "@/content";
+import { communicationEffectsAr, workBehindTheRoomAr } from "@/content/ar/about";
+import {
+  communicationEffects as communicationEffectsEn,
+  workBehindTheRoom as workBehindTheRoomEn,
+} from "@/data/about-depth";
 
 /**
  * ============================================================================
@@ -27,7 +32,12 @@ import { communicationEffects, workBehindTheRoom } from "@/data/about-depth";
  * would be a claim about third parties. Read `data/about-depth.ts` before
  * editing any of the four.
  */
-export function CommunicationEffects() {
+export async function CommunicationEffects() {
+  const communicationEffects = await pick({
+    en: communicationEffectsEn,
+    ar: communicationEffectsAr,
+  });
+
   return (
     <Section
       spacing="lg"
@@ -98,7 +108,9 @@ export function CommunicationEffects() {
  * verbs, and the contrast is what makes the pair work. The middle column is
  * the shortest of the three, which is the section's argument made by layout.
  */
-export function WorkBehindTheRoom() {
+export async function WorkBehindTheRoom() {
+  const workBehindTheRoom = await pick({ en: workBehindTheRoomEn, ar: workBehindTheRoomAr });
+
   return (
     <Section spacing="lg" aria-labelledby="about-work-behind">
       <div className="grid gap-x-16 gap-y-9 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-end lg:gap-x-24">

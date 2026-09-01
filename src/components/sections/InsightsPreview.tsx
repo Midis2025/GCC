@@ -1,17 +1,19 @@
-import Link from "next/link";
-
+import { LocaleLink } from "@/components/layout/LocaleLink";
 import { Section } from "@/components/sections/Section";
 import { Figure } from "@/components/ui/Figure";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
+import { currentLocale, getDictionary, insightFormat, pick } from "@/content";
+import { insightContentAr } from "@/content/ar/insight";
 import { insightPhotos } from "@/data/imagery";
 import {
   HOMEPAGE_INSIGHT_THRESHOLD,
-  getFormat,
+  insightContent as insightContentEn,
   latestInsightItems,
   type InsightItem,
 } from "@/data/insight";
+import type { Locale } from "@/lib/i18n";
 import { formatDate } from "@/lib/utils";
 
 /**
@@ -27,16 +29,26 @@ import { formatDate } from "@/lib/utils";
  * real published item, so a badge marking it as not-real would always be
  * wrong.
  */
-function Meta({ item, tone = "subtle" }: { item: InsightItem; tone?: "subtle" | "accent" }) {
-  const format = getFormat(item.format);
+async function Meta({
+  item,
+  tone = "subtle",
+  locale,
+  fallbackFormatName,
+}: {
+  item: InsightItem;
+  tone?: "subtle" | "accent";
+  locale: Locale;
+  fallbackFormatName: string;
+}) {
+  const format = await insightFormat(item.format);
 
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-label uppercase">
       <span className={tone === "accent" ? "text-(--color-accent)" : "text-(--color-foreground-subtle)"}>
-        {format?.name ?? "Insight"}
+        {format?.name ?? fallbackFormatName}
       </span>
       <time dateTime={item.date} className="text-(--color-foreground-subtle)">
-        {formatDate(item.date)}
+        {formatDate(item.date, locale)}
       </time>
     </div>
   );
@@ -72,10 +84,13 @@ function Meta({ item, tone = "subtle" }: { item: InsightItem; tone?: "subtle" | 
  * pending-content notice - is gone with `data/insights.ts`. Nothing reaches
  * this component now that is not a real published piece.
  */
-export function InsightsPreview() {
+export async function InsightsPreview() {
   const items = latestInsightItems(3);
   if (items.length < HOMEPAGE_INSIGHT_THRESHOLD) return null;
 
+  const insightContent = await pick({ en: insightContentEn, ar: insightContentAr });
+  const locale = await currentLocale();
+  const t = await getDictionary();
   const [lead, ...rest] = items;
 
   return (
@@ -83,18 +98,18 @@ export function InsightsPreview() {
       <Reveal>
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <SectionLabel>Insights</SectionLabel>
+            <SectionLabel>{insightContent.previewLabel}</SectionLabel>
             <Heading id="insights-heading" level={2} size="display" className="mt-5 max-w-[14ch]">
-              Perspectives on Gulf Capital Markets
+              {insightContent.previewHeading}
             </Heading>
           </div>
 
-          <Link
+          <LocaleLink
             href="/insight"
             className="link-underline self-start py-1 text-[0.9375rem] text-(--color-foreground-muted) hover:text-(--color-foreground) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring) sm:self-auto"
           >
-            All insights
-          </Link>
+            {t.insight.allInsights}
+          </LocaleLink>
         </div>
 
       </Reveal>
@@ -103,7 +118,7 @@ export function InsightsPreview() {
         {/* Lead article */}
         <Reveal>
           <article className="group h-full">
-            <Link
+            <LocaleLink
               href={`/insight/${lead.slug}`}
               className="flex h-full flex-col focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
             >
@@ -116,7 +131,12 @@ export function InsightsPreview() {
               />
 
               <div className="mt-5">
-                <Meta item={lead} tone="accent" />
+                <Meta
+                  item={lead}
+                  tone="accent"
+                  locale={locale}
+                  fallbackFormatName={insightContent.fallbackFormatName}
+                />
 
                 <h3 className="mt-5 max-w-[22ch] font-display text-h2 leading-[1.12] text-balance transition-colors duration-300 group-hover:text-(--color-accent)">
                   {lead.title}
@@ -126,7 +146,7 @@ export function InsightsPreview() {
                   {lead.excerpt}
                 </p>
               </div>
-            </Link>
+            </LocaleLink>
           </article>
         </Reveal>
 
@@ -136,12 +156,16 @@ export function InsightsPreview() {
             <li key={item.slug} className="border-t border-(--color-border) last:border-b">
               <Reveal delay={120 + index * 90}>
                 <article className="group">
-                  <Link
+                  <LocaleLink
                     href={`/insight/${item.slug}`}
                     className="flex gap-6 py-8 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
                   >
                     <div className="min-w-0 flex-1">
-                      <Meta item={item} />
+                      <Meta
+                        item={item}
+                        locale={locale}
+                        fallbackFormatName={insightContent.fallbackFormatName}
+                      />
 
                       <h3 className="mt-4 font-display text-[1.3125rem] leading-snug text-balance transition-colors duration-300 group-hover:text-(--color-accent)">
                         {item.title}
@@ -160,7 +184,7 @@ export function InsightsPreview() {
                         sizes="7rem"
                       />
                     </div>
-                  </Link>
+                  </LocaleLink>
                 </article>
               </Reveal>
             </li>

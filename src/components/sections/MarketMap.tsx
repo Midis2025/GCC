@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { useLocale } from "@/components/layout/LocaleProvider";
 import { Section } from "@/components/sections/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
@@ -24,9 +25,28 @@ export interface MarketMapProps {
    * somewhere, so every caller states its own.
    */
   disclaimer: string;
-  /** Heading above the market selector. */
+  /**
+   * Heading above the market selector.
+   *
+   * Defaults to the dictionary's own word for "Markets" - the same one the
+   * footer uses - rather than to an English literal, so a caller that does not
+   * state one is still correct in both languages.
+   */
   selectorLabel?: string;
   tone?: "canvas" | "muted";
+  /**
+   * The six markets, in the language being rendered.
+   *
+   * A prop rather than an import, because this is a Client Component and
+   * `pick` is a server-side API. Every caller is a Server Component and hands
+   * over whichever list the request needs; the English list stays the default,
+   * so a caller that passes nothing behaves exactly as it did before.
+   *
+   * `code` is an ISO identifier and is identical in both languages, which is
+   * what lets the projection below stay where it is: coordinates are looked up
+   * by code, never by name.
+   */
+  markets?: readonly { code: string; label: string; city: string }[];
 }
 
 /**
@@ -94,18 +114,22 @@ interface PlacedMarket {
  * them here rather than duplicating either means the map can never drift out
  * of step with the list beside it.
  */
-const placed: PlacedMarket[] = gulfMarkets.map((market) => {
-  const geo = globeMarkets.find((entry) => entry.code === market.code);
+function place(
+  markets: readonly { code: string; label: string; city: string }[],
+): PlacedMarket[] {
+  return markets.map((market) => {
+    const geo = globeMarkets.find((entry) => entry.code === market.code);
 
-  return {
-    code: market.code,
-    label: market.label,
-    city: market.city,
-    x: geo ? projectX(geo.lon) : CANVAS.w / 2,
-    y: geo ? projectY(geo.lat) : CANVAS.h / 2,
-    place: LABEL_PLACE[market.code] ?? "below",
-  };
-});
+    return {
+      code: market.code,
+      label: market.label,
+      city: market.city,
+      x: geo ? projectX(geo.lon) : CANVAS.w / 2,
+      y: geo ? projectY(geo.lat) : CANVAS.h / 2,
+      place: LABEL_PLACE[market.code] ?? "below",
+    };
+  });
+}
 
 /**
  * MARKET MAP
@@ -150,10 +174,13 @@ export function MarketMap({
   heading,
   paragraphs,
   disclaimer,
-  selectorLabel = "Markets",
+  selectorLabel,
   tone = "canvas",
+  markets = gulfMarkets,
 }: MarketMapProps) {
+  const { locale, t } = useLocale();
   const [active, setActive] = useState(0);
+  const placed = place(markets);
   const current = placed[active];
 
   return (
@@ -183,7 +210,7 @@ export function MarketMap({
 
           <Reveal delay={180} className="mt-10">
             <p className="text-label uppercase text-(--color-foreground-subtle)">
-              {selectorLabel}
+              {selectorLabel ?? t.footer.markets}
             </p>
 
             {/*
@@ -352,14 +379,23 @@ export function MarketMap({
                 node. One at a time, which is what keeps the frame clean and
                 why label collisions never have to be solved.
               */}
+              {/*
+                Arabic has no cased letters, and the wide tracking that suits
+                a Latin caption actively harms a connected script by breaking
+                the joins between letters. So the city name is set as written
+                and the tracking is dropped - the same two properties
+                `globals.css` neutralises for every other label on an Arabic
+                page, applied here because this one is an inline SVG style
+                rather than a class.
+              */}
               <text
                 className="about-market-label fill-current"
                 x={current.x}
                 y={current.place === "above" ? current.y - 24 : current.y + 32}
                 textAnchor="middle"
-                style={{ letterSpacing: "0.14em" }}
+                style={locale === "ar" ? undefined : { letterSpacing: "0.14em" }}
               >
-                {current.city.toUpperCase()}
+                {locale === "ar" ? current.city : current.city.toUpperCase()}
               </text>
             </svg>
 

@@ -2,7 +2,9 @@ import { Section } from "@/components/sections/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { aboutPrincipals } from "@/data/about";
+import { pick } from "@/content";
+import { aboutPrincipalsAr } from "@/content/ar/about";
+import { aboutPrincipals as aboutPrincipalsEn } from "@/data/about";
 
 /**
  * The two principals.
@@ -21,7 +23,9 @@ import { aboutPrincipals } from "@/data/about";
  * principals do not need a page of their own, and giving them one invites the
  * question of who else there is.
  */
-export function AboutPrincipals() {
+export async function AboutPrincipals() {
+  const aboutPrincipals = await pick({ en: aboutPrincipalsEn, ar: aboutPrincipalsAr });
+
   return (
     <Section spacing="lg" aria-labelledby="about-principals">
       <div className="grid gap-x-16 gap-y-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end">

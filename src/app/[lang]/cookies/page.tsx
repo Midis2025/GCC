@@ -1,11 +1,13 @@
 import { LegalPageLayout } from "@/components/sections/LegalPageLayout";
-import { cookieNotice } from "@/data/legal";
+import { pick } from "@/content";
+import { cookieNoticeAr } from "@/content/ar/legal";
+import { cookieNotice as pageEn } from "@/data/legal";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({
-  title: cookieNotice.title,
+  title: pageEn.title,
   path: "/cookies",
-  description: cookieNotice.lead,
+  description: pageEn.lead,
 });
 
 /**
@@ -14,6 +16,12 @@ export const metadata = createMetadata({
  * Structure only while counsel-approved wording is outstanding - see the
  * header of `data/legal.ts` for why nothing here is drafted.
  */
-export default function Page() {
-  return <LegalPageLayout page={cookieNotice} />;
+export default async function Page() {
+  /*
+    The document itself, in the language of the request. The layout around it
+    is shared and reads its own copy - see `LegalPageLayout`.
+  */
+  const page = await pick({ en: pageEn, ar: cookieNoticeAr });
+
+  return <LegalPageLayout page={page} />;
 }

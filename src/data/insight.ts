@@ -250,4 +250,24 @@ export const insightContent = {
    */
   emptyNote:
     "Publication begins shortly. The formats below are the recurring series this library is organised around.",
+  /**
+   * The accessible name of the format navigation.
+   *
+   * Not visible copy, but it is what a screen reader announces when it reaches
+   * that landmark, so it is copy all the same. Moved out of the page's JSX
+   * unchanged so it has an Arabic sibling.
+   */
+  formatsNavLabel: "Insight formats",
+
+  /*
+    The home page module.
+
+    MOVED, NOT REWRITTEN, from `InsightsPreview`. The module renders only once
+    three items exist, so none of this is on the page today - it is here so
+    that the module is correct in both languages the day it appears.
+  */
+  previewLabel: "Insights",
+  previewHeading: "Perspectives on Gulf Capital Markets",
+  /** Fallback where an item names a format that is no longer in the taxonomy. */
+  fallbackFormatName: "Insight",
 } as const;

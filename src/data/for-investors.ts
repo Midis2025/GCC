@@ -116,7 +116,16 @@ export type InvestorCategory = (typeof investorCategories)[number]["value"];
  */
 export const GENERAL_CONTENT_ONLY: InvestorCategory = "other";
 
-/** Sectors a registrant can express interest in. Matches the three we cover. */
+/**
+ * Sectors a registrant can express interest in. Matches the three we cover.
+ *
+ * These strings are BACKEND VALUES: they are what the checkbox submits, what
+ * `api/submit` validates against and what the CRM stores, so they are the same
+ * in every edition. What a registrant READS is looked up from
+ * `forms.investor.sectorLabels` in the chrome dictionary by the value below -
+ * which is how the Arabic edition shows Arabic sector names while writing the
+ * same record as the English one.
+ */
 export const investorSectors = [
   "Critical minerals",
   "AI and data infrastructure",
@@ -195,3 +204,47 @@ export const upcomingBriefingsContent = {
 } as const;
 
 export const upcomingBriefings: Briefing[] = [];
+
+/**
+ * ----------------------------------------------------------------------------
+ * PAGE-LEVEL COPY THAT USED TO BE WRITTEN INLINE
+ * ----------------------------------------------------------------------------
+ * MOVED, NOT REWRITTEN. Every string below is the one the page already
+ * rendered, word for word, lifted out of the JSX so that it can have an Arabic
+ * sibling in `content/ar/for-investors.ts`.
+ */
+
+/**
+ * The map band.
+ *
+ * COMPLIANCE: it says where the companies come from and what registration
+ * does. It does not say what an investor gains, and nothing may be added that
+ * does. The standing map denial is separate and shared - `maps.denial`.
+ */
+export const investorsReach = {
+  label: "Reach",
+  heading: "Where the Companies Come From",
+  paragraphs: [
+    "The companies convened for briefings are international - listed small and mid-cap businesses working in critical minerals, AI and data infrastructure, and life sciences, based well outside the region.",
+    "Bringing them into a room with Gulf audiences is the whole of the exercise. Registration is what puts a professional investor on the list for those sessions.",
+  ],
+} as const;
+
+/**
+ * The five professional categories, set as type on a rule.
+ *
+ * COMPLIANCE: these are NOT claims about who has registered. They are the
+ * options the form offers, stated so a professional investor can see the list
+ * is meant for them before reaching the field, and `note` says exactly that.
+ */
+export const whoRegistersContent = {
+  label: "Who Registers",
+  heading: "A Professional List",
+  note: "The categories the registration form asks you to select from. Registration is free, and the category you choose determines what you are sent.",
+} as const;
+
+/** The dark panel beside the registration form. */
+export const registerPanelContent = {
+  label: "Register",
+  heading: "Join the List",
+} as const;

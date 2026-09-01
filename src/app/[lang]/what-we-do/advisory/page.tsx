@@ -9,13 +9,15 @@ import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { backdrops } from "@/data/imagery";
-import { advisory as page } from "@/data/service-lines";
+import { pick } from "@/content";
+import { advisoryAr } from "@/content/ar/service-lines";
+import { advisory as pageEn } from "@/data/service-lines";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({
-  title: page.title,
-  path: `/what-we-do/${page.slug}`,
-  description: page.metaDescription,
+  title: pageEn.title,
+  path: `/what-we-do/${pageEn.slug}`,
+  description: pageEn.metaDescription,
 });
 
 /**
@@ -33,7 +35,9 @@ export const metadata = createMetadata({
  * Design: existing system. The hero reuses the interior frame already in the
  * library rather than introducing photography.
  */
-export default function AdvisoryPage() {
+export default async function AdvisoryPage() {
+  const page = await pick({ en: pageEn, ar: advisoryAr });
+
   return (
     <>
       <PageHero

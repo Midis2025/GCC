@@ -9,13 +9,15 @@ import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { insightPhotos } from "@/data/imagery";
-import { gulfProgramme as page } from "@/data/service-lines";
+import { pick } from "@/content";
+import { gulfProgrammeAr } from "@/content/ar/service-lines";
+import { gulfProgramme as pageEn } from "@/data/service-lines";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({
-  title: page.title,
-  path: `/what-we-do/${page.slug}`,
-  description: page.metaDescription,
+  title: pageEn.title,
+  path: `/what-we-do/${pageEn.slug}`,
+  description: pageEn.metaDescription,
 });
 
 /**
@@ -32,7 +34,9 @@ export const metadata = createMetadata({
  *
  * Design: existing system. Hero reuses a frame already in the library.
  */
-export default function GulfProgrammePage() {
+export default async function GulfProgrammePage() {
+  const page = await pick({ en: pageEn, ar: gulfProgrammeAr });
+
   return (
     <>
       <PageHero
@@ -161,7 +165,7 @@ export default function GulfProgrammePage() {
 
           <Reveal delay={160} className="lg:pt-3">
             <p className="text-label uppercase text-(--color-foreground-subtle)">
-              Each monthly report records
+              {page.reporting.itemsLabel}
             </p>
             <div className="mt-6">
               <CheckList items={page.reporting.items} columns={1} />

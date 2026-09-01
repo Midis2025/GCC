@@ -4,7 +4,9 @@ import type { CSSProperties } from "react";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { photos } from "@/data/imagery";
-import { aboutHero } from "@/data/about";
+import { pick } from "@/content";
+import { aboutHeroAr } from "@/content/ar/about";
+import { aboutHero as aboutHeroEn } from "@/data/about";
 
 /** Animation delay as an inline custom property, for the on-mount reveals. */
 const at = (ms: number) => ({ "--reveal-delay": `${ms}ms` }) as CSSProperties;
@@ -34,7 +36,9 @@ const at = (ms: number) => ({ "--reveal-delay": `${ms}ms` }) as CSSProperties;
  * is empty and it is marked decorative - the headline carries the meaning, and
  * an announced description here would only add noise.
  */
-export function AboutHero() {
+export async function AboutHero() {
+  const aboutHero = await pick({ en: aboutHeroEn, ar: aboutHeroAr });
+
   const photo = photos.aboutPortrait;
 
   return (

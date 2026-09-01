@@ -6,16 +6,24 @@ import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { MAP_DENIAL } from "@/components/sections/GlobalConnection";
+import { LocaleLink } from "@/components/layout/LocaleLink";
+import { getDictionary, pick } from "@/content";
 import { ConnectedWorldMap } from "@/components/visuals/ConnectedWorldMap";
 import { backdrops } from "@/data/imagery";
-import { insightMap } from "@/data/world-connections";
+import { insightMapAr } from "@/content/ar/world-connections";
+import { insightMap as insightMapEn, narrowMap } from "@/data/world-connections";
 import { cn } from "@/lib/utils";
 import {
-  bilingualIntent,
-  editorialPrinciples,
-  insightCta,
-  insightSystem,
+  bilingualIntentAr,
+  editorialPrinciplesAr,
+  insightCtaAr,
+  insightSystemAr,
+} from "@/content/ar/insight-page";
+import {
+  bilingualIntent as bilingualIntentEn,
+  editorialPrinciples as editorialPrinciplesEn,
+  insightCta as insightCtaEn,
+  insightSystem as insightSystemEn,
 } from "@/data/insight-page";
 
 /**
@@ -39,7 +47,11 @@ import {
  * the caption under the map says so in standing text. Do not add an origin that
  * would read as a place the firm operates from.
  */
-export function InsightSystemSection() {
+export async function InsightSystemSection() {
+  const t = await getDictionary();
+  const insightSystem = await pick({ en: insightSystemEn, ar: insightSystemAr });
+  const insightMap = narrowMap(await pick({ en: insightMapEn, ar: insightMapAr }));
+
   return (
     <Section
       spacing="lg"
@@ -81,13 +93,19 @@ export function InsightSystemSection() {
             {insightSystem.nodes.map((node, index) => (
               <li key={node.key}>
                 <Reveal delay={220 + index * 90}>
-                  <a
+                  {/*
+                    `LocaleLink`, so a reader who reaches this diagram in
+                    Arabic arrives at the Arabic service page. These were the
+                    last four internal links on the page still written as bare
+                    anchors.
+                  */}
+                  <LocaleLink
                     href={node.href}
                     className="group flex items-center gap-3 border-t border-white/12 py-4 text-[0.9375rem] transition-colors duration-500 hover:text-(--color-accent) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
                   >
                     <span aria-hidden="true" className="h-1 w-1 shrink-0 bg-(--color-accent)" />
                     {node.term}
-                  </a>
+                  </LocaleLink>
                 </Reveal>
               </li>
             ))}
@@ -110,7 +128,7 @@ export function InsightSystemSection() {
       */}
       <Reveal delay={600}>
         <p className="mt-12 max-w-[76ch] border-t border-white/12 pt-8 text-sm leading-relaxed text-(--color-foreground-subtle)">
-          {MAP_DENIAL}
+          {t.maps.denial}
         </p>
       </Reveal>
     </Section>
@@ -138,7 +156,9 @@ export function InsightSystemSection() {
  * decorative mark on the homepage, this one is content - it is the language
  * being named.
  */
-export function BilingualSection() {
+export async function BilingualSection() {
+  const bilingualIntent = await pick({ en: bilingualIntentEn, ar: bilingualIntentAr });
+
   return (
     <Section spacing="lg" tone="muted" aria-labelledby="insight-bilingual">
       <div className="grid gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-x-24">
@@ -168,7 +188,14 @@ export function BilingualSection() {
             <span
               lang="ar"
               dir="rtl"
-              className="font-[system-ui,'Segoe_UI','Noto_Naskh_Arabic','Geeza_Pro',serif] text-[clamp(1.75rem,4vw,3rem)] leading-none"
+              /*
+                The site's own Arabic face first, with the previous system
+                stack kept behind it as the fallback it always was. This mark
+                names a language, so it should be set in the face that
+                language is set in everywhere else on the site rather than in
+                whatever the device happens to have.
+              */
+              className="font-[var(--font-arabic),system-ui,'Segoe_UI','Noto_Naskh_Arabic','Geeza_Pro',serif] text-[clamp(1.75rem,4vw,3rem)] leading-none"
             >
               {bilingualIntent.arabic}
             </span>
@@ -187,7 +214,12 @@ export function BilingualSection() {
  * client relationships. It stays last so it reads as the standard the other
  * three are held to.
  */
-export function EditorialPrinciplesSection() {
+export async function EditorialPrinciplesSection() {
+  const editorialPrinciples = await pick({
+    en: editorialPrinciplesEn,
+    ar: editorialPrinciplesAr,
+  });
+
   return (
     <Section spacing="lg" aria-labelledby="insight-principles">
       <Reveal>
@@ -203,7 +235,15 @@ export function EditorialPrinciplesSection() {
             key={principle.number}
             style={{ "--step": index } as React.CSSProperties}
             className={cn(
-              "border-t border-(--color-border) lg:[margin-left:calc(var(--step)*3.5rem)]",
+              /*
+                The staircase indents each principle further than the one
+                above it, so the set descends across the page in the reading
+                direction. `margin-inline-start` rather than `margin-left`:
+                it resolves to the left in English and to the right in Arabic,
+                which is what keeps the stair descending forwards rather than
+                climbing back out of the column. Identical output in English.
+              */
+              "border-t border-(--color-border) lg:[margin-inline-start:calc(var(--step)*3.5rem)]",
               /* Last principle: the section's padding already provides the air. */
               index === editorialPrinciples.principles.length - 1 && "[&>div>div]:pb-0",
             )}
@@ -239,7 +279,9 @@ export function EditorialPrinciplesSection() {
  * secondary. It replaces the sitewide `CTASection` on this page only, because
  * that band routes to Contact and this page's reader wants the investor list.
  */
-export function InsightCtaSection() {
+export async function InsightCtaSection() {
+  const insightCta = await pick({ en: insightCtaEn, ar: insightCtaAr });
+
   return (
     <section
       className="tokens-dark relative isolate overflow-hidden bg-(--midnight) py-[var(--space-section-lg)]"
@@ -258,7 +300,7 @@ export function InsightCtaSection() {
       </div>
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[linear-gradient(108deg,rgba(12,20,29,0.95)_10%,rgba(12,20,29,0.86)_50%,rgba(12,20,29,0.7)_100%)]"
+        className="absolute inset-0 -z-10 bg-[linear-gradient(108deg,rgba(12,20,29,0.95)_10%,rgba(12,20,29,0.86)_50%,rgba(12,20,29,0.7)_100%)] rtl:bg-[linear-gradient(252deg,rgba(12,20,29,0.95)_10%,rgba(12,20,29,0.86)_50%,rgba(12,20,29,0.7)_100%)]"
       />
       <div aria-hidden="true" className="grain absolute inset-0 -z-10" />
 
@@ -283,12 +325,12 @@ export function InsightCtaSection() {
             <Button href={insightCta.primary.href} size="lg" withArrow>
               {insightCta.primary.label}
             </Button>
-            <a
+            <LocaleLink
               href={insightCta.secondary.href}
               className="link-underline py-1 text-[0.9375rem] text-(--color-foreground-muted) transition-colors duration-500 hover:text-(--color-foreground) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring)"
             >
               {insightCta.secondary.label}
-            </a>
+            </LocaleLink>
           </Reveal>
         </div>
       </Container>

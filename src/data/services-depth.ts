@@ -114,6 +114,8 @@ export const advisoryAreas = {
   heading: "What Advisory Actually Produces",
   intro:
     "Advisory work is written. Each area below results in a document a management team can read, circulate and act on, rather than a conversation that has to be remembered.",
+  /* Moved out of `AdvisoryAreas` unchanged, so it can be translated. */
+  involvesLabel: "What it involves",
   areas: [
     {
       key: "market-entry",

@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { LocaleLink } from "@/components/layout/LocaleLink";
 import { useState } from "react";
 
 import { useLocale } from "@/components/layout/LocaleProvider";
@@ -92,7 +92,12 @@ export function CapabilityShowcase({
               return (
                 <li key={capability.slug} className="border-b border-(--color-border)">
                   <Reveal delay={index * 80}>
-                    <Link
+                    {/*
+                      `LocaleLink`, so a reader on the Arabic home page who
+                      follows a capability arrives at the Arabic service page.
+                      Nothing else about the row changes.
+                    */}
+                    <LocaleLink
                       href={capability.href}
                       onMouseEnter={() => setActive(index)}
                       onFocus={() => setActive(index)}
@@ -194,7 +199,7 @@ export function CapabilityShowcase({
                           <Arrow />
                         </span>
                       </div>
-                    </Link>
+                    </LocaleLink>
                   </Reveal>
                 </li>
               );

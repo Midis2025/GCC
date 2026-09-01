@@ -2,7 +2,10 @@ import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/sections/Section";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
+import { pick } from "@/content";
+import { unsubscribeContentAr } from "@/content/ar/utility-pages";
 import { backdrops } from "@/data/imagery";
+import { unsubscribeContent as unsubscribeContentEn } from "@/data/utility-pages";
 import { suppressContact } from "@/lib/crm";
 import { verifyToken } from "@/lib/optin";
 import { createMetadata } from "@/lib/seo";
@@ -15,37 +18,22 @@ export const metadata = createMetadata({
 });
 
 /**
- * ============================================================================
- * UNSUBSCRIBE
- * ============================================================================
- * One click, and it is done on arrival.
+ * Unsubscribe.
  *
- * There is deliberately no confirm step, no "are you sure", no preference
- * centre asking whether they would rather hear from us less often, and no
- * login. Opening the link IS the unsubscribe. Anything placed between the
- * click and the outcome is a dark pattern whatever it is called, and the
- * signed token means the click can only ever have come from the recipient's
- * own message.
+ * Three states, now read from a content module so that a reader who joined in
+ * Arabic leaves in Arabic. The BRANCHING is unchanged.
  *
- * Suppression is PERMANENT - see `SubscriptionState` in `lib/crm.ts`. The
- * address is not deleted, because a deleted address cannot be checked against
- * the next import.
- *
- * `List-Unsubscribe-Post` clients never reach this page. They POST the same
- * token to `/api/unsubscribe` and the recipient sees their mail client's own
- * confirmation instead. Both paths call `suppressContact`, so there is one
- * implementation and not two.
- *
- * As with confirmation: while the CRM is unconfigured this page says the
- * request was not recorded and gives a way to make it stick. Telling somebody
- * they have been unsubscribed when nothing recorded it is the one failure that
- * would matter more than the send itself.
+ * CONTENT INTEGRITY: the failure branch says the suppression was NOT recorded
+ * and asks the reader to make contact. Telling somebody they have been removed
+ * from a list that still holds their address is the worst thing this route can
+ * do, and the copy is written to prevent it in both languages.
  */
 export default async function UnsubscribePage({ searchParams }: PageProps<"/[lang]/unsubscribe">) {
   const params = await searchParams;
   const raw = params.token;
   const token = Array.isArray(raw) ? raw[0] : raw;
 
+  const c = await pick({ en: unsubscribeContentEn, ar: unsubscribeContentAr });
   const verified = verifyToken("unsubscribe", token);
 
   let title: string;
@@ -53,13 +41,11 @@ export default async function UnsubscribePage({ searchParams }: PageProps<"/[lan
   let detail: string | null = null;
 
   if (!verified.ok) {
-    title = "We could not action this unsubscribe link.";
-    lead =
-      "The link may have been altered or truncated in your email client. Please contact us and we will remove you from the list by hand — you do not need a working link to be unsubscribed.";
+    title = c.failed.title;
+    lead = c.failed.lead;
 
     if (verified.reason === "unconfigured") {
-      detail =
-        "Note for review: set OPTIN_SECRET in the deployment environment. Until it is set, no unsubscribe link can be signed or verified.";
+      detail = c.failed.unconfiguredNote;
     }
   } else {
     const result = await suppressContact(verified.email).catch((error: unknown) => ({
@@ -68,14 +54,15 @@ export default async function UnsubscribePage({ searchParams }: PageProps<"/[lan
     }));
 
     if (result.updated) {
-      title = "You have been unsubscribed.";
-      lead =
-        "Your address has been suppressed permanently. You will receive no further briefing invitations or written content from Gulf Connect.";
+      title = c.done.title;
+      lead = c.done.lead;
     } else {
-      title = "We could not record your unsubscribe.";
-      lead =
-        "Please contact us so it can be actioned by hand. We would rather you heard that plainly than be told you were removed from a list that still holds your address.";
-      detail = `Note for review: ${result.reason ?? "the CRM did not record the suppression."}`;
+      title = c.notRecorded.title;
+      lead = c.notRecorded.lead;
+      detail = c.notRecorded.note.replace(
+        "{reason}",
+        result.reason ?? c.notRecorded.fallbackReason,
+      );
     }
   }
 
@@ -85,23 +72,23 @@ export default async function UnsubscribePage({ searchParams }: PageProps<"/[lan
         variant="feature"
         photo={backdrops.utility}
         compact
-        eyebrow="Email"
+        eyebrow={c.eyebrow}
         title={title}
         lead={lead}
         actions={
           <>
             <Button href="/contact" size="lg" withArrow>
-              Contact Gulf Connect
+              {c.actionContact}
             </Button>
             <Button href="/privacy" size="lg" variant="outline">
-              Privacy Policy
+              {c.actionPrivacy}
             </Button>
           </>
         }
       />
 
       {detail && (
-        <Section spacing="md" aria-label="Status">
+        <Section spacing="md" aria-label={c.statusLabel}>
           <Reveal>
             <p className="max-w-[62ch] border-s-2 border-(--color-accent)/50 ps-5 text-[0.9375rem] leading-relaxed text-(--color-foreground-subtle)">
               {detail}

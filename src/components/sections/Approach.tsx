@@ -39,8 +39,7 @@ export async function Approach({ tone = "muted" }: { tone?: "muted" | "canvas" }
 
         <Reveal delay={120}>
           <p className="max-w-[46ch] text-[1.0625rem] leading-relaxed text-(--color-foreground-muted) lg:pb-3">
-            Five stages, run in sequence and then revisited. The last one is what keeps a programme
-            from hardening into a script.
+            {approachContent.intro}
           </p>
         </Reveal>
       </div>

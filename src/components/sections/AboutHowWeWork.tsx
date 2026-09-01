@@ -2,8 +2,10 @@ import { Section } from "@/components/sections/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { aboutClients } from "@/data/about";
-import { commercialModel } from "@/data/site";
+import { pick } from "@/content";
+import { aboutClientsAr, aboutCommercialAr, commercialModelAr } from "@/content/ar/about";
+import { aboutClients as aboutClientsEn, aboutCommercial as aboutCommercialEn } from "@/data/about";
+import { commercialModel as commercialModelEn } from "@/data/site";
 
 /**
  * How we work, and who we work with.
@@ -17,34 +19,37 @@ import { commercialModel } from "@/data/site";
  * They are compensation statements, not marketing lines, and they are stated
  * once from a single source so the two pages can never disagree.
  */
-export function AboutHowWeWork() {
+export async function AboutHowWeWork() {
+  const aboutClients = await pick({ en: aboutClientsEn, ar: aboutClientsAr });
+  const aboutCommercial = await pick({ en: aboutCommercialEn, ar: aboutCommercialAr });
+  const commercialModel = await pick({ en: commercialModelEn, ar: commercialModelAr });
+
   return (
     <Section spacing="lg" tone="muted" aria-labelledby="about-how-we-work">
       <div className="grid gap-x-20 gap-y-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         {/* How we work. */}
         <div>
           <Reveal>
-            <SectionLabel>How We Work</SectionLabel>
+            <SectionLabel>{aboutCommercial.label}</SectionLabel>
             <Heading
               id="about-how-we-work"
               level={2}
               size="h2"
               className="mt-5 max-w-[14ch]"
             >
-              Fixed Fees, Defined Scope, Written Reporting
+              {aboutCommercial.heading}
             </Heading>
           </Reveal>
 
           <Reveal delay={120} className="mt-8">
             <p className="max-w-[52ch] text-[1.0625rem] leading-relaxed text-(--color-foreground-muted)">
-              {commercialModel.basis} Every engagement is agreed in advance against what will be
-              prepared, convened, produced and reported, and reported on in writing while it runs.
+              {commercialModel.basis} {aboutCommercial.detail}
             </p>
           </Reveal>
 
           <Reveal delay={180} className="mt-10">
             <p className="text-label uppercase text-(--color-foreground-subtle)">
-              What we are not paid for
+              {aboutCommercial.exclusionsLabel}
             </p>
             <ul className="mt-5 flex flex-col">
               {commercialModel.exclusions.map((item, index) => (

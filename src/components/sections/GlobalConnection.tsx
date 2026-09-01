@@ -3,6 +3,7 @@ import { ConnectedWorldMap, type MapNode } from "@/components/visuals/ConnectedW
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
+import { getDictionary } from "@/content";
 
 export interface GlobalConnectionProps {
   id: string;
@@ -40,16 +41,20 @@ export interface GlobalConnectionProps {
  *
  * Do not move it, do not shorten it, and do not put it behind an interaction.
  */
-export const MAP_DENIAL =
-  "Connections shown represent cross-border company and market connectivity. They do not represent offices, registrations, licences or relationships in any jurisdiction.";
-
-export function GlobalConnection({
+/**
+ * The standing denial now lives in the chrome dictionary as `maps.denial`, so
+ * that the four map surfaces on this site carry one sentence in two languages
+ * rather than four copies of it in one. The English words are unchanged.
+ */
+export async function GlobalConnection({
   id,
   label,
   heading,
   paragraphs,
   map,
 }: GlobalConnectionProps) {
+  const t = await getDictionary();
+
   return (
     <Section
       spacing="lg"
@@ -99,7 +104,7 @@ export function GlobalConnection({
       {/* COMPLIANCE. Standing text. See the note above. */}
       <Reveal delay={600}>
         <p className="mt-12 max-w-[76ch] border-t border-white/12 pt-8 text-sm leading-relaxed text-(--color-foreground-subtle)">
-          {MAP_DENIAL}
+          {t.maps.denial}
         </p>
       </Reveal>
     </Section>

@@ -20,8 +20,10 @@ import {
   InsightSectors,
 } from "@/components/sections/insight/InsightOpening";
 import { Reveal } from "@/components/ui/Reveal";
+import { insightFormatList, pick } from "@/content";
+import { insightContentAr } from "@/content/ar/insight";
 import { backdrops } from "@/data/imagery";
-import { insightContent, insightFormats } from "@/data/insight";
+import { insightContent as insightContentEn } from "@/data/insight";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({
@@ -95,7 +97,15 @@ export const metadata = createMetadata({
  * The page carries no `CTASection`. The sitewide band routes to Contact, and a
  * reader who has come this far down Insight wants the investor list instead.
  */
-export default function InsightPage() {
+export default async function InsightPage() {
+  const insightContent = await pick({ en: insightContentEn, ar: insightContentAr });
+  /*
+    The five formats, in the language being read. `id` is the taxonomy key in
+    both editions, so the anchors this nav writes - `#five-questions` and the
+    rest - resolve against the same sections either way.
+  */
+  const insightFormats = await insightFormatList();
+
   return (
     <>
       {/*
@@ -138,7 +148,7 @@ export default function InsightPage() {
         the list is built from `insightFormats`, so the only thing that had to
         change here was the column count.
       */}
-      <Section spacing="md" aria-label="Insight formats">
+      <Section spacing="md" aria-label={insightContent.formatsNavLabel}>
         <nav>
           <ul className="-mx-(--gutter) flex snap-x snap-mandatory gap-x-6 overflow-x-auto px-(--gutter) pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-x-10 sm:gap-y-8 sm:overflow-visible sm:px-0 lg:grid-cols-5 lg:gap-x-8">
             {insightFormats.map((format, index) => (

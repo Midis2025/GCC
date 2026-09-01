@@ -2,6 +2,8 @@ import { lang } from "next/root-params";
 
 import { defaultLocale, isLocale, type Locale } from "@/lib/i18n";
 import { loadDictionary, type Dictionary } from "@/content/dictionary";
+import { insightFormatsAr } from "@/content/ar/insight";
+import { insightFormats as insightFormatsEn, type InsightFormatId } from "@/data/insight";
 
 /**
  * ============================================================================
@@ -101,5 +103,28 @@ export type Localised<T> = T extends string
     : T extends object
       ? { readonly [K in keyof T]: Localised<T[K]> }
       : T;
+
+/**
+ * The five Insight formats, in the language of the request.
+ *
+ * A helper rather than a `pick` at each call site, because eight components on
+ * the Insight page and the item template all need the same lookup and every
+ * one of them is asking the same question: what is this format called, and how
+ * often does it appear.
+ *
+ * `id` is a taxonomy key and is identical in both editions, so the lookup is
+ * by id in either language and the anchors on `/insight` resolve unchanged.
+ */
+export async function insightFormatList(): Promise<Localised<typeof insightFormatsEn>> {
+  return pick({ en: insightFormatsEn, ar: insightFormatsAr });
+}
+
+/** One format, by id, in the language of the request. */
+export async function insightFormat(
+  id: InsightFormatId,
+): Promise<Localised<typeof insightFormatsEn>[number] | undefined> {
+  const formats = await insightFormatList();
+  return formats.find((format) => format.id === id);
+}
 
 export type { Dictionary };

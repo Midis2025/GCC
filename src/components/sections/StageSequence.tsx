@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import { LocaleLink } from "@/components/layout/LocaleLink";
 import { Section } from "@/components/sections/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
@@ -250,7 +250,7 @@ export function StageSequence({
                   <ul className="mt-8 border-t border-(--color-foreground)/12">
                     {stage.links.map((link) => (
                       <li key={link.href} className="border-b border-(--color-foreground)/12">
-                        <Link
+                        <LocaleLink
                           href={link.href}
                           className="group flex flex-col gap-1.5 py-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-ring) sm:flex-row sm:items-baseline sm:justify-between sm:gap-8"
                         >
@@ -262,7 +262,7 @@ export function StageSequence({
                               {link.meta}
                             </span>
                           )}
-                        </Link>
+                        </LocaleLink>
                       </li>
                     ))}
                   </ul>
