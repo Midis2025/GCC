@@ -382,8 +382,14 @@ export function GlobeCanvas({
 
       /* --- Frame ------------------------------------------------------- */
       const { cx: fx, cy: fy, radius: fr } = layout.current;
-      const cx = width * fx;
-      const cy = height * fy;
+      /*
+        The placement the caller asked for. The cached layers are keyed on it,
+        so it must not move with the camera - otherwise every frame of a zoom
+        would rebuild both of them. `cx`/`cy` below is where the disc is
+        actually drawn, which does move.
+      */
+      const baseCx = width * fx;
+      const baseCy = height * fy;
       /*
         `baseRadius` is the placement the caller asked for; `radius` is what the
         viewer is actually looking at. They are the same number until someone
@@ -392,6 +398,46 @@ export function GlobeCanvas({
       */
       const baseRadius = Math.min(width, height) * fr;
       const radius = baseRadius * scale;
+
+      /*
+        --- Where the enlargement happens about --------------------------
+
+        Scaling about the disc's own centre is right for a push-in and wrong
+        for a zoom. The Gulf does not sit at the centre of the disc, so
+        enlarging about the centre carries it toward the edge: by the time the
+        six markets are far enough apart to read, half of them have left the
+        frame. Zooming in on a region has to keep the region.
+
+        So the disc slides as it grows, to hold the ACTIVE market in view.
+        `anchor` is where that market should end up on screen: where it
+        already is at the resting view, easing to the middle of the frame as
+        the camera closes in - so a reader who zooms finds the market they
+        selected centred and its neighbours arranged around it.
+
+        `cx`/`cy` then follow from the anchor: a surface point sitting `v` from
+        the centre at scale 1 sits `v x scale` from it at scale, so holding it
+        at `anchor` means putting the centre at `anchor - v x scale`.
+
+        AT REST THIS IS EXACTLY NOTHING. `scale` is 1 and `pull` is 0, so the
+        centre resolves to the placement the caller asked for and every pixel
+        is where it was before. Nothing moves until someone zooms.
+      */
+      let cx = baseCx;
+      let cy = baseCy;
+
+      if (scale !== 1) {
+        project(market.lon, market.lat, rot, baseCx, baseCy, baseRadius, P);
+        const vx = P.sx - baseCx;
+        const vy = P.sy - baseCy;
+
+        // 0 at the resting view, 1 at the ceiling.
+        const pull = Math.max(0, Math.min(1, (scale - ZOOM_MIN) / (ZOOM_MAX - ZOOM_MIN)));
+        const anchorX = P.sx + (baseCx - P.sx) * pull;
+        const anchorY = P.sy + (baseCy - P.sy) * pull;
+
+        cx = anchorX - vx * scale;
+        cy = anchorY - vy * scale;
+      }
 
       geometry.current.cx = cx;
       geometry.current.cy = cy;
@@ -437,14 +483,20 @@ export function GlobeCanvas({
         those four gradients on every frame of a zoom - which is the one thing
         that would have made this expensive.
       */
+      /*
+        Keyed on the PLACEMENT, never on the drawn centre. The drawn centre
+        moves on every frame of a zoom; rebuilding two offscreen canvases that
+        often is the one thing this cache exists to prevent. `blitLayer` maps
+        the layer's own centre onto wherever the disc has moved to.
+      */
       if (
         !layers ||
-        layers.cx !== cx ||
-        layers.cy !== cy ||
+        layers.cx !== baseCx ||
+        layers.cy !== baseCy ||
         layers.radius !== baseRadius ||
         layers.dpr !== backingRatio
       ) {
-        layers = buildLayers(backingRatio, cx, cy, baseRadius, compact, hero);
+        layers = buildLayers(backingRatio, baseCx, baseCy, baseRadius, compact, hero);
       }
 
       blitLayer(ctx, layers.base, layers, cx, cy, scale);
@@ -490,7 +542,7 @@ export function GlobeCanvas({
       }
       // The hero carries a standing HTML label for every market, so the canvas
       // must not draw one too - two names on one dot is just a double image.
-      drawMarkets(ctx, rot, cx, cy, radius, active.current, hovered.current, elapsed, reducedMotion, fontFamily, hits, markerLabels ?? !hero);
+      drawMarkets(ctx, rot, cx, cy, radius, active.current, hovered.current, elapsed, reducedMotion, fontFamily, hits, markerLabels ?? !hero, scale);
     };
 
     frame = requestAnimationFrame(draw);
@@ -826,6 +878,77 @@ export function GlobeCanvas({
     [onHover, setCursor, endPinch],
   );
 
+  /*
+    --- Wheel ---------------------------------------------------------------
+
+    Desktop had no zoom at all. Pinch is a touch gesture, so a mouse could only
+    ever see the resting view; this is the other half of the same control.
+
+    THE POINTER HAS TO BE OVER THE DISC, not merely over the element. The canvas
+    is the glow's bounding box and stands proud of the globe on two sides, and
+    on the hero it is larger still - so a wheel anywhere in that box would eat
+    scrolls that were meant for the page. Testing against the sphere is what
+    keeps "scroll the page" and "zoom the globe" separable by aim, and it is
+    what the brief asks for: over the globe zooms, everywhere else scrolls.
+
+    `preventDefault` therefore fires ONLY when the gesture was actually claimed,
+    which is why this is a native listener with `{ passive: false }` rather than
+    React's `onWheel` - a passive listener is not allowed to call it.
+
+    Multiplicative, not additive: a wheel notch moves the camera by a constant
+    RATIO, so a step feels the same size at 1.2 as it does at 6. An additive
+    step would crawl at the near end and leap at the far end. `ZOOM_EASE` in the
+    draw loop already smooths whatever lands in the ref, so a notchy wheel comes
+    out as continuous travel rather than as steps.
+
+    Opt-in exactly as the pinch is: no `zoom` ref, no handler, so the hero globe
+    - which passes none - is untouched.
+  */
+  useEffect(() => {
+    const element = canvasRef.current;
+    const cameraRef = camera.current;
+    if (!element || !cameraRef) return;
+
+    const onWheel = (event: WheelEvent) => {
+      const { cx, cy, radius } = geometry.current;
+      if (radius <= 0) return;
+
+      const rect = element.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      /*
+        Only over the sphere. Once zoomed in the sphere is larger than the
+        element, so this is true across the whole frame - which is correct: at
+        that point the globe IS the view, and a reader who wants the page back
+        zooms out or scrolls with the pointer elsewhere.
+      */
+      if (Math.hypot(x - cx, y - cy) > radius) return;
+
+      event.preventDefault();
+
+      /*
+        Wheels report in three units. Lines and pages are converted to
+        approximate pixels so a trackpad and a notched mouse travel at
+        comparable rates rather than one of them moving 100x faster.
+      */
+      const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? rect.height : 1;
+      const delta = event.deltaY * unit;
+
+      const next = cameraRef.current * Math.exp(-delta * 0.0016);
+      cameraRef.current = Math.max(ZOOM_FLOOR, Math.min(ZOOM_MAX, next));
+    };
+
+    element.addEventListener("wheel", onWheel, { passive: false });
+    return () => element.removeEventListener("wheel", onWheel);
+    /*
+      `camera` is a ref whose own `.current` is the caller's ref object; it is
+      set in the effect above and does not change for the life of the globe, so
+      this binds once. `zoom` is in the deps to re-bind if a caller ever swaps
+      the ref it passes.
+    */
+  }, [zoom]);
+
   return (
     <canvas
       ref={canvasRef}
@@ -890,15 +1013,23 @@ function blitLayer(
   cy: number,
   scale: number,
 ) {
-  if (scale === 1) {
+  if (scale === 1 && cx === layers.cx && cy === layers.cy) {
     ctx.drawImage(layer, layers.originX, layers.originY, layers.size, layers.size);
     return;
   }
 
+  /*
+    Maps the layer's OWN disc centre onto wherever the disc is being drawn.
+
+    Measuring the offset from `layers.cx/cy` rather than from `cx/cy` is what
+    lets the drawn centre differ from the one the layer was built at - which is
+    exactly what happens once a zoom slides the disc to hold a market in frame.
+    When the two centres agree this is the expression it always was.
+  */
   ctx.drawImage(
     layer,
-    cx + (layers.originX - cx) * scale,
-    cy + (layers.originY - cy) * scale,
+    cx + (layers.originX - layers.cx) * scale,
+    cy + (layers.originY - layers.cy) * scale,
     layers.size * scale,
     layers.size * scale,
   );
@@ -1615,8 +1746,46 @@ function drawMarkets(
   fontFamily: string,
   hits: React.RefObject<{ index: number; x: number; y: number }[]>,
   withLabel: boolean,
+  scale: number,
 ) {
   const picks: { index: number; x: number; y: number }[] = [];
+  /*
+    Labels wanted this frame, collected before any of them is drawn.
+
+    They cannot be drawn inside the loop below, because whether one label may
+    sit where it wants to depends on where the others ended up - and that is not
+    known until every marker has been projected. So the loop plots the dots and
+    records the requests; the labels are placed and painted afterwards.
+  */
+  const labels: { text: string; x: number; y: number; alpha: number }[] = [];
+
+  /*
+    How far in we are, 0 at the resting view and 1 once the Gulf fills the
+    frame. Everything that responds to zoom reads this rather than the raw
+    scale, so the thresholds are stated once.
+  */
+  const closeness = Math.max(0, Math.min(1, (scale - ZOOM_MIN) / (ZOOM_MAX - ZOOM_MIN)));
+
+  /*
+    Every market names itself once the camera is close enough to separate them.
+
+    A RAMP, not a switch. The names fade up across a band of the travel rather
+    than appearing at a threshold, so pushing the wheel slowly cannot make them
+    blink on and off around a boundary - which is the flicker this has to avoid.
+    Below the band only the active market is named, exactly as before.
+  */
+  const crowdAlpha = Math.max(0, Math.min(1, (closeness - 0.14) / 0.16));
+
+  /*
+    Dot radius. Screen space, so a zoomed marker never becomes a disc the size
+    of the country beneath it - but not fixed either: a 2.8px point that reads
+    as a marker against a whole planet reads as a speck once it has a region to
+    itself. It opens up by about half again across the travel and stops.
+
+    Geography is untouched by this. The dot grows; the place it is drawn is
+    still the projection of the market's own longitude and latitude.
+  */
+  const dotScale = 1 + closeness * 0.55;
 
   globeMarkets.forEach((market, index) => {
     if (market.international) return;
@@ -1653,26 +1822,87 @@ function drawMarkets(
     }
 
     ctx.beginPath();
-    ctx.arc(P.sx, P.sy, isActive ? 4 : 2.8, 0, Math.PI * 2);
+    ctx.arc(P.sx, P.sy, (isActive ? 4 : 2.8) * dotScale, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(${BRONZE},${(isActive || isHovered ? 1 : 0.78) * depth})`;
     ctx.fill();
 
-    // Active only. A hovered market gets the HTML tooltip, which can carry its
-    // city as well - two labels on one node would just be clutter.
-    if (isActive && withLabel) {
-      const context = ctx as CanvasRenderingContext2D & { letterSpacing?: string };
-      const previous = context.letterSpacing;
-      context.letterSpacing = "1.5px";
+    /*
+      Who gets named.
 
-      ctx.font = `600 10px ${fontFamily}`;
-      ctx.textAlign = "center";
-      ctx.textBaseline = "alphabetic";
-      ctx.fillStyle = `rgba(${IVORY},${0.88 * depth})`;
-      ctx.fillText(market.label.toUpperCase(), P.sx, P.sy - 16);
+      The active market always, as before - that is the standing "UAE" label
+      and it does not move. Every other market once the camera is close enough
+      that they are no longer one pile, faded in by `crowdAlpha`.
 
-      if (previous !== undefined) context.letterSpacing = previous;
-    }
+      A hovered market is skipped: it already has the HTML tooltip, which
+      carries its city as well, and two names on one dot is a double image.
+    */
+    if (!withLabel) return;
+
+    const alpha = isActive ? 1 : isHovered ? 0 : crowdAlpha;
+    if (alpha <= 0.01) return;
+
+    labels.push({
+      text: market.label.toUpperCase(),
+      x: P.sx,
+      y: P.sy - 16 * (isActive ? 1 : 0.95),
+      alpha: alpha * depth,
+    });
   });
+
+  /*
+    --- Label placement ------------------------------------------------------
+
+    Six Gulf markets within a few degrees of each other will collide before the
+    camera is close enough to separate them, so the names are nudged apart in
+    SCREEN SPACE ONLY. The dot never moves: it stays on the projection of the
+    market's own coordinates, and a label that has been pushed is still reading
+    from the point directly below it.
+
+    Simple and stable by construction: sort top to bottom, then walk the list
+    keeping a running floor. A label that would land within `LINE` of the one
+    above it is pushed just clear. Because the order is by position and the
+    pass is one-directional, the same arrangement comes out of the same frame
+    every time - no oscillation between two solutions, which is the other way
+    a label system flickers.
+  */
+  if (labels.length > 0) {
+    const context = ctx as CanvasRenderingContext2D & { letterSpacing?: string };
+    const previous = context.letterSpacing;
+    context.letterSpacing = "1.5px";
+
+    ctx.font = `600 10px ${fontFamily}`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "alphabetic";
+
+    const LINE = 13;
+    const ordered = [...labels].sort((a, b) => a.y - b.y);
+    let floor = Number.NEGATIVE_INFINITY;
+
+    for (const label of ordered) {
+      const y = Math.max(label.y, floor + LINE);
+      floor = y;
+
+      /*
+        A leader, drawn only once the label has actually been moved off its
+        dot. Without it a nudged name reads as belonging to whichever marker it
+        happens to be nearest; with it, it is tied to its own.
+      */
+      const lift = y - label.y;
+      if (lift > 3) {
+        ctx.beginPath();
+        ctx.moveTo(label.x, label.y + 5);
+        ctx.lineTo(label.x, y - 8);
+        ctx.strokeStyle = `rgba(${IVORY},${0.22 * label.alpha})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = `rgba(${IVORY},${0.88 * label.alpha})`;
+      ctx.fillText(label.text, label.x, y);
+    }
+
+    if (previous !== undefined) context.letterSpacing = previous;
+  }
 
   hits.current = picks;
 }

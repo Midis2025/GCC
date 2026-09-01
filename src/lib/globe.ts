@@ -183,23 +183,47 @@ export const GLOW_REACH = 1.32;
 /**
  * How close the camera is allowed to come, as a multiple of the disc's radius.
  *
- * `ZOOM_MIN` is 1 and is the approved view, so a section nobody has scrolled
- * into is exactly as it was drawn.
+ * `ZOOM_MIN` is 1 and is the approved view, so a globe nobody has touched is
+ * exactly as it was drawn. That number does not move.
  *
- * The ceiling is set by the canvas, not by taste. `glowBox` sizes the element
- * to the glow, which puts its sides at `GLOW_REACH` radii from the centre - so
- * at a zoom of 1.32 the limb reaches the edge of the element, and past that the
- * disc would be cut off square. 1.3 stops just short of it: the sphere itself
- * is never cropped at any point in the travel, and only the outer, near
- * transparent part of the halo tightens as the camera closes in, which is what
- * approaching an atmosphere looks like anyway.
+ * ----------------------------------------------------------------------------
+ * WHY THE CEILING IS NO LONGER 1.3
+ * ----------------------------------------------------------------------------
+ * It used to be, and the reasoning was that `glowBox` puts the element's sides
+ * at `GLOW_REACH` radii from the centre, so at a zoom of 1.32 the limb reaches
+ * the edge of the element and past that the disc is cut off square. 1.3 kept
+ * the whole sphere on screen at every point in the travel.
  *
- * Lives here beside `GLOW_REACH` because that is the number it is derived from,
- * and because the section that drives the camera must not have to import
- * anything from the renderer - the renderer is a lazily loaded chunk.
+ * That is the right constraint for a push-in and the wrong one for a zoom. A
+ * globe you can only enlarge by 30% cannot be used to look AT anywhere: the six
+ * Gulf markets span about twelve degrees of longitude, which at 1.3 is a
+ * thumbnail's width of arc and reads as a single smudged point however well the
+ * markers are drawn.
+ *
+ * So the limb is allowed to leave the element. That is not a defect - it is
+ * what zooming in looks like on any map: past a certain point the horizon is
+ * off screen and you are looking at a region rather than at a planet. Nothing
+ * is cropped that the viewer is trying to see.
+ *
+ * 8 is chosen from the geography rather than picked. At zoom Z the Gulf's ~12
+ * degrees of longitude subtend about `0.209 x R x Z` pixels near the centre of
+ * the disc, and the element is `2 x 1.32 x R` across, so the six markets fill
+ * roughly `0.08 x Z` of its width. At 8 that is about two thirds - the whole
+ * Gulf, comfortably inside the frame, with each market clearly its own point.
+ * Much beyond that and the markets start leaving the frame in pairs.
+ *
+ * NOTHING ELSE HAD TO CHANGE FOR THIS TO STAY SHARP. The coastlines, the
+ * graticule, the landmass and the markers are drawn live from vectors at the
+ * current radius on every frame, so they re-rasterise at whatever zoom is in
+ * force. Only the sphere's body and its terminator are cached bitmaps, and
+ * those are smooth radial gradients that scale without artefacts.
+ *
+ * Lives here beside `GLOW_REACH` because the two are related, and because the
+ * section that drives the camera must not have to import anything from the
+ * renderer - the renderer is a lazily loaded chunk.
  */
 export const ZOOM_MIN = 1;
-export const ZOOM_MAX = 1.3;
+export const ZOOM_MAX = 8;
 
 /**
  * How far a manual pinch may pull the camera BACK, past the approved view.
