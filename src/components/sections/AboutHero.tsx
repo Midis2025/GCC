@@ -82,10 +82,26 @@ export async function AboutHero() {
         Scrims. Below `lg` the photograph is behind the type and needs a heavy
         vertical wash; from `lg` up it is beside the type and needs only a
         feathered left edge, so the two meet without a seam.
+
+        THE `lg` WASH FOLLOWS THE READING DIRECTION. The photograph column above
+        sits on `end-0`, so it moves to the left in Arabic - and a wash fixed at
+        96deg would keep its opaque half on the left, on top of the picture.
+        That is what it did: at 1440 the image ran 0-884 and the solid
+        `#0c141d` ran 0-627, burying two thirds of the frame and leaving the
+        right of the hero flat dark behind the type.
+
+        Mirroring the angle (96 -> 264) puts the opaque end back under the type
+        wherever the type is, and the feathered end back over the photograph.
+        Same colours, same stops, same percentages; only the end it starts from
+        changes. The base class is untouched, so English renders exactly as
+        before - `rtl:` applies only under `dir="rtl"`.
+
+        Below `lg` the photograph is full-bleed and this wash is vertical, so
+        there is nothing to mirror there.
       */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[linear-gradient(to_top,rgba(12,20,29,0.94)_0%,rgba(12,20,29,0.72)_44%,rgba(12,20,29,0.42)_100%)] lg:bg-[linear-gradient(96deg,#0c141d_44%,rgba(12,20,29,0.88)_56%,rgba(12,20,29,0.32)_76%,transparent_96%)]"
+        className="absolute inset-0 -z-10 bg-[linear-gradient(to_top,rgba(12,20,29,0.94)_0%,rgba(12,20,29,0.72)_44%,rgba(12,20,29,0.42)_100%)] lg:bg-[linear-gradient(96deg,#0c141d_44%,rgba(12,20,29,0.88)_56%,rgba(12,20,29,0.32)_76%,transparent_96%)] lg:rtl:bg-[linear-gradient(264deg,#0c141d_44%,rgba(12,20,29,0.88)_56%,rgba(12,20,29,0.32)_76%,transparent_96%)]"
       />
       <div aria-hidden="true" className="grain absolute inset-0 -z-10" />
 
