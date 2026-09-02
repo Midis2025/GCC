@@ -432,24 +432,37 @@ export function PillarSequence({
             >
               <Figure
                 /*
-                  A CUTOUT now - contained and unscrimmed by `Figure` itself.
-                  This frame sits inside a dark section and Figure paints the
-                  panel midnight, so the transparency resolves onto the ground
+                  A CUTOUT - contained and unscrimmed by `Figure` itself, with
+                  no background painted behind it. This frame sits inside a
+                  dark section, so the transparency resolves onto the ground
                   the section already has rather than onto a box added for it.
+
+                  Measured rather than trusted: the asset is 32.6% fully
+                  transparent with all four corners at alpha 0. An RGBA header
+                  alone would not have been evidence of anything.
                 */
                 photo={photo}
                 ratio="auto"
                 /*
-                  Square below `lg`, not 16:10.
+                  3:2 below `lg`, because the board is 3:2.
 
-                  The board is square. A 16:10 frame fits it to the frame's
-                  HEIGHT, so on a 390px phone the landmark painted 219px wide
-                  inside a 350px frame - 63% of the column, with the rest empty.
-                  A square frame fits it to the width instead: 350px, the whole
-                  column. Above `lg` the frame already resolves to about 1.07:1
-                  as a flex child, which is the board's own proportion.
+                  This is the one number that has to track the asset. A
+                  contained cutout paints nothing outside its own proportion,
+                  so any disagreement between board and frame is empty column.
+                  The board was square when this frame was square; it is now
+                  1536x1024, and a square frame would paint it 350x233 inside a
+                  350px column with a third of the height standing empty.
+                  Matching the frame to it fills the column exactly.
+
+                  Above `lg` the frame drops its ratio and stretches as a flex
+                  item, taking whatever height the type leaves - measured
+                  between 0.87 and 1.44. The board is wider than all of those,
+                  so contain fits it to the WIDTH and the landmark spans the
+                  full column at every desktop size. The leftover height is
+                  transparent ground in a dark section, so there is nothing to
+                  see in it.
                 */
-                className="aspect-square w-full lg:aspect-auto lg:min-h-[9rem] lg:flex-1"
+                className="aspect-[3/2] w-full lg:aspect-auto lg:min-h-[9rem] lg:flex-1"
                 sizes="(min-width: 1024px) 34vw, 100vw"
               />
             </Reveal>

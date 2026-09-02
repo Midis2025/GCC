@@ -135,7 +135,17 @@ export function Figure({
     forgotten at one of several call sites. `fit` still overrides upward, for a
     photograph that wants containing for its own reasons.
   */
-  const contain = fit === "contain" || photo.cutout === true;
+  /*
+    `cutoutCover` is the one exception, and it is an exception about the FILE
+    rather than about the treatment: a board that is a third empty makes
+    contain reserve frame for pixels that do not exist. Covering clips that
+    margin, and since every clipped pixel has alpha 0, nothing visible is lost.
+
+    It does not change anything else about a cutout - still no scrim, still no
+    background - so the frame stays a floating subject rather than becoming a
+    picture in a box.
+  */
+  const contain = photo.cutoutCover ? false : fit === "contain" || photo.cutout === true;
   const scrim = photo.cutout ? "none" : overlay;
 
   return (

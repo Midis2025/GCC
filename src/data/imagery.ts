@@ -10,11 +10,11 @@ import digitalMarketData from "../../public/images/digital-market-data.jpg";
 import downtownDubaiBlueHour from "../../public/images/downtown-dubai-blue-hour.jpg";
 import downtownDubaiDusk from "../../public/images/downtown-dubai-dusk.jpg";
 import downtownDubaiNight from "../../public/images/downtown-dubai-night.jpg";
-import dubaiBurjKhalifaCutout from "../../public/images/uae/dubai-burj-khalifa-cutout.png";
+import dubaiBurjKhalifaNight from "../../public/images/uae/dubai-burj-khalifa-night.png";
 import dubaiMarinaCutout from "../../public/images/uae/dubai-marina-cutout.png";
-import dubaiMuseumOfTheFutureCutout from "../../public/images/uae/dubai-museum-of-the-future-cutout.png";
-import riyadhKingdomCentreCutout from "../../public/images/uae/riyadh-kingdom-centre-cutout.png";
-import abuDhabiEtihadTowersCutout from "../../public/images/uae/abu-dhabi-etihad-towers-cutout.png";
+import dubaiMuseumOfTheFutureNightCutout from "../../public/images/uae/dubai-museum-of-the-future-night-cutout.png";
+import riyadhKingFahdRoadNight from "../../public/images/uae/riyadh-king-fahd-road-night.png";
+import abuDhabiEtihadTowersNight from "../../public/images/uae/abu-dhabi-etihad-towers-night.png";
 import dubaiSkylineBandCutout from "../../public/images/uae/dubai-skyline-band-cutout.png";
 import peterLeePortrait from "../../public/images/team/peter-lee.jpg";
 import bannerAbout from "../../public/images/banners/about.avif";
@@ -95,17 +95,19 @@ import uaeLifeSciencesLab from "../../public/images/uae-life-sciences-lab.jpg";
  * `position` is meaningless on them and is deliberately absent: nothing is
  * cropped, so there is no crop to place.
  *
- * The three photographs they displaced are NOT deleted. They stay in
- * /public/images with their entries in CREDITS.md, and only their imports were
- * removed here:
+ * The photographs they displaced are NOT deleted. They stay in /public/images
+ * with their entries in CREDITS.md, and only their imports were removed here:
  *
- *   uae/dubai-museum-of-the-future-cutout.png  <- dubai-museum-future-towers.jpg
- *   uae/dubai-marina-cutout.png                <- uae/sheikh-zayed-road-dusk.jpg
- *   uae/dubai-burj-khalifa-cutout.png          <- uae/dubai-downtown-sheikh-zayed-road.jpg
+ *   uae/dubai-museum-of-the-future-night-cutout.png  <- dubai-museum-future-towers.jpg
+ *   uae/dubai-marina-cutout.png                      <- uae/sheikh-zayed-road-dusk.jpg
  *
- * Restoring any of them is one import and one `src`. That matters more than
- * usual here: the Dubai market panel is a cutout while its two neighbours are
- * photographs, and if that mix is judged wrong the way back is the file above.
+ * Restoring either is one import and one `src`.
+ *
+ * NOTE: the three MARKET panels are no longer cutouts. Their client-supplied
+ * replacements are full night photographs with no alpha channel, so none of
+ * the rules above applies to them - see the note on `cityPhotos`. Still
+ * cutouts: this Museum frame, the Dubai Marina panel and the skyline band
+ * under "Start a Conversation".
  */
 export interface Photo {
   src: StaticImageData;
@@ -159,6 +161,28 @@ export interface Photo {
    * which turns the transparency into a visible rectangle.
    */
   cutout?: boolean;
+  /**
+   * A cutout whose BOARD carries dead transparent margin, which the frame may
+   * clip instead of reserving space for.
+   *
+   * The default for a cutout is `contain`: show the whole board, because the
+   * subject has no spare edges. That is right when the board is tight around
+   * the subject. It is wrong when a third of the board is empty - contain then
+   * reserves frame for pixels that do not exist, and the subject appears to
+   * float far below the top of its own column with no way to pull it up that
+   * is not an arbitrary offset.
+   *
+   * Setting this covers the frame instead, so the transparent margin is
+   * clipped. NOTHING VISIBLE IS LOST: the clipped pixels have alpha 0. It is
+   * not a crop of the picture, it is a crop of the emptiness around it.
+   *
+   * Two things are required of any photo that sets it, and both must be
+   * measured off the alpha rather than guessed:
+   *   - `position`, to say which edge the subject sits against
+   *   - a frame ratio that clips LESS than the measured dead band
+   * Get the second wrong and this does amputate the subject.
+   */
+  cutoutCover?: boolean;
   /**
    * Enlarges a cutout inside its frame, to use up the transparent margin
    * baked into its own canvas.
@@ -609,6 +633,33 @@ export const photos = {
     alt: "The Dubai Marina skyline at night, its towers lit and reflected in the water.",
     cutout: true,
     /*
+      COVERED, not contained, and the arithmetic is the whole reason.
+
+      Measured from the alpha: the board is 1254x1254 and the first opaque row
+      is y=407. The top 32.46% of this file is empty. Contained, that band is
+      drawn - so the frame reserved 148px to 216px of blank column above the
+      skyline depending on the viewport, measured on the page, and the skyline
+      appeared to sit far below the heading beside it.
+
+      The grid was never the problem. The frame's top edge and the section
+      label's top edge are the SAME pixel at every desktop width - 1306/1306 at
+      1920, 2730/2730 at 1440 - because the row is already `items-start`. What
+      looked like a misaligned column was a third of an image file being empty.
+
+      Covering clips that band. Nothing visible goes: every clipped pixel has
+      alpha 0. The frame ratio at the call site is 29:20, which discards
+      31.03% of the board against the 32.46% that is dead - about 18px of
+      transparent headroom kept at board scale, so the tallest towers cannot
+      touch the edge.
+
+      The permanent fix belongs in the asset: re-exported tight to the skyline,
+      this would need none of the above and plain `contain` would be correct
+      again. Flagged for the client.
+    */
+    cutoutCover: true,
+    /* Bottom, because the subject sits against the board's bottom edge. */
+    position: "50% 100%",
+    /*
       NO `cutoutScale`, deliberately.
 
       The skyline spans its board edge to edge - 100% of the width - so it is
@@ -692,25 +743,54 @@ export const photos = {
   },
   whyMarket: {
     /*
-      The Museum of the Future, with the Emirates Towers behind it.
+      The Museum of the Future at night, lit, on its landscaped mound - the
+      palms, the flagpoles and the podium below it included, all on a
+      transparent ground.
 
-      CUTOUT. Same subject as the photograph it replaces, supplied by the
-      client on a transparent ground. The frame it sits in is inside a
-      `tone="dark"` section and `Figure` paints the panel midnight, so the
-      transparency resolves onto the section's own ground rather than onto a
-      box added for it.
+      CUTOUT, and a genuine one. RGBA in the header proves only that an alpha
+      channel EXISTS; a photograph exported from most tools carries one that is
+      255 everywhere and renders as a rectangle. So it was measured: 32.6% of
+      the pixels are fully transparent, another 4.5% carry partial alpha at the
+      edges and the glow, and all four corners read alpha 0. The sky is really
+      cut away.
 
-      No `position`: rendered with `fit="contain"`, so the whole torus and the
-      towers behind it stay in frame. The photograph needed a crop held below
-      centre to keep the flyover; a cutout has nothing to crop.
+      It replaces the previous square cutout of the same landmark. Two things
+      changed with it and both matter:
+
+      THE COMPOSITION. The old cutout carried the Emirates Towers behind the
+      torus. This one does not - it is the museum on its own mound, with palms
+      and flagpoles at the base and nothing behind. The alt text below is
+      rewritten to match, because the old one named towers that are no longer
+      in the frame.
+
+      THE PROPORTION. 1536x1024 is 3:2 landscape against the old 1254x1254
+      square, and a contained cutout leaves empty frame wherever the board and
+      the frame disagree. Below `lg` the frame was a square, which would have
+      painted this board at 350x233 in a 350px column - two thirds of the
+      height empty. The frame's own ratio is changed to 3:2 to match, so the
+      landmark now fills it exactly. See the note at the call site in
+      `PillarSequence.tsx`.
+
+      Above `lg` the frame is a flex child and takes whatever height the type
+      leaves it - measured between 0.87 and 1.44. The board is wider than all
+      of those, so contain fits it to the frame's WIDTH and the landmark spans
+      the full column at every desktop size. The leftover height is transparent
+      ground in a dark section, which is to say it is the section: there is no
+      box to see.
     */
-    src: dubaiMuseumOfTheFutureCutout,
-    alt: "The Museum of the Future in Dubai, its calligraphic facade lit at dusk, with the Emirates Towers behind it.",
+    src: dubaiMuseumOfTheFutureNightCutout,
+    /*
+      Rewritten for THIS photograph. The previous text ended "with the Emirates
+      Towers behind it" and those towers are not in this frame. An alt that
+      describes a different picture is worse than a shorter one.
+    */
+    alt: "The Museum of the Future in Dubai at night, its calligraphic facade lit, standing on its landscaped mound above palms and walkways.",
     cutout: true,
     /*
-      NO `cutoutScale`. The subject spans this board horizontally and fills 94%
-      of it vertically, so contain already puts it within a few per cent of the
-      frame on both axes. There is nothing to reclaim.
+      NO `cutoutScale`. Measured from the alpha, the subject occupies x 18..1517
+      of 1536 and y 87..1023 of 1024 - 98% of the board's width and 91% of its
+      height. There is no transparent margin left to reclaim, and any scale
+      would push the palms and the podium out of frame.
     */
   },
 } as const satisfies Record<string, Photo>;
@@ -990,155 +1070,142 @@ export type SegmentPhotoKey = keyof typeof segmentPhotos;
  * ---------------------------------------------------------------------------
  * EACH ONE HAS TO NAME ITS OWN CITY WITHOUT THE LABEL
  * ---------------------------------------------------------------------------
- * That is the first job of this set:
+ * Still the first job of this set, and all three client-supplied night frames
+ * do it:
  *
- *   Dubai      Burj Khalifa over the Sheikh Zayed Road interchange
- *   Abu Dhabi  Burj Mohammed Bin Rashid at the World Trade Center
- *   Riyadh     Kingdom Centre, its arch unmistakable, over the city below
+ *   Dubai      the Burj Khalifa from the lake, podium and mall beneath it
+ *   Abu Dhabi  Etihad Towers from across the marina
+ *   Riyadh     a twisted tower on King Fahd Road, palms down the reservation
  *
- * ---------------------------------------------------------------------------
- * THE SECOND JOB IS DENSITY, AND IT IS WHY THIS SET WAS REPLACED AGAIN
- * ---------------------------------------------------------------------------
- * The previous three named their cities correctly and still read as soft. The
- * cause was composition, not resolution: they were long-lens frames of one or
- * two towers standing in a large field of empty sky - Riyadh was roughly
- * three-quarters flat haze, Abu Dhabi three-fifths flat blue. A tall card
- * filled mostly with a smooth gradient carries almost no high-frequency
- * detail, so it reads as low-resolution however many pixels the file has.
- *
- * Each of these carries architecture across most of its height instead. That,
- * plus the two delivery faults found alongside them - the `qualities`
- * allowlist in next.config.ts, which was silently pinning every frame on the
- * site to q75, and the scrim these panels were passing to Figure - is what
- * the sharpness complaint was actually about.
+ * The second job is DENSITY. The set two revisions ago named its cities
+ * correctly and still read as soft, because the frames were long-lens towers
+ * standing in large fields of empty sky - a tall card filled mostly with a
+ * smooth gradient carries no high-frequency detail and reads as low-resolution
+ * however many pixels it has. These carry architecture across most of their
+ * height, and lit window grids at that. That lesson is why the set keeps being
+ * judged on composition rather than on file size.
  *
  * ---------------------------------------------------------------------------
- * NOT ETIHAD TOWERS
+ * PHOTOGRAPHS AGAIN, AND WHY THE CUTOUT FLAGS ARE GONE
  * ---------------------------------------------------------------------------
- * The obvious Abu Dhabi frame is Etihad Towers, and it is the one photograph
- * this panel may not use: `segmentPhotos.listed` is already Etihad Towers and
- * sits on this same page. Burj Mohammed Bin Rashid, on Khalifa Street, is the
- * other Abu Dhabi landmark that reads at card size, and it is a genuinely
- * different building rather than the same one from a second angle.
+ * These three were cutouts - subjects on a transparent ground, drawn with
+ * `contain`, no panel behind them, each with a `cutoutScale` tuned off its own
+ * alpha bounding box. The client has now supplied full night photographs of
+ * the same three cities, and every one is 8-bit RGB with NO alpha channel.
+ * Measured, not assumed: the PNG headers read colour type 2.
  *
- * `position` on each holds the landmark through the crop - see the note on
- * each. Verified at 1440 and again at 390, where the cards are taller still.
+ * That one fact settles the treatment. A cutout flag on a file with no
+ * transparency does not produce a floating landmark - it produces a rectangle
+ * drawn with `contain`, letterboxed inside the card, with the section colour
+ * banding down two sides of it. The honest rendering of a photograph is the
+ * one this frame was built for: `cover`, the midnight ground beneath it, and
+ * `position` deciding what the window holds.
+ *
+ * So `cutout` and `cutoutScale` are removed rather than carried forward. The
+ * card, its 4:5 ratio, the stagger and the caption block are untouched - only
+ * what sits inside the panel has changed.
+ *
+ * ---------------------------------------------------------------------------
+ * FLAGGED: ETIHAD TOWERS NOW APPEARS TWICE ON THE HOMEPAGE
+ * ---------------------------------------------------------------------------
+ * This set used to carry a rule saying the Abu Dhabi panel may NOT be Etihad
+ * Towers, because `segmentPhotos.listed` - the "Listed Small and Mid-Cap
+ * Companies" panel in the Segments mosaic - is Etihad Towers and sits on this
+ * same page. That is still true: `etihad-towers-abu-dhabi.jpg` is served by
+ * the homepage today, verified in the rendered HTML.
+ *
+ * The client has supplied Etihad Towers for this panel anyway. The instruction
+ * was explicit and the file is theirs to choose, so it is used - but the rule
+ * it breaks was a real one and this is NOT a silent acceptance. The same four
+ * towers now appear twice on one page, once at night here and once at golden
+ * hour in the mosaic.
+ *
+ * The fix, if the client wants it, is one line and belongs to the OTHER panel:
+ * point `segmentPhotos.listed` at `abuDhabiNight` or `louvreAbuDhabiDome`,
+ * both already in the library and neither currently on the homepage. Not done
+ * here because changing the Segments mosaic was not what was asked for.
+ *
+ * ---------------------------------------------------------------------------
+ * WHY ALL THREE CROP FROM THE CENTRE
+ * ---------------------------------------------------------------------------
+ * "50% 50%" three times looks like a default nobody thought about. It is the
+ * opposite: each was measured off a per-row brightness profile - on a night
+ * shot the first lit row from the top IS the roofline - and then the candidate
+ * crops were rendered and looked at.
+ *
+ *   Dubai      1024x1536  0.667  ->  4:5 loses 256px (16.7%)
+ *   Abu Dhabi  1024x1536  0.667  ->  4:5 loses 256px (16.7%)
+ *   Riyadh     1086x1448  0.750  ->  4:5 loses  90px (6.2%)
+ *
+ * All three carry their subject from a lit roofline near the top to a
+ * reflection running off the bottom edge, so the crop takes something at both
+ * ends whatever it does. Anchoring to the top keeps headroom nobody needs and
+ * cuts the part that gives each frame its place - the podium and mall under
+ * the Burj, the gold restaurant deck under Etihad Towers, the wet carriageway
+ * under the Riyadh tower. Centring keeps the landmark whole AND the ground it
+ * stands on.
+ *
+ * ---------------------------------------------------------------------------
+ * RESOLUTION, HONESTLY
+ * ---------------------------------------------------------------------------
+ * Measured against the real rendered card at 13 viewports, not against the
+ * 30vw in `sizes`, which approximates a three-column grid in a capped
+ * container rather than the card itself.
+ *
+ * One case is short. At a 1920 viewport the card is 539px wide, so a 2x
+ * display asks for 1078px across and the two 1024px files give 1024 - a 1.05x
+ * enlargement, 5%. Everywhere else there is 1.2x to 2.6x spare, and Riyadh's
+ * 1086px clears even that case. 5% at 2x sits below the threshold of visible
+ * softening. Worth a re-export at ~1280 on the long edge if the client can.
  */
 export const cityPhotos = {
   dubai: {
     /*
-      CUTOUT, client-supplied. The Burj Khalifa with its podium and the palms
-      around it, on a transparent ground.
+      Client-supplied. The Burj Khalifa at night from the lake, with the
+      podium, the mall deck and the downtown towers at its foot.
 
-      THIS PANEL IS NOW UNLIKE THE OTHER TWO, and that is a decision rather
-      than an oversight. The client supplied cutouts for Dubai and Riyadh but
-      not for Abu Dhabi, and the Riyadh file is 466px - too small for a frame
-      this size. So Dubai is a cutout and its two neighbours are photographs
-      until a matching Abu Dhabi asset exists.
-
-      What keeps the row coherent meanwhile: the card, its 4:5 ratio, the
-      stagger and the midnight panel are all unchanged, so the three still read
-      as one set. Only what sits inside the Dubai panel has changed.
-
-      No `position`: rendered with `fit="contain"`, so the spire stays in
-      frame without a crop to hold it there.
+      Centred: the spire clears the top edge with sky to spare and the lit base
+      survives at the bottom. Anchored to the top instead, the foreground goes
+      and the tower stands on nothing.
     */
-    src: dubaiBurjKhalifaCutout,
+    src: dubaiBurjKhalifaNight,
     alt: "",
-    cutout: true,
-    /*
-      1.18, and the arithmetic behind it.
-
-      The card is 4:5. Contain fits this square board to the card's WIDTH, so
-      it paints 400x400 in a 400x500 card and the bottom fifth of the card is
-      empty - while the tower itself, 78% of the board's width, paints at only
-      312 of the 400 available.
-
-      Scaling the board to 472 puts the tower at 368x472: it now uses the
-      card's height rather than its width, which is the right axis for the
-      tallest building in the world. The board overflows the card by 36px each
-      side, and every one of those pixels is transparent - the tower's own
-      edges sit 11% (52px at this scale) inside the board.
-
-      1.25 would fill the card's height exactly and leave the tower touching
-      both edges. 1.18 keeps roughly 14px of air top and bottom.
-    */
-    cutoutScale: 1.18,
+    position: "50% 50%",
   },
   "abu-dhabi": {
     /*
-      CUTOUT, client-supplied. Etihad Towers on the Corniche.
+      Client-supplied. Etihad Towers at night from across the marina.
 
-      This is the asset the row was waiting for. Dubai and Riyadh became
-      cutouts first and Abu Dhabi stayed a photograph because none existed;
-      all three now match.
+      See the duplication flag in the note above: this building is also
+      `segmentPhotos.listed` on the same page.
 
-      It is 640x960 against 1254x1254 for the other two - the smallest of the
-      set. In a 400x500 card, contain fits it to the card's HEIGHT (its 0.67
-      board is taller than the 0.8 card), so it paints 333x500 and needs 666px
-      at 2x against 640 available: 0.96x, a 4% enlargement. Visible only under
-      magnification, and the alternative was leaving one photograph in a row of
-      cutouts. Worth re-exporting at 1254 if the client can.
+      The four towers occupy the upper two thirds and the gold podium sits low
+      in the frame, so centring is what keeps the podium and the waterline in.
+      Cropping from the top clips the podium against the bottom edge, and the
+      podium is the one element giving the towers a ground.
     */
-    src: abuDhabiEtihadTowersCutout,
+    src: abuDhabiEtihadTowersNight,
     alt: "",
-    cutout: true,
-    /*
-      2800x3500 is exactly 4:5, so nothing is cropped and the centre is the
-      only honest value. The frame was cut to that ratio at source rather than
-      left to object-fit: the full photograph has a strip of parked traffic
-      along the bottom, and trimming it in the download keeps every delivered
-      pixel on the architecture.
-    */
     position: "50% 50%",
   },
   riyadh: {
     /*
-      CUTOUT, client-supplied. Kingdom Centre and its arch, the palms along
-      Olaya and the traffic beneath - the same landmark as the photograph it
-      replaces.
+      Client-supplied. A twisted tower on King Fahd Road at night, the lit
+      palms along the central reservation and the wet carriageway beneath.
 
-      This arrived after the first cutout pass and resolves the problem that
-      held Riyadh back then: the earlier Riyadh file was 466px, too small for
-      a 400x500 card without a visible enlargement. This one is 1254px, the
-      same board as the other three.
+      THE LANDMARK HAS CHANGED. The panel this replaces was Kingdom Centre and
+      its arch; the tower filling this frame is a different one, with Kingdom
+      Centre small on the horizon to the right. Flagged rather than quietly
+      accepted - no copy anywhere names either building and the alt text is
+      empty, so nothing on the page is made untrue by the swap, but it is a
+      change of subject and not only of photograph.
 
-      Two of the three market panels are now cutouts. Abu Dhabi remains a
-      photograph until a matching asset exists for it.
+      Only 6.2% is lost to the 4:5 crop here, the smallest of the three, so the
+      centre holds the tower's crown, the palms and the road reflections
+      together.
     */
-    src: riyadhKingdomCentreCutout,
+    src: riyadhKingFahdRoadNight,
     alt: "",
-    cutout: true,
-    /*
-      1.10, and the arithmetic behind it.
-
-      Measured from the alpha: the subject is 1089x1212 of the 1254x1254 board -
-      87% of its width, 97% of its height - with 97px of margin on the left and
-      69px on the right. Contain fits the board to the card WIDTH, so it paints
-      400x400 in a 400x500 card and the tower reaches only 348 of the 400
-      available, with a fifth of the card empty below it.
-
-      Scaling the board to 440 puts the tower at 383x427. The board overflows
-      the card by 20px each side, which is inside the 34px and 24px of
-      transparent margin it carries there, so nothing visible is cut.
-
-      1.15 is the point at which the tower touches both side edges. 1.10 keeps
-      about 8px of air either side and 30px above the palms at the base.
-    */
-    cutoutScale: 1.1,
-    /*
-      3280x4100 is exactly 4:5, cut from a 5200x4100 landscape at source.
-
-      That crop had to happen in the download rather than in object-fit. Next
-      picks its variant from the width in `sizes`, so a landscape frame going
-      into a tall box loses a third of that width to the cover crop and ends
-      up SHORT of the pixels the box needs - measured at 1080x852 served into
-      an 800x1000 device-pixel card, a 1.17x enlargement. Cropping to ratio
-      first makes the served variant land exactly on the frame.
-
-      Kingdom Centre stands almost exactly on the centre line and the city
-      reads outward from it in both directions, so the crop is centred.
-    */
     position: "50% 50%",
   },
 } as const satisfies Record<string, Photo>;

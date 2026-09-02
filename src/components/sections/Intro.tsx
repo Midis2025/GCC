@@ -68,31 +68,33 @@ export async function Intro() {
         <div className="relative lg:-me-(--gutter)">
           <Reveal variant="media" delay={200}>
             {/*
-              Square rather than 4:5. The taller crop stood ~300px clear of the
-              text column beside it, leaving a void at the bottom of the copy -
-              the plate overhanging into that corner is what now closes it.
+              29:20, and it is derived from the asset rather than chosen for
+              looks.
 
-              The `2xl` step applies that same rule one size further out. Once
-              the content column stops wrapping the copy, the text block gets
-              shorter while a square frame keeps getting taller, and the gap
-              the square was chosen to close re-opens. 4:3 holds the balance
-              at 1600px and beyond.
-            */}
-            {/*
-              A CUTOUT now, so no scrim - `Figure` suppresses one anyway, but
-              leaving `overlay="veil"` here would read as though this frame
-              still carried it.
+              The frame was square, and square was right when it held a
+              photograph that filled it. It holds a CUTOUT whose top 32.46% is
+              transparent - measured, first opaque row y=407 of 1254 - so a
+              square frame drew a third of a column of nothing above the
+              skyline: 148px to 216px of it depending on the viewport.
 
-              Everything else about the frame is unchanged: same square ratio,
-              same 4:3 above 2xl, same `sizes`. `2xl:aspect-[4/3]` stays even
-              though a square asset cannot fill it - the frame is what the
-              layout is built around and the question plate overhangs its lower
-              edge; the cutout simply centres in the wider box.
+              The row is `items-start` and always was, so the frame's top edge
+              already sat on the section label's top edge to the pixel. The
+              gap was inside the file, not in the grid, which is why the fix is
+              a ratio and not an offset.
+
+              29:20 discards 31.03% of the board against the 32.46% that is
+              dead, keeping about 18px of transparent headroom at board scale
+              so the tallest towers cannot touch the edge. `cutoutCover` on the
+              photo is what lets the frame clip rather than contain, and
+              `position: 50% 100%` anchors the skyline to the bottom.
+
+              No scrim: `Figure` suppresses one for a cutout, and stating
+              `overlay` here would read as though this frame still carried it.
             */}
             <Figure
               photo={photos.introTowers}
-              ratio="square"
-              className="2xl:aspect-[4/3]"
+              ratio="auto"
+              className="aspect-[29/20]"
               sizes="(min-width: 1024px) 46vw, 100vw"
             />
           </Reveal>

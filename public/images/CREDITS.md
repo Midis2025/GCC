@@ -33,11 +33,13 @@ does not apply to them; their licence is whatever the client holds.
 
 | File | Subject | Source PNG | Size |
 | --- | --- | --- | --- |
-| `uae/dubai-burj-khalifa-cutout.png` | Burj Khalifa with its podium and palms | `Burj Khalifa.png` | 1254×1254 RGBA |
 | `uae/dubai-marina-cutout.png` | Dubai Marina at night, towers and reflection | `Dubai Marina.png` | 1254×1254 RGBA |
-| `uae/dubai-museum-of-the-future-cutout.png` | Museum of the Future and Emirates Towers | `Museum of the Future.png` | 1254×1254 RGBA |
-| `uae/riyadh-kingdom-centre-cutout.png` | Kingdom Centre, the Olaya palms and traffic | `Kingdom Centre.png` | 1254×1254 RGBA |
-| `uae/abu-dhabi-etihad-towers-cutout.png` | Etihad Towers on the Corniche | `Abu Dhabi.png` | 640×960 RGBA |
+| `uae/dubai-museum-of-the-future-night-cutout.png` | Museum of the Future at night on its landscaped mound | `new one.png` | 1536×1024 RGBA |
+| `uae/dubai-skyline-band-cutout.png` | Dubai skyline band under "Start a Conversation" | `start convp.png` | RGBA |
+
+The three MARKET cutouts that used to head this table — Burj Khalifa, Kingdom
+Centre and Etihad Towers — are gone, replaced by full night photographs. See
+"Client-supplied market photographs" below.
 
 These are a different KIND of asset from everything else here: a subject on a
 transparent ground, with no spare edges. `Photo.cutout` marks them in
@@ -54,11 +56,8 @@ never does:
 
 | Asset | Subject within its board | Scale | Subject at 1440 |
 | --- | --- | --- | --- |
-| Burj Khalifa | 974×1250 — 78% w, 100% h | 1.18 | 92% of frame width |
-| Kingdom Centre | 1089×1212 — 87% w, 97% h | 1.10 | 96% of frame width |
 | Dubai Marina | 1254×847 — 100% w, 68% h | none | 100% of frame width |
-| Museum of the Future | 1254×1183 — 100% w, 94% h | none | 93% of frame width |
-| Etihad Towers | 640×935 — 100% w, 97% h | none | 100% of frame width |
+| Museum of the Future | 1500×937 — 98% w, 91% h | none | 100% of frame width |
 
 Marina and the Museum span their boards horizontally already, so there is no slack
 to take and any scale would push them out of frame.
@@ -68,29 +67,121 @@ carried in every format it serves: AVIF and WebP keep a real alpha channel, and 
 PNG fallback is written as palette + `tRNS`, which is a 256-entry alpha table rather
 than a lost one.
 
-A fifth file, `Riyadh.png`, was supplied and is **not** used. It is 466×466 against
-1254×1254 for the others, and the smallest frame on the site is 312px wide — which
-needs 624px at 2×. `Kingdom Centre.png` arrived afterwards at full size and covers
-the same city, so the Riyadh market panel takes that instead and the 466px file is
-superseded rather than merely held.
+**Photographs these replaced.** All remain in this directory, with their entries
+below, and only their imports were removed: `dubai-museum-future-towers.jpg`
+and `uae/sheikh-zayed-road-dusk.jpg`.
 
-**Photographs these replaced.** All four remain in this directory, with their
-entries below, and only their imports were removed:
-`dubai-museum-future-towers.jpg`, `uae/sheikh-zayed-road-dusk.jpg`,
-`uae/dubai-downtown-sheikh-zayed-road.jpg` and
-`uae/riyadh-kingdom-centre-skyline.jpg`.
+### The Museum of the Future cutout
 
-**Abu Dhabi now has one.** `Abu Dhabi.png` closed the gap and all three market
-panels are cutouts. It is the smallest board in the set at 640×960 against 1254×1254
-for the other two: in a 400×500 card it paints 333×500 and needs 666px at 2×, a 4%
-enlargement. Worth re-exporting at 1254 if the client can.
+`new one.png` → `uae/dubai-museum-of-the-future-night-cutout.png`, copied in
+byte-for-byte and verified by SHA-1. 1536×1024 RGBA.
+
+**The transparency is real, and was measured rather than trusted.** An RGBA
+header proves only that an alpha channel exists — a photograph exported from
+most tools carries one that is 255 everywhere and renders as a rectangle. This
+file is **32.6% fully transparent**, a further **4.5% partial alpha** at the
+edges and the glow, and all four corners read alpha 0. It survives delivery
+too: 36.5% of the pixels in what `next/image` actually serves are non-opaque,
+measured at all 14 widths.
+
+**The frame's ratio follows the board.** A contained cutout paints nothing
+outside its own proportion, so any disagreement between board and frame is
+empty column. This board is 3:2 where the previous one was square, so the
+frame's below-`lg` ratio changed from `aspect-square` to `aspect-[3/2]`. Left
+square, it would have painted 350×233 in a 350px column with a third of the
+height standing empty. Above `lg` the frame is a flex child taking whatever
+height the type leaves it — measured between 0.87 and 1.44 — and the board is
+wider than all of those, so contain fits it to the WIDTH.
+
+Result, measured at 1920, 1600, 1440, 1366, 1280, 1024, 834, 768, 430, 412,
+390, 375, 360 and 320: the landmark spans **100% of the column width at every
+one**, contained, with no background painted and no horizontal overflow.
+
+**The composition changed with it.** The previous cutout carried the Emirates
+Towers behind the torus; this one is the museum on its own mound with palms and
+flagpoles at the base and nothing behind. The alt text was rewritten to match —
+an alt describing a different picture is worse than a shorter one.
+
+### Client-supplied market photographs
+
+The three homepage market panels are **photographs again**, not cutouts. The
+client supplied full night frames of the same three cities and every one is
+8-bit RGB with **no alpha channel** — read from the PNG headers, colour type 2,
+not assumed. A cutout flag on a file with no transparency does not float a
+landmark; it letterboxes a rectangle inside the card. So these are rendered the
+way the frame was built for a photograph: cover, the midnight ground beneath,
+and `position` deciding the crop.
+
+| File | Subject | Source PNG | Size | Crop |
+| --- | --- | --- | --- | --- |
+| `uae/dubai-burj-khalifa-night.png` | Burj Khalifa at night from the lake, podium and mall beneath | `Burj Khalifa new.png` | 1024×1536 RGB | 50% 50% |
+| `uae/abu-dhabi-etihad-towers-night.png` | Etihad Towers at night across the marina | `DHABIIIIIII.png` | 1024×1536 RGB | 50% 50% |
+| `uae/riyadh-king-fahd-road-night.png` | A twisted tower on King Fahd Road, lit palms, wet carriageway | `RIYADH (1).png` | 1086×1448 RGB | 50% 50% |
+
+Copied in byte-for-byte, verified by SHA-1 against the supplied originals. Not
+regenerated, recoloured, re-cut or re-encoded. Licence is whatever the client
+holds.
+
+**The centre crop was measured, not defaulted.** Each was profiled row by row
+for lit pixels — on a night shot the first lit row from the top is the roofline —
+and the candidate crops were then rendered and looked at. Into the 4:5 card,
+Dubai and Abu Dhabi lose 256px of height (16.7%) and Riyadh 90px (6.2%). All
+three run their subject from a roofline near the top to a reflection at the
+bottom edge, so anchoring to the top would keep unused headroom and cut the
+element that grounds each frame: the mall deck under the Burj, the gold podium
+under Etihad Towers, the wet road under the Riyadh tower.
+
+**Resolution, honestly.** Measured against the real rendered card at 13
+viewports, not against the 30vw in `sizes`. One case is short: at a 1920
+viewport the card is 539px, so a 2× display asks 1078px and the two 1024px files
+give 1024 — a 1.05× enlargement, 5%. Everywhere else there is 1.2×–2.6× spare and
+Riyadh's 1086px clears even that case. Worth a re-export at ~1280 if the client
+can.
+
+**FLAGGED — Etihad Towers now appears twice on the homepage.** This set used to
+carry a rule that the Abu Dhabi panel may not be Etihad Towers, because
+`segmentPhotos.listed` (the "Listed Small and Mid-Cap Companies" panel in the
+Segments mosaic) is Etihad Towers on the same page. That is still true —
+`etihad-towers-abu-dhabi.jpg` is served by the homepage, verified in the
+rendered HTML. The client supplied Etihad Towers for this panel anyway and the
+instruction was explicit, so it is used, but the clash is real and is not
+silently accepted. The fix belongs to the other panel and is one line: point
+`segmentPhotos.listed` at `abuDhabiNight` or `louvreAbuDhabiDome`, both in the
+library and neither on the homepage. Not done here because changing the Segments
+mosaic was not what was asked for.
+
+**FLAGGED — the Riyadh landmark changed.** The panel this replaces was Kingdom
+Centre and its arch. The tower filling the new frame is a different one, with
+Kingdom Centre small on the horizon to the right. No copy anywhere names either
+building and the alt text is empty, so nothing on the page is made untrue, but
+it is a change of subject and not only of photograph.
+
+**Cutouts these replaced.** `uae/dubai-burj-khalifa-cutout.png`,
+`uae/riyadh-kingdom-centre-cutout.png` and
+`uae/abu-dhabi-etihad-towers-cutout.png` are deleted — 4.4MB between them,
+nothing renders them, and git holds them if these ever have to be rolled back.
+Their source PNGs (`Burj Khalifa.png`, `Kingdom Centre.png`, `Abu Dhabi.png`)
+remain in this directory untouched.
 
 Also supplied and deliberately UNUSED / HELD:
 
-- `1.png` — a Burj Khalifa cutout at 640×960. The same subject as
-  `uae/dubai-burj-khalifa-cutout.png`, which is 1254×1254. A newer file is not a
-  better one; the higher-resolution asset stays.
-- `Riyadh.png` — 466×466, superseded by `Kingdom Centre.png` (1254×1254).
+- `Museum of Future.png` — 1336×1177 **RGB, no alpha channel**. Supplied as a
+  replacement for the Museum of the Future frame and briefly used as one, then
+  reverted: the landmark is wanted in full with a transparent background, and
+  this file has no transparency to show. It could not be given any without
+  erasing its sky and inventing what stands behind it, which would be a
+  fabricated asset. Superseded by `new one.png`, which is the same landmark
+  properly cut. Held.
+- `Museum of the Future.png` — the 1254×1254 square cutout that
+  `new one.png` replaced. Genuine transparency, but the older composition
+  (torus plus Emirates Towers, no landscaping) and a square board that no
+  longer matches the 3:2 frame. Held.
+- `1.png` — a Burj Khalifa cutout at 640×960, and `Riyadh.png` at 466×466.
+  Both were superseded first by the larger cutouts and now by the night
+  photographs. Held.
+- `Burj Khalifa.png`, `Kingdom Centre.png`, `Abu Dhabi.png` — the source PNGs
+  for the three market cutouts that the night photographs replaced. Held, in
+  case the client wants the cutout treatment back.
 - `Palm Jumeirah.jpg` and duplicate `112-172534.jpg` (900×600) — no section on
   the site has Palm Jumeirah as its subject. Held.
 - `The Dubai Frame.avif` and duplicate `Dubai Frame.avif` — no section has Dubai

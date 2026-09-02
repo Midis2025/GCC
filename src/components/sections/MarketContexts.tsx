@@ -88,8 +88,11 @@ export async function MarketContexts() {
                   this one. `soft` is the scrim built for the segment mosaic,
                   where a label does sit on the photograph, and it runs to 90%
                   opacity at the foot and still 24% two-thirds of the way up.
-                  Carrying that here was flattening the contrast out of three
-                  daylight photographs to hold type that is not there.
+                  Carrying that here was flattening the contrast out of
+                  three photographs to hold type that is not there - and it
+                  would cost more now than it did then, because all three are
+                  night frames whose subject is lit architecture against a
+                  dark sky. A 90%-at-the-foot scrim over that is mud.
 
                   `veil` keeps the one thing the scrim is doing that matters:
                   a soft anchor at the bottom edge so the frame settles onto
@@ -98,10 +101,11 @@ export async function MarketContexts() {
                 overlay="veil"
                 zoom
                 /*
-                  These three are the densest photographs on the page - facade
-                  grids, an interchange, a city read at distance - held in a
-                  ~400px card. q75 turns that kind of fine repeating detail to
-                  mush; 90 is the allowlisted step that keeps it.
+                  These three are the densest photographs on the page -
+                  three grids of lit windows at night - held in a card
+                  measuring 209px at 768 and 539px at 1920. q75 turns that
+                  kind of fine repeating detail to mush; 90 is the allowlisted
+                  step that keeps it.
                 */
                 quality={90}
                 className="w-full"
