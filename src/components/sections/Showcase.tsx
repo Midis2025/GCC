@@ -247,6 +247,7 @@ export function Showcase({ id, label, heading, items, note }: ShowcaseProps) {
                                 ratio="wide"
                                 overlay="veil"
                                 zoom
+                                quality={90}
                                 sizes="(min-width: 640px) 90vw, 100vw"
                               />
                             </div>
@@ -309,10 +310,10 @@ export function Showcase({ id, label, heading, items, note }: ShowcaseProps) {
                   <Figure
                     photo={item.photo}
                     ratio="auto"
-                    overlay="soft"
-                    grain
+                    overlay="none"
+                    quality={90}
                     className="h-full w-full"
-                    sizes="40vw"
+                    sizes="(min-width: 1280px) 60vw, (min-width: 1024px) 55vw, 100vw"
                   />
                 </div>
               ))}
