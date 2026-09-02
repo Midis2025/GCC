@@ -16,6 +16,7 @@ import dubaiMuseumOfTheFutureCutout from "../../public/images/uae/dubai-museum-o
 import riyadhKingdomCentreCutout from "../../public/images/uae/riyadh-kingdom-centre-cutout.png";
 import abuDhabiEtihadTowersCutout from "../../public/images/uae/abu-dhabi-etihad-towers-cutout.png";
 import dubaiSkylineBandCutout from "../../public/images/uae/dubai-skyline-band-cutout.png";
+import peterLeePortrait from "../../public/images/team/peter-lee.jpg";
 import bannerAbout from "../../public/images/banners/about.png";
 import bannerContact from "../../public/images/banners/contact.png";
 import bannerForInvestors from "../../public/images/banners/for-investors.png";
@@ -239,6 +240,34 @@ export const banners = {
   insight: { src: bannerInsight, alt: "" },
   about: { src: bannerAbout, alt: "" },
   contact: { src: bannerContact, alt: "" },
+} as const satisfies Record<string, Photo>;
+
+/**
+ * Principal portraits, keyed by name.
+ *
+ * Kept here rather than on the person record in `data/about.ts` for the same
+ * reason `cityPhotos` is: an image is an asset, not copy. Putting a
+ * `StaticImageData` into a content module would force the Arabic mirror to
+ * repeat the import to satisfy `Localised`, and a translation file is the last
+ * place a binary should be referenced from.
+ *
+ * The key is the person's NAME, which is safe to look up in either edition:
+ * personal names are not translated, and the Arabic module repeats "Peter Lee"
+ * in Latin script verbatim - see the note at the top of `content/ar/about.ts`.
+ *
+ * A principal with no entry here falls back to the typographic monogram, which
+ * is the behaviour the section had before any portrait existed. Nothing needs
+ * to change to add or remove one.
+ */
+export const principalPhotos = {
+  "Peter Lee": {
+    src: peterLeePortrait,
+    /*
+      Decorative, deliberately. The name is the heading immediately beside this
+      frame, so a described portrait would announce "Peter Lee" twice in a row.
+    */
+    alt: "",
+  },
 } as const satisfies Record<string, Photo>;
 
 /**
