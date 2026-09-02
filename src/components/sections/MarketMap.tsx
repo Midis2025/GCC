@@ -50,123 +50,18 @@ export interface MarketMapProps {
 }
 
 /**
+ * MARKET MAP — Premium Card Grid
  * ============================================================================
- * PROJECTION
- * ============================================================================
- * Equirectangular, over a box drawn around the Gulf: 44.5-60.5E, 21.5-30.5N.
- * Nothing clever - at this extent the distortion of a plate carree is smaller
- * than the stroke width, and a projection with a name nobody can check is
- * worse than a projection anyone can.
+ * The six Gulf markets displayed as a 2×3 grid of elegant dark cards with
+ * gold accent borders. Selecting a market (via the chip buttons on the left,
+ * or by hovering/clicking a card directly) highlights that card. Each card
+ * shows the market name, financial centre city, and a one-line descriptor
+ * drawn from `globeMarkets`.
  *
- * The point of projecting at all rather than arranging six dots by eye is that
- * the relative positions are then true: Kuwait really does sit that far north
- * of Riyadh, Muscat really is that far east of Dubai. A diagram that is going
- * to place markets geographically should be right about it.
- *
- * Coordinates come from `data/outreach-globe.ts`, which already holds each
- * market's principal financial centre for the globe on another route. A
- * coordinate is a geographic fact, not a presence - the same note that file
- * carries applies here, and the disclaimer under this map states it.
- */
-const BOX = { west: 44.5, east: 60.5, south: 21.5, north: 30.5 };
-const CANVAS = { w: 640, h: 420 };
-
-const projectX = (lon: number) =>
-  ((lon - BOX.west) / (BOX.east - BOX.west)) * CANVAS.w;
-const projectY = (lat: number) =>
-  ((BOX.north - lat) / (BOX.north - BOX.south)) * CANVAS.h;
-
-/**
- * Where each market's label hangs relative to its node.
- *
- * Only one label is ever visible, so labels cannot collide with each other -
- * the only thing this has to solve is staying inside the frame. Kuwait sits
- * near the top edge and Muscat near the right, which is why neither takes the
- * placement its neighbours do.
- */
-const LABEL_PLACE: Record<string, "above" | "below"> = {
-  AE: "below",
-  SA: "below",
-  QA: "below",
-  KW: "below",
-  BH: "above",
-  OM: "above",
-};
-
-/** Graticule, every two degrees. Drawn, not decorative noise. */
-const MERIDIANS = [46, 48, 50, 52, 54, 56, 58, 60];
-const PARALLELS = [22, 24, 26, 28, 30];
-
-interface PlacedMarket {
-  code: string;
-  label: string;
-  city: string;
-  x: number;
-  y: number;
-  place: "above" | "below";
-}
-
-/**
- * The six markets, placed.
- *
- * `gulfMarkets` is the list this page and the homepage both render as text and
- * is the source of the order; `globeMarkets` supplies the coordinate. Joining
- * them here rather than duplicating either means the map can never drift out
- * of step with the list beside it.
- */
-function place(
-  markets: readonly { code: string; label: string; city: string }[],
-): PlacedMarket[] {
-  return markets.map((market) => {
-    const geo = globeMarkets.find((entry) => entry.code === market.code);
-
-    return {
-      code: market.code,
-      label: market.label,
-      city: market.city,
-      x: geo ? projectX(geo.lon) : CANVAS.w / 2,
-      y: geo ? projectY(geo.lat) : CANVAS.h / 2,
-      place: LABEL_PLACE[market.code] ?? "below",
-    };
-  });
-}
-
-/**
- * MARKET MAP
- * ============================================================================
- * The six Gulf markets on an abstract map instead of in a row of bordered
- * chips.
- *
- * Built for the About page and then generalised. The geography is fixed - the
- * six markets and their coordinates are the same wherever this appears - so
- * only the copy and the disclaimer are props. Selecting one - by pointer, by keyboard or by touch - lights its
- * position in bronze, draws connecting lines out to the other five and reveals
- * its financial centre beside the node.
- *
- * ---------------------------------------------------------------------------
- * How the interaction is arranged, and why
- * ---------------------------------------------------------------------------
- * The map is inert. Every control is a real `<button>` in the list beside it,
- * and the SVG is `aria-hidden` throughout. Three things follow, and all of
- * them are the reason it is built this way:
- *
- * - It is keyboard operable without inventing focus behaviour for SVG nodes.
- * - It is touch operable at any size, because the targets are text buttons
- *   rather than 4px circles. The brief for a phone was a clean selector rather
- *   than a fiddly map; this is that selector at every width, and the map comes
- *   along as the thing it drives.
- * - A screen reader gets six market names and no duplicated geometry.
- *
- * ---------------------------------------------------------------------------
- * Content integrity
- * ---------------------------------------------------------------------------
- * A dot on a map is the single easiest element on this site to misread as an
- * office. The `disclaimer` prop sits under the frame at every breakpoint and is
- * never behind an interaction, and it says exactly what the map is: market
- * orientation, not offices or registrations. What else it has to deny depends
- * on the page, which is why the caller supplies it rather than the component.
- * The connecting lines are orientation too - they say these six are considered
- * together, which is what the copy beside them already says.
+ * Replaces the SVG constellation map, which was abstract and hard to read.
+ * The card grid is immediately legible, scales to every viewport without
+ * custom projection maths, and carries the same disclaimer in the same
+ * position for content-integrity parity.
  */
 export function MarketMap({
   id,
@@ -178,16 +73,25 @@ export function MarketMap({
   tone = "canvas",
   markets = gulfMarkets,
 }: MarketMapProps) {
-  const { locale, t } = useLocale();
+  const { t } = useLocale();
   const [active, setActive] = useState(0);
-  const placed = place(markets);
-  const current = placed[active];
+
+  /** Enrich each market with the description from globeMarkets. */
+  const enriched = markets.map((market) => {
+    const geo = globeMarkets.find((g) => g.code === market.code);
+    return {
+      ...market,
+      description: geo?.description ?? "",
+    };
+  });
+
+  const current = enriched[active];
 
   return (
     <Section spacing="lg" tone={tone} aria-labelledby={id}>
       <div className="grid gap-x-16 gap-y-14 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-center lg:gap-x-20">
         {/* ------------------------------------------------------------------
-            Copy and the selector.
+            Copy and the selector chips.
             ------------------------------------------------------------------ */}
         <div>
           <Reveal>
@@ -220,7 +124,7 @@ export function MarketMap({
               them is visible without a gesture.
             */}
             <ul className="mt-5 flex flex-wrap gap-x-2.5 gap-y-2.5">
-              {placed.map((market, index) => (
+              {enriched.map((market, index) => (
                 <li key={market.code}>
                   <button
                     type="button"
@@ -245,159 +149,107 @@ export function MarketMap({
         </div>
 
         {/* ------------------------------------------------------------------
-            The map.
+            Premium market card grid (replaces the SVG constellation map).
+
+            2 columns × 3 rows on md+. Each card is a pressable surface with:
+              - Market name as a headline
+              - Financial centre city in gold
+              - One-line descriptor
+              - Full gold accent border on the active card; subtle border on rest
+
+            The active card is driven by the same `active` index as the chip
+            selector on the left, so both controls stay in sync.
             ------------------------------------------------------------------ */}
         <Reveal delay={160} variant="fade">
-          <div className="surface-dark relative isolate overflow-hidden p-6 sm:p-8">
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 -z-10 bg-[radial-gradient(80%_70%_at_60%_35%,#182636_0%,#101b27_55%,#0c141d_100%)]"
-            />
+          <div
+            className="surface-dark relative isolate overflow-hidden p-6 sm:p-8"
+            style={{
+              background:
+                "radial-gradient(80% 70% at 60% 35%, #182636 0%, #101b27 55%, #0c141d 100%)",
+            }}
+          >
+            <ul className="grid grid-cols-2 gap-3 sm:gap-4">
+              {enriched.map((market, index) => {
+                const isActive = active === index;
+                return (
+                  <li key={market.code}>
+                    <button
+                      type="button"
+                      aria-pressed={isActive}
+                      onClick={() => setActive(index)}
+                      onMouseEnter={() => setActive(index)}
+                      onFocus={() => setActive(index)}
+                      className="group w-full text-start focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ring)"
+                    >
+                      <div
+                        className="relative flex h-full flex-col gap-2 rounded-[2px] p-4 transition-all duration-300 ease-out sm:p-5"
+                        style={{
+                          background: isActive
+                            ? "rgba(184,148,95,0.08)"
+                            : "rgba(255,255,255,0.03)",
+                          border: isActive
+                            ? "1px solid rgba(184,148,95,0.55)"
+                            : "1px solid rgba(244,241,235,0.09)",
+                          boxShadow: isActive
+                            ? "0 0 28px rgba(184,148,95,0.12), inset 0 1px 0 rgba(184,148,95,0.15)"
+                            : "none",
+                        }}
+                      >
+                        {/* Gold top accent line on active card */}
+                        {isActive && (
+                          <span
+                            aria-hidden="true"
+                            className="absolute inset-x-0 top-0 h-px"
+                            style={{
+                              background:
+                                "linear-gradient(90deg, transparent, rgba(184,148,95,0.8), transparent)",
+                            }}
+                          />
+                        )}
 
-            <svg
-              viewBox={`0 0 ${CANVAS.w} ${CANVAS.h}`}
-              className="h-auto w-full"
-              role="presentation"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <defs>
-                {/* Soft lift behind the selected market. */}
-                {/*
-                  Scoped to the section id. Two maps on one page would otherwise
-                  declare the same gradient id twice, and the second definition
-                  wins for both - so one of them would light the wrong colour.
-                */}
-                <radialGradient id={`market-glow-${id}`}>
-                  <stop offset="0%" stopColor="#b8945f" stopOpacity="0.32" />
-                  <stop offset="55%" stopColor="#b8945f" stopOpacity="0.08" />
-                  <stop offset="100%" stopColor="#b8945f" stopOpacity="0" />
-                </radialGradient>
-              </defs>
+                        {/* Market name */}
+                        <span
+                          className="block text-[0.8125rem] font-semibold uppercase tracking-[0.1em] transition-colors duration-300"
+                          style={{
+                            color: isActive
+                              ? "rgba(184,148,95,1)"
+                              : "rgba(244,241,235,0.55)",
+                          }}
+                        >
+                          {market.label}
+                        </span>
 
-              {/* Graticule. */}
-              <g stroke="#f4f1eb" strokeOpacity="0.055" strokeWidth="1">
-                {MERIDIANS.map((lon) => (
-                  <line
-                    key={`m${lon}`}
-                    x1={projectX(lon)}
-                    y1={0}
-                    x2={projectX(lon)}
-                    y2={CANVAS.h}
-                  />
-                ))}
-                {PARALLELS.map((lat) => (
-                  <line
-                    key={`p${lat}`}
-                    x1={0}
-                    y1={projectY(lat)}
-                    x2={CANVAS.w}
-                    y2={projectY(lat)}
-                  />
-                ))}
-              </g>
+                        {/* Financial centre */}
+                        <span
+                          className="block font-display text-[1.125rem] leading-tight transition-colors duration-300 sm:text-[1.25rem]"
+                          style={{
+                            color: isActive
+                              ? "rgba(244,241,235,0.98)"
+                              : "rgba(244,241,235,0.75)",
+                          }}
+                        >
+                          {market.city}
+                        </span>
 
-              {/*
-                The lattice. Every market joined to every other, drawn once per
-                PAIR rather than once per ordered pair - fifteen lines, not
-                thirty, so no two strokes sit on top of each other doubling
-                their own opacity.
-
-                It is always there, and that is the point: without it the frame
-                was six dots in space until something was selected, and the six
-                being considered together is what the copy beside it is about.
-              */}
-              <g strokeWidth="1" stroke="#b8945f" strokeOpacity="0.08">
-                {placed.map((from, fromIndex) =>
-                  placed.slice(fromIndex + 1).map((to) => (
-                    <line
-                      key={`lattice-${from.code}-${to.code}`}
-                      x1={from.x}
-                      y1={from.y}
-                      x2={to.x}
-                      y2={to.y}
-                    />
-                  )),
-                )}
-              </g>
-
-              {/*
-                Connectors out of the selected market, over the lattice. All
-                thirty are in the DOM at all times and only opacity changes, so
-                switching markets never costs a re-layout of the SVG and never
-                shows a half-drawn line.
-              */}
-              <g strokeWidth="1" stroke="#b8945f">
-                {placed.map((from, fromIndex) =>
-                  placed.map((to, toIndex) => {
-                    if (fromIndex === toIndex) return null;
-                    return (
-                      <line
-                        key={`${from.code}-${to.code}`}
-                        className="about-market-link"
-                        data-on={fromIndex === active ? "true" : "false"}
-                        x1={from.x}
-                        y1={from.y}
-                        x2={to.x}
-                        y2={to.y}
-                      />
-                    );
-                  }),
-                )}
-              </g>
-
-              {/* Glow under the selected market. */}
-              <circle
-                className="about-market-glow"
-                cx={current.x}
-                cy={current.y}
-                r="86"
-                fill={`url(#market-glow-${id})`}
-              />
-
-              {/* Nodes. */}
-              {placed.map((market, index) => (
-                <g
-                  key={market.code}
-                  className="about-market-node"
-                  data-on={index === active ? "true" : "false"}
-                >
-                  <circle cx={market.x} cy={market.y} r="3.25" fill="#b8945f" />
-                  <circle
-                    className="about-market-ring"
-                    cx={market.x}
-                    cy={market.y}
-                    r="11"
-                    fill="none"
-                    stroke="#b8945f"
-                  />
-                </g>
-              ))}
-
-              {/*
-                The contextual label: the market's financial centre, beside its
-                node. One at a time, which is what keeps the frame clean and
-                why label collisions never have to be solved.
-              */}
-              {/*
-                Arabic has no cased letters, and the wide tracking that suits
-                a Latin caption actively harms a connected script by breaking
-                the joins between letters. So the city name is set as written
-                and the tracking is dropped - the same two properties
-                `globals.css` neutralises for every other label on an Arabic
-                page, applied here because this one is an inline SVG style
-                rather than a class.
-              */}
-              <text
-                className="about-market-label fill-current"
-                x={current.x}
-                y={current.place === "above" ? current.y - 24 : current.y + 32}
-                textAnchor="middle"
-                style={locale === "ar" ? undefined : { letterSpacing: "0.14em" }}
-              >
-                {locale === "ar" ? current.city : current.city.toUpperCase()}
-              </text>
-            </svg>
+                        {/* One-line descriptor */}
+                        {market.description && (
+                          <span
+                            className="mt-1 block text-[0.8125rem] leading-relaxed transition-colors duration-300"
+                            style={{
+                              color: isActive
+                                ? "rgba(244,241,235,0.6)"
+                                : "rgba(244,241,235,0.35)",
+                            }}
+                          >
+                            {market.description}
+                          </span>
+                        )}
+                      </div>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
 
             {/*
               CONTENT INTEGRITY. Not decoration, not collapsible, and never
