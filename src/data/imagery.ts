@@ -17,11 +17,11 @@ import riyadhKingdomCentreCutout from "../../public/images/uae/riyadh-kingdom-ce
 import abuDhabiEtihadTowersCutout from "../../public/images/uae/abu-dhabi-etihad-towers-cutout.png";
 import dubaiSkylineBandCutout from "../../public/images/uae/dubai-skyline-band-cutout.png";
 import peterLeePortrait from "../../public/images/team/peter-lee.jpg";
-import bannerAbout from "../../public/images/banners/about.png";
-import bannerContact from "../../public/images/banners/contact.png";
-import bannerForInvestors from "../../public/images/banners/for-investors.png";
-import bannerInsight from "../../public/images/banners/insight.png";
-import bannerWhatWeDo from "../../public/images/banners/what-we-do.png";
+import bannerAbout from "../../public/images/banners/about.avif";
+import bannerContact from "../../public/images/banners/contact.avif";
+import bannerForInvestors from "../../public/images/banners/for-investors.avif";
+import bannerInsight from "../../public/images/banners/insight.avif";
+import bannerWhatWeDo from "../../public/images/banners/what-we-do.avif";
 import dubaiTradeCentreTowers from "../../public/images/uae/dubai-trade-centre-towers.jpg";
 import broadcastInterviewCamera from "../../public/images/uae/broadcast-interview-camera.jpg";
 import broadcastMicrophones from "../../public/images/uae/broadcast-microphones.jpg";
@@ -226,9 +226,28 @@ export interface Photo {
  * All five banners are 3840x1200 compositions (3.2:1 aspect ratio), producing
  * a balanced ~450px band at 1440px viewport width across all interior routes.
  *
- * Delivery: these are 8-15MB PNGs and none of that reaches a visitor.
- * `next/image` emits AVIF and WebP derivatives against `deviceSizes`, which
- * caps at 2048 - a downscale from 3840 at every step.
+ * ---------------------------------------------------------------------------
+ * AVIF SOURCES, AND WHY THE SWAP CHANGED NOTHING ELSE
+ * ---------------------------------------------------------------------------
+ * The set was supplied a second time as AVIF, and it is a straight upgrade on
+ * both axes at once, which is rare enough to be worth writing down:
+ *
+ *   6000x1875 against 3840x1200 - 56% more pixels on the long edge
+ *   56-544KB  against 4.5-8.0MB - between 93% and 99% smaller
+ *
+ * And the SAME 3.20 aspect. That is what made this a one-line change per page
+ * rather than a layout job: the hero band takes the aspect of whatever file it
+ * is given, so identical proportions mean identical hero heights, identical
+ * crops - there are none, the banner is laid out at `w-full h-auto` - and
+ * identical positioning. Nothing about the composition moved.
+ *
+ * The PNGs they replace are deleted rather than left in /public. They are
+ * 29MB between them, nothing renders them, and git holds them if the AVIFs
+ * ever have to be rolled back.
+ *
+ * Delivery: none of even this reaches a visitor whole. `next/image` emits AVIF
+ * and WebP derivatives against `deviceSizes`, which caps at 2048 - a downscale
+ * from 6000 at every step.
  */
 export const banners = {
   whatWeDo: {
