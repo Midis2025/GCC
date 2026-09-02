@@ -85,15 +85,25 @@ panels are cutouts. It is the smallest board in the set at 640×960 against 1254
 for the other two: in a 400×500 card it paints 333×500 and needs 666px at 2×, a 4%
 enlargement. Worth re-exporting at 1254 if the client can.
 
-Also supplied and deliberately UNUSED:
+Also supplied and deliberately UNUSED / HELD:
 
 - `1.png` — a Burj Khalifa cutout at 640×960. The same subject as
   `uae/dubai-burj-khalifa-cutout.png`, which is 1254×1254. A newer file is not a
   better one; the higher-resolution asset stays.
-- `Riyadh.png` — 466×466, superseded by `Kingdom Centre.png`.
-- `Palm Jumeirah.jpg`, `The Dubai Frame.avif`, `Louvre Abu Dhabi.avif` — no section
-  on the site has any of these as its subject, and inventing one to house them
-  would be the tail wagging the dog. Held.
+- `Riyadh.png` — 466×466, superseded by `Kingdom Centre.png` (1254×1254).
+- `Palm Jumeirah.jpg` and duplicate `112-172534.jpg` (900×600) — no section on
+  the site has Palm Jumeirah as its subject. Held.
+- `The Dubai Frame.avif` and duplicate `Dubai Frame.avif` — no section has Dubai
+  Frame as its subject. Held.
+- `Louvre Abu Dhabi.avif` and duplicate `public.avif` — no section has Louvre Abu
+  Dhabi as its subject. Held.
+- Low-resolution preview images (`advisory.png` 348×218, `gulf programme.png` 348×218,
+  `investor roadshows.png` 348×218, `media n arabic comm.png` 348×218, `data centre.png` 466×466,
+  `mining gcc.png` 466×466, `pharmaceuticals.png` 466×466, `listed small companies .png` 466×466,
+  `inmternational companies entering the gulf.png` 466×466) — held in reserve.
+  Rendered in desktop panels (400px–1400px wide), these low-resolution previews cause
+  visible blurriness and pixelation; the site maintains the sharp 1800px–3840px master
+  library photographs to guarantee crisp rendering across 2×/3× Retina displays.
 
 ### Client-supplied page banners
 

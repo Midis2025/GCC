@@ -729,25 +729,44 @@ export const capabilityPhotos: Record<string, Photo> = {
  * interior.
  */
 export const serviceLinePhotos = {
+  /*
+   * Investor Roadshows — 3840×2560. A large conference hall, delegates in
+   * silhouette against a warm ambient glow. The scale of the room signals the
+   * breadth of an outreach campaign rather than a single meeting.
+   */
   roadshows: {
     src: outreachConferenceHall,
-    alt: "Delegates seated in a darkened conference hall beneath a wall of soft lights.",
+    alt: "Delegates seated in a large conference hall under a warm ambient glow.",
     position: "50% 58%",
   },
+  /*
+   * The Gulf Programme — 3840×2880. A boardroom at night with floor-to-ceiling
+   * glass and a city skyline beyond. The scale and the city backdrop carry the
+   * premium, six-month continuity nature of the programme.
+   */
   programme: {
-    src: strategySessionNight,
-    alt: "An office floor at night, seen through glass, with a working session under way.",
-    position: "50% 45%",
+    src: irBoardroomWindow,
+    alt: "A boardroom at night with panoramic glass overlooking a Gulf city skyline.",
+    position: "50% 42%",
   },
+  /*
+   * Media & Arabic Communications — 3840×2560. A professional broadcast camera
+   * on location, facing a lit stage; sharper and more on-set than the studio
+   * tripod variant, contextually placing the service in live financial media.
+   */
   media: {
-    src: mediaBroadcastCamera,
-    alt: "A broadcast camera on a tripod at the back of a hall, facing a lit stage.",
-    position: "64% 50%",
-  },
-  advisory: {
-    src: corporateCorridorNight,
-    alt: "A lift lobby at night, lit low, its polished stone floor reflecting the ceiling.",
+    src: broadcastInterviewCamera,
+    alt: "A professional broadcast camera set up on location facing a lit interview stage.",
     position: "50% 50%",
+  },
+  /*
+   * Advisory — 3840×2880. A capital markets desk at night with multiple
+   * financial screens, placing the work firmly in the analytical advisory space.
+   */
+  advisory: {
+    src: capitalMarketsDesk,
+    alt: "A capital markets desk at night with multiple financial data screens.",
+    position: "50% 45%",
   },
 } as const satisfies Record<string, Photo>;
 
@@ -858,107 +877,43 @@ export const insightPhotos: Photo[] = [
 /**
  * Panels for the client-segment grid. Ordered to match
  * `audienceContent.segments`:
- *
- *   0  Listed Companies                           a business district at night
- *   1  Private Companies                          two people over a document
- *   2  Pre-IPO Businesses                         a dark stone lobby
- *   3  International Companies Entering the Gulf  Riyadh from the air
- *   4  Growth Companies                           a skyline at the turn of dusk
- *   5  Leadership & IR Teams                      an office floor lit at night
- *
- * Each panel is matched to the shape of its cell as much as to its label,
- * because `PANEL_LAYOUT` gives them wildly different proportions: index 0 is a
- * tall anchor spanning two rows, indexes 1 and 3 are landscape, 2 and 4 are
- * squarer, and index 5 runs the full twelve columns at a fixed height, which
- * makes it a letterbox somewhere past 5:1.
- *
- * That last cell is why the office floor sits there. A frame shot at 2.66:1 is
- * the only one in the set that survives a crop that severe; the pair over a
- * document, which is where the label would have pointed, came back as a band
- * of two faces with the tops of both heads cut off.
- *
- * None of these frames appears anywhere else on the homepage, and that
- * constraint sets several of the choices - the capability panel, the outreach
- * band and the insight cards are all on the same scroll, and a panel repeating
- * one of them would read as a mistake rather than as a motif.
  */
 export const segmentPhotos = {
-  /*
-   * Keyed, not indexed.
-   *
-   * This was a plain array read as `segmentPhotos[index]`, which meant the
-   * ORDER of the labels in `audienceContent` silently decided which picture
-   * each one got. Re-cutting those labels to the launch positioning promptly
-   * put a materials label over a desk meeting and a healthcare one over the
-   * Riyadh skyline, and the fix at the time was to reorder the labels against
-   * the pictures - which works until the next edit reorders them back.
-   *
-   * Keys make the pairing explicit and survive reordering. The mosaic's shape
-   * still constrains two of them, and that constraint is real:
-   *
-   * - `listed` fills the tall anchor (5 cols x 2 rows), so it needs the frame
-   *   with the most weight. Pale frames read as holes at that size.
-   * - `international` runs the full-width letterbox, which resolves to roughly
-   *   2.66:1. Only a frame whose subject survives losing its top and bottom
-   *   belongs there - a skyline does, a robotic arm does not.
-   */
-  /*
-    Etihad Towers, Abu Dhabi. A 3:4 source in the mosaic's tall anchor - the
-    one panel on the page whose proportions suit a portrait frame - and the
-    only Abu Dhabi landmark on the homepage now that Regional Perspective has
-    moved to Dubai.
-  */
-  listed: { src: etihadTowersAbuDhabi, alt: "", position: "50% 40%" },
-  leadership: { src: leadershipReviewNight, alt: "", position: "50% 45%" },
-
-  /*
-   * The sector frames.
-   *
-   * These already existed in the library for the retired industries page and
-   * were sitting unused while the sector labels on the homepage ran over
-   * generic office and skyline stock - server racks for data centres and a
-   * container terminal for materials say what those categories are; a dark
-   * lobby says nothing.
-   *
-   * ---------------------------------------------------------------------
-   * KEYS RENAMED WITH THE SECTORS, NOT AFTER THEM
-   * ---------------------------------------------------------------------
-   * The client has re-cut the sector names: critical minerals is now mining,
-   * AI and data infrastructure is now data centres, life sciences is now
-   * pharmaceuticals, and energy has been added. The keys moved with the names
-   * in the same edit. A key called `criticalMinerals` feeding a panel labelled
-   * "Mining" is the kind of drift that survives one edit and misleads the next
-   * person to touch the file.
-   *
-   * `mining` is the weakest pairing in the set: it carries the container
-   * terminal, which is the movement of bulk materials rather than a mine. It
-   * is the one frame here worth replacing first when real photography is
-   * commissioned.
-   */
-  dataCentres: { src: sectorTechnologyRacks, alt: "", position: "50% 50%" },
-  mining: { src: sectorLogisticsPort, alt: "", position: "50% 50%" },
-  /*
-    Storage tanks against a dusk sky. Already in the library, unused, and dark
-    enough to sit in a row with the others without a per-frame grade.
-  */
-  energy: { src: sectorEnergyDusk, alt: "", position: "50% 55%" },
-  /*
-    A laboratory.
-
-    This panel carried an automated production line - precision manufacturing,
-    adjacent at best - because the library held no laboratory frame. It needed a
-    heavy per-frame grade to stop a bright daylit picture shouting in a row of
-    dark night ones, and a photograph that has to be filtered into submission is
-    the wrong photograph.
-
-    Gloved hands drawing from a vial inside a fume hood: dark on its own terms,
-    so it needs no override, unmistakably pharmaceutical, and no identifiable
-    face - which is a requirement of every frame here, not a preference. See
-    public/images/CREDITS.md.
-  */
-  pharmaceuticals: { src: uaeLifeSciencesLab, alt: "", position: "50% 50%" },
-
-  international: { src: downtownDubaiDusk, alt: "", position: "50% 42%" },
+  listed: {
+    src: etihadTowersAbuDhabi,
+    alt: "",
+    position: "50% 40%",
+  },
+  leadership: {
+    src: leadershipReviewNight,
+    alt: "",
+    position: "50% 45%",
+  },
+  dataCentres: {
+    src: sectorTechnologyRacks,
+    alt: "",
+    position: "50% 50%",
+  },
+  mining: {
+    src: sectorLogisticsPort,
+    alt: "",
+    position: "50% 50%",
+  },
+  energy: {
+    src: sectorEnergyDusk,
+    alt: "",
+    position: "50% 55%",
+  },
+  pharmaceuticals: {
+    src: uaeLifeSciencesLab,
+    alt: "",
+    position: "50% 50%",
+  },
+  international: {
+    src: downtownDubaiDusk,
+    alt: "",
+    position: "50% 42%",
+  },
 } as const satisfies Record<string, Photo>;
 
 export type SegmentPhotoKey = keyof typeof segmentPhotos;
