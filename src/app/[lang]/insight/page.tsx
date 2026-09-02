@@ -20,9 +20,9 @@ import {
   InsightSectors,
 } from "@/components/sections/insight/InsightOpening";
 import { Reveal } from "@/components/ui/Reveal";
-import { insightFormatList, pick } from "@/content";
+import { currentLocale, insightFormatList, pick } from "@/content";
 import { insightContentAr } from "@/content/ar/insight";
-import { backdrops } from "@/data/imagery";
+import { backdrops, banners } from "@/data/imagery";
 import { insightContent as insightContentEn } from "@/data/insight";
 import { createMetadata } from "@/lib/seo";
 
@@ -98,6 +98,12 @@ export const metadata = createMetadata({
  * reader who has come this far down Insight wants the investor list instead.
  */
 export default async function InsightPage() {
+  /*
+    The client banner replaces the hero on the English route only. It has
+    English text baked into the artwork, so the Arabic route keeps the
+    photographic hero it already had.
+  */
+  const banner = (await currentLocale()) === "en" ? banners.insight : null;
   const insightContent = await pick({ en: insightContentEn, ar: insightContentAr });
   /*
     The five formats, in the language being read. `id` is the taxonomy key in
@@ -121,7 +127,14 @@ export default async function InsightPage() {
         The page's character comes from the fourteen sections below it. The
         entrance should be the one every route shares.
       */}
+      {/*
+        ENGLISH ONLY. The banner carries its eyebrow, paragraph and headline in
+        the artwork, in English, and there is no Arabic edition of it. Passing
+        `null` on the Arabic route leaves the photographic hero exactly as it
+        was - see the note on `banners` in data/imagery.ts.
+      */}
       <PageHero
+        banner={banner}
         variant="feature"
         photo={backdrops.insights}
         eyebrow={insightContent.eyebrow}

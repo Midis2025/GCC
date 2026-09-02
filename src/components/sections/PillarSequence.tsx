@@ -431,10 +431,25 @@ export function PillarSequence({
               className="mt-9 lg:mt-8 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col"
             >
               <Figure
+                /*
+                  A CUTOUT now - contained and unscrimmed by `Figure` itself.
+                  This frame sits inside a dark section and Figure paints the
+                  panel midnight, so the transparency resolves onto the ground
+                  the section already has rather than onto a box added for it.
+                */
                 photo={photo}
                 ratio="auto"
-                overlay="veil"
-                className="aspect-[16/10] w-full lg:aspect-auto lg:min-h-[9rem] lg:flex-1"
+                /*
+                  Square below `lg`, not 16:10.
+
+                  The board is square. A 16:10 frame fits it to the frame's
+                  HEIGHT, so on a 390px phone the landmark painted 219px wide
+                  inside a 350px frame - 63% of the column, with the rest empty.
+                  A square frame fits it to the width instead: 350px, the whole
+                  column. Above `lg` the frame already resolves to about 1.07:1
+                  as a flex child, which is the board's own proportion.
+                */
+                className="aspect-square w-full lg:aspect-auto lg:min-h-[9rem] lg:flex-1"
                 sizes="(min-width: 1024px) 34vw, 100vw"
               />
             </Reveal>

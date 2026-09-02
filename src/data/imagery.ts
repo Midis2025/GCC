@@ -10,15 +10,21 @@ import digitalMarketData from "../../public/images/digital-market-data.jpg";
 import downtownDubaiBlueHour from "../../public/images/downtown-dubai-blue-hour.jpg";
 import downtownDubaiDusk from "../../public/images/downtown-dubai-dusk.jpg";
 import downtownDubaiNight from "../../public/images/downtown-dubai-night.jpg";
-import dubaiMuseumFutureTowers from "../../public/images/dubai-museum-future-towers.jpg";
+import dubaiBurjKhalifaCutout from "../../public/images/uae/dubai-burj-khalifa-cutout.png";
+import dubaiMarinaCutout from "../../public/images/uae/dubai-marina-cutout.png";
+import dubaiMuseumOfTheFutureCutout from "../../public/images/uae/dubai-museum-of-the-future-cutout.png";
+import riyadhKingdomCentreCutout from "../../public/images/uae/riyadh-kingdom-centre-cutout.png";
+import abuDhabiEtihadTowersCutout from "../../public/images/uae/abu-dhabi-etihad-towers-cutout.png";
+import dubaiSkylineBandCutout from "../../public/images/uae/dubai-skyline-band-cutout.png";
+import bannerAbout from "../../public/images/banners/about.png";
+import bannerContact from "../../public/images/banners/contact.png";
+import bannerForInvestors from "../../public/images/banners/for-investors.png";
+import bannerInsight from "../../public/images/banners/insight.png";
+import bannerWhatWeDo from "../../public/images/banners/what-we-do.png";
 import dubaiTradeCentreTowers from "../../public/images/uae/dubai-trade-centre-towers.jpg";
-import abuDhabiWorldTradeCentre from "../../public/images/uae/abu-dhabi-world-trade-centre.jpg";
 import broadcastInterviewCamera from "../../public/images/uae/broadcast-interview-camera.jpg";
 import broadcastMicrophones from "../../public/images/uae/broadcast-microphones.jpg";
-import dubaiDowntownSheikhZayedRoad from "../../public/images/uae/dubai-downtown-sheikh-zayed-road.jpg";
-import riyadhKingdomCentreSkyline from "../../public/images/uae/riyadh-kingdom-centre-skyline.jpg";
 import etihadTowersAbuDhabi from "../../public/images/uae/etihad-towers-abu-dhabi.jpg";
-import sheikhZayedRoadDusk from "../../public/images/uae/sheikh-zayed-road-dusk.jpg";
 import dohaSkylineDay from "../../public/images/doha-skyline-day.jpg";
 import gulfFinancialDistrictNight from "../../public/images/gulf-financial-district-night.jpg";
 import investorBriefingRoom from "../../public/images/investor-briefing-room.jpg";
@@ -70,6 +76,35 @@ import uaeLifeSciencesLab from "../../public/images/uae-life-sciences-lab.jpg";
  * Every entry is imported statically rather than referenced by path string.
  * That is what lets next/image emit intrinsic width/height (so nothing shifts
  * as images load) and generate a blurDataURL for the placeholder.
+ *
+ * ----------------------------------------------------------------------------
+ * CUTOUTS ARE A SECOND CLASS OF ASSET
+ * ----------------------------------------------------------------------------
+ * Three entries here are client-supplied PNG cutouts - a landmark on a
+ * transparent ground rather than a photograph with edges to crop. They are not
+ * interchangeable with the rest of the library and carry two rules:
+ *
+ *  - They are rendered with `fit="contain"` on `Figure`. `cover` would crop a
+ *    subject that has nothing to spare, taking the spire off a tower or the
+ *    base out from under it.
+ *  - They take NO scrim. A scrim over a cutout darkens the panel around it as
+ *    well, which turns the transparency into a visible grey rectangle - the
+ *    opposite of what the transparency is for.
+ *
+ * `position` is meaningless on them and is deliberately absent: nothing is
+ * cropped, so there is no crop to place.
+ *
+ * The three photographs they displaced are NOT deleted. They stay in
+ * /public/images with their entries in CREDITS.md, and only their imports were
+ * removed here:
+ *
+ *   uae/dubai-museum-of-the-future-cutout.png  <- dubai-museum-future-towers.jpg
+ *   uae/dubai-marina-cutout.png                <- uae/sheikh-zayed-road-dusk.jpg
+ *   uae/dubai-burj-khalifa-cutout.png          <- uae/dubai-downtown-sheikh-zayed-road.jpg
+ *
+ * Restoring any of them is one import and one `src`. That matters more than
+ * usual here: the Dubai market panel is a cutout while its two neighbours are
+ * photographs, and if that mix is judged wrong the way back is the file above.
  */
 export interface Photo {
   src: StaticImageData;
@@ -112,7 +147,127 @@ export interface Photo {
    * into submission.
    */
   grade?: { saturate?: number; contrast?: number; brightness?: number };
+  /**
+   * Marks a PNG cutout - a subject on a transparent ground rather than a
+   * photograph with edges to crop.
+   *
+   * Set on the asset, not at the call site, because the two rules it implies
+   * hold everywhere the asset is used and a caller cannot be trusted to
+   * remember both: `Figure` contains rather than covers it, and suppresses any
+   * scrim. A scrim over a cutout darkens the panel around the subject as well,
+   * which turns the transparency into a visible rectangle.
+   */
+  cutout?: boolean;
+  /**
+   * Enlarges a cutout inside its frame, to use up the transparent margin
+   * baked into its own canvas.
+   *
+   * These PNGs are 1254x1254 boards with the landmark somewhere inside them,
+   * so `object-contain` fits the BOARD to the frame and the landmark lands
+   * smaller than the frame by however much padding the board carries. Measured
+   * from the alpha channel of each file:
+   *
+   *   burj khalifa   subject 974x1250 of 1254x1254   78% wide, 100% tall
+   *   dubai marina   subject 1254x847 of 1254x1254   100% wide, 68% tall
+   *   museum         subject 1254x1183 of 1254x1254  100% wide, 94% tall
+   *
+   * The scale is chosen so the SUBJECT approaches the frame while staying
+   * inside it; the board is allowed to overflow, because everything of it
+   * outside the subject is transparent. A value here is only ever safe when it
+   * has been checked against that bounding box - see the note on each asset.
+   *
+   * Left undefined the cutout is simply contained, which is right for any
+   * board whose subject already spans it.
+   */
+  cutoutScale?: number;
 }
+
+/**
+ * ============================================================================
+ * INTERNAL PAGE BANNERS
+ * ============================================================================
+ * Client-supplied 3840x2160 compositions, one per interior route. They are a
+ * THIRD class of asset here and behave like neither of the other two.
+ *
+ * ---------------------------------------------------------------------------
+ * THE TEXT IS IN THE PIXELS
+ * ---------------------------------------------------------------------------
+ * Each carries an eyebrow, a paragraph and a headline burned into the image,
+ * and the headline is word for word the page's own <h1>:
+ *
+ *   what-we-do      "FOUR LINES OF WORK, ONE PROGRAMME"
+ *   for-investors   "BRIEFINGS WITH INTERNATIONAL COMPANIES"
+ *   insight         "WRITTEN FOR THE GULF, ABOUT THE SECTORS WE COVER"
+ *   about           "BUILT AROUND THE GULF. CONNECTED TO GLOBAL CAPITAL."
+ *   contact         "START A CONVERSATION"
+ *
+ * Three consequences, all handled in `PageHero` rather than here:
+ *
+ *  - The hero's own eyebrow, title and lead would print the same words twice,
+ *    so on a bannered hero they are rendered to assistive technology only. The
+ *    page keeps exactly one <h1> and it stays in the DOM.
+ *  - They are never cropped. `cover` on a composition whose subject is TYPE
+ *    cuts sentences in half, so the hero takes the banner's own 16:9 and the
+ *    section grows to fit it.
+ *  - ENGLISH ONLY. There is no Arabic edition of this artwork, and overlaying
+ *    Arabic copy on baked English, or showing both, is worse than showing
+ *    neither. The Arabic routes keep the photographic hero they already have.
+ *    Flagged for the client: identical artwork in Arabic needs either an
+ *    Arabic set or a text-free set.
+ *
+ * ---------------------------------------------------------------------------
+ * EACH BANNER SETS ITS OWN HERO HEIGHT
+ * ---------------------------------------------------------------------------
+ * The hero band takes the ASPECT OF THE FILE - `PageHero` lays the banner out
+ * at `h-auto` from the intrinsic size of the static import - so the shape of
+ * the artwork decides the shape of the hero.
+ *
+ * All five banners are 3840x1200 compositions (3.2:1 aspect ratio), producing
+ * a balanced ~450px band at 1440px viewport width across all interior routes.
+ *
+ * Delivery: these are 8-15MB PNGs and none of that reaches a visitor.
+ * `next/image` emits AVIF and WebP derivatives against `deviceSizes`, which
+ * caps at 2048 - a downscale from 3840 at every step.
+ */
+export const banners = {
+  whatWeDo: {
+    src: bannerWhatWeDo,
+    /* The banner's own words, so a screen reader gets what a sighted reader sees. */
+    alt: "",
+  },
+  forInvestors: { src: bannerForInvestors, alt: "" },
+  insight: { src: bannerInsight, alt: "" },
+  about: { src: bannerAbout, alt: "" },
+  contact: { src: bannerContact, alt: "" },
+} as const satisfies Record<string, Photo>;
+
+/**
+ * The skyline band under "Start a Conversation".
+ *
+ * A 1350x303 cutout - 4.46:1 - of the Dubai waterfront, client-supplied, on a
+ * transparent ground. It is neither a backdrop nor a card frame: it is a
+ * horizon laid along the bottom edge of the closing band, silhouetted on the
+ * section's own dark ground.
+ *
+ * MEASURED FROM ITS ALPHA, because the layout depends on it:
+ *
+ *   row   0    the Burj spire, and almost nothing else
+ *   43%        5% of the row is covered
+ *   60%        half the row is covered - the skyline mass starts here
+ *
+ * So the top 43% of this asset is very nearly empty, which is what lets the
+ * heading and copy sit over it without anything behind them, and what makes it
+ * safe to run full-bleed rather than shrinking it into a corner.
+ *
+ * The section carries a `min-h` of 22.4vw for it - 100/4.46, the asset's own
+ * aspect - so a full-width skyline is never taller than the band it sits in.
+ * Without that the spire is clipped at 1440 and the tallest towers go at 1920.
+ */
+export const ctaSkyline = {
+  src: dubaiSkylineBandCutout,
+  alt: "",
+  cutout: true,
+} as const satisfies Photo;
 
 /** Full-bleed frames that sit behind type. Decorative by design. */
 export const backdrops = {
@@ -389,23 +544,31 @@ export const photos = {
   },
   introTowers: {
     /*
-      Sheikh Zayed Road at dusk - the business spine of Dubai, dense with
-      towers, read from above.
+      Dubai Marina at night, the towers reflected in the water.
 
-      A 9:16 source in a square frame, which is the right way round: the crop
-      keeps the middle vertical band, and on a skyline that severe crop still
-      contains the subject. It would have been the wrong choice in any of the
-      wide hero bands, where it would have survived as a letterbox sliver.
+      CUTOUT, client-supplied. A square asset in a square frame, which is why
+      this slot took it rather than one of the wide bands: at 662px on a
+      desktop the 1254px source is still oversampled, and nothing has to be
+      cropped to make it fit.
 
-      The Etihad Towers frame it replaces is superseded rather than moved: the
-      tall anchor on Selected Markets now carries a sharper 2400px Etihad
-      composition downloaded in the same pass, so Abu Dhabi keeps its place on
-      the homepage and the older 2000px frame is left unplaced. It stays in
-      /public/images and in CREDITS.md, one import away from being restored.
+      It replaces a Sheikh Zayed Road aerial. That photograph is not deleted -
+      it stays in /public/images and in CREDITS.md, one import away from being
+      restored if the cutout treatment is ever reversed.
+
+      No `position`: nothing is cropped.
     */
-    src: sheikhZayedRoadDusk,
-    alt: "Sheikh Zayed Road in Dubai at dusk, its office towers lit against a fading sky.",
-    position: "50% 45%",
+    src: dubaiMarinaCutout,
+    alt: "The Dubai Marina skyline at night, its towers lit and reflected in the water.",
+    cutout: true,
+    /*
+      NO `cutoutScale`, deliberately.
+
+      The skyline spans its board edge to edge - 100% of the width - so it is
+      already as wide as the frame allows and any scale at all would push the
+      end towers out of view. The board's 32% of empty sky above it costs
+      nothing now that the frame paints no background: what sits there is the
+      section, not a grey box.
+    */
   },
   /**
    * The regional frame, on the about and investor outreach pages. Riyadh at
@@ -481,23 +644,26 @@ export const photos = {
   },
   whyMarket: {
     /*
-      The Museum of the Future, with Emirates Towers behind it.
+      The Museum of the Future, with the Emirates Towers behind it.
 
-      It replaces a Downtown Dubai twilight frame that the contact hero also
-      used - the same photograph in the two most prominent slots on two
-      different pages. This one is unmistakably Dubai to anyone who has been
-      there and reads as contemporary institutional architecture to anyone who
-      has not, which is the balance the whole set is trying to strike: regional
-      identity without tourist framing.
+      CUTOUT. Same subject as the photograph it replaces, supplied by the
+      client on a transparent ground. The frame it sits in is inside a
+      `tone="dark"` section and `Figure` paints the panel midnight, so the
+      transparency resolves onto the section's own ground rather than onto a
+      box added for it.
+
+      No `position`: rendered with `fit="contain"`, so the whole torus and the
+      towers behind it stay in frame. The photograph needed a crop held below
+      centre to keep the flyover; a cutout has nothing to crop.
     */
-    src: dubaiMuseumFutureTowers,
-    alt: "The Museum of the Future in Dubai, its calligraphic facade lit by low sun, with the Emirates Towers behind it.",
+    src: dubaiMuseumOfTheFutureCutout,
+    alt: "The Museum of the Future in Dubai, its calligraphic facade lit at dusk, with the Emirates Towers behind it.",
+    cutout: true,
     /*
-      Slightly below centre. The torus sits low in the frame with sky above it,
-      and a centred crop in the tall sticky column fills the top third with
-      empty sky while cutting the flyover the building stands on.
+      NO `cutoutScale`. The subject spans this board horizontally and fills 94%
+      of it vertically, so contain already puts it within a few per cent of the
+      frame on both axes. There is nothing to reclaim.
     */
-    position: "50% 56%",
   },
 } as const satisfies Record<string, Photo>;
 
@@ -857,20 +1023,63 @@ export type SegmentPhotoKey = keyof typeof segmentPhotos;
  */
 export const cityPhotos = {
   dubai: {
-    src: dubaiDowntownSheikhZayedRoad,
-    alt: "",
     /*
-      Pinned to the TOP. The source is 2668x4000 in a 4:5 frame, so cover
-      discards about a sixth of its height; the Burj Khalifa's spire sits a few
-      pixels below the top edge, and any vertical offset at all takes the tip
-      off. The sixth comes off the bottom instead, where the interchange has
-      detail to spare.
+      CUTOUT, client-supplied. The Burj Khalifa with its podium and the palms
+      around it, on a transparent ground.
+
+      THIS PANEL IS NOW UNLIKE THE OTHER TWO, and that is a decision rather
+      than an oversight. The client supplied cutouts for Dubai and Riyadh but
+      not for Abu Dhabi, and the Riyadh file is 466px - too small for a frame
+      this size. So Dubai is a cutout and its two neighbours are photographs
+      until a matching Abu Dhabi asset exists.
+
+      What keeps the row coherent meanwhile: the card, its 4:5 ratio, the
+      stagger and the midnight panel are all unchanged, so the three still read
+      as one set. Only what sits inside the Dubai panel has changed.
+
+      No `position`: rendered with `fit="contain"`, so the spire stays in
+      frame without a crop to hold it there.
     */
-    position: "50% 0%",
+    src: dubaiBurjKhalifaCutout,
+    alt: "",
+    cutout: true,
+    /*
+      1.18, and the arithmetic behind it.
+
+      The card is 4:5. Contain fits this square board to the card's WIDTH, so
+      it paints 400x400 in a 400x500 card and the bottom fifth of the card is
+      empty - while the tower itself, 78% of the board's width, paints at only
+      312 of the 400 available.
+
+      Scaling the board to 472 puts the tower at 368x472: it now uses the
+      card's height rather than its width, which is the right axis for the
+      tallest building in the world. The board overflows the card by 36px each
+      side, and every one of those pixels is transparent - the tower's own
+      edges sit 11% (52px at this scale) inside the board.
+
+      1.25 would fill the card's height exactly and leave the tower touching
+      both edges. 1.18 keeps roughly 14px of air top and bottom.
+    */
+    cutoutScale: 1.18,
   },
   "abu-dhabi": {
-    src: abuDhabiWorldTradeCentre,
+    /*
+      CUTOUT, client-supplied. Etihad Towers on the Corniche.
+
+      This is the asset the row was waiting for. Dubai and Riyadh became
+      cutouts first and Abu Dhabi stayed a photograph because none existed;
+      all three now match.
+
+      It is 640x960 against 1254x1254 for the other two - the smallest of the
+      set. In a 400x500 card, contain fits it to the card's HEIGHT (its 0.67
+      board is taller than the 0.8 card), so it paints 333x500 and needs 666px
+      at 2x against 640 available: 0.96x, a 4% enlargement. Visible only under
+      magnification, and the alternative was leaving one photograph in a row of
+      cutouts. Worth re-exporting at 1254 if the client can.
+    */
+    src: abuDhabiEtihadTowersCutout,
     alt: "",
+    cutout: true,
     /*
       2800x3500 is exactly 4:5, so nothing is cropped and the centre is the
       only honest value. The frame was cut to that ratio at source rather than
@@ -881,8 +1090,39 @@ export const cityPhotos = {
     position: "50% 50%",
   },
   riyadh: {
-    src: riyadhKingdomCentreSkyline,
+    /*
+      CUTOUT, client-supplied. Kingdom Centre and its arch, the palms along
+      Olaya and the traffic beneath - the same landmark as the photograph it
+      replaces.
+
+      This arrived after the first cutout pass and resolves the problem that
+      held Riyadh back then: the earlier Riyadh file was 466px, too small for
+      a 400x500 card without a visible enlargement. This one is 1254px, the
+      same board as the other three.
+
+      Two of the three market panels are now cutouts. Abu Dhabi remains a
+      photograph until a matching asset exists for it.
+    */
+    src: riyadhKingdomCentreCutout,
     alt: "",
+    cutout: true,
+    /*
+      1.10, and the arithmetic behind it.
+
+      Measured from the alpha: the subject is 1089x1212 of the 1254x1254 board -
+      87% of its width, 97% of its height - with 97px of margin on the left and
+      69px on the right. Contain fits the board to the card WIDTH, so it paints
+      400x400 in a 400x500 card and the tower reaches only 348 of the 400
+      available, with a fifth of the card empty below it.
+
+      Scaling the board to 440 puts the tower at 383x427. The board overflows
+      the card by 20px each side, which is inside the 34px and 24px of
+      transparent margin it carries there, so nothing visible is cut.
+
+      1.15 is the point at which the tower touches both side edges. 1.10 keeps
+      about 8px of air either side and 30px above the palms at the base.
+    */
+    cutoutScale: 1.1,
     /*
       3280x4100 is exactly 4:5, cut from a 5200x4100 landscape at source.
 

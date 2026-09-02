@@ -25,6 +25,114 @@ note above does not apply to them:
 - `heropic.png`, and its byte-identical copy `ChatGPT Image Aug 20, 2026, 11_53_53
   AM.png` — an early layout mockup. Neither is referenced by any page.
 
+### Client-supplied landmark cutouts
+
+Three PNGs supplied by the client, copied in byte-for-byte and not regenerated,
+recoloured or re-cut. They are **not** Unsplash and the note at the top of this file
+does not apply to them; their licence is whatever the client holds.
+
+| File | Subject | Source PNG | Size |
+| --- | --- | --- | --- |
+| `uae/dubai-burj-khalifa-cutout.png` | Burj Khalifa with its podium and palms | `Burj Khalifa.png` | 1254×1254 RGBA |
+| `uae/dubai-marina-cutout.png` | Dubai Marina at night, towers and reflection | `Dubai Marina.png` | 1254×1254 RGBA |
+| `uae/dubai-museum-of-the-future-cutout.png` | Museum of the Future and Emirates Towers | `Museum of the Future.png` | 1254×1254 RGBA |
+| `uae/riyadh-kingdom-centre-cutout.png` | Kingdom Centre, the Olaya palms and traffic | `Kingdom Centre.png` | 1254×1254 RGBA |
+| `uae/abu-dhabi-etihad-towers-cutout.png` | Etihad Towers on the Corniche | `Abu Dhabi.png` | 640×960 RGBA |
+
+These are a different KIND of asset from everything else here: a subject on a
+transparent ground, with no spare edges. `Photo.cutout` marks them in
+`src/data/imagery.ts` and `Figure` reads that flag to do three things — contain
+rather than cover, suppress any scrim, and paint NO background on the frame. All
+three are set on the asset rather than at the call site, because each is wrong in
+the same way if forgotten: a cover crops the landmark, and a scrim or a background
+draws the rectangle the transparency exists to avoid.
+
+`Photo.cutoutScale` enlarges one inside its frame where its own board carries
+transparent margin. Every value is derived from the alpha bounding box of that
+file and checked against it, so the board may overflow the frame but the subject
+never does:
+
+| Asset | Subject within its board | Scale | Subject at 1440 |
+| --- | --- | --- | --- |
+| Burj Khalifa | 974×1250 — 78% w, 100% h | 1.18 | 92% of frame width |
+| Kingdom Centre | 1089×1212 — 87% w, 97% h | 1.10 | 96% of frame width |
+| Dubai Marina | 1254×847 — 100% w, 68% h | none | 100% of frame width |
+| Museum of the Future | 1254×1183 — 100% w, 94% h | none | 93% of frame width |
+| Etihad Towers | 640×935 — 100% w, 97% h | none | 100% of frame width |
+
+Marina and the Museum span their boards horizontally already, so there is no slack
+to take and any scale would push them out of frame.
+
+Transparency survives delivery. `next/image` re-encodes them and the alpha is
+carried in every format it serves: AVIF and WebP keep a real alpha channel, and the
+PNG fallback is written as palette + `tRNS`, which is a 256-entry alpha table rather
+than a lost one.
+
+A fifth file, `Riyadh.png`, was supplied and is **not** used. It is 466×466 against
+1254×1254 for the others, and the smallest frame on the site is 312px wide — which
+needs 624px at 2×. `Kingdom Centre.png` arrived afterwards at full size and covers
+the same city, so the Riyadh market panel takes that instead and the 466px file is
+superseded rather than merely held.
+
+**Photographs these replaced.** All four remain in this directory, with their
+entries below, and only their imports were removed:
+`dubai-museum-future-towers.jpg`, `uae/sheikh-zayed-road-dusk.jpg`,
+`uae/dubai-downtown-sheikh-zayed-road.jpg` and
+`uae/riyadh-kingdom-centre-skyline.jpg`.
+
+**Abu Dhabi now has one.** `Abu Dhabi.png` closed the gap and all three market
+panels are cutouts. It is the smallest board in the set at 640×960 against 1254×1254
+for the other two: in a 400×500 card it paints 333×500 and needs 666px at 2×, a 4%
+enlargement. Worth re-exporting at 1254 if the client can.
+
+Also supplied and deliberately UNUSED:
+
+- `1.png` — a Burj Khalifa cutout at 640×960. The same subject as
+  `uae/dubai-burj-khalifa-cutout.png`, which is 1254×1254. A newer file is not a
+  better one; the higher-resolution asset stays.
+- `Riyadh.png` — 466×466, superseded by `Kingdom Centre.png`.
+- `Palm Jumeirah.jpg`, `The Dubai Frame.avif`, `Louvre Abu Dhabi.avif` — no section
+  on the site has any of these as its subject, and inventing one to house them
+  would be the tail wagging the dog. Held.
+
+### Client-supplied page banners
+
+Five 3840×1200 compositions (3.2:1 aspect ratio), one per interior route, copied in byte for byte. Not
+Unsplash; their licence is whatever the client holds.
+
+| File | Route | Source PNG | Weight | Dimensions |
+| --- | --- | --- | --- | --- |
+| `banners/what-we-do.png` | /what-we-do | `24.png` / `what-we-do.png` | 8.0MB | 3840×1200 |
+| `banners/for-investors.png` | /for-investors | `30.png` | 4.7MB | 3840×1200 |
+| `banners/insight.png` | /insight | `29.png` | 4.7MB | 3840×1200 |
+| `banners/about.png` | /about | `26.png` | 4.6MB | 3840×1200 |
+| `banners/contact.png` | /contact | `28.png` | 3.5MB | 3840×1200 |
+
+**The text is in the pixels.** Each carries an eyebrow, a paragraph and a headline
+burned into the artwork, and the headline is word for word the page's own `<h1>`.
+That drives three decisions, all in `PageHero`: the hero's own eyebrow, title and
+lead render to assistive technology only, so nothing is printed twice and the page
+keeps exactly one `<h1>`; the banner is never cropped, because `cover` on a
+composition whose subject is type cuts sentences in half; and it is ENGLISH ONLY.
+
+**Arabic routes do not get these.** There is no Arabic edition of the artwork, and
+overlaying Arabic copy on baked English — or showing both — is worse than showing
+neither, so the Arabic routes keep the photographic hero they already had. Identical
+artwork in Arabic needs either an Arabic set or a text-free set from the client.
+
+**None of that weight reaches a visitor.** `next/image` emits AVIF and WebP against
+`deviceSizes`, which caps at 2048 — a downscale from 3840 at every step. Measured at
+a 1920 viewport: 55–143KB AVIF against an 8–15MB source, about 99% smaller.
+
+**Notes for the client.**
+
+- `banners/about.png` carries legible EMAAR branding on four towers. The rule at the
+  top of this file rules out third-party branding; this is a client-supplied asset
+  so it is used as given, but it is the one frame here worth reshooting.
+- All five banners are 3840×1200 re-cuts at 3.2:1, which makes a 450px band at 1440.
+  `PageHero` lays the banner out at `h-auto` from the intrinsic size of the static import,
+  so the hero band takes the shape of whatever file it is given without distortion.
+
 ## Content integrity
 
 **None of these images depicts GCC, its offices, its people, its clients or its work.**

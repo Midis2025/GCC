@@ -8,7 +8,7 @@ import { Showcase } from "@/components/sections/Showcase";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { pick } from "@/content";
+import { currentLocale, pick } from "@/content";
 import {
   commercialModelContentAr,
   serviceLinesAr,
@@ -18,7 +18,7 @@ import {
   whatWeDoTransitionAr,
 } from "@/content/ar/what-we-do";
 import { whatWeDoMapAr } from "@/content/ar/world-connections";
-import { backdrops, serviceLinePhotos } from "@/data/imagery";
+import { backdrops, banners, serviceLinePhotos } from "@/data/imagery";
 import {
   commercialModelContent as commercialModelContentEn,
   serviceLines as serviceLinesEn,
@@ -57,6 +57,12 @@ export const metadata = createMetadata({
  */
 export default async function WhatWeDoPage() {
   /*
+    The client banner replaces the hero on the English route only. It has
+    English text baked into the artwork, so the Arabic route keeps the
+    photographic hero it already had.
+  */
+  const banner = (await currentLocale()) === "en" ? banners.whatWeDo : null;
+  /*
     One `pick` per content module, exactly as the home page does it. The page
     body below is unchanged in structure - only the source of each string moved
     from a hard-coded literal to a localised module.
@@ -74,7 +80,14 @@ export default async function WhatWeDoPage() {
 
   return (
     <>
+      {/*
+        ENGLISH ONLY. The banner carries its eyebrow, paragraph and headline in
+        the artwork, in English, and there is no Arabic edition of it. Passing
+        `null` on the Arabic route leaves the photographic hero exactly as it
+        was - see the note on `banners` in data/imagery.ts.
+      */}
       <PageHero
+        banner={banner}
         variant="feature"
         photo={backdrops.services}
         eyebrow={whatWeDoHero.eyebrow}

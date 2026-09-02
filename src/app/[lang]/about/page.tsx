@@ -2,6 +2,7 @@ import { AboutEngagements } from "@/components/sections/AboutEngagements";
 import { AboutHowWeWork } from "@/components/sections/AboutHowWeWork";
 import { AboutPrincipals } from "@/components/sections/AboutPrincipals";
 import { AboutHero } from "@/components/sections/AboutHero";
+import { PageHero } from "@/components/sections/PageHero";
 import { MarketMap } from "@/components/sections/MarketMap";
 import { AboutPositioning } from "@/components/sections/AboutPositioning";
 import { AboutPrinciples } from "@/components/sections/AboutPrinciples";
@@ -17,9 +18,10 @@ import { Section } from "@/components/sections/Section";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { pick } from "@/content";
+import { currentLocale, pick } from "@/content";
 import {
   aboutCommunicationAr,
+  aboutHeroAr,
   aboutHowWeWorkAr,
   aboutPhilosophyAr,
   aboutRegionAr,
@@ -27,9 +29,10 @@ import {
   aboutTransitionAr,
 } from "@/content/ar/about";
 import { gulfMarketsAr } from "@/content/ar/homepage";
-import { backdrops } from "@/data/imagery";
+import { backdrops, banners, photos } from "@/data/imagery";
 import {
   aboutCommunication as aboutCommunicationEn,
+  aboutHero as aboutHeroEn,
   aboutHowWeWork as aboutHowWeWorkEn,
   aboutPhilosophy as aboutPhilosophyEn,
   aboutRegion as aboutRegionEn,
@@ -108,6 +111,20 @@ export const metadata = createMetadata({
  * renders only when `data/team.ts` holds real people.
  */
 export default async function AboutPage() {
+  /*
+    The client banner replaces this page's hero on the ENGLISH route only.
+
+    `AboutHero` is a bespoke split hero rather than `PageHero`, so the swap is
+    made here rather than inside it: the banner already carries this page's
+    eyebrow, headline and lead as artwork, and the split hero exists to lay
+    out exactly those three things beside a photograph. Running both would
+    print the same words twice, at two sizes, in two places.
+
+    The Arabic route keeps `AboutHero` untouched - the artwork is English, and
+    there is no Arabic edition of it.
+  */
+  const isEnglish = (await currentLocale()) === "en";
+  const aboutHero = await pick({ en: aboutHeroEn, ar: aboutHeroAr });
   const aboutRegion = await pick({ en: aboutRegionEn, ar: aboutRegionAr });
   const aboutTransition = await pick({ en: aboutTransitionEn, ar: aboutTransitionAr });
   const aboutCommunication = await pick({ en: aboutCommunicationEn, ar: aboutCommunicationAr });
@@ -120,7 +137,17 @@ export default async function AboutPage() {
   return (
     <>
       {/* 1 - Who Gulf Connect is. */}
-      <AboutHero />
+      {isEnglish ? (
+        <PageHero
+          banner={banners.about}
+          photo={photos.aboutPortrait}
+          eyebrow={aboutHero.eyebrow}
+          title={aboutHero.title}
+          lead={aboutHero.lead}
+        />
+      ) : (
+        <AboutHero />
+      )}
 
       {/* 2 - The firm, stated. Ends on the quote the next section argues. */}
       <AboutPositioning />

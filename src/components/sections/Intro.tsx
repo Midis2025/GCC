@@ -78,10 +78,20 @@ export async function Intro() {
               the square was chosen to close re-opens. 4:3 holds the balance
               at 1600px and beyond.
             */}
+            {/*
+              A CUTOUT now, so no scrim - `Figure` suppresses one anyway, but
+              leaving `overlay="veil"` here would read as though this frame
+              still carried it.
+
+              Everything else about the frame is unchanged: same square ratio,
+              same 4:3 above 2xl, same `sizes`. `2xl:aspect-[4/3]` stays even
+              though a square asset cannot fill it - the frame is what the
+              layout is built around and the question plate overhangs its lower
+              edge; the cutout simply centres in the wider box.
+            */}
             <Figure
               photo={photos.introTowers}
               ratio="square"
-              overlay="veil"
               className="2xl:aspect-[4/3]"
               sizes="(min-width: 1024px) 46vw, 100vw"
             />

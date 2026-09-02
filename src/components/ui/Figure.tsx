@@ -56,6 +56,23 @@ export interface FigureProps {
    * portrait where skin tone matters.
    */
   grade?: boolean;
+  /**
+   * How the image fills the frame.
+   *
+   * `cover` is the default and is right for every photograph on the site: the
+   * frame is a window onto a larger picture, and `position` decides what the
+   * window holds.
+   *
+   * `contain` is for a CUTOUT - a subject on a transparent ground, which has
+   * no edges to spare. Cropping one is not a crop, it is an amputation: the
+   * top of a tower or the base it stands on simply goes. Contain fits the
+   * whole silhouette inside the frame and lets the panel show around it, which
+   * is what the transparency is for.
+   *
+   * A contained frame also drops `position`, which has nothing left to decide
+   * once the whole image is visible.
+   */
+  fit?: "cover" | "contain";
   /** LCP hero only. Emits a <link rel=preload> rather than lazy-loading. */
   preload?: boolean;
   /**
@@ -96,16 +113,46 @@ export function Figure({
   zoom = false,
   grain = false,
   grade = true,
+  fit = "cover",
   preload = false,
   quality,
   sizes = "(min-width: 1024px) 50vw, 100vw",
   className,
   imageClassName,
 }: FigureProps) {
+  /*
+    A cutout decides two things for itself, wherever it is used.
+
+    `contain`, because cropping a subject with no spare edges is an amputation
+    rather than a crop - the spire off a tower, or the base out from under it.
+
+    And no scrim, because a scrim is a gradient over the whole frame: on a
+    photograph it darkens the picture, but on a cutout it darkens the panel
+    AROUND the subject too, drawing exactly the rectangle the transparency
+    exists to avoid.
+
+    Read off the asset rather than the call site so neither rule can be
+    forgotten at one of several call sites. `fit` still overrides upward, for a
+    photograph that wants containing for its own reasons.
+  */
+  const contain = fit === "contain" || photo.cutout === true;
+  const scrim = photo.cutout ? "none" : overlay;
+
   return (
     <div
       className={cn(
-        "relative overflow-hidden bg-(--midnight)",
+        "relative overflow-hidden",
+        /*
+          A PHOTOGRAPH gets the midnight ground: it fills the frame, and the
+          colour is what the frame shows while the image is still loading.
+
+          A CUTOUT must not. Its whole point is that the section shows through
+          the transparency, and a background here is the rectangle that makes a
+          floating landmark look like a picture pasted into a box. There is
+          nothing to paint behind it and nothing to load onto - the section is
+          already there.
+        */
+        !photo.cutout && "bg-(--midnight)",
         ratios[ratio],
         zoom && "media-frame",
         grain && "grain",
@@ -129,25 +176,31 @@ export function Figure({
         quality={quality}
         style={
           {
-            ...(photo.position && {
+            ...(!contain && photo.position && {
               "--obj-pos": photo.position,
               "--obj-pos-sm": photo.positionMobile ?? photo.position,
             }),
+            /*
+              `scale` rather than `transform`, so this composes with the hover
+              zoom in `.media-frame img` instead of replacing it.
+            */
+            ...(photo.cutout && photo.cutoutScale ? { scale: String(photo.cutoutScale) } : {}),
             ...(photo.grade?.saturate !== undefined && { "--grade-sat": photo.grade.saturate }),
             ...(photo.grade?.contrast !== undefined && { "--grade-con": photo.grade.contrast }),
             ...(photo.grade?.brightness !== undefined && { "--grade-bri": photo.grade.brightness }),
           } as CSSProperties
         }
         className={cn(
-          "object-cover",
-          photo.position && "object-pos",
+          contain ? "object-contain" : "object-cover",
+          /* A contained image shows in full; there is no crop left to place. */
+          !contain && photo.position && "object-pos",
           grade && "photo-grade",
           imageClassName,
         )}
       />
 
-      {overlay !== "none" && (
-        <div aria-hidden="true" className={cn("absolute inset-0", overlays[overlay])} />
+      {scrim !== "none" && (
+        <div aria-hidden="true" className={cn("absolute inset-0", overlays[scrim])} />
       )}
     </div>
   );

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
-import { backdrops } from "@/data/imagery";
+import { backdrops, ctaSkyline } from "@/data/imagery";
 import { getDictionary, pick } from "@/content";
 import { ctaContentAr } from "@/content/ar/homepage";
 import { ctaContent as ctaContentEn } from "@/data/homepage";
@@ -28,7 +28,17 @@ export async function CTASection() {
 
   return (
     <section
-      className="tokens-dark relative isolate overflow-hidden bg-(--midnight) py-[var(--space-section-lg)]"
+      /*
+        `min-h-[22.5vw]` is the skyline's own aspect written as a floor - 100
+        divided by 4.455, rounded up so it cannot fall a pixel short. The band is content-height on most viewports and this
+        never engages; above about 1400px the copy is shorter than a full-width
+        skyline, and without the floor the section would clip the spire.
+
+        `justify-center` only matters when the floor is what sets the height:
+        it keeps the copy in the middle of the band rather than stacked at the
+        top with the skyline below it.
+      */
+      className="tokens-dark relative isolate flex min-h-[22.5vw] flex-col justify-center overflow-hidden bg-(--midnight) py-[var(--space-section-lg)]"
       aria-labelledby="cta-heading"
     >
       <div aria-hidden="true" className="absolute inset-0 -z-20">
@@ -48,6 +58,29 @@ export async function CTASection() {
         className="absolute inset-0 -z-10 bg-[radial-gradient(90%_100%_at_50%_50%,rgba(12,20,29,0.86)_0%,rgba(12,20,29,0.95)_58%,#0c141d_100%)]"
       />
       <div aria-hidden="true" className="grain absolute inset-0 -z-10" />
+
+      {/*
+        The skyline, on the bottom edge and full width.
+
+        After the scrim and the grain so it reads as a foreground horizon
+        rather than another layer of the backdrop, and before the content, so
+        the heading and actions sit in front of it. Its top 43% is transparent
+        - see the note on `ctaSkyline` - so the type has empty sky behind it,
+        and where the buttons do meet the buildings the silhouette is darker
+        than the photograph it covers, which helps them rather than hurting.
+
+        `w-full h-auto`: the intrinsic size comes from the static import, so
+        the browser reserves the right box and the aspect is the file's own.
+        Nothing is cropped and nothing is stretched.
+      */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 -z-10">
+        <NextImage
+          src={ctaSkyline.src}
+          alt=""
+          sizes="100vw"
+          className="block h-auto w-full"
+        />
+      </div>
       <div
         aria-hidden="true"
         className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(184,148,95,0.5),transparent)]"

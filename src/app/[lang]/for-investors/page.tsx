@@ -27,7 +27,7 @@ import { investorsMap as investorsMapEn, narrowMap } from "@/data/world-connecti
 import { Heading } from "@/components/ui/Heading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { backdrops } from "@/data/imagery";
+import { backdrops, banners } from "@/data/imagery";
 import {
   GENERAL_CONTENT_ONLY,
   forInvestorsHero as forInvestorsHeroEn,
@@ -71,6 +71,12 @@ export const metadata = createMetadata({
  * Add real entries to the data file and the section appears.
  */
 export default async function ForInvestorsPage() {
+  /*
+    The client banner replaces the hero on the English route only. It has
+    English text baked into the artwork, so the Arabic route keeps the
+    photographic hero it already had.
+  */
+  const banner = (await currentLocale()) === "en" ? banners.forInvestors : null;
   const forInvestorsHero = await pick({ en: forInvestorsHeroEn, ar: forInvestorsHeroAr });
   const forInvestorsIntro = await pick({ en: forInvestorsIntroEn, ar: forInvestorsIntroAr });
   const investorBenefits = await pick({ en: investorBenefitsEn, ar: investorBenefitsAr });
@@ -96,7 +102,14 @@ export default async function ForInvestorsPage() {
 
   return (
     <>
+      {/*
+        ENGLISH ONLY. The banner carries its eyebrow, paragraph and headline in
+        the artwork, in English, and there is no Arabic edition of it. Passing
+        `null` on the Arabic route leaves the photographic hero exactly as it
+        was - see the note on `banners` in data/imagery.ts.
+      */}
       <PageHero
+        banner={banner}
         variant="feature"
         photo={backdrops.investors}
         eyebrow={forInvestorsHero.eyebrow}
