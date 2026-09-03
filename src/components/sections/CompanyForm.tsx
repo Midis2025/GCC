@@ -95,15 +95,6 @@ export function CompanyForm({ source }: { source: string }) {
     if (!email) next.email = e.email;
     else if (!EMAIL_PATTERN.test(email)) next.email = e.emailInvalid;
 
-    const preferredDate = value("preferredDate");
-    if (!preferredDate) next.preferredDate = e.preferredDate;
-    else if (preferredDate < todayAsInputValue()) {
-      // Both sides are `YYYY-MM-DD`, which compares correctly as a string.
-      next.preferredDate = e.preferredDatePast;
-    }
-
-    if (!value("preferredTime")) next.preferredTime = e.preferredTime;
-
     const message = value("message");
     if (!message) next.message = e.message;
     else if (message.length < 20) next.message = e.messageShort;
@@ -308,32 +299,6 @@ export function CompanyForm({ source }: { source: string }) {
           nothing is held. The wording says "preferred" for that reason, and the
           reply arranges the meeting.
         */}
-        {/*
-          `type="date"` rather than a calendar of our own: it brings the
-          desktop popover, the iOS and Android wheels, the visitor's own locale
-          format and keyboard entry, none of which a hand-built one would get
-          right for the price of a field that says which day suits. The ref is
-          what puts today's floor on it - see `boundToToday` above.
-        */}
-        <FormField label={f.preferredDate} error={errors.preferredDate} required>
-          <Input name="preferredDate" type="date" ref={boundToToday} />
-        </FormField>
-
-        <FormField
-          label={f.preferredTime}
-          error={errors.preferredTime}
-          description={f.timezone}
-          required
-        >
-          <Select
-            name="preferredTime"
-            options={preferredTimeOptions.map((option) => ({
-              value: option.value,
-              label: optionLabel(t.forms.options.preferredTime, option.value, option.label),
-            }))}
-            placeholder={f.timePlaceholder}
-          />
-        </FormField>
       </div>
 
       <FormField

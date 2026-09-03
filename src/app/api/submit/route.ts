@@ -193,7 +193,7 @@ function validate(
      * The company enquiry always carries the meeting preference, so here it is
      * required as well as checked.
      */
-    checkMeetingPreference(payload, errors, true, e);
+    checkMeetingPreference(payload, errors, false, e);
   }
 
   return { ok: Object.keys(errors).length === 0, errors };
