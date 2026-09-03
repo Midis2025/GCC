@@ -57,9 +57,9 @@ export const metadata = createMetadata({
  */
 export default async function WhatWeDoPage() {
   /*
-    The client banner replaces the hero on the English route only. It has
-    English text baked into the artwork, so the Arabic route keeps the
-    photographic hero it already had.
+    The client banner supplies the hero PHOTOGRAPH on the English route. It is
+    artwork rather than a library frame and there is no Arabic edition of it,
+    so the Arabic route falls back to the backdrop passed below.
   */
   const banner = (await currentLocale()) === "en" ? banners.whatWeDo : null;
   /*
@@ -81,10 +81,12 @@ export default async function WhatWeDoPage() {
   return (
     <>
       {/*
-        ENGLISH ONLY. The banner carries its eyebrow, paragraph and headline in
-        the artwork, in English, and there is no Arabic edition of it. Passing
-        `null` on the Arabic route leaves the photographic hero exactly as it
-        was - see the note on `banners` in data/imagery.ts.
+        The banner and the backdrop are both passed; `PageHero` renders
+        whichever it is given, identically. The eyebrow, title and lead below
+        are the hero's visible copy in both cases - an earlier set of banners
+        had those words baked into the artwork and suppressed these to
+        `sr-only`, which is no longer true of either the artwork or the
+        component. See the note on `banners` in data/imagery.ts.
       */}
       <PageHero
         banner={banner}

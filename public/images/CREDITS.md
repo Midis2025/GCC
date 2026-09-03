@@ -2,10 +2,14 @@
 
 These photographs are **art direction placeholders**, not client assets.
 
-Every file in this directory is an [Unsplash](https://unsplash.com) photograph, used
-under the [Unsplash Licence](https://unsplash.com/license): free to use for commercial
-and non-commercial purposes, no permission or attribution required. The source of each
-frame is recorded below anyway, so any of them can be verified.
+Almost every file in this directory is an [Unsplash](https://unsplash.com) photograph,
+used under the [Unsplash Licence](https://unsplash.com/license): free to use for
+commercial and non-commercial purposes, no permission or attribution required. The
+source of each frame is recorded below anyway, so any of them can be verified.
+
+Two files — `leadership-board-meeting.jpg` and `data-centre-server-aisle.jpg` — come
+from [Pexels](https://www.pexels.com) instead, under the equally permissive
+[Pexels Licence](https://www.pexels.com/license/). See "Selected Markets" below for why.
 
 Only free Unsplash photographs are used. Nothing here comes from Unsplash+
 (`plus.unsplash.com/premium_photo-…`), which is a separate paid licence.
@@ -138,17 +142,17 @@ give 1024 — a 1.05× enlargement, 5%. Everywhere else there is 1.2×–2.6× s
 Riyadh's 1086px clears even that case. Worth a re-export at ~1280 if the client
 can.
 
-**FLAGGED — Etihad Towers now appears twice on the homepage.** This set used to
-carry a rule that the Abu Dhabi panel may not be Etihad Towers, because
-`segmentPhotos.listed` (the "Listed Small and Mid-Cap Companies" panel in the
-Segments mosaic) is Etihad Towers on the same page. That is still true —
-`etihad-towers-abu-dhabi.jpg` is served by the homepage, verified in the
-rendered HTML. The client supplied Etihad Towers for this panel anyway and the
-instruction was explicit, so it is used, but the clash is real and is not
-silently accepted. The fix belongs to the other panel and is one line: point
-`segmentPhotos.listed` at `abuDhabiNight` or `louvreAbuDhabiDome`, both in the
-library and neither on the homepage. Not done here because changing the Segments
-mosaic was not what was asked for.
+**RESOLVED — Etihad Towers used to appear twice on the homepage.** This set carried a
+rule that the Abu Dhabi city panel may not be Etihad Towers, because
+`segmentPhotos.listed` — the "Listed Small and Mid-Cap Companies" panel in the Segments
+mosaic — was Etihad Towers on the same page. The client supplied Etihad Towers for the
+city panel anyway and the instruction was explicit, so the clash was used and flagged
+rather than silently accepted, with the fix noted as belonging to the other panel.
+
+That is what happened. The Segments mosaic has since been re-shot in full and
+`segmentPhotos.listed` is now `dubai-financial-district-towers.jpg`. Etihad Towers
+appears once on the homepage, in this panel, and the rule above is free again: keep the
+Segments anchor off Etihad Towers, whatever it is pointed at next.
 
 **FLAGGED — the Riyadh landmark changed.** The panel this replaces was Kingdom
 Centre and its arch. The tower filling the new frame is a different one, with
@@ -198,41 +202,120 @@ Also supplied and deliberately UNUSED / HELD:
 
 ### Client-supplied page banners
 
-Five 3840×1200 compositions (3.2:1 aspect ratio), one per interior route, copied in byte for byte. Not
-Unsplash; their licence is whatever the client holds.
+Five 6000×1875 AVIF photographs (3.2:1), one per interior route, copied in byte for
+byte. Not Unsplash; their licence is whatever the client holds.
 
-| File | Route | Source PNG | Weight | Dimensions |
-| --- | --- | --- | --- | --- |
-| `banners/what-we-do.png` | /what-we-do | `24.png` / `what-we-do.png` | 8.0MB | 3840×1200 |
-| `banners/for-investors.png` | /for-investors | `30.png` | 4.7MB | 3840×1200 |
-| `banners/insight.png` | /insight | `29.png` | 4.7MB | 3840×1200 |
-| `banners/about.png` | /about | `26.png` | 4.6MB | 3840×1200 |
-| `banners/contact.png` | /contact | `28.png` | 3.5MB | 3840×1200 |
+| File | Route | Supplied as | Weight |
+| --- | --- | --- | --- |
+| `banners/what-we-do.avif` | /what-we-do | `25.avif` | 183KB |
+| `banners/for-investors.avif` | /for-investors | `26.avif` | 96KB |
+| `banners/insight.avif` | /insight | `27.avif` | 135KB |
+| `banners/about.avif` | /about | `28.avif` | 125KB |
+| `banners/contact.avif` | /contact | `24.avif` | 22KB |
 
-**The text is in the pixels.** Each carries an eyebrow, a paragraph and a headline
-burned into the artwork, and the headline is word for word the page's own `<h1>`.
-That drives three decisions, all in `PageHero`: the hero's own eyebrow, title and
-lead render to assistive technology only, so nothing is printed twice and the page
-keeps exactly one `<h1>`; the banner is never cropped, because `cover` on a
-composition whose subject is type cuts sentences in half; and it is ENGLISH ONLY.
+**The text is no longer in the pixels, and that is the whole story of this set.**
+The first two deliveries had the eyebrow, the paragraph and the headline burned into
+each composition, the headline word for word the page's own `<h1>`. That forced a
+second, separate hero in `PageHero`: never cropped, because `cover` on a sentence cuts
+it in half, and with its own eyebrow, title and lead rendered `sr-only` so the same
+words were not printed twice.
 
-**Arabic routes do not get these.** There is no Arabic edition of the artwork, and
-overlaying Arabic copy on baked English — or showing both — is worse than showing
-neither, so the Arabic routes keep the photographic hero they already had. Identical
-artwork in Arabic needs either an Arabic set or a text-free set from the client.
+The client has now supplied the same five photographs with the type removed. They are
+ordinary hero frames: cropped like any other, with the page's real eyebrow, headline
+and lead set over them in HTML. The `sr-only` duplicate is gone, the headline is live
+text at the site's own type scale, and the hero band is the same height on every route
+at every width instead of being dictated by the artwork's aspect.
+
+**Arabic routes still fall back to the library backdrop.** There is no Arabic edition
+of the artwork. The reason is now much weaker than it was — nothing English is baked
+into these files any more, so they would in principle serve either language — and it is
+worth asking the client whether the Arabic routes should simply use the same five
+frames. That is a decision about art direction, not a technical constraint.
 
 **None of that weight reaches a visitor.** `next/image` emits AVIF and WebP against
-`deviceSizes`, which caps at 2048 — a downscale from 3840 at every step. Measured at
-a 1920 viewport: 55–143KB AVIF against an 8–15MB source, about 99% smaller.
+`deviceSizes`, which caps at 2048 — a downscale from 6000 at every step.
 
-**Notes for the client.**
+**Note for the client.** `banners/about.avif` carries legible EMAAR branding on four
+towers. The rule at the top of this file rules out third-party branding; this is a
+client-supplied asset so it is used as given, but it is the one frame here worth
+reshooting.
 
-- `banners/about.png` carries legible EMAAR branding on four towers. The rule at the
-  top of this file rules out third-party branding; this is a client-supplied asset
-  so it is used as given, but it is the one frame here worth reshooting.
-- All five banners are 3840×1200 re-cuts at 3.2:1, which makes a 450px band at 1440.
-  `PageHero` lays the banner out at `h-auto` from the intrinsic size of the static import,
-  so the hero band takes the shape of whatever file it is given without distortion.
+### Selected Markets — all six frames
+
+The mosaic on the homepage was re-shot from the library in full. What it carried
+before failed on three separate counts, recorded here because each is easy to
+reintroduce: MINING was a night container terminal — a port is not a mine, and no crop
+was going to make it one; the technology and logistics frames were 1800px on the long
+edge, below the 2048 top device bucket, so a large display was served an upscale; and
+the leadership and life-sciences frames were near-black, which under the caption scrim
+read as dark rectangles rather than as photographs.
+
+Every replacement is 3840px on its long edge — a genuine downscale into every slot in
+the mosaic — and daylit or evenly lit, which is what lets the caption scrim darken only
+the strip under the label instead of the whole picture. Each was resized, graded and
+re-encoded from the source below rather than used as downloaded; two are cropped, and
+the crop is noted where it matters.
+
+| File | Panel | Source |
+| --- | --- | --- |
+| `dubai-financial-district-towers.jpg` | Listed Small and Mid-Cap Companies | Unsplash — https://unsplash.com/photos/U3CntDq16yY |
+| `leadership-board-meeting.jpg` | Leadership and IR Teams | Pexels — https://www.pexels.com/photo/6949477/ |
+| `data-centre-server-aisle.jpg` | Data Centres | Pexels — https://www.pexels.com/photo/4508751/ |
+| `mining-open-pit-operation.jpg` | Mining | Unsplash — https://unsplash.com/photos/Mk2ls9UBO2E |
+| `pharmaceutical-cleanroom.jpg` | Pharmaceuticals | Unsplash — https://unsplash.com/photos/dvYKZyVLC9c |
+| `doha-west-bay-towers.jpg` | International Companies Entering the Gulf | Unsplash — https://unsplash.com/photos/rsMfEFFrgqc |
+
+**Two of these are Pexels, not Unsplash**, which is the first exception to the note at
+the top of this file. The [Pexels licence](https://www.pexels.com/license/) is
+equivalent for this use: free for commercial work, no attribution required, no
+registration. They are used because the free Unsplash pool for these two subjects is
+thin — the best-composed data-centre frame there carries a vendor's logo repeated
+across the rack doors, which the branding rule above rules out.
+
+**Crops and grades, so a re-download does not silently differ.**
+
+- `dubai-financial-district-towers.jpg` — top 20% cropped away. The full frame opens on
+  a band of hazy far city that filled a third of the tall anchor panel with flat grey;
+  cropped, the tower cluster runs edge to edge. Contrast lifted to cut the atmospheric
+  haze the original was shot through.
+- `pharmaceutical-cleanroom.jpg` — left 10% and top 8% cropped away, which puts the
+  suited technician on the centre line. That is not cosmetic: the three-column panel is
+  1.65:1 at 1440 but 1.29:1 at 1024, so `cover` switches which axis it crops inside a
+  single breakpoint band, and only a centred subject survives both.
+- `mining-open-pit-operation.jpg` — saturation pulled back. The plant yellow as shot was
+  the one loud colour in an otherwise neutral set.
+- `doha-west-bay-towers.jpg` — top 26% and bottom 4% cropped away, leaving a 1.79:1 band
+  of tower bodies, and the sky brought down with it. The panel is a full-width letterbox
+  — about 6.8:1 at 1440 — so it shows barely a quarter of the file's height; cropped this
+  way, that quarter is architecture rather than sky.
+
+**Why the closing band moved from Dubai to Doha.** It carried
+`downtown-dubai-dusk.jpg`, a mauve night frame that read as the one panel that had not
+been re-shot. The subject changed as well as the exposure, and the page is the reason:
+by the time this section renders, the homepage has already shown Downtown Dubai at blue
+hour in the hero, Downtown at night on the globe band, the Burj Khalifa at night in the
+market panels and the Dubai Marina cutout in the intro. A fifth Downtown frame reads as
+a page that has run out of pictures.
+
+Doha is not a substitution of convenience. Qatar is one of the six markets in
+`gulfMarkets`, named in the hero standing bar and on the market map, and it was the only
+one of the six the homepage never pictured. A panel labelled "International Companies
+Entering the Gulf" is also the wrong place to say Dubai a fifth time — the claim is
+regional. `downtown-dubai-dusk.jpg` is unchanged and still opens the Arabic About page.
+
+The existing `doha-skyline-day.jpg` was NOT reused: it is 2000×725, under the 2048 top
+device bucket before any crop, and this band asks for more width than any other slot in
+the mosaic. It stays where it is, on the utility routes.
+
+**Signage.** `doha-west-bay-towers.jpg` carries a legible building name on one tower, as
+most photographs of a real financial district do. Same condition as the Downtown Dubai
+frames noted above: incidental, and implying no relationship of any kind.
+
+**Superseded, and left in place.** `uae/etihad-towers-abu-dhabi.jpg`,
+`leadership-review-night.jpg` and `uae-life-sciences-lab.jpg` are no longer imported by
+`src/data/imagery.ts`. The files stay in this directory with their rows in the tables
+below; restoring any of them is one import and one `src`. `sector-logistics-port.jpg`
+and `sector-technology-racks.jpg` are still used elsewhere and are unchanged.
 
 ## Content integrity
 
@@ -412,14 +495,14 @@ frames instead:
 | File | Used for | Aspect | Source |
 | --- | --- | --- | --- |
 | `uae/sheikh-zayed-road-dusk.jpg` | Regional Perspective (homepage) | 9:16 | https://images.unsplash.com/photo-1543579596-2c11997c7706 |
-| `uae/etihad-towers-abu-dhabi.jpg` | Selected Markets — tall anchor panel | 3:4 | https://images.unsplash.com/photo-1735163968182-a7da197d71ab |
+| `uae/etihad-towers-abu-dhabi.jpg` | Not currently placed — superseded on Selected Markets by `dubai-financial-district-towers.jpg` | 3:4 | https://images.unsplash.com/photo-1735163968182-a7da197d71ab |
 | `uae/dubai-trade-centre-towers.jpg` | What We Do hero | 3:2 | https://images.unsplash.com/photo-1597171149529-7a8f69abe77b |
 | `uae/business-bay-dubai-canal.jpg` | Insight hero | ~7:6 | https://images.unsplash.com/photo-1564005991505-41c5fd1cdb71 |
 | `uae/editorial-broadcast-gallery.jpg` | The Arabic Gap panel (homepage) | 3:2 | https://images.unsplash.com/photo-1550615511-c317ce7f1d03 |
 
 | File | Used for | Source |
 | --- | --- | --- |
-| `uae-life-sciences-lab.jpg` | Selected Markets — Life Sciences | https://images.unsplash.com/photo-1581594549595-35f6edc7b762 |
+| `uae-life-sciences-lab.jpg` | Not currently placed — superseded on Selected Markets by `pharmaceutical-cleanroom.jpg` | https://images.unsplash.com/photo-1581594549595-35f6edc7b762 |
 | `dubai-museum-future-towers.jpg` | Homepage pillar sequence (Convene, Place, Produce) | https://images.unsplash.com/photo-1643228307101-eaf8a15abbba |
 | `louvre-abu-dhabi-dome.jpg` | Advisory page hero | https://images.unsplash.com/photo-1552252415-5eb87e0fc788 |
 
@@ -438,10 +521,10 @@ frames instead:
 | `corporate-corridor-night.jpg` | Not currently placed — see note below | https://images.unsplash.com/photo-1768396747960-ae6ba3c855bc |
 | `abu-dhabi-night.jpg` | For Investors hero, lead insight card (re-downloaded at 2400px) | https://images.unsplash.com/photo-1624317937315-0ced8736c9e9 |
 | `investor-briefing-room.jpg` | Insight card | https://images.unsplash.com/photo-1627931539006-d5c4677e05ea |
-| `leadership-review-night.jpg` | Segment panel — Private Companies | https://images.unsplash.com/photo-1758520145132-b0ecdb967295 |
+| `leadership-review-night.jpg` | Not currently placed — superseded on Selected Markets by `leadership-board-meeting.jpg` | https://images.unsplash.com/photo-1758520145132-b0ecdb967295 |
 | `corporate-lobby-dark.jpg` | Contact enquiry band, segment panel | https://images.unsplash.com/photo-1782834293617-4161d0b7344e |
 | `riyadh-night-aerial.jpg` | Regional frame (about, investor outreach), segment panel | https://images.unsplash.com/photo-1663900108404-a05e8bf82cda |
-| `downtown-dubai-dusk.jpg` | About hero, segment panel — Growth Companies | https://images.unsplash.com/photo-1708361089093-beef4c4584e7 |
+| `downtown-dubai-dusk.jpg` | About hero (Arabic route) — no longer on Selected Markets, superseded there by `doha-west-bay-towers.jpg` | https://images.unsplash.com/photo-1708361089093-beef4c4584e7 |
 | `office-night-windows.jpg` | Segment panel — Leadership & IR Teams | https://images.unsplash.com/photo-1772059409102-86d89782265b |
 
 ### A note on `corporate-corridor-night.jpg`

@@ -25,12 +25,16 @@ import bannerWhatWeDo from "../../public/images/banners/what-we-do.avif";
 import dubaiTradeCentreTowers from "../../public/images/uae/dubai-trade-centre-towers.jpg";
 import broadcastInterviewCamera from "../../public/images/uae/broadcast-interview-camera.jpg";
 import broadcastMicrophones from "../../public/images/uae/broadcast-microphones.jpg";
-import etihadTowersAbuDhabi from "../../public/images/uae/etihad-towers-abu-dhabi.jpg";
+import dataCentreServerAisle from "../../public/images/data-centre-server-aisle.jpg";
+import dubaiFinancialDistrictTowers from "../../public/images/dubai-financial-district-towers.jpg";
+import leadershipBoardMeeting from "../../public/images/leadership-board-meeting.jpg";
+import miningOpenPitOperation from "../../public/images/mining-open-pit-operation.jpg";
+import pharmaceuticalCleanroom from "../../public/images/pharmaceutical-cleanroom.jpg";
+import dohaWestBayTowers from "../../public/images/doha-west-bay-towers.jpg";
 import dohaSkylineDay from "../../public/images/doha-skyline-day.jpg";
 import gulfFinancialDistrictNight from "../../public/images/gulf-financial-district-night.jpg";
 import investorBriefingRoom from "../../public/images/investor-briefing-room.jpg";
 import irBoardroomWindow from "../../public/images/ir-boardroom-window.jpg";
-import leadershipReviewNight from "../../public/images/leadership-review-night.jpg";
 import louvreAbuDhabiDome from "../../public/images/louvre-abu-dhabi-dome.jpg";
 import mediaBroadcastCamera from "../../public/images/media-broadcast-camera.jpg";
 import outreachConferenceHall from "../../public/images/outreach-conference-hall.jpg";
@@ -44,7 +48,6 @@ import sectorManufacturingRobotics from "../../public/images/sector-manufacturin
 import sectorTechnologyRacks from "../../public/images/sector-technology-racks.jpg";
 import skylineTwilight from "../../public/images/skyline-twilight.jpg";
 import strategySessionNight from "../../public/images/strategy-session-night.jpg";
-import uaeLifeSciencesLab from "../../public/images/uae-life-sciences-lab.jpg";
 
 /**
  * ============================================================================
@@ -211,78 +214,70 @@ export interface Photo {
  * ============================================================================
  * INTERNAL PAGE BANNERS
  * ============================================================================
- * Client-supplied 3840x2160 compositions, one per interior route. They are a
- * THIRD class of asset here and behave like neither of the other two.
+ * Client-supplied 6000x1875 photographs, one per interior route, used as the
+ * hero frame on the English pages in place of the library backdrop.
  *
  * ---------------------------------------------------------------------------
- * THE TEXT IS IN THE PIXELS
+ * THE TEXT USED TO BE IN THE PIXELS. IT IS NOT ANY MORE.
  * ---------------------------------------------------------------------------
- * Each carries an eyebrow, a paragraph and a headline burned into the image,
- * and the headline is word for word the page's own <h1>:
+ * The first delivery of this set had the eyebrow, the paragraph and the
+ * headline BURNED INTO each image - the headline word for word the page's own
+ * <h1>. That one fact drove a second hero in `PageHero`: uncropped, because a
+ * photograph whose subject is a sentence cannot be cropped, and with its type
+ * suppressed to `sr-only`, because setting the same words again printed each
+ * of them twice at two sizes in two places.
  *
- *   what-we-do      "FOUR LINES OF WORK, ONE PROGRAMME"
- *   for-investors   "BRIEFINGS WITH INTERNATIONAL COMPANIES"
- *   insight         "WRITTEN FOR THE GULF, ABOUT THE SECTORS WE COVER"
- *   about           "BUILT AROUND THE GULF. CONNECTED TO GLOBAL CAPITAL."
- *   contact         "START A CONVERSATION"
+ * The client has now supplied the same five frames with the type removed, and
+ * every one of those special cases goes with it. These are ordinary
+ * photographs: `PageHero` crops them like any other hero frame and sets the
+ * eyebrow, title and lead in HTML over them.
  *
- * Three consequences, all handled in `PageHero` rather than here:
+ * The headlines they used to carry are recorded here so a reviewer comparing
+ * against the old artwork can confirm nothing was lost. Each is still the
+ * page's <h1> - now as live text, from the locale's own content module:
  *
- *  - The hero's own eyebrow, title and lead would print the same words twice,
- *    so on a bannered hero they are rendered to assistive technology only. The
- *    page keeps exactly one <h1> and it stays in the DOM.
- *  - They are never cropped. `cover` on a composition whose subject is TYPE
- *    cuts sentences in half, so the hero takes the banner's own 16:9 and the
- *    section grows to fit it.
- *  - ENGLISH ONLY. There is no Arabic edition of this artwork, and overlaying
- *    Arabic copy on baked English, or showing both, is worse than showing
- *    neither. The Arabic routes keep the photographic hero they already have.
- *    Flagged for the client: identical artwork in Arabic needs either an
- *    Arabic set or a text-free set.
+ *   what-we-do      "Four lines of work, one programme"
+ *   for-investors   "Briefings with international companies"
+ *   insight         "Written for the Gulf, about the sectors we cover"
+ *   about           "Built around the Gulf. Connected to global capital."
+ *   contact         "Start a conversation"
  *
- * ---------------------------------------------------------------------------
- * EACH BANNER SETS ITS OWN HERO HEIGHT
- * ---------------------------------------------------------------------------
- * The hero band takes the ASPECT OF THE FILE - `PageHero` lays the banner out
- * at `h-auto` from the intrinsic size of the static import - so the shape of
- * the artwork decides the shape of the hero.
- *
- * All five banners are 3840x1200 compositions (3.2:1 aspect ratio), producing
- * a balanced ~450px band at 1440px viewport width across all interior routes.
+ * ENGLISH ONLY still, and now for a far smaller reason. There is no Arabic
+ * edition of this artwork, so the Arabic routes fall back to the library
+ * backdrop - a difference of PHOTOGRAPH rather than, as before, a difference
+ * of layout with English words baked into it. Nothing is untranslated either
+ * way now that the copy is live.
  *
  * ---------------------------------------------------------------------------
- * AVIF SOURCES, AND WHY THE SWAP CHANGED NOTHING ELSE
+ * WHY THEY ARE CROPPED RATHER THAN LAID OUT WHOLE
  * ---------------------------------------------------------------------------
- * The set was supplied a second time as AVIF, and it is a straight upgrade on
- * both axes at once, which is rare enough to be worth writing down:
+ * They are 3.2:1. At their own aspect that is a 122px band on a 390px phone -
+ * no headline fits in it at any size - and a hero whose height is decided by
+ * the artwork rather than by the viewport. Dropped into the standard hero band
+ * they open every interior route at the same shape, and a 3.2:1 skyline is the
+ * one composition that survives that crop: the subject runs the full width, so
+ * whatever slice the band takes still holds a skyline.
  *
- *   6000x1875 against 3840x1200 - 56% more pixels on the long edge
- *   56-544KB  against 4.5-8.0MB - between 93% and 99% smaller
- *
- * And the SAME 3.20 aspect. That is what made this a one-line change per page
- * rather than a layout job: the hero band takes the aspect of whatever file it
- * is given, so identical proportions mean identical hero heights, identical
- * crops - there are none, the banner is laid out at `w-full h-auto` - and
- * identical positioning. Nothing about the composition moved.
- *
- * The PNGs they replace are deleted rather than left in /public. They are
- * 29MB between them, nothing renders them, and git holds them if the AVIFs
- * ever have to be rolled back.
- *
- * Delivery: none of even this reaches a visitor whole. `next/image` emits AVIF
- * and WebP derivatives against `deviceSizes`, which caps at 2048 - a downscale
- * from 6000 at every step.
+ * Delivery: `next/image` emits AVIF and WebP derivatives against `deviceSizes`,
+ * which caps at 2048 - a downscale from 6000 at every step.
  */
 export const banners = {
-  whatWeDo: {
-    src: bannerWhatWeDo,
-    /* The banner's own words, so a screen reader gets what a sighted reader sees. */
-    alt: "",
-  },
-  forInvestors: { src: bannerForInvestors, alt: "" },
-  insight: { src: bannerInsight, alt: "" },
-  about: { src: bannerAbout, alt: "" },
-  contact: { src: bannerContact, alt: "" },
+  /*
+    Every `position` here is an X value, and only an X value, because the live
+    axis never changes: a 3.2:1 file is wider in proportion than the hero band
+    at every width the site supports, so `cover` always scales it to the height
+    and always spills sideways. A Y value would be inert.
+
+    Three are centred and two are not, and the two are the frames whose subject
+    is off-centre in the file: `about` carries the Burj Khalifa left of middle,
+    `contact` its one tall spire right of middle. On a phone the band takes
+    barely a third of the width, and the default centre crop drops both.
+  */
+  whatWeDo: { src: bannerWhatWeDo, alt: "", position: "50% 50%" },
+  forInvestors: { src: bannerForInvestors, alt: "", position: "50% 50%" },
+  insight: { src: bannerInsight, alt: "", position: "60% 50%" },
+  about: { src: bannerAbout, alt: "", position: "42% 50%" },
+  contact: { src: bannerContact, alt: "", position: "58% 50%" },
 } as const satisfies Record<string, Photo>;
 
 /**
@@ -1005,27 +1000,129 @@ export const insightPhotos: Photo[] = [
 /**
  * Panels for the client-segment grid. Ordered to match
  * `audienceContent.segments`:
+ *
+ * ---------------------------------------------------------------------------
+ * ALL SIX FRAMES ARE CHOSEN AS A SET, NOT ONE AT A TIME
+ * ---------------------------------------------------------------------------
+ * The set this replaces failed on three counts at once, and all three are
+ * worth recording because each is easy to reintroduce.
+ *
+ * WRONG SUBJECT. Mining carried a night container terminal. A port is not a
+ * mine, and no crop or grade was going to make it one. The frame now shows an
+ * open pit with haul trucks and excavators working the benches, which is the
+ * only thing that reads as MINING at 330px wide.
+ *
+ * TOO LITTLE RESOLUTION. The technology and logistics frames were 1800px on
+ * the long edge - below the 2048 top device bucket, so the browser was being
+ * served an upscale on any large display. Every frame here is 3840px on its
+ * long edge, which is a genuine downscale into every slot in the mosaic.
+ *
+ * TOO LITTLE LIGHT. The leadership frame was a near-black desk at night and
+ * the life-sciences one a flash-lit hood on black. Under the label scrim they
+ * read as dark rectangles rather than as photographs. Every frame here is
+ * daylit or evenly lit, which is what lets `overlay="label"` (see `Figure`)
+ * darken only the strip under the caption instead of the whole picture.
+ *
+ * The set is held together by grade rather than by subject: neutral to cool,
+ * controlled contrast, nothing pushed. Where a frame arrived out of step it
+ * was corrected in the FILE - the Dubai haze lifted, the plant yellow in the
+ * mine pulled back, the Doha sky brought down - rather than with a `grade`
+ * override here, so the crop previews and the served image agree.
+ *
+ * ---------------------------------------------------------------------------
+ * THE CLOSING BAND IS DOHA, AND THE CITY IS THE POINT
+ * ---------------------------------------------------------------------------
+ * `international` closes the mosaic in a full-width letterbox - about 6.8:1 at
+ * 1440 - which only a skyline survives. It carried Downtown Dubai at dusk, and
+ * that frame was replaced for two reasons rather than one.
+ *
+ * The first is the set: a mauve night haze next to five daylit frames read as
+ * the one that had not been re-shot.
+ *
+ * The second is the PAGE. By the time this section renders, the homepage has
+ * already shown Downtown Dubai at blue hour in the hero, Downtown at night on
+ * the globe band, the Burj Khalifa at night in the market panels and the
+ * Marina cutout in the intro. A fifth Downtown frame is not a motif, it is a
+ * page that has run out of pictures.
+ *
+ * Doha is the answer because it is not a substitution of convenience: Qatar is
+ * one of the six markets in `gulfMarkets`, named in the hero standing bar and
+ * on the market map, and it is the only one of the six the homepage never
+ * pictured. A panel labelled "International Companies Entering the Gulf" is
+ * also the wrong place to say Dubai a fifth time - the claim is regional, and
+ * a second Gulf capital states it better than the first one repeated.
+ *
+ * `doha-skyline-day.jpg` was NOT reused for this. It is 2000x725, which is
+ * under the 2048 top device bucket before any crop, and this band asks for
+ * more than any other slot in the mosaic.
+ *
+ * ---------------------------------------------------------------------------
+ * WHICH AXIS EACH `position` IS ACTUALLY STEERING
+ * ---------------------------------------------------------------------------
+ * `cover` crops on ONE axis, and which one is a fact about the pair, not
+ * about the photograph: a source WIDER in proportion than its panel is scaled
+ * to the panel height and spills sideways, so X decides and Y is inert; a
+ * source NARROWER in proportion is scaled to the width and spills downward, so
+ * Y decides and X is inert. Setting the axis that is inert changes nothing,
+ * which is how a crop silently stops working when a panel is re-spanned.
+ *
+ * Four of the sources are narrower in proportion than their panels, so Y is
+ * the live axis on those at desktop width:
+ *
+ *   leadership    64%  cuts ceiling; holds the table and every head in frame
+ *   dataCentres   38%  cuts empty floor; holds the rack run and the ceiling
+ *   mining        56%  holds the haul truck low left and the benches above it
+ *   international 44%  the extreme case. A 1.79:1 file in a 6.8:1 band shows
+ *                      barely a quarter of its height, so this value is not a
+ *                      nudge - it chooses which horizontal slice of Doha the
+ *                      band is. 44% takes the tower bodies and their
+ *                      silhouettes and leaves the street furniture below and
+ *                      the empty sky above outside the frame.
+ *
+ * The other two are centred on both axes, and that is a decision rather than a
+ * default: their FILES are cropped so that the subject sits mid-frame, which is
+ * what makes them safe on a panel whose live axis changes with the breakpoint.
+ *
+ *   listed        the tall anchor is about 1.35:1 and the file 1.56:1, so X is
+ *                 live; the tower cluster runs the full width of the file and
+ *                 the centre is the only value that does not trade half of it
+ *                 away for sky and low-rise.
+ *   pharmaceut.   the three-column panel is 1.65:1 at 1440 but 1.29:1 at 1024,
+ *                 so the live axis FLIPS inside one breakpoint band and no
+ *                 single off-centre value can be right at both. The file is
+ *                 cropped 10% off the left instead, which puts the suited
+ *                 technician on the centre line; the crop then takes from
+ *                 whichever edge it likes and the subject stays in frame.
+ *
+ * `positionMobile` exists because below 640px the mosaic is a single column
+ * and the panels drop to roughly 1.6:1, which moves several of these sources
+ * across the line and swaps the live axis again. The mobile values keep the
+ * subject the desktop crop was tuned for once that swap has happened.
  */
 export const segmentPhotos = {
   listed: {
-    src: etihadTowersAbuDhabi,
+    src: dubaiFinancialDistrictTowers,
     alt: "",
-    position: "50% 40%",
+    position: "50% 50%",
+    positionMobile: "50% 42%",
   },
   leadership: {
-    src: leadershipReviewNight,
+    src: leadershipBoardMeeting,
     alt: "",
-    position: "50% 45%",
+    position: "50% 64%",
+    positionMobile: "45% 62%",
   },
   dataCentres: {
-    src: sectorTechnologyRacks,
+    src: dataCentreServerAisle,
     alt: "",
-    position: "50% 50%",
+    position: "58% 38%",
+    positionMobile: "62% 40%",
   },
   mining: {
-    src: sectorLogisticsPort,
+    src: miningOpenPitOperation,
     alt: "",
-    position: "50% 50%",
+    position: "50% 56%",
+    positionMobile: "42% 56%",
   },
   energy: {
     src: sectorEnergyDusk,
@@ -1033,14 +1130,16 @@ export const segmentPhotos = {
     position: "50% 55%",
   },
   pharmaceuticals: {
-    src: uaeLifeSciencesLab,
+    src: pharmaceuticalCleanroom,
     alt: "",
     position: "50% 50%",
+    positionMobile: "50% 52%",
   },
   international: {
-    src: downtownDubaiDusk,
+    src: dohaWestBayTowers,
     alt: "",
-    position: "50% 42%",
+    position: "50% 60%",
+    positionMobile: "52% 52%",
   },
 } as const satisfies Record<string, Photo>;
 

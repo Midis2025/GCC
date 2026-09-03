@@ -71,10 +71,10 @@ export async function Segments() {
                 <Figure
                   photo={photo}
                   ratio="auto"
-                  overlay="soft"
+                  overlay="label"
                   className="h-full w-full"
                   imageClassName="transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover/panel:scale-[1.05]"
-                  sizes="(min-width: 1024px) 40vw, (min-width: 640px) 50vw, 100vw"
+                  sizes={PANEL_SIZES[index] ?? PANEL_SIZES[2]}
                 />
 
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 p-6 sm:p-7">
@@ -106,4 +106,34 @@ const PANEL_LAYOUT = [
   "lg:col-span-4",
   "lg:col-span-3",
   "lg:col-span-12 lg:row-start-3 lg:h-[clamp(13rem,14vw,18rem)]",
+] as const;
+
+/**
+ * The `sizes` hint, per panel, matched to the spans above.
+ *
+ * One shared string cannot serve this mosaic. The panels are 5, 4, 3, 4, 3
+ * and 12 columns wide, which is a range of four to one, and the single
+ * `(min-width: 1024px) 40vw` this replaces was wrong at both ends of it: it
+ * over-fetched by roughly 60% on the three-column panels, and - the reason it
+ * mattered - under-declared the full-width closing letterbox by a factor of
+ * two and a half, so a panel rendering at ~2000px asked the browser for an
+ * 800px-class candidate and got a soft image on every display, retina or not.
+ *
+ * Each value is the panel width as a share of the viewport, taking the twelve
+ * column grid and the gutters into account and rounding UP, so the candidate
+ * chosen is never smaller than the slot it lands in. The final clause caps the
+ * request where `Container`'s own max-width caps the grid at 2176px - past
+ * that the panels stop growing and a viewport-relative hint would keep
+ * inflating a number the layout no longer honours.
+ *
+ * Below 1024px the mosaic is two columns, and below 640px one - hence the
+ * 50vw and 100vw tail every entry shares.
+ */
+const PANEL_SIZES = [
+  "(min-width: 2176px) 900px, (min-width: 1024px) 42vw, (min-width: 640px) 50vw, 100vw",
+  "(min-width: 2176px) 730px, (min-width: 1024px) 34vw, (min-width: 640px) 50vw, 100vw",
+  "(min-width: 2176px) 560px, (min-width: 1024px) 26vw, (min-width: 640px) 50vw, 100vw",
+  "(min-width: 2176px) 730px, (min-width: 1024px) 34vw, (min-width: 640px) 50vw, 100vw",
+  "(min-width: 2176px) 560px, (min-width: 1024px) 26vw, (min-width: 640px) 50vw, 100vw",
+  "(min-width: 2176px) 2100px, (min-width: 1024px) 96vw, (min-width: 640px) 50vw, 100vw",
 ] as const;

@@ -112,16 +112,17 @@ export const metadata = createMetadata({
  */
 export default async function AboutPage() {
   /*
-    The client banner replaces this page's hero on the ENGLISH route only.
+    The client banner opens this page on the ENGLISH route only.
 
-    `AboutHero` is a bespoke split hero rather than `PageHero`, so the swap is
-    made here rather than inside it: the banner already carries this page's
-    eyebrow, headline and lead as artwork, and the split hero exists to lay
-    out exactly those three things beside a photograph. Running both would
-    print the same words twice, at two sizes, in two places.
+    `AboutHero` is a bespoke SPLIT hero - type in one column, photograph in the
+    other - and the banner is a 3.2:1 panorama, which is the one shape that
+    layout cannot hold: half of a wide skyline is not a composition. So English
+    swaps the whole hero for the shared feature `PageHero`, which lays the
+    banner full bleed and sets the same eyebrow, headline and lead over it.
 
-    The Arabic route keeps `AboutHero` untouched - the artwork is English, and
-    there is no Arabic edition of it.
+    The Arabic route keeps `AboutHero` untouched. There is no Arabic edition of
+    the artwork, and the split hero is the better opening when the frame is a
+    library portrait rather than a panorama.
   */
   const isEnglish = (await currentLocale()) === "en";
   const aboutHero = await pick({ en: aboutHeroEn, ar: aboutHeroAr });

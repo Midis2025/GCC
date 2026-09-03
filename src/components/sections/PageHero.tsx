@@ -34,12 +34,12 @@ export interface PageHeroProps {
   variant?: PageHeroVariant;
   photo: Photo;
   /**
-   * A client-supplied page banner, shown INSTEAD of the photographic hero.
+   * Client-supplied artwork to use in place of `photo`, and nothing more.
    *
-   * These carry their own eyebrow, paragraph and headline burned into the
-   * image, so passing one changes how the hero renders in three ways - see the
-   * block comment on the banner branch below. Pass it only for a locale whose
-   * artwork exists; the Arabic routes pass nothing and keep the photograph.
+   * It does not change how this hero renders - the crop, the scrim and the
+   * type block are the same either way - so a page passes both and this wins
+   * where it exists. Pass it only for a locale whose artwork exists; the
+   * Arabic routes pass nothing and fall back to `photo`.
    */
   banner?: Photo | null;
   /** Rendered under the main column, e.g. a contents list or key figures. */
@@ -84,99 +84,42 @@ export function PageHero({
 
   /*
     ==========================================================================
-    BANNERED HERO
+    THE BANNER IS A BACKGROUND, NOT A COMPOSITION
     ==========================================================================
-    A different hero, not a variant of the one below, because a banner whose
-    subject is TYPE breaks every assumption the photographic hero makes.
+    It used to be the other way round. The first set of client banners carried
+    the eyebrow, the paragraph and the headline BURNED INTO the artwork, which
+    forced a second hero to exist alongside this one: no crop, because `cover`
+    on a sentence cuts it in half; no visible type, because the words were
+    already in the pixels and rendering them again printed each of them twice.
 
-    NO CROP. The photographic hero is `fill` + `object-cover` in a viewport-
-    height band, which is right for a skyline and fatal for a sentence: cover
-    on a 16:9 composition inside a 56svh band cuts the headline in half at most
-    widths. The image is laid out at its own aspect instead and the section
-    takes whatever height that produces.
+    The client has now supplied the same five photographs with the type
+    removed, and that collapses the whole special case. A banner is once again
+    just a photograph - so it takes this hero's crop, this hero's scrim and
+    this hero's type block, and the eyebrow, title and lead that every page has
+    always passed are set in HTML rather than baked into an image.
 
-    NO DUPLICATE TEXT. The eyebrow, title and lead are already in the artwork -
-    the headline word for word. Rendering them again would print each of them
-    twice, at two sizes, in two places. They stay in the DOM as `sr-only` so
-    the page keeps its single <h1>, its outline and its description for a
-    screen reader, which cannot read the pixels the sighted reader is looking
-    at. The banner itself is `alt=""` for the same reason: it would otherwise
-    announce the same words a third time.
+    What that buys, beyond one code path instead of two:
 
-    THE HEADER STILL NEEDS A DARK BAND. The header renders transparent over the
-    hero and carries `.surface-dark` while it does. Three of these five banners
-    open on a pale sky, so the banner starts BELOW the header rather than
-    underneath it, on the section's own midnight. That also keeps the banner's
-    own top margin - its eyebrow sits about 6% down - clear of the navigation.
+      LIVE TEXT. The headline is selectable, translatable and searchable, it
+      reflows at every width instead of being a fixed-width picture of a
+      sentence, and it is set in the site's own display face at the site's own
+      scale rather than at whatever size the artwork was drawn at.
+
+      A REAL HERO HEIGHT. The banners are 3.2:1. Laid out at their own aspect
+      that is a 122px band on a 390px phone - too short to hold a headline at
+      any size. Cropped into this hero's band the opening is the same shape on
+      every route and at every width, as it already is everywhere else.
+
+      NO sr-only DUPLICATE. The page's <h1> is the page's <h1>, seen by
+      everyone, rather than a hidden copy of a headline drawn in a JPEG.
+
+    `banner` therefore no longer changes how this component renders. It only
+    changes WHICH photograph it renders, and it stays a separate prop rather
+    than being folded into `photo` because the two are sourced differently:
+    the banner is client artwork and exists for the English routes only, while
+    `photo` is the library frame every locale falls back to.
   */
-  if (banner) {
-    return (
-      <section
-        className={cn(
-          "tokens-dark relative isolate bg-(--midnight) pt-(--header-h)",
-          className,
-        )}
-      >
-        <h1 className="sr-only">{title}</h1>
-        <p className="sr-only">{eyebrow}</p>
-        {lead && <p className="sr-only">{lead}</p>}
-
-        {/*
-          `w-full h-auto` with the intrinsic size from the static import: the
-          browser reserves the right box before the image arrives, so nothing
-          shifts, and the aspect is the file's own rather than one imposed on
-          it. `sizes="100vw"` because it is edge to edge at every width.
-        */}
-        <NextImage
-          src={banner.src}
-          alt=""
-          sizes="100vw"
-          placeholder="blur"
-          preload
-          quality={90}
-          /*
-            NO `hero-settle`, and it must stay off.
-
-            That animation scales an image from 1.09 down to 1 over 2200ms. On
-            the photographic hero it is invisible because the image is
-            `object-cover` inside an `overflow-hidden` section, so the 9%
-            overscale is clipped. Here the banner is an ordinary block with no
-            clipping ancestor: it made the page 1-4px wider than the viewport
-            for the length of the animation, measured at 1440, 1024 and 390.
-
-            The second reason is the artwork. This composition’s subject is
-            TYPE, and starting it 9% oversized crops the headline at both edges
-            and slides it inward - which reads as a mistake rather than as a
-            settle.
-          */
-          className="block h-auto w-full"
-        />
-
-        <div
-          aria-hidden="true"
-          className="absolute inset-x-0 bottom-0 z-10 h-px bg-[linear-gradient(90deg,transparent,rgba(184,148,95,0.4),transparent)]"
-        />
-
-        {(actions || children) && (
-          <Container className="relative z-10 pb-[clamp(2.5rem,4.5vw,3.75rem)] pt-[clamp(1.75rem,3vw,2.5rem)]">
-            {actions && (
-              <div
-                className="reveal flex flex-col gap-3 xs:flex-row xs:flex-wrap xs:items-center xs:gap-4"
-                data-visible="true"
-              >
-                {actions}
-              </div>
-            )}
-            {children && (
-              <div className={cn("reveal", actions ? "mt-10" : undefined)} data-visible="true">
-                {children}
-              </div>
-            )}
-          </Container>
-        )}
-      </section>
-    );
-  }
+  const frame = banner ?? photo;
 
   return (
     <section
@@ -198,13 +141,13 @@ export function PageHero({
       {isSplit && (
         <div aria-hidden="true" className="absolute inset-y-0 end-0 -z-20 hidden w-[54%] lg:block">
           <NextImage
-            src={photo.src}
+            src={frame.src}
             alt=""
             fill
             preload
             sizes="54vw"
             placeholder="blur"
-            style={{ objectPosition: photo.position }}
+            style={{ objectPosition: frame.position }}
             className="hero-settle photo-grade object-cover"
           />
         </div>
@@ -215,13 +158,13 @@ export function PageHero({
         className={cn("absolute inset-0 -z-20", isSplit && "lg:hidden")}
       >
         <NextImage
-          src={photo.src}
+          src={frame.src}
           alt=""
           fill
           preload={!isSplit}
           sizes="100vw"
           placeholder="blur"
-          style={{ objectPosition: photo.position }}
+          style={{ objectPosition: frame.position }}
           className="hero-settle photo-grade object-cover"
         />
       </div>

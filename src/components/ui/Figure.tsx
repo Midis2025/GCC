@@ -33,6 +33,36 @@ const overlays = {
    * label on the pale ones sitting at roughly 3:1.
    */
   soft: "bg-[linear-gradient(to_top,rgba(12,20,29,0.9)_0%,rgba(12,20,29,0.62)_32%,rgba(12,20,29,0.24)_66%,rgba(12,20,29,0.12)_100%)]",
+  /*
+   * A scrim for the CAPTION, not for the picture.
+   *
+   * `soft` still carries 0.24 at two thirds height and 0.12 at the very top,
+   * which is a veil over the entire frame. That is the right trade where the
+   * photograph is only a ground for type, and the wrong one on the segment
+   * mosaic, where the photograph is the content: a daylit open pit or a white
+   * cleanroom arrives as a grey rectangle, and the detail the frame was picked
+   * for - benches, rack doors, a boardroom table - goes with it.
+   *
+   * This one does the same job over a much shorter distance. It holds enough
+   * density through the bottom third to carry the label and is fully clear by
+   * roughly seventy percent, so the top half of every panel is the photograph
+   * as shot.
+   *
+   * The two stops are a READABILITY calculation, not a taste one, and the
+   * worst case they are sized against is white: a label line sitting over the
+   * palest pixel a frame can produce.
+   *
+   *   desktop  0.80 at 22% -> 5.9:1     0.58 at 36% -> 4.6:1
+   *   mobile   0.84 at 34% -> 6.8:1     0.60 at 50% -> 4.8:1
+   *
+   * Mobile carries the taller ramp because the panel is at its 13rem floor
+   * while the label is at its longest - "Listed Small and Mid-Cap Companies"
+   * sets to three lines in a single-column card - so the caption occupies well
+   * over half the frame there and the desktop ramp would leave its top line
+   * on bare photograph.
+   */
+  label:
+    "bg-[linear-gradient(to_top,rgba(12,20,29,0.92)_0%,rgba(12,20,29,0.84)_34%,rgba(12,20,29,0.6)_50%,rgba(12,20,29,0.26)_66%,rgba(12,20,29,0.06)_82%,transparent_94%)] sm:bg-[linear-gradient(to_top,rgba(12,20,29,0.88)_0%,rgba(12,20,29,0.8)_22%,rgba(12,20,29,0.58)_36%,rgba(12,20,29,0.24)_54%,rgba(12,20,29,0.05)_72%,transparent_88%)]",
   heavy:
     "bg-[linear-gradient(to_top,rgba(12,20,29,0.94)_0%,rgba(12,20,29,0.72)_38%,rgba(12,20,29,0.5)_72%,rgba(12,20,29,0.42)_100%)]",
   /** For split layouts where type sits to one side rather than underneath. */
