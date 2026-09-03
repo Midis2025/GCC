@@ -224,10 +224,28 @@ export function CapabilityShowcase({
                     active === index ? "opacity-100" : "opacity-0",
                   )}
                 >
+                  {/*
+                    `label` rather than `soft`.
+
+                    Only the title plate sits over this frame, along the bottom
+                    edge. `soft` is a scrim for the whole picture - it still
+                    carries 0.24 at two thirds height and 0.12 at the very top -
+                    and the client set that replaced the library one here is
+                    already shot dark: a press scrum lit only by the camera, a
+                    room addressed at night, a tablet against a night skyline.
+                    Under a full-frame scrim those went to black rectangles with
+                    a caption on them.
+
+                    `label` puts the density where the plate is and is clear by
+                    roughly seventy per cent, so the photograph is the
+                    photograph and the title still reads. The stops are sized
+                    against white, which is the worst case these frames never
+                    reach.
+                  */}
                   <Figure
                     photo={capabilityPhotos[capability.slug]}
                     ratio="auto"
-                    overlay="soft"
+                    overlay="label"
                     grain
                     className="h-full w-full"
                     sizes="40vw"

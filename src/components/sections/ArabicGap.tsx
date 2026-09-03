@@ -80,7 +80,7 @@ export async function ArabicGap() {
         className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(184,148,95,0.42),transparent)]"
       />
 
-      <div className="grid gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:items-start lg:gap-x-20">
+      <div className="grid gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,1.62fr)_minmax(0,0.88fr)] lg:items-start lg:gap-x-20">
         {/* ---------------------------------------------------------------
             1 - The statement. Column one, row one.
             --------------------------------------------------------------- */}
@@ -117,35 +117,55 @@ export async function ArabicGap() {
             2 - The panel. Second in source order, so a phone meets it here;
             column two on a wide screen, spanning both rows.
             --------------------------------------------------------------- */}
-        <div className="lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:self-stretch">
+        <div className="lg:col-start-2 lg:row-start-1 lg:row-span-2">
           {/*
-            The panel STRETCHES to the text column rather than holding a fixed
-            ratio, and that is measured rather than guessed. At a fixed 4/5 it
-            came out 212px shorter than the left column at 1440 and 546px
-            shorter at 1024 - the two-column range where the text wraps hardest
-            and the panel does not grow with it - which left an obvious hole
-            under the photograph.
+            The panel is SIZED, not stretched.
 
-            `self-stretch` gives this grid item a definite height taken from the
-            row, which is what lets `h-full` resolve down the chain. A
-            percentage height against an auto-height parent collapses to zero,
-            which is why every link below has to carry it explicitly.
+            It used to take its height from the row - `self-stretch`, `h-full`,
+            `min-h-[26rem]` - so it grew to match the whole left column: the
+            statement, the route, the three concepts and the button. That made
+            the supporting visual the tallest object in the section, and on a
+            close-up subject it meant the frame was mostly empty magnification.
 
-            Below `lg` the columns stack and there is no row to stretch to, so
-            the aspect ratios take over again - and they are not the same ratio
-            at both sizes. A phone gets the tall 4:5 crop, but a tablet at 4:5
-            produced a 937px-high photograph that owned the whole screen and
-            pushed the section to 1852px, so from 640 up it goes wide at 16:10.
+            A fixed 4:5 instead, top-aligned by the grid`s own `items-start`.
+            The column is also narrower - the track went from 0.92fr to 0.88fr
+            against a left column widened from 1.08fr to 1.62fr, so the split is
+            about 65/35 rather than 54/46. At 1440 that is a 428px panel about
+            535px tall against a left column past 700px: clearly the supporting
+            element, starting level with the gold rule above the eyebrow.
+
+            `row-span-2` stays. It is what keeps the panel in the right-hand
+            column across both rows of the desktop grid; without it the route
+            and concepts in row two would slide up beside it.
+
+            Below `lg` the columns stack and the ratios take over, unchanged: a
+            phone gets the tall 4:5, and from 640 up it goes wide at 16:10,
+            because a tablet at 4:5 produced a 937px-high photograph that owned
+            the whole screen.
           */}
-          <Reveal variant="media" delay={320} className="relative lg:h-full">
+          <Reveal variant="media" delay={320} className="relative">
             <Figure
               photo={photos.arabicGap}
               ratio="tall"
-              overlay="side"
-              className="arabic-panel w-full sm:aspect-[16/10] lg:aspect-auto lg:h-full lg:min-h-[26rem]"
-              sizes="(min-width: 1024px) 42vw, 100vw"
-            />
+              /*
+                `veil` rather than `side`.
 
+                `side` is a 100deg gradient running 0.95 at the left edge to
+                0.28 at the right - built for a frame with type across it. There
+                is no type across this one. The only thing over it is the
+                decorative Arabic mark in the bottom-left corner at 14% opacity,
+                and this subject is already near-monochrome black keys, so it
+                needs a corner to sit in rather than a wall of shadow.
+
+                `veil` gives that corner - 0.44 along the bottom edge, gone by
+                the halfway line - and leaves the characters on the keys
+                readable, which is the entire reason this photograph and not
+                another one is here.
+              */
+              overlay="veil"
+              className="arabic-panel w-full sm:aspect-[16/10] lg:aspect-[4/5]"
+              sizes="(min-width: 1024px) 36vw, 100vw"
+            />
             {/*
               The Arabic mark, over the panel.
 

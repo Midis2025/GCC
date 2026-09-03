@@ -118,7 +118,7 @@ export function Showcase({ id, label, heading, items, note }: ShowcaseProps) {
 
   return (
     <Section spacing="lg" tone="dark" aria-labelledby={id}>
-      <div className="grid gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] lg:items-start lg:gap-x-20">
+      <div className="grid gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,0.9fr)] lg:items-start lg:gap-x-20">
         <div className="lg:sticky lg:top-[calc(var(--header-h)+3rem)]">
           <Reveal>
             <SectionLabel>{label}</SectionLabel>
@@ -289,9 +289,37 @@ export function Showcase({ id, label, heading, items, note }: ShowcaseProps) {
           what makes the section read as a showcase rather than as a picture
           that follows you down the page.
         */}
-        <div aria-hidden="true" className="hidden lg:block lg:-me-(--gutter)">
+        {/*
+          The panel is a SUPPORTING visual now, and the three things that made
+          it the loudest object in the section are all gone.
+
+          It was 1.12fr against the list`s 0.88fr - 56% of the grid - at a 3:4
+          portrait ratio, bleeding out to the viewport edge on `-me`. At 1440
+          that is a 681px-wide frame standing 908px tall, next to a list whose
+          rows are 15px copy. The photograph was the section and the four lines
+          were beside it.
+
+          The track is now 0.9fr against 1.6fr, so about 36% against 64%; the
+          bleed is removed, so the frame ends on the container edge like every
+          other element on the page; and 4:5 keeps it beside the list rather
+          than running past it. `items-start` on the grid does the rest - the
+          frame begins level with the first row.
+
+          NO `max-height` on the frame, and that is not an oversight. It had
+          one, and combining it with `aspect-ratio` is a trap: when the cap
+          binds, the box does not just get shorter, it gets NARROWER, because
+          the ratio still has to hold. Measured at 1440, the frame came out
+          331px wide inside a 409px column - so its right edge floated 78px
+          short of the container edge while the plate and the note below it
+          still ran the full width. Three elements, two different right edges.
+          The ratio alone sizes it, and everything in the column lines up.
+
+          Everything about the INTERACTION is untouched: all four frames stay
+          mounted and stacked, and the cross-fade still runs on `active`.
+        */}
+        <div aria-hidden="true" className="hidden lg:block">
           <div>
-            <div className="relative aspect-[3/4] overflow-hidden">
+            <div className="relative aspect-[4/5] overflow-hidden">
               {items.map((item, index) => (
                 <div
                   key={item.key}
@@ -313,7 +341,7 @@ export function Showcase({ id, label, heading, items, note }: ShowcaseProps) {
                     overlay="none"
                     quality={90}
                     className="h-full w-full"
-                    sizes="(min-width: 1280px) 60vw, (min-width: 1024px) 55vw, 100vw"
+                    sizes="(min-width: 1024px) 34vw, 100vw"
                   />
                 </div>
               ))}

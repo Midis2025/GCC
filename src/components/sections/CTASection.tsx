@@ -1,4 +1,5 @@
 import NextImage from "next/image";
+import type { CSSProperties } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -41,6 +42,17 @@ export async function CTASection() {
       className="tokens-dark relative isolate flex min-h-[22.5vw] flex-col justify-center overflow-hidden bg-(--midnight) py-[var(--space-section-lg)]"
       aria-labelledby="cta-heading"
     >
+      {/*
+        The crop is set through custom properties rather than `objectPosition`,
+        which is what `Figure` does everywhere else on the site and what this
+        band was not doing. `.object-pos` in globals.css reads `--obj-pos-sm`
+        below 640px and `--obj-pos` above it.
+
+        It matters here more than almost anywhere: this band is about 4.4:1 on a
+        desktop and TALLER THAN IT IS WIDE on a phone, so `cover` crops it on
+        opposite axes at the two ends and one value cannot serve both. Written
+        as `objectPosition` the mobile value was simply discarded.
+      */}
       <div aria-hidden="true" className="absolute inset-0 -z-20">
         <NextImage
           src={photo.src}
@@ -48,14 +60,46 @@ export async function CTASection() {
           fill
           sizes="100vw"
           placeholder="blur"
-          style={{ objectPosition: photo.position }}
-          className="photo-grade object-cover"
+          quality={90}
+          style={
+            {
+              "--obj-pos": photo.position,
+              "--obj-pos-sm": photo.positionMobile ?? photo.position,
+            } as CSSProperties
+          }
+          className="photo-grade object-pos object-cover"
         />
       </div>
 
+      {/*
+        The scrim, and it is directional now rather than a radial.
+
+        It was `radial-gradient(90% 100% at 50% 50%, 0.86 -> 0.95 -> solid)`,
+        which is to say between 86% and 100% midnight everywhere. Whatever
+        photograph sat underneath it, the band rendered as flat navy with type
+        on it - the picture was paying for bytes and delivering nothing.
+
+        The copy is LEFT aligned and the actions sit right, so the density
+        belongs on the left and can fall away across the frame. Heaviest behind
+        the heading and the paragraph, lightest across the middle where the
+        tower line and the interchange are, and lifting slightly again at the
+        right edge so the outline button has a ground.
+
+        The second layer is a bottom band. The actions sit low on a wide screen
+        and the drawn skyline silhouette meets the photograph along that edge;
+        both want a little more weight under them than the middle needs.
+
+        `rtl:` carries the mirrored angle. The LAYOUT flips for Arabic - copy
+        right, actions left - so the gradient has to flip with it, while the
+        photograph underneath must not.
+      */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[radial-gradient(90%_100%_at_50%_50%,rgba(12,20,29,0.86)_0%,rgba(12,20,29,0.95)_58%,#0c141d_100%)]"
+        className="absolute inset-0 -z-10 bg-[linear-gradient(100deg,rgba(12,20,29,0.93)_0%,rgba(12,20,29,0.82)_26%,rgba(12,20,29,0.54)_58%,rgba(12,20,29,0.62)_100%)] rtl:bg-[linear-gradient(260deg,rgba(12,20,29,0.93)_0%,rgba(12,20,29,0.82)_26%,rgba(12,20,29,0.54)_58%,rgba(12,20,29,0.62)_100%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 bg-[linear-gradient(to_top,rgba(12,20,29,0.5)_0%,rgba(12,20,29,0.18)_34%,transparent_60%)]"
       />
       <div aria-hidden="true" className="grain absolute inset-0 -z-10" />
 
@@ -87,6 +131,30 @@ export async function CTASection() {
       />
 
       {/*
+        The type plate, and it has to be HERE rather than with the other
+        scrims.
+
+        Everything above this point - the photograph, the directional scrim,
+        the grain - is painted before the drawn skyline silhouette, and the
+        silhouette is deliberately painted last so it reads as a foreground
+        horizon. Which means no scrim above can protect the copy: measured at
+        1440, the heading came out 2.18:1 and the paragraph 1.39:1 against what
+        the silhouette and the lit sky left behind them. Both fail at any size.
+
+        So this one sits after the silhouette and before the content, and it is
+        shaped to the copy rather than to the frame: dense down the left where
+        the heading and paragraph are, gone by three quarters across, so the
+        tower line and the interchange in the middle and right of the
+        photograph are untouched. That is the whole point of replacing the
+        radial - the picture stays a picture, and only the strip under the type
+        is paid for.
+      */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(100deg,rgba(12,20,29,0.95)_0%,rgba(12,20,29,0.88)_24%,rgba(12,20,29,0.55)_48%,rgba(12,20,29,0.12)_70%,transparent_84%)] rtl:bg-[linear-gradient(260deg,rgba(12,20,29,0.95)_0%,rgba(12,20,29,0.88)_24%,rgba(12,20,29,0.55)_48%,rgba(12,20,29,0.12)_70%,transparent_84%)]"
+      />
+
+      {/*
         Left aligned and split, so the closing block shares the same left edge
         as every section above it. The actions sit in the right column on wide
         screens rather than under the copy, which keeps the band shallow and
@@ -102,7 +170,22 @@ export async function CTASection() {
             </Reveal>
 
             <Reveal delay={140}>
-              <p className="mt-6 max-w-[50ch] text-lead text-(--color-foreground-muted)">
+              {/*
+                A stronger foreground than `--color-foreground-muted`, and
+                scoped to this band only.
+
+                The token is rgba(244,241,235,0.66) in dark mode, which is right
+                for a paragraph on flat midnight and thin over a photograph -
+                two thirds opacity means a third of whatever is behind it comes
+                through the letterforms themselves, so the copy picks up the
+                city as texture even when the ground beneath it measures well.
+                0.86 keeps the same hue and the same hierarchy against the
+                heading while holding the letterforms solid.
+
+                Written inline rather than by changing the token, because the
+                token is correct everywhere else on the site.
+              */}
+              <p className="mt-6 max-w-[50ch] text-lead text-[rgb(244_241_235_/_0.86)]">
                 {ctaContent.supporting}
               </p>
             </Reveal>

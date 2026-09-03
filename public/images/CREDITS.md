@@ -240,6 +240,89 @@ towers. The rule at the top of this file rules out third-party branding; this is
 client-supplied asset so it is used as given, but it is the one frame here worth
 reshooting.
 
+### Client-supplied subject photography — the capabilities pass
+
+Five images supplied for the homepage capability panel and its neighbours. Not
+Unsplash and not Pexels; their licence is whatever the client holds. Four are
+2244×2804 — exactly the 4:5 of the panel they were made for — and one is 1860×1640.
+
+| File | Supplied as | Used for |
+| --- | --- | --- |
+| `capability-investor-relations.avif` | `investor.avif` | Our Capabilities — Investor Relations; What We Do — Advisory |
+| `capability-investor-outreach.avif` | `investor target.avif` | Our Capabilities — Investor Targeting; What We Do — Investor Roadshows |
+| `capability-media-relations.avif` | `media.avif` | Our Capabilities — Media Relations; What We Do — Media & Arabic Communications |
+| `capability-digital-communications.avif` | `digital comm.avif` | Our Capabilities — Digital Communications |
+| `gulf-terrace-skyline-dusk.avif` | `place convene.avif` | Convene, Place, Produce — section ground; What We Do — The Gulf Programme |
+
+**They were matched to the copy, not to the filenames.** Each capability`s title and
+description was read first and the image chosen against it — which is also why the
+four are not simply the four they are named after. What they displaced was a library
+set that was one step removed from the work in every case: two studio microphones for
+MEDIA RELATIONS, a candlestick chart for DIGITAL COMMUNICATIONS, a conference hall with
+nobody in it for INVESTOR ROADSHOWS. Equipment and rooms rather than the work.
+
+**A note on provenance.** These read as AI-generated rather than photographed. They are
+used as supplied and they carry no legible third-party branding, but the note at the top
+of this file — that everything here is an art-direction placeholder — applies to them
+with more force than it does to the licensed photography, and it is worth a decision
+before launch.
+
+**Not used:** the four 348×218 PNGs named for the service lines (`investor roadshows.png`
+and the rest). At that size the What We Do panel would be a four-times upscale.
+
+### The Arabic Gap
+
+| File | Source |
+| --- | --- |
+| `arabic-bilingual-keyboard.jpg` | Pexels — https://www.pexels.com/photo/30555617/ |
+
+Every key carries both a Latin and an Arabic character. Two broadcast frames stood in
+this slot before it and both failed the same way — a gallery of monitors, then a camera
+and lens. Both said MEDIA, and the section does not argue about media: it argues that a
+general translation agency is not adequate for a listed company`s disclosure.
+
+Cut to the top 63% of the source, and that crop is a **branding** decision rather than a
+compositional one: the full frame runs down to the modifier row and there is a Windows
+logo on it.
+
+Superseded: `uae/broadcast-interview-camera.jpg` is no longer on this section. It is
+still used elsewhere and is unchanged.
+
+### The Regional Case, and the sitewide CTA
+
+| File | Source |
+| --- | --- |
+| `dubai-financial-district-dusk.jpg` | Unsplash — https://unsplash.com/photos/6Xg267sypu8 |
+
+Downtown Dubai and the financial district at blue hour, wide. One file, two placements,
+and that is deliberate rather than tolerated: it is the section ground on The Regional
+Case and the background of the closing CTA band. The two are ten sections apart on the
+homepage and the CTA shows a 4.4:1 slice about 320px deep against a far taller frame on
+the other — the same photograph, but not the same picture. If a distinct frame is ever
+wanted, `backdrops.cta` and `photos.regionalCase` are the two entries to split.
+
+It replaced `gulf-financial-district-night.jpg` on the CTA, which is 2000×1304 — under
+the 2048 top device bucket on a band that is full width on every page, so it was an
+upscale on any large display. Desaturated to 0.62 in the file; the sky as shot is a
+strong magenta, which is the one hue this palette has nowhere to put.
+
+**Signage.** It carries legible `EMAAR` and `noon` marks on buildings in the lower left.
+That is the condition described under "A note on signage in the Dubai frames" below, and
+the rule there is met on both placements: on the CTA the crop puts them outside the
+visible slice, and on The Regional Case they fall under the heavier end of the wash. Two
+stronger frames were rejected outright rather than cropped around — the Emirates NBD
+headquarters on the Creek, which carries a bank`s wordmark across a whole tower, and a
+Business Bay canal frame with EMAAR on a podium. On a firm that advises listed companies,
+a bank`s mark reads as a client relationship rather than as scenery.
+
+**Two frames were built during this pass and are not in the repository.**
+`riyadh-kafd-towers.jpg` (KAFD from street level) was the Regional Case ground until the
+section became image-led, where a close-up left no negative space for a headline;
+`dubai-difc-corporate-towers.jpg` was the Convene, Place, Produce frame until the client
+terrace image replaced it. Neither ever shipped, so neither is carried as dead weight.
+Sources if either is ever wanted: https://www.pexels.com/photo/37074462/ and
+https://www.pexels.com/photo/16533598/.
+
 ### Selected Markets — all six frames
 
 The mosaic on the homepage was re-shot from the library in full. What it carried

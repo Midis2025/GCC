@@ -327,36 +327,88 @@ export function PillarSequence({
       className="relative isolate"
     >
       {/*
-        Background, in three planes.
+        Background, in four planes, and the photograph is now the first of them
+        rather than an item in the left column.
 
-        Plane 1 is the ground: the same radial this section has always used, so
-        the surface still belongs to the page it sits on.
+        Plane 1 is the PHOTOGRAPH, full bleed behind both columns. It is drawn
+        with `next/image` and `fill` rather than as a CSS `background-image`,
+        which is the same thing to look at and a different thing to download:
+        a background URL is one fixed file at every width, while this emits AVIF
+        and WebP against `deviceSizes` and hands a phone a phone-sized file.
+        `cover` never repeats and never stretches, so the usual background
+        housekeeping - `no-repeat`, `background-size` - has nothing to do here.
+
+        It is deliberately NOT blurred and NOT desaturated. The grade it needs
+        is the wash above it, not damage to the file.
+      */}
+      <div aria-hidden="true" className="absolute inset-0 -z-30 overflow-hidden">
+        <Figure
+          photo={photo}
+          ratio="auto"
+          className="h-full w-full"
+          sizes="100vw"
+        />
+      </div>
+
+      {/*
+        Plane 2 is the WASH, and it is the whole readability budget.
+
+        Two gradients, because the section asks two different things of it. The
+        vertical one is the floor - enough midnight everywhere that white type
+        never lands on bare dusk sky. The horizontal one is local: the statement
+        column is the only place a long paragraph sits over the photograph, so
+        that side takes more and the open middle and right take less.
+
+        Held deliberately short of the obvious answer, which is to crush the
+        whole frame. At these values the seating, the rail and the tower cluster
+        all stay legible - the photograph reads as a photograph rather than as a
+        texture - and the type still clears AA everywhere against it.
       */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-30 bg-[radial-gradient(85%_75%_at_18%_12%,#1a2836_0%,#0f1924_52%,#0c141d_100%)]"
+        className="absolute inset-0 -z-20 bg-[linear-gradient(to_bottom,rgba(12,20,29,0.52)_0%,rgba(12,20,29,0.6)_55%,rgba(12,20,29,0.72)_100%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-20 bg-[linear-gradient(100deg,rgba(12,20,29,0.66)_0%,rgba(12,20,29,0.3)_46%,rgba(12,20,29,0.12)_100%)] rtl:bg-[linear-gradient(260deg,rgba(12,20,29,0.66)_0%,rgba(12,20,29,0.3)_46%,rgba(12,20,29,0.12)_100%)]"
       />
 
       {/*
-        Plane 2 is the pattern, and the only thing that moves with the scroll.
-        Inset negatively by more than the drift distance so neither end of the
-        travel brings an edge into frame.
+        And a third, over the top band only.
+
+        Measured rather than judged. With the two washes above, the ground under
+        the FIRST panel`s description came out rgb(79,84,89) - the brightest part
+        of the photograph, dusk sky, sitting exactly where the smallest copy in
+        the section falls. Muted body text over that is 4.10:1, which is under
+        the 4.5:1 AA floor for text this size. Everywhere else measured between
+        6.8:1 and 7.2:1.
+
+        The obvious fix - more density everywhere - would have cost the terrace,
+        which is the half of the photograph worth showing. This is local to the
+        sky instead: strongest at the very top, gone by 48%, so it never touches
+        the seating. That takes the same spot to about 4.9:1 and leaves the rest
+        of the frame as it was.
       */}
-      <div aria-hidden="true" className="absolute inset-0 -z-20 overflow-hidden">
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-20 bg-[linear-gradient(to_bottom,rgba(12,20,29,0.38)_0%,rgba(12,20,29,0.2)_28%,transparent_48%)]"
+      />
+
+      {/*
+        Plane 3 is the pattern, and it is now a whisper.
+
+        It was the section`s only texture and carried it at full strength. Over
+        a photograph it is a third layer competing with the other two, so it
+        drops to a quarter opacity - present enough that the drawn language of
+        the page survives, faint enough that it never reads as dirt on the
+        glass. It is still the one thing here that moves with the scroll.
+      */}
+      <div aria-hidden="true" className="absolute inset-0 -z-10 overflow-hidden opacity-25">
         <div className="why-plane absolute inset-x-0 -top-[8%] -bottom-[8%]">
           <div className="why-grid absolute inset-0 [--why-grid-gap:5rem] lg:[--why-grid-gap:7rem]" />
           <div className="why-khatam absolute inset-0" />
         </div>
       </div>
-
-      {/*
-        Plane 3 is a single cool lift under the statement column, so the type
-        has a ground of its own rather than sitting on the pattern.
-      */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[radial-gradient(58%_52%_at_8%_28%,rgba(26,40,54,0.72)_0%,transparent_72%)]"
-      />
 
       <div className="grid gap-x-20 gap-y-12 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)]">
         {/* ---------------------------------------------------------------
@@ -365,27 +417,20 @@ export function PillarSequence({
             --------------------------------------------------------------- */}
         <div>
           {/*
-            The sticky block is a flex column with a height ceiling, and both
-            parts of that matter.
+            The statement column, and it is plain again.
 
-            The statement, the indicator and the photograph together are taller
-            than the statement alone was, and a sticky element taller than the
-            space below the header cannot be seen in full - it pins to the top and
-            its bottom sits off-screen for the whole scroll. Sizing the block
-            to the space that is actually available keeps it in view, and the
-            flex column then lets the photograph absorb whatever is left after
-            the type has taken what it needs - so the composition holds on a
-            short laptop and on a tall monitor without a breakpoint for either.
+            It briefly carried a flex column with a definite height so that a
+            photograph at the bottom of the stack could absorb whatever the type
+            left over. There is no photograph in the column any more - it is the
+            section`s ground - so the machinery that sized it is gone with it,
+            along with the height, the ceiling and the floor.
 
-            A definite height, not a ceiling. `max-height` alone leaves the
-            block content-sized whenever the content is shorter, which means no
-            free space for `flex-1` to distribute and a frame stuck at its
-            minimum: a 3.5:1 sliver on a laptop. Given a real height the frame
-            takes the remainder and lands near 2:1 there and squarer on a tall
-            display. The `min-h` floor is what stops a very short window
-            squeezing it back to nothing.
-          */}
-          <div className="lg:sticky lg:top-[calc(var(--header-h)+4.5rem)] lg:flex lg:h-[calc(100svh-var(--header-h)-7.5rem)] lg:min-h-[26rem] lg:flex-col">
+            What is left is what the sticky needs and nothing else: a label, a
+            heading, a paragraph and the indicator, pinned at the top of the
+            column while the panels pass it. Content-height, so it can never be
+            taller than the room beneath its own offset - which is the failure a
+            fixed height was there to prevent in the first place.
+          */}          <div className="lg:sticky lg:top-[calc(var(--header-h)+4.5rem)] lg:self-start">
             <Reveal>
               <SectionLabel>{label}</SectionLabel>
               <Heading id={id} level={2} size="display" className="mt-5 max-w-[12ch]">
@@ -402,70 +447,15 @@ export function PillarSequence({
               so the three read as one block rather than as a statement with an
               instrument parked somewhere below it.
 
-              `shrink-0`: inside the flex column below `lg`'s height ceiling,
-              the photograph is the element that gives, never this one.
+              It closes the column now that the frame below it has moved into
+              the section ground, so it doubles as the rule the statement ends
+              on. `shrink-0` is vestigial from the flex column that used to be
+              here and is kept only because a flex context may return.
             */}
             <Reveal delay={150} className="mt-8 shrink-0">
               <Progress count={pillars.length} active={active} />
             </Reveal>
 
-            {/*
-              The photograph. Flush left with the indicator, the paragraph and
-              the headline - one edge down the whole column.
-
-              Two sizings in one element rather than two elements. Below `lg`
-              the frame sets its own 16:10 and the column simply flows. From
-              `lg` up it drops the ratio and stretches as a flex item, taking
-              whatever the type left over - a skyline reads as happily at 2:1
-              on a laptop as it does nearly square on a tall display.
-
-              It is a FLEX CHILD there, not an `h-full` one. A percentage height
-              resolves against the parent's specified height, and a parent whose
-              height comes from `min-height` with `height: auto` gives back
-              auto - so `h-full` collapsed, the fill image contributed nothing,
-              and the frame rendered at zero. Stretching it gives it a real used
-              height, which is what the absolutely positioned image needs.
-            */}
-            <Reveal
-              delay={220}
-              className="mt-9 lg:mt-8 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col"
-            >
-              <Figure
-                /*
-                  A CUTOUT - contained and unscrimmed by `Figure` itself, with
-                  no background painted behind it. This frame sits inside a
-                  dark section, so the transparency resolves onto the ground
-                  the section already has rather than onto a box added for it.
-
-                  Measured rather than trusted: the asset is 32.6% fully
-                  transparent with all four corners at alpha 0. An RGBA header
-                  alone would not have been evidence of anything.
-                */
-                photo={photo}
-                ratio="auto"
-                /*
-                  3:2 below `lg`, because the board is 3:2.
-
-                  This is the one number that has to track the asset. A
-                  contained cutout paints nothing outside its own proportion,
-                  so any disagreement between board and frame is empty column.
-                  The board was square when this frame was square; it is now
-                  1536x1024, and a square frame would paint it 350x233 inside a
-                  350px column with a third of the height standing empty.
-                  Matching the frame to it fills the column exactly.
-
-                  Above `lg` the frame drops its ratio and stretches as a flex
-                  item, taking whatever height the type leaves - measured
-                  between 0.87 and 1.44. The board is wider than all of those,
-                  so contain fits it to the WIDTH and the landmark spans the
-                  full column at every desktop size. The leftover height is
-                  transparent ground in a dark section, so there is nothing to
-                  see in it.
-                */
-                className="aspect-[3/2] w-full lg:aspect-auto lg:min-h-[9rem] lg:flex-1"
-                sizes="(min-width: 1024px) 34vw, 100vw"
-              />
-            </Reveal>
           </div>
         </div>
 
@@ -502,39 +492,43 @@ export function PillarSequence({
               />
 
               {/*
-                Height, and why it is set at all.
+                Height, and why there is still a floor on it.
 
-                Left to its own content each panel came out around 170px, which
-                put the whole section inside a single screen: all four were
-                visible at once, the second was already the active one before
-                the first had been read, and the sticky statement ran out of
-                container almost immediately. A sequence needs somewhere to
-                happen.
+                These panels were each `42svh`, with a `30svh` floor on the
+                last. Against content that measures about 216px - a mark row, a
+                heading and two or three lines - that is roughly 160px of dead
+                space inside every panel on a 900px window, and the section ran
+                to about 1.7 viewports of mostly air.
 
-                42svh gives each panel most of a screen to itself and the
-                section about 1.7 viewports of travel - enough for the four to
-                arrive one at a time, short of the point where scrolling
-                becomes a chore. Content centres in the band rather than
-                sitting at the top of it, so the extra room reads as
-                composition rather than as padding.
+                Cut to 30svh, and 24svh on the last. On the same window that is
+                about 54px of breathing room per panel rather than 160, and the
+                section comes in around 1.2 viewports.
+
+                NOT removed altogether, and this is the constraint worth
+                stating rather than discovering again later. The floor is what
+                the scroll sequence runs on. At content height all three panels
+                fit inside one screen, which means the activation band - an 8%
+                strip at 42-50% of the viewport - crosses all of them in a
+                fraction of a scroll: the third is current before the first has
+                been read, the bronze rail flickers between them, and the
+                progress indicator beside the statement jumps rather than
+                advances. A sequence needs somewhere to happen.
+
+                30svh is the point where each panel still gets most of a screen
+                to itself and the empty space stops being the thing you notice.
 
                 `min-h` and not `h`: the description wraps to three lines on a
                 narrow desktop column, and a fixed height would clip it.
               */}
               <div
                 className={cn(
-                  "relative flex flex-col justify-center overflow-hidden py-9 ps-7 pe-5 sm:py-11 sm:ps-10 sm:pe-8",
+                  "relative flex flex-col justify-center overflow-hidden py-7 ps-7 pe-5 sm:py-9 sm:ps-10 sm:pe-8",
                   /*
-                    The last panel gets a shorter floor.
-
-                    42svh is what gives the sequence somewhere to happen - four
-                    panels at content height all fit one screen and the second
-                    is active before the first has been read. But the sequence
-                    has finished by the time the last panel is active, and its
-                    centred content was leaving 120px of dead space at the
-                    bottom of the section. Measured, not guessed.
+                    The last panel keeps a shorter floor. The sequence has
+                    finished by the time it is active, so the room it needs is
+                    only the room its own content asks for.
                   */
-                  index === pillars.length - 1 ? "lg:min-h-[30svh]" : "lg:min-h-[42svh]",
+                  index === pillars.length - 1 ? "lg:min-h-[24svh]" : "lg:min-h-[30svh]",
                 )}
               >
                 {/* Glow, keyed to the rail's corner. */}

@@ -147,7 +147,16 @@ export default async function WhatWeDoPage() {
         `data/what-we-do.ts`.
       */}
       <Section spacing="lg" tone="muted" aria-labelledby="commercial-model">
-        <div className="grid gap-x-20 gap-y-9 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end">
+        {/*
+          Tops aligned, not bottoms.
+
+          `items-end` sat the paragraphs on the heading`s baseline, which
+          works when the two are close in height and does not here: the
+          heading is two lines of display type and the copy is two paragraphs,
+          so the right column started well below the left and the pair read as
+          two blocks rather than one row.
+        */}
+        <div className="grid gap-x-20 gap-y-9 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
           <Reveal>
             <SectionLabel>{commercialModelContent.label}</SectionLabel>
             <Heading
@@ -160,7 +169,7 @@ export default async function WhatWeDoPage() {
             </Heading>
           </Reveal>
 
-          <Reveal delay={120} className="flex flex-col gap-5 lg:pb-2">
+          <Reveal delay={120} className="flex flex-col gap-5 lg:pt-2">
             {commercialModelContent.paragraphs.map((paragraph) => (
               <p
                 key={paragraph}
@@ -172,7 +181,14 @@ export default async function WhatWeDoPage() {
           </Reveal>
         </div>
 
-        <Reveal delay={200} className="mt-[var(--space-heading)]">
+        {/*
+          `--space-heading` is the gap that introduces a NEW subject - up to
+          3.25rem, and on top of the 9-unit row gap above it that left a band
+          of empty canvas between the model and its exclusions. They are the
+          same subject: what the fee covers, and what it does not. Two thirds
+          of the distance reads as one continuous statement.
+        */}
+        <Reveal delay={200} className="mt-14">
           <p className="text-label uppercase text-(--color-foreground-subtle)">
             {commercialModelContent.exclusionsLabel}
           </p>
@@ -193,19 +209,49 @@ export default async function WhatWeDoPage() {
         */}
         <dl
           className={cn(
-            "mt-8 grid border-t border-(--color-border)",
-            commercialModelContent.exclusions.length > 1 && "sm:grid-cols-3",
+            /*
+              The neutral rule belongs to the LIST, the gold one to each item.
+              With two or more denials that reads correctly - a rule across the
+              set, and an accent opening each column under it. With one, both
+              land in the same place and the section shows two horizontal lines
+              a few rem apart introducing a single line of type.
+
+              The gold one is the one that survives: it is the accent that marks
+              the item, and it is the one that draws itself on entry.
+            */
+            "mt-8 grid",
+            commercialModelContent.exclusions.length > 1 &&
+              "border-t border-(--color-border) sm:grid-cols-3",
           )}
         >
           {commercialModelContent.exclusions.map((item, index) => (
             <div
               key={item.term}
-              className="relative border-b border-(--color-border) pt-9 pb-8 sm:border-b-0 sm:pe-10 sm:not-first:border-s sm:not-first:border-(--color-border) sm:not-first:ps-10 sm:not-last:pe-10"
+              /*
+                `sm:pe-10` and the shortened rule are COLUMN dressing - they
+                exist so two or three denials sitting side by side have air
+                between them and their rules stop short of the divider. With
+                one denial there is no neighbour and no divider, so both read
+                as an unexplained indent and a rule that fails to reach the
+                edge. They are applied from the second item on instead.
+
+                `pb-8` goes the same way for the last item: the section already
+                carries `--space-section-lg` beneath it, and the two stacked
+                put most of a screen of canvas under the final line.
+              */
+              className={cn(
+                "relative border-b border-(--color-border) pt-9 sm:border-b-0 sm:not-first:border-s sm:not-first:border-(--color-border) sm:not-first:ps-10 sm:not-last:pe-10",
+                commercialModelContent.exclusions.length > 1 && "pb-8 sm:pe-10",
+                index === commercialModelContent.exclusions.length - 1 ? "pb-1" : "pb-8",
+              )}
             >
               <Reveal delay={index * 140}>
                 <span
                   aria-hidden="true"
-                  className="about-rule absolute start-0 top-0 block h-px w-full bg-(--color-accent) sm:w-[calc(100%-2.5rem)]"
+                  className={cn(
+                    "about-rule absolute start-0 top-0 block h-px w-full bg-(--color-accent)",
+                    commercialModelContent.exclusions.length > 1 && "sm:w-[calc(100%-2.5rem)]",
+                  )}
                 />
 
                 <dt className="mt-6 max-w-[18ch] font-display text-[1.375rem] leading-snug text-balance">

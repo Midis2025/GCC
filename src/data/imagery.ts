@@ -3,16 +3,18 @@ import type { StaticImageData } from "next/image";
 import abuDhabiNight from "../../public/images/abu-dhabi-night.jpg";
 import businessBayReflection from "../../public/images/business-bay-reflection.jpg";
 import businessBayCanal from "../../public/images/uae/business-bay-dubai-canal.jpg";
+import capabilityDigitalCommunications from "../../public/images/capability-digital-communications.avif";
+import capabilityInvestorOutreach from "../../public/images/capability-investor-outreach.avif";
+import capabilityInvestorRelations from "../../public/images/capability-investor-relations.avif";
+import capabilityMediaRelations from "../../public/images/capability-media-relations.avif";
 import capitalMarketsDesk from "../../public/images/capital-markets-desk.jpg";
 import corporateCorridorNight from "../../public/images/corporate-corridor-night.jpg";
 import corporateLobbyDark from "../../public/images/corporate-lobby-dark.jpg";
-import digitalMarketData from "../../public/images/digital-market-data.jpg";
 import downtownDubaiBlueHour from "../../public/images/downtown-dubai-blue-hour.jpg";
 import downtownDubaiDusk from "../../public/images/downtown-dubai-dusk.jpg";
 import downtownDubaiNight from "../../public/images/downtown-dubai-night.jpg";
 import dubaiBurjKhalifaNight from "../../public/images/uae/dubai-burj-khalifa-night.png";
 import dubaiMarinaCutout from "../../public/images/uae/dubai-marina-cutout.png";
-import dubaiMuseumOfTheFutureNightCutout from "../../public/images/uae/dubai-museum-of-the-future-night-cutout.png";
 import riyadhKingFahdRoadNight from "../../public/images/uae/riyadh-king-fahd-road-night.png";
 import abuDhabiEtihadTowersNight from "../../public/images/uae/abu-dhabi-etihad-towers-night.png";
 import dubaiSkylineBandCutout from "../../public/images/uae/dubai-skyline-band-cutout.png";
@@ -23,8 +25,7 @@ import bannerForInvestors from "../../public/images/banners/for-investors.avif";
 import bannerInsight from "../../public/images/banners/insight.avif";
 import bannerWhatWeDo from "../../public/images/banners/what-we-do.avif";
 import dubaiTradeCentreTowers from "../../public/images/uae/dubai-trade-centre-towers.jpg";
-import broadcastInterviewCamera from "../../public/images/uae/broadcast-interview-camera.jpg";
-import broadcastMicrophones from "../../public/images/uae/broadcast-microphones.jpg";
+import arabicBilingualKeyboard from "../../public/images/arabic-bilingual-keyboard.jpg";
 import dataCentreServerAisle from "../../public/images/data-centre-server-aisle.jpg";
 import dubaiFinancialDistrictTowers from "../../public/images/dubai-financial-district-towers.jpg";
 import leadershipBoardMeeting from "../../public/images/leadership-board-meeting.jpg";
@@ -32,12 +33,11 @@ import miningOpenPitOperation from "../../public/images/mining-open-pit-operatio
 import pharmaceuticalCleanroom from "../../public/images/pharmaceutical-cleanroom.jpg";
 import dohaWestBayTowers from "../../public/images/doha-west-bay-towers.jpg";
 import dohaSkylineDay from "../../public/images/doha-skyline-day.jpg";
-import gulfFinancialDistrictNight from "../../public/images/gulf-financial-district-night.jpg";
+import gulfTerraceSkylineDusk from "../../public/images/gulf-terrace-skyline-dusk.avif";
+import dubaiFinancialDistrictDusk from "../../public/images/dubai-financial-district-dusk.jpg";
 import investorBriefingRoom from "../../public/images/investor-briefing-room.jpg";
-import irBoardroomWindow from "../../public/images/ir-boardroom-window.jpg";
 import louvreAbuDhabiDome from "../../public/images/louvre-abu-dhabi-dome.jpg";
 import mediaBroadcastCamera from "../../public/images/media-broadcast-camera.jpg";
-import outreachConferenceHall from "../../public/images/outreach-conference-hall.jpg";
 import riyadhNightAerial from "../../public/images/riyadh-night-aerial.jpg";
 import sectorDevelopmentCranes from "../../public/images/sector-development-cranes.jpg";
 import sectorEnergyDusk from "../../public/images/sector-energy-dusk.jpg";
@@ -358,16 +358,43 @@ export const backdrops = {
     position: "50% 38%",
   },
   /**
-   * Final call to action, sitewide.
+   * The sitewide closing band, behind "Start a Conversation".
    *
-   * Deliberately the darkest, hardest frame in the set. It closes pages that
-   * opened on calmer photography, so the two bookend rather than repeat.
+   * Sheikh Zayed Road at dusk: the financial district, the interchange under
+   * it and the light trails running through both. The band asks the reader to
+   * make contact about investor visibility in Gulf and international markets,
+   * and this is the one frame in the library that shows a market rather than a
+   * landmark - towers, arteries and traffic, all working.
+   *
+   * ---------------------------------------------------------------------------
+   * IT REPLACES A FILE THAT WAS TOO SMALL FOR THE SLOT
+   * ---------------------------------------------------------------------------
+   * `gulf-financial-district-night.jpg` is 2000x1304. This band is FULL WIDTH on
+   * every page on the site, so at any viewport past 2000px it was an upscale,
+   * and on a retina laptop it was an upscale at half that. 3840 on the long
+   * edge is a genuine downscale into the 2048 top device bucket everywhere.
+   *
+   * Desaturated to 0.62 in the file. The sky as shot is a strong magenta, which
+   * is the one hue the bronze-and-midnight palette has nowhere to put; pulled
+   * back it reads as dusk rather than as a filter.
    */
   cta: {
-    src: gulfFinancialDistrictNight,
+    src: dubaiFinancialDistrictDusk,
     alt: "",
+    /*
+      The band is extremely wide and shallow - about 4.4:1 at 1920 - so a 3:2
+      source shows barely a third of its height and Y is doing all the work.
+      45% takes the tower line and the interchange below it, and drops the
+      empty upper sky the crop does not need.
+
+      On a phone the band is taller than it is wide and the axis flips, so
+      `positionMobile` steers X instead: 52% keeps the tower cluster centred in
+      a slice barely half the file`s width.
+    */
     position: "50% 62%",
+    positionMobile: "50% 58%",
   },
+
   /**
    * For Investors hero. Abu Dhabi's financial district after dark.
    *
@@ -695,98 +722,152 @@ export const photos = {
    * takes the towers and the lit streets instead.
    */
   /**
-   * The Arabic gap panel. A broadcast gallery, shot dark.
-   *
-   * An editorial environment rather than a landmark: the section is about
-   * publishing and appearing in a second language, and a skyline says nothing
-   * about that. A wall of monitors in a darkened gallery says "this is where
-   * coverage is made", which is the register the section is arguing in.
-   *
-   * It also has to work as a GROUND, not just a picture - the Arabic mark sits
-   * over it at low opacity, and a busy or bright frame would leave that mark
-   * either invisible or fighting the detail underneath. This one is dark
-   * across most of its area with the light confined to the lens.
+   * The Arabic gap panel. A bilingual keyboard, close.
    *
    * ---------------------------------------------------------------------------
-   * WHY THE PREVIOUS FRAME HAD TO GO
+   * THE SUBJECT HAS TO BE THE ARGUMENT, NOT THE INDUSTRY AROUND IT
    * ---------------------------------------------------------------------------
-   * It was `editorialBroadcastGallery`, and the subject was wrong in a way that
-   * is only visible once you look at it closely: the monitors in that gallery
-   * are running a church worship service. The lyrics are legible across two
-   * screens, and there is a drum kit and a pair of guitars on the camera feeds.
+   * Two broadcast frames stood here before this one and both were wrong in the
+   * same way, which is worth recording because it is an easy mistake to make
+   * twice: a gallery of monitors, then a camera and lens. Both said MEDIA. The
+   * section does not argue about media. It argues that almost no international
+   * small or mid-cap company publishes in Arabic, that a general translation
+   * agency is not adequate for a listed company's disclosure, and that
+   * terminology carries specific meaning in a regulatory context.
    *
-   * On the section arguing that this firm publishes in Arabic for Gulf
-   * business audiences, that is not merely dull - it is the wrong content, and
-   * it carries legible third-party text, which the rules in `CREDITS.md` rule
-   * out on their own.
+   * A camera says none of that. It is the same picture the media capability
+   * panel would use, and a reader who cannot tell this section from that one
+   * has been told nothing.
    *
-   * This frame keeps everything that slot needs - a broadcast subject, dark
-   * across most of its area, light confined to one place, no branding and no
-   * identifiable face - and says "interview" rather than "gallery".
+   * This frame says the one thing the section is about: two languages on one
+   * working surface. Every key carries a Latin character and an Arabic one, so
+   * the English-to-Arabic route drawn underneath the statement is restated as
+   * an object rather than as a diagram. It is also the register the argument is
+   * in - working equipment, not a newsroom set.
    *
-   * Still deliberately not the frame on the media capability panel. That one is
-   * now `broadcastMicrophones`, so the two are different objects: a lens here,
-   * microphones there. Two pictures of the same subject on one scroll reads as
-   * an accident.
+   * ---------------------------------------------------------------------------
+   * WHAT THE CROP HAD TO EXCLUDE
+   * ---------------------------------------------------------------------------
+   * The full frame runs down to the modifier row, and there is a WINDOWS LOGO
+   * on it. Legible third-party branding is ruled out at the top of
+   * `CREDITS.md`, and on a panel this size it would have been unmissable. The
+   * file is cut to the top 63% of the source for that reason and no other - the
+   * letter and number rows, which are also the rows where both alphabets are
+   * clearest.
+   *
+   * Graded down to 0.72 saturation rather than darkened. The section is dark
+   * navy and the previous frames were nearly black in it; this one is a
+   * near-monochrome of white characters on black keys, which sits in the ground
+   * on tone alone and stays legible at any scrim strength.
    */
   arabicGap: {
-    src: broadcastInterviewCamera,
-    alt: "",
-    /* The lens sits left of centre; both crops hold it rather than the body. */
-    position: "38% 50%",
-    positionMobile: "34% 50%",
+    src: arabicBilingualKeyboard,
+    /*
+      Described rather than decorative, and the description is the point: a
+      reader who cannot see this frame should still learn that the two
+      alphabets share the keys, because that is the section's whole claim.
+    */
+    alt:
+      "A laptop keyboard in close-up, every key carrying both a Latin and an Arabic character.",
+    /*
+      The keys recede to the upper right, so the crop holds the lower left where
+      the characters are largest and most legible - and that is also the corner
+      the decorative Arabic mark sits in, which needs the darkest ground it can
+      get at 14% opacity.
+    */
+    position: "42% 58%",
+    positionMobile: "46% 60%",
   },
+  /**
+   * Convene, Place, Produce - the GROUND for the whole section.
+   *
+   * Client-supplied, and the only frame in this module that is a background
+   * rather than a picture: it runs the full width and height of the section,
+   * behind both columns, with the statement and the three panels set over it.
+   *
+   * ---------------------------------------------------------------------------
+   * WHY A TERRACE AND NOT A SKYLINE
+   * ---------------------------------------------------------------------------
+   * The section names three kinds of work and the first of them is CONVENE.
+   * This is the room that word describes - seating drawn into a circle, a low
+   * table, a city at dusk beyond the rail. It is the only frame on the page
+   * that shows a PLACE TO MEET rather than a place, which is why a skyline had
+   * to give way to it: a tower cluster says Dubai, and this says the thing the
+   * heading above it says.
+   *
+   * That it carries no people is what lets it be a ground. A photograph with
+   * faces in it competes with type laid over the top; an empty room waits.
+   *
+   * ---------------------------------------------------------------------------
+   * TWO CROPS, AND THEY MOVE ON DIFFERENT AXES
+   * ---------------------------------------------------------------------------
+   * The file is 1860x1640 - close to square at 1.13:1 - and the section it
+   * fills is nothing like square at either end of the range. On a desktop the
+   * section is about 2.1:1, so the source is the NARROWER of the two, `cover`
+   * scales it to the width and Y decides: 45% holds the skyline band and the
+   * seating below it, and drops the empty upper sky first.
+   *
+   * On a phone the section is a tall column - roughly 0.27:1 - so the source is
+   * far WIDER and X decides instead. Centred, that returns a slice of carpet
+   * and one armchair. `positionMobile` pushes it right to 68%, where the tower
+   * cluster and the corner of the seating both fall inside the slice.
+   */
   whyMarket: {
+    src: gulfTerraceSkylineDusk,
     /*
-      The Museum of the Future at night, lit, on its landscaped mound - the
-      palms, the flagpoles and the podium below it included, all on a
-      transparent ground.
-
-      CUTOUT, and a genuine one. RGBA in the header proves only that an alpha
-      channel EXISTS; a photograph exported from most tools carries one that is
-      255 everywhere and renders as a rectangle. So it was measured: 32.6% of
-      the pixels are fully transparent, another 4.5% carry partial alpha at the
-      edges and the glow, and all four corners read alpha 0. The sky is really
-      cut away.
-
-      It replaces the previous square cutout of the same landmark. Two things
-      changed with it and both matter:
-
-      THE COMPOSITION. The old cutout carried the Emirates Towers behind the
-      torus. This one does not - it is the museum on its own mound, with palms
-      and flagpoles at the base and nothing behind. The alt text below is
-      rewritten to match, because the old one named towers that are no longer
-      in the frame.
-
-      THE PROPORTION. 1536x1024 is 3:2 landscape against the old 1254x1254
-      square, and a contained cutout leaves empty frame wherever the board and
-      the frame disagree. Below `lg` the frame was a square, which would have
-      painted this board at 350x233 in a 350px column - two thirds of the
-      height empty. The frame's own ratio is changed to 3:2 to match, so the
-      landmark now fills it exactly. See the note at the call site in
-      `PillarSequence.tsx`.
-
-      Above `lg` the frame is a flex child and takes whatever height the type
-      leaves it - measured between 0.87 and 1.44. The board is wider than all
-      of those, so contain fits it to the frame's WIDTH and the landmark spans
-      the full column at every desktop size. The leftover height is transparent
-      ground in a dark section, which is to say it is the section: there is no
-      box to see.
+      Decorative. It is a ground behind a heading and three panels of copy that
+      already carry the meaning, and it depicts no Gulf Connect room - see the
+      content-integrity note at the top of this module.
     */
-    src: dubaiMuseumOfTheFutureNightCutout,
+    alt: "",
+    position: "50% 45%",
+    positionMobile: "68% 50%",
+  },
+
+  /**
+   * The Regional Case - the ground for the whole section.
+   *
+   * Downtown Dubai and the financial district at blue hour, wide. The heading
+   * over it is "Gulf Markets Are Not an Extension of London or New York", and
+   * this is a market rather than a monument: towers, the interchange beneath
+   * them and the traffic running through both, at the hour the city reads as a
+   * financial centre rather than as a skyline.
+   *
+   * ---------------------------------------------------------------------------
+   * IT REPLACES A CLOSE-UP, AND THE REASON IS THE FRAME, NOT THE SUBJECT
+   * ---------------------------------------------------------------------------
+   * KAFD stood here: three faceted towers shot from the ground looking up. As
+   * a picture it is the better photograph and it survived a small panel well.
+   * As a full-bleed GROUND it does not. A close-up has no negative space, so
+   * there is nowhere for a headline to sit; every part of the frame is a
+   * detail, and detail behind display type is noise. A wide frame has a sky, a
+   * horizon and a distance, which is what a background is made of.
+   *
+   * Shared with the sitewide CTA band, which is the one repeat in the library
+   * that is deliberate rather than tolerated. The two are ten sections apart on
+   * the homepage, and the CTA shows a 4.4:1 slice about 320px deep against a
+   * far taller frame here - the same photograph, but not the same picture. If a
+   * distinct frame is ever wanted, this is the entry to change.
+   */
+  regionalCase: {
+    src: dubaiFinancialDistrictDusk,
     /*
-      Rewritten for THIS photograph. The previous text ended "with the Emirates
-      Towers behind it" and those towers are not in this frame. An alt that
-      describes a different picture is worse than a shorter one.
+      Decorative here. It is a ground behind a heading and four paragraphs that
+      already carry the argument, and it depicts no Gulf Connect premises - see
+      the content-integrity note at the top of this module.
     */
-    alt: "The Museum of the Future in Dubai at night, its calligraphic facade lit, standing on its landscaped mound above palms and walkways.",
-    cutout: true,
+    alt: "",
     /*
-      NO `cutoutScale`. Measured from the alpha, the subject occupies x 18..1517
-      of 1536 and y 87..1023 of 1024 - 98% of the board's width and 91% of its
-      height. There is no transparent margin left to reclaim, and any scale
-      would push the palms and the podium out of frame.
+      Low. The section is wide and shallow, so a 1.96:1 file shows roughly half
+      its height; 64% takes the tower line and the lit interchange and drops the
+      empty upper sky, which is the part that would otherwise sit behind the
+      headline as a pale field.
+
+      On a phone the section is a tall column and the crop axis flips to X, so
+      the mobile value centres the tower cluster instead.
     */
+    position: "50% 64%",
+    positionMobile: "52% 58%",
   },
 } as const satisfies Record<string, Photo>;
 
@@ -810,35 +891,58 @@ export const photos = {
  * small viewports.
  */
 export const capabilityPhotos: Record<string, Photo> = {
+  /*
+    ALL FOUR ARE CLIENT-SUPPLIED, AND ALL FOUR ARE 2244x2804 - EXACTLY 4:5.
+
+    That is the desktop panel`s ratio, so on the cross-fading companion frame
+    nothing is cropped on either axis and `position` decides nothing at all.
+    It is set anyway, because the SECOND rendering of these photographs is not
+    4:5: below `lg` each row carries its own inline frame at 16:10, and a 4:5
+    source in a 16:10 window shows barely half its height. Every value below is
+    tuned for that crop and is inert above it.
+
+    What they replace was a set assembled from the library, and the difference
+    is subject rather than quality: two studio microphones on boom arms for
+    MEDIA RELATIONS, a candlestick chart for DIGITAL COMMUNICATIONS. Both were
+    the equipment or the output rather than the work. These are the work -
+    a management team presenting, a room being addressed, a scrum being
+    answered, a chart being read.
+
+    CONTENT INTEGRITY: every `alt` describes the PHOTOGRAPH. None of these is
+    Gulf Connect, its people, its offices or its clients - see the note at the
+    top of this module - and no caption anywhere may imply otherwise.
+  */
   "investor-relations": {
-    src: irBoardroomWindow,
-    alt: "People in silhouette against the full-height glazing of a high floor, a city spread out below.",
-    position: "46% 52%",
+    src: capabilityInvestorRelations,
+    alt:
+      "An executive presenting to colleagues seated around a boardroom table on a high floor, a city skyline through the glazing behind.",
+    /* Holds the speaker`s gesture and the seated group in the 16:10 band. */
+    position: "50% 48%",
   },
   "investor-outreach": {
-    src: outreachConferenceHall,
-    alt: "Delegates seated in a darkened conference hall beneath a wall of soft lights.",
-    position: "50% 58%",
-  },
-  /*
-    Microphones rather than the venue camera that was here.
-
-    Two reasons. The camera frame carried a heavy magenta cast from the stage
-    lighting, which is the one colour on the site with nowhere to sit; and the
-    Arabic gap panel on the same page now needs a broadcast subject of its own,
-    so keeping a camera in both places would have put two of them on one
-    scroll. A pair of studio microphones says the same thing about the work and
-    is a different object.
-  */
-  "media-relations": {
-    src: broadcastMicrophones,
-    alt: "Two professional broadcast microphones on boom arms in a studio.",
+    src: capabilityInvestorOutreach,
+    alt:
+      "A speaker at a lectern addressing a seated audience in a darkened room, a lit city skyline filling the window behind.",
+    /* Centre: the lectern sits just above the midline, the audience just below. */
     position: "50% 50%",
+  },
+  "media-relations": {
+    src: capabilityMediaRelations,
+    alt:
+      "A cluster of handheld microphones held toward a speaker, a broadcast camera on a tripod alongside.",
+    /* Slightly low, to keep the microphone cluster rather than the camera body. */
+    position: "50% 52%",
   },
   "digital-communications": {
-    src: digitalMarketData,
-    alt: "A candlestick price chart and market quotes on a dark trading screen.",
-    position: "50% 50%",
+    src: capabilityDigitalCommunications,
+    alt:
+      "Hands holding a tablet showing a bar chart, a notebook and laptop on the desk, a city skyline out of focus beyond.",
+    /*
+      The lowest value in the set, and the one that matters most. The tablet -
+      the entire subject - sits in the lower third; a centred 16:10 crop returns
+      mostly out-of-focus skyline with the hands cut off at the bottom edge.
+    */
+    position: "50% 62%",
   },
 };
 
@@ -853,43 +957,67 @@ export const capabilityPhotos: Record<string, Photo> = {
  */
 export const serviceLinePhotos = {
   /*
-   * Investor Roadshows — 3840×2560. A large conference hall, delegates in
-   * silhouette against a warm ambient glow. The scale of the room signals the
-   * breadth of an outreach campaign rather than a single meeting.
-   */
+    THE FOUR LINES NOW USE THE CLIENT-SUPPLIED SET.
+
+    They were library frames, and each was one step removed from the service
+    it labelled: a conference hall for ROADSHOWS, a boardroom at night for THE
+    GULF PROGRAMME, a camera on a stand for MEDIA, a wall of market screens for
+    ADVISORY. Rooms and equipment - the setting for the work rather than the
+    work.
+
+    These are the work, and they are mapped to the copy rather than to a mood:
+
+      roadshows   the line promises "a hosted group session with qualified Gulf
+                  investors". This is that session - a speaker at a lectern, a
+                  room of investors, a Gulf skyline behind. Not a hall with
+                  nobody in it.
+      programme   a terrace set for a meeting above the city at dusk. The
+                  programme is a standing arrangement rather than a visit, and
+                  an empty room laid out and waiting says continuity better
+                  than a boardroom at night does.
+      media       a press scrum: microphones held toward a speaker, a broadcast
+                  camera alongside. Answering questions rather than the kit
+                  that records the answer.
+      advisory    an executive presenting to a seated group. Advisory is a
+                  conversation with a management team, and this is one.
+
+    The four 348x218 PNGs named for these lines were NOT used. At that size the
+    panel would be a four-times upscale, and a soft panel is worse than an
+    imperfect subject.
+
+    Shared with the homepage capability panel, which is a different page - the
+    rule this library keeps is that two frames must not repeat within one
+    scroll, not that a frame is used once on the site.
+  */
   roadshows: {
-    src: outreachConferenceHall,
-    alt: "Delegates seated in a large conference hall under a warm ambient glow.",
-    position: "50% 58%",
-  },
-  /*
-   * The Gulf Programme — 3840×2880. A boardroom at night with floor-to-ceiling
-   * glass and a city skyline beyond. The scale and the city backdrop carry the
-   * premium, six-month continuity nature of the programme.
-   */
-  programme: {
-    src: irBoardroomWindow,
-    alt: "A boardroom at night with panoramic glass overlooking a Gulf city skyline.",
-    position: "50% 42%",
-  },
-  /*
-   * Media & Arabic Communications — 3840×2560. A professional broadcast camera
-   * on location, facing a lit stage; sharper and more on-set than the studio
-   * tripod variant, contextually placing the service in live financial media.
-   */
-  media: {
-    src: broadcastInterviewCamera,
-    alt: "A professional broadcast camera set up on location facing a lit interview stage.",
+    src: capabilityInvestorOutreach,
+    alt:
+      "A speaker at a lectern addressing a seated audience in a darkened room, a lit city skyline filling the window behind.",
+    /* The lectern sits above the midline; the panel is 4:5 against a 4:5 file, so this only bites below `lg`. */
     position: "50% 50%",
   },
-  /*
-   * Advisory — 3840×2880. A capital markets desk at night with multiple
-   * financial screens, placing the work firmly in the analytical advisory space.
-   */
+  programme: {
+    src: gulfTerraceSkylineDusk,
+    alt:
+      "Lounge seating arranged around a low table on a terrace, a Gulf city skyline at dusk beyond the rail.",
+    /*
+      The only one of the four that is not 4:5. It is 1.13:1 in a 4:5 panel, so
+      X is live and the crop is severe - 68% keeps the seating and the tower
+      cluster rather than returning a slice of floor.
+    */
+    position: "62% 52%",
+  },
+  media: {
+    src: capabilityMediaRelations,
+    alt:
+      "A cluster of handheld microphones held toward a speaker, a broadcast camera on a tripod alongside.",
+    position: "50% 52%",
+  },
   advisory: {
-    src: capitalMarketsDesk,
-    alt: "A capital markets desk at night with multiple financial data screens.",
-    position: "50% 45%",
+    src: capabilityInvestorRelations,
+    alt:
+      "An executive presenting to colleagues seated around a boardroom table on a high floor, a city skyline through the glazing behind.",
+    position: "50% 48%",
   },
 } as const satisfies Record<string, Photo>;
 
