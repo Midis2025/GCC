@@ -324,7 +324,21 @@ export function PillarSequence({
         Nothing needs the section-wide clip: the one oversized layer carries
         its own clipper, and each panel clips its own numeral.
       */
-      className="relative isolate"
+      /*
+        `tokens-dark` ON TOP of `tone="dark"`, and it is a readability change
+        rather than a second theme.
+
+        Both re-point the same tokens; the difference is one pair of values.
+        A flat midnight surface can carry muted copy at 0.66 alpha because the
+        ground under every line is the same colour. This section's ground is a
+        PHOTOGRAPH - dusk sky in one place, terrace in another - and globals
+        raises muted to 0.82 and subtle to 0.72 for exactly that case. The
+        section was taking the flat-surface pair while standing on an image.
+
+        `.surface-dark` still paints the background beneath the photograph, so
+        nothing about the surface changes; only the two foreground alphas do.
+      */
+      className="tokens-dark relative isolate"
     >
       {/*
         Background, in four planes, and the photograph is now the first of them
@@ -363,6 +377,15 @@ export function PillarSequence({
         whole frame. At these values the seating, the rail and the tower cluster
         all stay legible - the photograph reads as a photograph rather than as a
         texture - and the type still clears AA everywhere against it.
+
+        The horizontal one carries 0.36 at its midpoint and 0.22 at its end,
+        up from 0.30 and 0.12, and the eight points are a MEASUREMENT. Sampled
+        against the rendered frame, the brightest ground under a panel
+        description is rgb(90,95,83) - the lit terrace behind the second panel
+        - and muted copy over it came out at 4.54:1, which clears the 4.5 floor
+        by four hundredths. Everything else measured 4.9:1 to 6.5:1. This puts
+        the worst spot with the rest of them and costs the far edge of the
+        frame about a tenth of a stop.
       */}
       <div
         aria-hidden="true"
@@ -370,7 +393,7 @@ export function PillarSequence({
       />
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-20 bg-[linear-gradient(100deg,rgba(12,20,29,0.66)_0%,rgba(12,20,29,0.3)_46%,rgba(12,20,29,0.12)_100%)] rtl:bg-[linear-gradient(260deg,rgba(12,20,29,0.66)_0%,rgba(12,20,29,0.3)_46%,rgba(12,20,29,0.12)_100%)]"
+        className="absolute inset-0 -z-20 bg-[linear-gradient(100deg,rgba(12,20,29,0.66)_0%,rgba(12,20,29,0.36)_46%,rgba(12,20,29,0.22)_100%)] rtl:bg-[linear-gradient(260deg,rgba(12,20,29,0.66)_0%,rgba(12,20,29,0.36)_46%,rgba(12,20,29,0.22)_100%)]"
       />
 
       {/*
@@ -436,7 +459,15 @@ export function PillarSequence({
               <Heading id={id} level={2} size="display" className="mt-5 max-w-[12ch]">
                 {heading}
               </Heading>
-              <p className="mt-8 max-w-[40ch] text-[1.0625rem] leading-relaxed text-(--color-foreground-muted)">
+              {/*
+                Sized locally rather than on `text-lead`, because this
+                paragraph is not a lead - it is body copy standing on a
+                photograph, and the thing that makes it hard is the ground
+                rather than the measure. 17px to 20px, and the leading tightens
+                from 1.625 to 1.5 as it grows, so the block gets more legible
+                without getting taller than the sticky column can hold.
+              */}
+              <p className="mt-8 max-w-[40ch] text-[clamp(1.0625rem,1rem+0.25vw,1.25rem)] leading-[1.5] text-(--color-foreground-muted)">
                 {intro}
               </p>
             </Reveal>
@@ -555,13 +586,28 @@ export function PillarSequence({
                   the section resolves as a sequence rather than performing one.
                 */}
                 <Reveal delay={index * 110 + 90}>
-                  <h3 className="mt-5 max-w-[24ch] text-h4 font-medium tracking-tight">
+                  {/*
+                    Off `text-h4` and onto a local clamp. h4 tops out at 20px,
+                    which is the right size for a heading on a page; over a
+                    photograph, at the head of a panel a reader meets while
+                    scrolling past it, it is a caption. 20px to 24px, same
+                    family and same medium weight - the size does the work, not
+                    the weight.
+                  */}
+                  <h3 className="mt-5 max-w-[24ch] text-[clamp(1.25rem,0.95rem+0.6vw,1.5rem)] leading-[1.25] font-medium tracking-tight">
                     {pillar.title}
                   </h3>
                 </Reveal>
 
                 <Reveal delay={index * 110 + 180}>
-                  <p className="mt-3.5 max-w-[52ch] text-[0.9375rem] leading-relaxed text-(--color-foreground-muted)">
+                  {/*
+                    The smallest copy in the section was 15px over a
+                    photograph, which is the one combination the page should
+                    not have. 16px to 18px at 1.6, and `mt-4` rather than
+                    `mt-3.5` so the title still reads as attached to it now
+                    that both have grown.
+                  */}
+                  <p className="mt-4 max-w-[52ch] text-[clamp(1rem,0.9rem+0.2vw,1.125rem)] leading-[1.6] text-(--color-foreground-muted)">
                     {pillar.description}
                   </p>
                 </Reveal>

@@ -15,6 +15,7 @@ import downtownDubaiDusk from "../../public/images/downtown-dubai-dusk.jpg";
 import downtownDubaiNight from "../../public/images/downtown-dubai-night.jpg";
 import dubaiBurjKhalifaNight from "../../public/images/uae/dubai-burj-khalifa-night.png";
 import dubaiMarinaCutout from "../../public/images/uae/dubai-marina-cutout.png";
+import dubaiFrame from "../../public/images/kamzyw-dubai-frame-3161107_1920.jpg";
 import riyadhKingFahdRoadNight from "../../public/images/uae/riyadh-king-fahd-road-night.png";
 import abuDhabiEtihadTowersNight from "../../public/images/uae/abu-dhabi-etihad-towers-night.png";
 import dubaiSkylineBandCutout from "../../public/images/uae/dubai-skyline-band-cutout.png";
@@ -32,6 +33,7 @@ import leadershipBoardMeeting from "../../public/images/leadership-board-meeting
 import miningOpenPitOperation from "../../public/images/mining-open-pit-operation.jpg";
 import pharmaceuticalCleanroom from "../../public/images/pharmaceutical-cleanroom.jpg";
 import dohaWestBayTowers from "../../public/images/doha-west-bay-towers.jpg";
+import enteringGulfPanorama from "../../public/images/entering gulf (1).avif";
 import dohaSkylineDay from "../../public/images/doha-skyline-day.jpg";
 import gulfTerraceSkylineDusk from "../../public/images/gulf-terrace-skyline-dusk.avif";
 import dubaiFinancialDistrictDusk from "../../public/images/dubai-financial-district-dusk.jpg";
@@ -636,6 +638,40 @@ export const photos = {
     alt: "Downtown Dubai at dusk from above, its towers lit under a violet sky.",
     position: "58% 50%",
   },
+  /**
+   * "Regional Perspective. Global Market Standards." - the right column.
+   *
+   * The Dubai Frame from below, client-supplied. It replaces the Dubai Marina
+   * cutout that stood here (`introTowers`, kept below): a cutout is a floating
+   * silhouette, and the section has been rebuilt around a framed photograph,
+   * which is a different object. A rectangular architectural photograph in a
+   * bordered glass frame is the treatment this one asks for - there is no
+   * transparency to fake and no silhouette to protect.
+   *
+   * CROP. The source is 1920x1080 and the frame is 4:3, so a quarter of the
+   * width is cut and the Y value is inert - the full height of the photograph
+   * is shown at every width, which is what keeps the apex off the top edge.
+   * Centred, because the subject is symmetrical about the opening: 50% holds
+   * both legs and the whole crossbeam, and moving off it drops one leg out of
+   * the frame for no gain. No `positionMobile` - one crop is right at every
+   * width because the frame ratio does not change.
+   *
+   * RESOLUTION. 1920 on the long edge is the smallest master in the set, so
+   * the `sizes` at the call site matters more here than elsewhere: at 55vw the
+   * widest bucket a 4K display can ask for is 2048, six percent over the
+   * source, and everything below that is a genuine downscale.
+   */
+  introFrame: {
+    src: dubaiFrame,
+    alt: "The Dubai Frame photographed from below, its gilded uprights and crossbeam against a blue sky.",
+    position: "50% 50%",
+  },
+  /**
+   * RETIRED, held. This stood in "Regional Perspective. Global Market
+   * Standards." until that section was rebuilt around `introFrame`. Nothing
+   * renders it now; it stays one call site away from being restored, which is
+   * the convention `public/images/CREDITS.md` already applies to the assets.
+   */
   introTowers: {
     /*
       Dubai Marina at night, the towers reflected in the water.
@@ -1173,16 +1209,18 @@ export const insightPhotos: Photo[] = [
  * Marina cutout in the intro. A fifth Downtown frame is not a motif, it is a
  * page that has run out of pictures.
  *
- * Doha is the answer because it is not a substitution of convenience: Qatar is
- * one of the six markets in `gulfMarkets`, named in the hero standing bar and
- * on the market map, and it is the only one of the six the homepage never
- * pictured. A panel labelled "International Companies Entering the Gulf" is
- * also the wrong place to say Dubai a fifth time - the claim is regional, and
- * a second Gulf capital states it better than the first one repeated.
+ * Doha held that slot on exactly this reasoning and has now been retired from
+ * it: the client supplied a 4344x1448 Dubai panorama composed for a band -
+ * Marina, Palm Jumeirah and Downtown in one frame, three subjects across a 3:1
+ * file. A supplied photograph of the market the section is about outranks a
+ * library substitution made to avoid repeating a city, and at 4344px it is
+ * also the only frame in the mosaic wide enough that the closing letterbox
+ * never asks for an upscale.
  *
- * `doha-skyline-day.jpg` was NOT reused for this. It is 2000x725, which is
- * under the 2048 top device bucket before any crop, and this band asks for
- * more than any other slot in the mosaic.
+ * `doha-west-bay-towers.jpg` stays imported and one `src` away, as does
+ * `doha-skyline-day.jpg`, which was never used here: at 2000x725 it sits under
+ * the 2048 top device bucket before any crop, and this band asks more of a
+ * source than any other slot in the mosaic.
  *
  * ---------------------------------------------------------------------------
  * WHICH AXIS EACH `position` IS ACTUALLY STEERING
@@ -1200,12 +1238,21 @@ export const insightPhotos: Photo[] = [
  *   leadership    64%  cuts ceiling; holds the table and every head in frame
  *   dataCentres   38%  cuts empty floor; holds the rack run and the ceiling
  *   mining        56%  holds the haul truck low left and the benches above it
- *   international 44%  the extreme case. A 1.79:1 file in a 6.8:1 band shows
- *                      barely a quarter of its height, so this value is not a
- *                      nudge - it chooses which horizontal slice of Doha the
- *                      band is. 44% takes the tower bodies and their
- *                      silhouettes and leaves the street furniture below and
- *                      the empty sky above outside the frame.
+ *   international 26%  the extreme case, and the only entry whose two axes
+ *                      are BOTH live, at different breakpoints. A 3:1 file in
+ *                      a 6.8:1 band shows 44% of its height, so Y is not a
+ *                      nudge here - it chooses which horizontal slice of the
+ *                      panorama the band is. 26% is the value that holds the
+ *                      Burj Khalifa's spire, the Marina towers and the Palm in
+ *                      one strip; centring it decapitates the Burj.
+ *
+ *                      Its X is inert at desktop and live from 640px to
+ *                      1023px, where the mosaic is two columns and the panel
+ *                      falls to between 1.45:1 and 2.23:1 - narrower than the
+ *                      file, so the crop flips to the horizontal. 80% keeps
+ *                      the Palm and Downtown and lets the Marina go, because
+ *                      no window that narrow holds all three and the Burj is
+ *                      the landmark the label is about.
  *
  * The other two are centred on both axes, and that is a decision rather than a
  * default: their FILES are cropped so that the subject sits mid-frame, which is
@@ -1263,11 +1310,16 @@ export const segmentPhotos = {
     position: "50% 50%",
     positionMobile: "50% 52%",
   },
+  /*
+    No `positionMobile`. Below 640px the panel is one column at roughly 1.6:1
+    to 1.9:1 - still narrower than the 3:1 file, so the live axis is the same
+    one the 640-1023 band uses and the same 80% is already correct. The Y it
+    inherits is inert there, which is why one pair serves both.
+  */
   international: {
-    src: dohaWestBayTowers,
+    src: enteringGulfPanorama,
     alt: "",
-    position: "50% 60%",
-    positionMobile: "52% 52%",
+    position: "80% 26%",
   },
 } as const satisfies Record<string, Photo>;
 
