@@ -163,22 +163,33 @@ export function createRootMetadata(locale: Locale = defaultLocale): Metadata {
       template: `%s | ${siteConfig.name}`,
     },
     /*
-     * Tab icon.
+     * Site icons - the ONLY place they are declared.
      *
-     * `/favicon.png` is the supplied mark, served from /public so the path is
-     * literal and stable. `app/favicon.ico` sits alongside it as a file
-     * convention and Next emits it too: the .ico is what crawlers, feed
-     * readers and older browsers request by name, the .png is what a current
-     * browser will pick for a retina tab.
+     * Every file lives in /public at a literal root path, so the URLs are
+     * stable, need no JavaScript and are the same on every route. There is
+     * deliberately no `app/favicon.ico` or `app/icon.*` file convention: Next
+     * would emit a second, query-stringed set of tags alongside these.
      *
-     * The Apple touch icon is a SEPARATE file, not this one: iOS fills
-     * transparency with black, and the mark's inner ring is black, so the home
-     * screen icon carries a white ground and the padding iOS's corner radius
-     * needs.
+     * The artwork is the logo mark's own paths and colours (bronze and white)
+     * on an opaque midnight tile. Opaque because the mark was drawn for a dark
+     * ground: on a transparent icon the white ring vanishes on a light tab and
+     * a black variant vanishes on a dark one - and Google's results page shows
+     * both. The mark sits well inside the inscribed circle, which is the crop
+     * Google applies in search results.
+     *
+     * `/favicon.ico` (16/32/48) is what crawlers and older browsers request by
+     * name. Google wants a square icon at a multiple of 48px, hence the 48 and
+     * 192 entries.
      */
     icons: {
-      icon: [{ url: "/favicon.png", type: "image/png", sizes: "512x512" }],
-      apple: [{ url: "/apple-icon.png", type: "image/png", sizes: "180x180" }],
+      icon: [
+        { url: "/favicon.ico", sizes: "16x16 32x32 48x48" },
+        { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+        { url: "/favicon-48x48.png", type: "image/png", sizes: "48x48" },
+        { url: "/favicon-192x192.png", type: "image/png", sizes: "192x192" },
+        { url: "/favicon-512x512.png", type: "image/png", sizes: "512x512" },
+      ],
+      apple: [{ url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" }],
     },
   };
 }
